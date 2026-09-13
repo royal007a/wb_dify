@@ -7,6 +7,12 @@ export interface ApiResult<T> {
   data: T
 }
 
+interface ApiPageResult<T> extends ApiResult<T[]> {
+  total: number
+  page: number
+  size: number
+}
+
 interface HifyHttpClient {
   get<T>(url: string, config?: AxiosRequestConfig): Promise<T>
   post<T>(url: string, data?: object, config?: AxiosRequestConfig): Promise<T>
@@ -26,6 +32,10 @@ axiosInstance.interceptors.response.use(
       const message = payload.message || '请求失败'
       notifyError(message)
       return Promise.reject(new Error(message))
+    }
+    if (Array.isArray(payload.data) && typeof (payload as ApiPageResult<unknown>).total === 'number') {
+      const page = payload as ApiPageResult<unknown>
+      return { data: page.data, total: page.total, page: page.page, size: page.size } as never
     }
     // Runtime contract: successful calls resolve to Result.data, not AxiosResponse.
     return payload.data as never
