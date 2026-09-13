@@ -27,6 +27,9 @@ import com.hify.runtime.plan.PlanEventType;
 import com.hify.runtime.plan.PlanStep;
 import com.hify.runtime.plan.ReplanDecision;
 import com.hify.runtime.plan.StepAttempt;
+import com.hify.runtime.state.ContinuationDecision;
+import com.hify.runtime.state.ExecutionContextState;
+import com.hify.runtime.state.RecoveryNarrative;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -67,6 +70,7 @@ public class RunApplicationService {
     private final Duration runTimeout;
     private final int maxToolCalls;
     private final int maxReplans;
+    private final int maxRetries;
     private final Map<String, AtomicBoolean> cancellations = new ConcurrentHashMap<>();
 
     public RunApplicationService(AgentDefinitionRepository agents, ModelProviderRepository providers,
@@ -78,7 +82,8 @@ public class RunApplicationService {
                                  @Qualifier("runExecutor") Executor executor,
                                  @Value("${hify.run-timeout:60s}") Duration runTimeout,
                                  @Value("${hify.max-tool-calls:12}") int maxToolCalls,
-                                 @Value("${hify.max-replans:2}") int maxReplans) {
+                                 @Value("${hify.max-replans:2}") int maxReplans,
+                                 @Value("${hify.max-retries:1}") int maxRetries) {
         this.agents = agents;
         this.providers = providers;
         this.conversations = conversations;
@@ -94,20 +99,28 @@ public class RunApplicationService {
         this.runTimeout = runTimeout;
         this.maxToolCalls = maxToolCalls;
         this.maxReplans = maxReplans;
+        this.maxRetries = maxRetries;
     }
 
     public CreateResult create(String conversationId, String idempotencyKey, String message) {
+        return create(conversationId, idempotencyKey, message, null);
+    }
+
+    public CreateResult create(String conversationId, String idempotencyKey, String message,
+                               ResumeRequest resume) {
         if (idempotencyKey == null || idempotencyKey.isBlank()) {
             throw new IllegalArgumentException("Idempotency-Key is required");
         }
         if (idempotencyKey.length() > 128) {
             throw new IllegalArgumentException("Idempotency-Key must be at most 128 characters");
         }
-        String hash = sha256(message);
+        String resumeKey = resume == null ? "" : "\n" + resume.runId() + "\n"
+                + resume.gapIds().stream().sorted().toList();
+        String hash = sha256(message + resumeKey);
         CreateResult created;
         try {
             created = transactions.execute(status -> createInTransaction(
-                    conversationId, idempotencyKey, message, hash));
+                    conversationId, idempotencyKey, message, hash, resume));
         } catch (DataIntegrityViolationException conflict) {
             // A concurrent request may pass the initial lookup before the winner commits.
             // The database unique constraint is the arbiter; the losing transaction rolls
@@ -122,6 +135,12 @@ public class RunApplicationService {
                     Map.of("version", 1, "runId", runId));
             eventBroker.publish(runId, "run.started",
                     Map.of("version", 1, "runId", runId));
+            if (created.run().getResumedFromRunId() != null) {
+                eventBroker.publish(runId, "run.input.accepted", Map.of(
+                        "version", 1, "runId", runId,
+                        "resumedFromRunId", created.run().getResumedFromRunId(),
+                        "resolvedGapIds", resume == null ? List.of() : resume.gapIds()));
+            }
             cancellations.put(runId, new AtomicBoolean(false));
             executor.execute(() -> execute(runId));
         }
@@ -129,7 +148,7 @@ public class RunApplicationService {
     }
 
     private CreateResult createInTransaction(String conversationId, String idempotencyKey,
-                                             String message, String hash) {
+                                             String message, String hash, ResumeRequest resume) {
         Conversation conversation = conversations.findById(conversationId)
                 .orElseThrow(() -> new IllegalArgumentException("Conversation not found: " + conversationId));
         AgentDefinition agent = agents.findById(conversation.getAgentId())
@@ -144,12 +163,38 @@ public class RunApplicationService {
 
         Instant now = Instant.now();
         AgentRun run = new AgentRun(UUID.randomUUID().toString(), conversationId,
-                idempotencyKey, hash, message, now);
+                idempotencyKey, hash, message,
+                resume == null ? null : resume.runId(),
+                resume == null ? null : String.join(",", resume.gapIds()), now);
         messages.save(new ChatMessage(conversationId, "user", message));
         conversation.touch();
         conversations.save(conversation);
         runs.saveAndFlush(run);
+        if (resume != null) copyResolvedCheckpoint(conversationId, run.getId(), message, resume);
         return new CreateResult(run, false);
+    }
+
+    private void copyResolvedCheckpoint(String conversationId, String newRunId, String input,
+                                        ResumeRequest resume) {
+        AgentRun source = runs.findById(resume.runId())
+                .orElseThrow(() -> new IllegalArgumentException("Resume Run not found: " + resume.runId()));
+        if (!source.getConversationId().equals(conversationId)) {
+            throw new IllegalArgumentException("Resume Run belongs to another conversation");
+        }
+        if (source.getState() != RunState.NEEDS_INPUT) {
+            throw new IllegalStateException("Resume Run is not waiting for input");
+        }
+        ExecutionCheckpoint sourceCheckpoint = restoreCheckpoint(source.getId())
+                .orElseThrow(() -> new IllegalStateException("Resume Run has no restorable checkpoint"));
+        ExecutionContextState resolved = sourceCheckpoint.contextState()
+                .resolveGapsWithUserInput(resume.gapIds(), input,
+                        sourceCheckpoint.planVersion(), newRunId);
+        List<RuntimeMessage> resumedMessages = new ArrayList<>(sourceCheckpoint.messages());
+        resumedMessages.add(RuntimeMessage.user(input));
+        ExecutionCheckpoint copied = new ExecutionCheckpoint(UUID.randomUUID().toString(),
+                sourceCheckpoint.turn(), sourceCheckpoint.toolCalls(), sourceCheckpoint.plan(), resolved,
+                resumedMessages, true, Instant.now());
+        persistCheckpoint(newRunId, copied);
     }
 
     private CreateResult replayExisting(String conversationId, String idempotencyKey, String hash) {
@@ -203,7 +248,7 @@ public class RunApplicationService {
                     ? provider.getDefaultModel() : agent.getModel();
             AtomicBoolean cancelled = cancellations.computeIfAbsent(runId, ignored -> new AtomicBoolean(false));
             QueryLoop.RunPolicy policy = new QueryLoop.RunPolicy(agent.getMaxTurns(), maxToolCalls,
-                    16_384, maxReplans, runTimeout, cancelled::get);
+                    16_384, maxReplans, maxRetries, runTimeout, cancelled::get);
 
             QueryLoop.RunObserver observer = observer(runId);
             QueryLoop.Result result = restoreCheckpoint(runId)
@@ -261,6 +306,45 @@ public class RunApplicationService {
             }
 
             @Override
+            public void onContinuationDecided(ContinuationDecision decision) {
+                eventBroker.publish(runId, "continuation.decided", Map.of(
+                        "version", 1, "runId", runId, "action", decision.action().name(),
+                        "reason", decision.reason(), "planVersion", decision.planVersion(),
+                        "attemptId", decision.attemptId() == null ? "" : decision.attemptId(),
+                        "evidenceIds", decision.evidenceIds(), "gapIds", decision.gapIds()));
+            }
+
+            @Override
+            public void onContextStateChanged(ExecutionContextState contextState) {
+                List<Map<String, Object>> openGaps = contextState.openBlockingGaps().stream()
+                        .map(gap -> Map.<String, Object>of(
+                                "id", gap.id(), "kind", gap.kind().name(),
+                                "description", gap.description(),
+                                "resolutionKey", gap.resolutionKey(),
+                                "acquisitionOptions", gap.acquisitionOptions()))
+                        .toList();
+                eventBroker.publish(runId, "context.state.updated", Map.of(
+                        "version", 1, "runId", runId,
+                        "evidenceVersion", contextState.evidenceVersion(),
+                        "gapVersion", contextState.gapVersion(),
+                        "claimCount", contextState.claims().size(),
+                        "evidenceCount", contextState.evidence().size(),
+                        "openGapCount", openGaps.size(), "openGaps", openGaps));
+            }
+
+            @Override
+            public void onRecoveryNarrated(RecoveryNarrative narrative) {
+                eventBroker.publish(runId, "recovery.narrated", Map.of(
+                        "version", 1, "runId", runId,
+                        "failurePointId", narrative.failurePointId(),
+                        "rootCausePointId", narrative.rootCausePointId(),
+                        "rollbackPointId", narrative.rollbackPointId(),
+                        "replanFromStepId", narrative.replanFromStepId(),
+                        "decision", narrative.decision().name(), "reason", narrative.reason(),
+                        "evidenceIds", narrative.evidenceIds(), "gapIds", narrative.gapIds()));
+            }
+
+            @Override
             public void onConfirmationRequired(ExecutionPlan plan, PlanStep step, ReplanDecision decision) {
                 eventBroker.publish(runId, PlanEventType.CONFIRMATION_REQUIRED, Map.of(
                         "version", 1, "runId", runId, "planId", plan.id(),
@@ -274,14 +358,18 @@ public class RunApplicationService {
                 eventBroker.publish(runId, PlanEventType.CHECKPOINT_CREATED, Map.of(
                         "version", 1, "runId", runId, "checkpointId", checkpoint.id(),
                         "turn", checkpoint.turn(), "toolCalls", checkpoint.toolCalls(),
-                        "planId", checkpoint.planId(), "planVersion", checkpoint.planVersion()));
+                        "planId", checkpoint.planId(), "planVersion", checkpoint.planVersion(),
+                        "evidenceVersion", checkpoint.evidenceVersion(),
+                        "gapVersion", checkpoint.gapVersion()));
             }
 
             @Override
             public void onCheckpointRestored(ExecutionCheckpoint checkpoint) {
                 eventBroker.publish(runId, PlanEventType.CHECKPOINT_RESTORED, Map.of(
                         "version", 1, "runId", runId, "checkpointId", checkpoint.id(),
-                        "turn", checkpoint.turn(), "planVersion", checkpoint.planVersion()));
+                        "turn", checkpoint.turn(), "planVersion", checkpoint.planVersion(),
+                        "evidenceVersion", checkpoint.evidenceVersion(),
+                        "gapVersion", checkpoint.gapVersion()));
             }
 
             @Override
@@ -340,7 +428,11 @@ public class RunApplicationService {
         eventBroker.publish(runId, type, Map.of(
                 "version", 1, "runId", runId, "state", state.name(),
                 "terminalReason", result.reason().name(), "turns", result.turns(),
-                "toolCalls", result.toolCalls()));
+                "toolCalls", result.toolCalls(),
+                "decision", result.finalDecision().action().name(),
+                "decisionReason", result.finalDecision().reason(),
+                "evidenceIds", result.finalDecision().evidenceIds(),
+                "gapIds", result.finalDecision().gapIds()));
     }
 
     private void finishFailure(String runId, RuntimeException exception) {
@@ -387,14 +479,33 @@ public class RunApplicationService {
         checkpoints.saveAndFlush(new RunCheckpoint(runId, sequence, checkpoint.id(), checkpoint.turn(),
                 checkpoint.toolCalls(), checkpoint.planId(), checkpoint.planVersion(),
                 checkpoint.planDigest(), writePlan(checkpoint.plan()),
-                writeMessages(checkpoint.messages()), checkpoint.restorable(), checkpoint.createdAt()));
+                checkpoint.evidenceVersion(), checkpoint.gapVersion(),
+                writeContext(checkpoint.contextState()), writeMessages(checkpoint.messages()),
+                checkpoint.restorable(), checkpoint.createdAt()));
     }
 
     private java.util.Optional<ExecutionCheckpoint> restoreCheckpoint(String runId) {
         return checkpoints.findTopByRunIdAndRestorableTrueOrderBySequenceNoDesc(runId)
                 .map(saved -> new ExecutionCheckpoint(saved.getCheckpointId(), saved.getTurnNo(),
                         saved.getToolCalls(), readPlan(saved.getPlanJson()),
+                        readContext(saved.getContextJson()),
                         readMessages(saved.getMessagesJson()), saved.isRestorable(), saved.getCreatedAt()));
+    }
+
+    private String writeContext(ExecutionContextState value) {
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (Exception exception) {
+            throw new IllegalStateException("Could not serialize Run context state", exception);
+        }
+    }
+
+    private ExecutionContextState readContext(String value) {
+        try {
+            return objectMapper.readValue(value, ExecutionContextState.class);
+        } catch (Exception exception) {
+            throw new IllegalStateException("Could not restore Run context state", exception);
+        }
     }
 
     private String writePlan(ExecutionPlan value) {
@@ -445,4 +556,12 @@ public class RunApplicationService {
     }
 
     public record CreateResult(AgentRun run, boolean replayed) {}
+    public record ResumeRequest(String runId, List<String> gapIds) {
+        public ResumeRequest {
+            if (runId == null || runId.isBlank()) throw new IllegalArgumentException("Resume Run id is required");
+            gapIds = gapIds == null ? List.of() : gapIds.stream().distinct().toList();
+            if (gapIds.isEmpty()) throw new IllegalArgumentException("At least one gap id is required");
+            if (gapIds.size() > 50) throw new IllegalArgumentException("At most 50 gap ids may be resolved at once");
+        }
+    }
 }

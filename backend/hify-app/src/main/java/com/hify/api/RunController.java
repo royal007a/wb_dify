@@ -65,7 +65,10 @@ public class RunController {
             @PathVariable String conversationId,
             @RequestHeader("Idempotency-Key") String idempotencyKey,
             @Valid @RequestBody CreateRun request) {
-        RunApplicationService.CreateResult result = runService.create(conversationId, idempotencyKey, request.message());
+        RunApplicationService.ResumeRequest resume = request.resume() == null ? null
+                : new RunApplicationService.ResumeRequest(request.resume().runId(), request.resume().gapIds());
+        RunApplicationService.CreateResult result = runService.create(
+                conversationId, idempotencyKey, request.message(), resume);
         HttpStatus status = result.replayed() ? HttpStatus.OK : HttpStatus.ACCEPTED;
         return ResponseEntity.status(status).body(RunView.from(result.run()));
     }
@@ -95,18 +98,24 @@ public class RunController {
     }
 
     public record CreateConversation(@NotBlank String agentId, String title) {}
-    public record CreateRun(@NotBlank String message) {}
+    public record CreateRun(@NotBlank String message, @Valid ResumeInput resume) {}
+    public record ResumeInput(@NotBlank String runId, List<@NotBlank String> gapIds) {}
 
     public record RunView(String id, String conversationId, String state, String terminalReason,
                           String inputMessage, String outputMessage, int turns, int toolCalls,
                           Instant createdAt, Instant updatedAt, Instant cancelRequestedAt,
+                          String resumedFromRunId, List<String> resolvedGapIds,
                           String streamUrl) {
         static RunView from(AgentRun run) {
             return new RunView(run.getId(), run.getConversationId(), run.getState().name(),
                     run.getTerminalReason(), run.getInputMessage(), run.getOutputMessage(),
                     run.getTurns(), run.getToolCalls(), run.getCreatedAt(), run.getUpdatedAt(),
-                    run.getCancelRequestedAt(),
+                    run.getCancelRequestedAt(), run.getResumedFromRunId(), parseGapIds(run.getResolvedGapIds()),
                     "/api/v1/runs/" + run.getId() + "/events/stream");
+        }
+
+        private static List<String> parseGapIds(String value) {
+            return value == null || value.isBlank() ? List.of() : List.of(value.split(","));
         }
     }
 

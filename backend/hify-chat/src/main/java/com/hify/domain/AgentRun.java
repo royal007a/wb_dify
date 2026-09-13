@@ -19,6 +19,9 @@ public class AgentRun {
     private String conversationId;
     private String idempotencyKey;
     private String requestHash;
+    private String resumedFromRunId;
+    @Column(length = 4000)
+    private String resolvedGapIds;
     @Enumerated(EnumType.STRING)
     private RunState state;
     private String terminalReason;
@@ -38,11 +41,19 @@ public class AgentRun {
 
     public AgentRun(String id, String conversationId, String idempotencyKey,
                     String requestHash, String inputMessage, Instant now) {
+        this(id, conversationId, idempotencyKey, requestHash, inputMessage, null, null, now);
+    }
+
+    public AgentRun(String id, String conversationId, String idempotencyKey,
+                    String requestHash, String inputMessage, String resumedFromRunId,
+                    String resolvedGapIds, Instant now) {
         this.id = id;
         this.conversationId = conversationId;
         this.idempotencyKey = idempotencyKey;
         this.requestHash = requestHash;
         this.inputMessage = inputMessage;
+        this.resumedFromRunId = resumedFromRunId;
+        this.resolvedGapIds = resolvedGapIds;
         this.state = RunState.RUNNING;
         this.turns = 0;
         this.toolCalls = 0;
@@ -72,6 +83,8 @@ public class AgentRun {
     public String getConversationId() { return conversationId; }
     public String getIdempotencyKey() { return idempotencyKey; }
     public String getRequestHash() { return requestHash; }
+    public String getResumedFromRunId() { return resumedFromRunId; }
+    public String getResolvedGapIds() { return resolvedGapIds; }
     public RunState getState() { return state; }
     public String getTerminalReason() { return terminalReason; }
     public String getInputMessage() { return inputMessage; }

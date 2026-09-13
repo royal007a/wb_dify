@@ -138,6 +138,7 @@ public class ToolRuntime {
         INVALID_ARGUMENTS,
         TOOL_UNAVAILABLE,
         PERMISSION_DENIED,
+        TRANSIENT,
         EXECUTION_FAILED,
         CANCELLED
     }
@@ -158,6 +159,9 @@ public class ToolRuntime {
         }
         public static ExecutionResult permissionDenied(String message) {
             return new ExecutionResult(message, true, true, true, FailureType.PERMISSION_DENIED);
+        }
+        public static ExecutionResult transientFailure(String message) {
+            return new ExecutionResult(message, true, false, false, FailureType.TRANSIENT);
         }
         public static ExecutionResult cancelled() {
             return new ExecutionResult("Tool execution cancelled", true, true, false, FailureType.CANCELLED);

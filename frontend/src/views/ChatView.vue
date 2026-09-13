@@ -4,6 +4,7 @@ import { computed, onMounted, ref } from 'vue'
 type Agent = { id: string; name: string; description: string; model: string; enabledTools: string }
 type Run = { id: string; state: string; terminalReason?: string; outputMessage?: string; turns: number; toolCalls: number; streamUrl: string }
 type ChatItem = { role: 'user' | 'assistant' | 'event'; content: string }
+type ResumeState = { runId: string; gapIds: string[] }
 
 const agents = ref<Agent[]>([])
 const selectedAgentId = ref('demo-agent')
@@ -12,6 +13,7 @@ const message = ref('现在几点？')
 const running = ref(false)
 const status = ref('准备就绪')
 const activeRun = ref<Run>()
+const resumeState = ref<ResumeState>()
 const chat = ref<ChatItem[]>([{ role: 'assistant', content: '你好，我是 Hify Demo Agent。可以问我时间，或让我计算 12.5 * 4。' }])
 const selectedAgent = computed(() => agents.value.find(agent => agent.id === selectedAgentId.value))
 
@@ -47,10 +49,11 @@ async function send() {
     const response = await fetch(`/api/v1/conversations/${conversation}/runs`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Idempotency-Key': crypto.randomUUID() },
-      body: JSON.stringify({ message: text }),
+      body: JSON.stringify({ message: text, ...(resumeState.value ? { resume: resumeState.value } : {}) }),
     })
     if (!response.ok) throw new Error(await errorMessage(response))
     activeRun.value = await response.json()
+    resumeState.value = undefined
     status.value = `Run ${activeRun.value!.id.slice(0, 8)} 执行中`
     listen(activeRun.value!)
   } catch (error) {
@@ -74,6 +77,12 @@ function listen(run: Run) {
     const payload = parsePayload((event as MessageEvent).data)
     chat.value.push({ role: 'event', content: `调用工具：${payload.tool}` })
   })
+  source.addEventListener('continuation.decided', event => {
+    const payload = parsePayload((event as MessageEvent).data)
+    if (payload.action === 'CLARIFY' && Array.isArray(payload.gapIds) && payload.gapIds.length > 0) {
+      resumeState.value = { runId: run.id, gapIds: payload.gapIds.map(String) }
+    }
+  })
   const finish = async () => {
     source.close()
     const response = await fetch(`/api/v1/runs/${run.id}`)
@@ -81,6 +90,9 @@ function listen(run: Run) {
     activeRun.value = latest
     if (!answerAdded && latest.outputMessage) chat.value.push({ role: latest.state === 'COMPLETED' ? 'assistant' : 'event', content: latest.outputMessage })
     status.value = `${latest.state} · ${latest.turns} turns · ${latest.toolCalls} tools`
+    if (latest.state === 'NEEDS_INPUT') {
+      chat.value.push({ role: 'event', content: '需要补充信息；下一条消息会恢复当前计划。' })
+    }
     running.value = false
   }
   source.addEventListener('run.completed', finish)
@@ -98,6 +110,7 @@ async function cancel() {
 function newConversation() {
   conversationId.value = undefined
   activeRun.value = undefined
+  resumeState.value = undefined
   chat.value = [{ role: 'assistant', content: '新会话已就绪。' }]
   status.value = '准备就绪'
 }

@@ -3,6 +3,10 @@ package com.hify.runtime;
 import com.hify.runtime.plan.ReplanAction;
 import com.hify.runtime.plan.ExecutionPlan;
 import com.hify.runtime.plan.ReplanDecision;
+import com.hify.runtime.state.ContinuationAction;
+import com.hify.runtime.state.ContinuationDecision;
+import com.hify.runtime.state.GapState;
+import com.hify.runtime.state.RecoveryNarrative;
 import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -32,6 +36,9 @@ class QueryLoopTest {
         RuntimeMessage toolCall = result.messages().get(1);
         RuntimeMessage toolResult = result.messages().get(2);
         assertThat(toolResult.toolCallId()).isEqualTo(toolCall.toolCalls().get(0).id());
+        assertThat(result.finalDecision().action()).isEqualTo(ContinuationAction.FINISH);
+        assertThat(result.contextState().evidence()).hasSize(1);
+        assertThat(result.contextState().hasVerifiedCoverageForRequiredClaims()).isTrue();
     }
 
     @Test
@@ -197,5 +204,132 @@ class QueryLoopTest {
         assertThat(resumed.turns()).isEqualTo(2);
         assertThat(resumed.plan().id()).isEqualTo(first.plan().id());
         assertThat(resumed.plan().digest()).isEqualTo(first.plan().digest());
+        assertThat(resumed.checkpoint().evidenceVersion()).isEqualTo(first.checkpoint().evidenceVersion());
+    }
+
+    @Test
+    void retriesTransientCalculatorFailureWithoutReplanning() {
+        AtomicInteger executions = new AtomicInteger();
+        ToolRuntime flakyCalculator = new ToolRuntime() {
+            @Override
+            public ExecutionResult execute(RuntimeMessage.ToolCall call, Set<String> enabledNames,
+                                           com.hify.common.ExecutionControl control) {
+                if (executions.incrementAndGet() == 1) return ExecutionResult.transientFailure("temporary timeout");
+                return super.execute(call, enabledNames, control);
+            }
+        };
+        QueryLoop retryingLoop = new QueryLoop(flakyCalculator);
+        AtomicInteger modelCalls = new AtomicInteger();
+        ModelClient model = request -> modelCalls.incrementAndGet() == 1
+                ? RuntimeMessage.toolCalls(List.of(new RuntimeMessage.ToolCall(
+                "calculator-call", "calculator", Map.of("expression", "6*7"))))
+                : RuntimeMessage.assistant("42");
+        List<ContinuationAction> actions = new ArrayList<>();
+        List<RecoveryNarrative> narratives = new ArrayList<>();
+
+        QueryLoop.Result result = retryingLoop.run(List.of(RuntimeMessage.user("calculate 6*7")),
+                model, "mock", 0, Set.of("calculator"),
+                new QueryLoop.RunPolicy(3, 4, 4096, 2, 1,
+                        Duration.ofSeconds(5), () -> false),
+                new QueryLoop.RunObserver() {
+                    @Override public void onContinuationDecided(ContinuationDecision decision) {
+                        actions.add(decision.action());
+                    }
+                    @Override public void onRecoveryNarrated(RecoveryNarrative narrative) {
+                        narratives.add(narrative);
+                    }
+                });
+
+        assertThat(result.reason()).isEqualTo(TerminalReason.COMPLETED);
+        assertThat(result.toolCalls()).isEqualTo(2);
+        assertThat(result.replanDecisions()).isEmpty();
+        assertThat(actions).containsExactly(ContinuationAction.RETRY,
+                ContinuationAction.CONTINUE, ContinuationAction.FINISH);
+        assertThat(narratives).singleElement().satisfies(narrative -> {
+            assertThat(narrative.decision()).isEqualTo(ContinuationAction.RETRY);
+            assertThat(narrative.failurePointId()).isNotEqualTo(narrative.rootCausePointId());
+        });
+    }
+
+    @Test
+    void interruptsWhenTransientRetryBudgetIsExhausted() {
+        ToolRuntime unavailableCalculator = new ToolRuntime() {
+            @Override
+            public ExecutionResult execute(RuntimeMessage.ToolCall call, Set<String> enabledNames,
+                                           com.hify.common.ExecutionControl control) {
+                return ExecutionResult.transientFailure("temporary timeout");
+            }
+        };
+        QueryLoop retryingLoop = new QueryLoop(unavailableCalculator);
+        ModelClient model = request -> RuntimeMessage.toolCalls(List.of(
+                new RuntimeMessage.ToolCall("calculator-call", "calculator", Map.of("expression", "6*7"))));
+
+        QueryLoop.Result result = retryingLoop.run(List.of(RuntimeMessage.user("calculate 6*7")),
+                model, "mock", 0, Set.of("calculator"),
+                new QueryLoop.RunPolicy(3, 4, 4096, 2, 1,
+                        Duration.ofSeconds(5), () -> false), QueryLoop.RunObserver.NOOP);
+
+        assertThat(result.reason()).isEqualTo(TerminalReason.RETRY_EXHAUSTED);
+        assertThat(result.toolCalls()).isEqualTo(2);
+        assertThat(result.finalDecision().action()).isEqualTo(ContinuationAction.INTERRUPT);
+        assertThat(result.contextState().openBlockingGaps()).singleElement()
+                .extracting(GapState::kind).isEqualTo(GapState.Kind.TRANSIENT_FAILURE);
+    }
+
+    @Test
+    void clarifiesAfterRepeatedInvalidActionMakesNoProgress() {
+        ModelClient repeatingModel = request -> RuntimeMessage.toolCalls(List.of(
+                new RuntimeMessage.ToolCall("bad-" + request.messages().size(), "calculator", Map.of())));
+        List<ContinuationAction> actions = new ArrayList<>();
+
+        QueryLoop.Result result = loop.run(List.of(RuntimeMessage.user("calculate")),
+                repeatingModel, "mock", 0, Set.of("calculator"),
+                new QueryLoop.RunPolicy(5, 6, 4096, 4, 1,
+                        Duration.ofSeconds(5), () -> false),
+                new QueryLoop.RunObserver() {
+                    @Override public void onContinuationDecided(ContinuationDecision decision) {
+                        actions.add(decision.action());
+                    }
+                });
+
+        assertThat(result.reason()).isEqualTo(TerminalReason.HUMAN_INPUT_REQUIRED);
+        assertThat(result.plan().version()).isEqualTo(2);
+        assertThat(result.finalDecision().action()).isEqualTo(ContinuationAction.CLARIFY);
+        assertThat(actions).containsExactly(ContinuationAction.REPLAN, ContinuationAction.CLARIFY);
+        assertThat(result.contextState().openBlockingGaps()).extracting(GapState::kind)
+                .contains(GapState.Kind.INVALID_INPUT, GapState.Kind.NO_PROGRESS);
+    }
+
+    @Test
+    void clarifiesMissingCalculatorInputWithoutUsingReplanWhenBudgetIsZero() {
+        ModelClient model = request -> RuntimeMessage.toolCalls(List.of(
+                new RuntimeMessage.ToolCall("bad-call", "calculator", Map.of())));
+
+        QueryLoop.Result result = loop.run(List.of(RuntimeMessage.user("calculate")),
+                model, "mock", 0, Set.of("calculator"),
+                new QueryLoop.RunPolicy(2, 2, 4096, 0, 0,
+                        Duration.ofSeconds(5), () -> false), QueryLoop.RunObserver.NOOP);
+
+        assertThat(result.reason()).isEqualTo(TerminalReason.HUMAN_INPUT_REQUIRED);
+        assertThat(result.finalDecision().action()).isEqualTo(ContinuationAction.CLARIFY);
+        assertThat(result.contextState().openBlockingGaps()).singleElement()
+                .extracting(GapState::kind).isEqualTo(GapState.Kind.INVALID_INPUT);
+    }
+
+    @Test
+    void permissionDenialUsesInterruptExitAndKeepsEvidence() {
+        ModelClient model = request -> RuntimeMessage.toolCalls(List.of(
+                new RuntimeMessage.ToolCall("denied", "calculator", Map.of("expression", "1+1"))));
+
+        QueryLoop.Result result = loop.run(List.of(RuntimeMessage.user("calculate")),
+                model, "mock", 0, Set.of(),
+                new QueryLoop.RunPolicy(2, 2, 4096, Duration.ofSeconds(5), () -> false),
+                QueryLoop.RunObserver.NOOP);
+
+        assertThat(result.reason()).isEqualTo(TerminalReason.PERMISSION_DENIED);
+        assertThat(result.finalDecision().action()).isEqualTo(ContinuationAction.INTERRUPT);
+        assertThat(result.contextState().evidence()).isNotEmpty();
+        assertThat(result.contextState().openBlockingGaps()).singleElement()
+                .extracting(GapState::kind).isEqualTo(GapState.Kind.MISSING_PERMISSION);
     }
 }

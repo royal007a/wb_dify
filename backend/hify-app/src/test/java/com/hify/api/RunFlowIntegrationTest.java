@@ -10,6 +10,8 @@ import com.hify.infra.AgentRunRepository;
 import com.hify.infra.RunCheckpointRepository;
 import com.hify.runtime.RuntimeMessage;
 import com.hify.runtime.plan.ExecutionPlan;
+import com.hify.runtime.state.ExecutionContextState;
+import com.hify.runtime.state.GapState;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -89,13 +91,16 @@ class RunFlowIntegrationTest {
         JsonNode events = json(http.perform(get("/api/v1/runs/{id}/events", runId))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
         assertThat(events.toString()).contains("plan.created", "step.try.started", "step.try.completed",
-                "checkpoint.created", "tool.call.started", "tool.call.completed", "run.completed");
+                "checkpoint.created", "tool.call.started", "tool.call.completed",
+                "context.state.updated", "continuation.decided", "run.completed");
         assertThat(checkpoints.findTopByRunIdAndRestorableTrueOrderBySequenceNoDesc(runId))
                 .hasValueSatisfying(checkpoint -> {
                     assertThat(checkpoint.getTurnNo()).isEqualTo(1);
                     assertThat(checkpoint.getToolCalls()).isEqualTo(1);
                     assertThat(checkpoint.getPlanVersion()).isEqualTo(1);
                     assertThat(checkpoint.getMessagesJson()).contains("toolCallId");
+                    assertThat(checkpoint.getEvidenceVersion()).isPositive();
+                    assertThat(checkpoint.getContextJson()).contains("TOOL_RESULT");
                 });
 
         AgentRun cancellable = new AgentRun("cancel-persistence-run", conversationId,
@@ -104,6 +109,46 @@ class RunFlowIntegrationTest {
         runService.cancel(cancellable.getId());
         assertThat(runs.findById(cancellable.getId())).hasValueSatisfying(saved ->
                 assertThat(saved.getCancelRequestedAt()).isNotNull());
+
+        AgentRun awaitingInput = new AgentRun("needs-input-run", conversationId,
+                "needs-input-key", "hash", "calculate", Instant.now());
+        awaitingInput.finish(RunState.NEEDS_INPUT, "HUMAN_INPUT_REQUIRED",
+                "expression is required", 1, 1);
+        runs.saveAndFlush(awaitingInput);
+        ExecutionPlan awaitingPlan = ExecutionPlan.initial("calculate");
+        GapState inputGap = GapState.open(GapState.Kind.MISSING_INPUT,
+                "expression is required", true, "user:expression",
+                List.of("ask_user"), "attempt-needs-input");
+        ExecutionContextState awaitingContext = ExecutionContextState.empty().openGap(inputGap);
+        List<RuntimeMessage> awaitingMessages = List.of(
+                RuntimeMessage.system("test"), RuntimeMessage.user("calculate"));
+        checkpoints.saveAndFlush(new RunCheckpoint(awaitingInput.getId(), 1, "needs-input-checkpoint",
+                1, 1, awaitingPlan.id(), awaitingPlan.version(), awaitingPlan.digest(),
+                objectMapper.writeValueAsString(awaitingPlan), awaitingContext.evidenceVersion(),
+                awaitingContext.gapVersion(), objectMapper.writeValueAsString(awaitingContext),
+                objectMapper.writeValueAsString(awaitingMessages), true, Instant.now()));
+
+        String resumedBody = "{\"message\":\"6*7\",\"resume\":{\"runId\":\"needs-input-run\","
+                + "\"gapIds\":[\"" + inputGap.id() + "\"]}}";
+        JsonNode resumedCreate = json(http.perform(post("/api/v1/conversations/{id}/runs", conversationId)
+                        .header("Idempotency-Key", "resume-input-key")
+                        .contentType(MediaType.APPLICATION_JSON).content(resumedBody))
+                .andExpect(status().isAccepted()).andReturn().getResponse().getContentAsString());
+        String resumedRunId = resumedCreate.path("id").asText();
+        assertThat(resumedCreate.path("resumedFromRunId").asText()).isEqualTo(awaitingInput.getId());
+        assertThat(resumedCreate.path("resolvedGapIds").get(0).asText()).isEqualTo(inputGap.id());
+        awaitState(resumedRunId, RunState.COMPLETED);
+        RunCheckpoint resumedCheckpoint = checkpoints
+                .findTopByRunIdAndRestorableTrueOrderBySequenceNoDesc(resumedRunId).orElseThrow();
+        ExecutionContextState restored = objectMapper.readValue(
+                resumedCheckpoint.getContextJson(), ExecutionContextState.class);
+        assertThat(restored.gaps()).singleElement()
+                .extracting(GapState::status).isEqualTo(GapState.Status.RESOLVED);
+        assertThat(restored.evidence()).anyMatch(item ->
+                item.type() == com.hify.runtime.state.EvidenceItem.Type.USER_INPUT);
+        JsonNode resumedEvents = json(http.perform(get("/api/v1/runs/{id}/events", resumedRunId))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        assertThat(resumedEvents.toString()).contains("run.input.accepted", "checkpoint.restored", "run.completed");
 
         AgentRun interrupted = new AgentRun("checkpoint-recovery-run", conversationId,
                 "checkpoint-recovery-key", "hash", "recover", Instant.now());
@@ -115,9 +160,12 @@ class RunFlowIntegrationTest {
                         "recovered-tool-call", "calculator", Map.of("expression", "8*8")))),
                 RuntimeMessage.toolResult("recovered-tool-call", "64", false));
         ExecutionPlan recoveryPlan = ExecutionPlan.initial("计算 8 * 8");
+        ExecutionContextState recoveryContext = ExecutionContextState.empty();
         checkpoints.saveAndFlush(new RunCheckpoint(interrupted.getId(), 1, "checkpoint-recovery-1",
                 1, 1, recoveryPlan.id(), recoveryPlan.version(), recoveryPlan.digest(),
-                objectMapper.writeValueAsString(recoveryPlan), objectMapper.writeValueAsString(checkpointMessages),
+                objectMapper.writeValueAsString(recoveryPlan), recoveryContext.evidenceVersion(),
+                recoveryContext.gapVersion(), objectMapper.writeValueAsString(recoveryContext),
+                objectMapper.writeValueAsString(checkpointMessages),
                 true, Instant.now()));
 
         runService.convergeInterruptedRuns();

@@ -28,6 +28,10 @@ public class RunCheckpoint {
     private String planDigest;
     @Column(columnDefinition = "TEXT")
     private String planJson;
+    private long evidenceVersion;
+    private long gapVersion;
+    @Column(columnDefinition = "TEXT")
+    private String contextJson;
     @Column(columnDefinition = "TEXT")
     private String messagesJson;
     private boolean restorable;
@@ -37,7 +41,8 @@ public class RunCheckpoint {
 
     public RunCheckpoint(String runId, long sequenceNo, String checkpointId, int turnNo,
                          int toolCalls, String planId, int planVersion, String planDigest,
-                         String planJson, String messagesJson,
+                         String planJson, long evidenceVersion, long gapVersion,
+                         String contextJson, String messagesJson,
                          boolean restorable, Instant createdAt) {
         this.runId = runId;
         this.sequenceNo = sequenceNo;
@@ -48,6 +53,9 @@ public class RunCheckpoint {
         this.planVersion = planVersion;
         this.planDigest = planDigest;
         this.planJson = planJson;
+        this.evidenceVersion = evidenceVersion;
+        this.gapVersion = gapVersion;
+        this.contextJson = contextJson;
         this.messagesJson = messagesJson;
         this.restorable = restorable;
         this.createdAt = createdAt;
@@ -63,6 +71,9 @@ public class RunCheckpoint {
     public int getPlanVersion() { return planVersion; }
     public String getPlanDigest() { return planDigest; }
     public String getPlanJson() { return planJson; }
+    public long getEvidenceVersion() { return evidenceVersion; }
+    public long getGapVersion() { return gapVersion; }
+    public String getContextJson() { return contextJson; }
     public String getMessagesJson() { return messagesJson; }
     public boolean isRestorable() { return restorable; }
     public Instant getCreatedAt() { return createdAt; }
