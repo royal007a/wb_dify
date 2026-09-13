@@ -1,10 +1,8 @@
 package com.hify.config;
 
 import com.hify.domain.AgentDefinition;
-import com.hify.domain.ModelProvider;
-import com.hify.domain.ProviderType;
 import com.hify.infra.AgentDefinitionRepository;
-import com.hify.infra.ModelProviderRepository;
+import com.hify.provider.api.ProviderBootstrapService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,12 +10,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SeedDataConfig {
     @Bean
-    CommandLineRunner seedDemo(ModelProviderRepository providers, AgentDefinitionRepository agents) {
+    CommandLineRunner seedDemo(ProviderBootstrapService providers, AgentDefinitionRepository agents) {
         return args -> {
-            if (!providers.existsById("mock")) {
-                providers.save(new ModelProvider("mock", "Hify Mock", ProviderType.MOCK,
-                        "", "", "hify-mock", true));
-            }
+            providers.ensureDevelopmentMock();
             if (!agents.existsById("demo-agent")) {
                 agents.save(new AgentDefinition(
                         "demo-agent",
@@ -35,4 +30,3 @@ public class SeedDataConfig {
         };
     }
 }
-

@@ -6,14 +6,14 @@ import com.hify.domain.AgentDefinition;
 import com.hify.domain.AgentRun;
 import com.hify.domain.ChatMessage;
 import com.hify.domain.Conversation;
-import com.hify.domain.ModelProvider;
 import com.hify.domain.RunCheckpoint;
 import com.hify.domain.RunState;
 import com.hify.infra.AgentDefinitionRepository;
 import com.hify.infra.AgentRunRepository;
 import com.hify.infra.ChatMessageRepository;
 import com.hify.infra.ConversationRepository;
-import com.hify.infra.ModelProviderRepository;
+import com.hify.provider.api.ProviderQueryService;
+import com.hify.provider.api.ProviderRuntimeConfig;
 import com.hify.infra.RunCheckpointRepository;
 import com.hify.runtime.ModelClient;
 import com.hify.runtime.ModelClientFactory;
@@ -56,7 +56,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Service
 public class RunApplicationService {
     private final AgentDefinitionRepository agents;
-    private final ModelProviderRepository providers;
+    private final ProviderQueryService providers;
     private final ConversationRepository conversations;
     private final ChatMessageRepository messages;
     private final AgentRunRepository runs;
@@ -73,7 +73,7 @@ public class RunApplicationService {
     private final int maxRetries;
     private final Map<String, AtomicBoolean> cancellations = new ConcurrentHashMap<>();
 
-    public RunApplicationService(AgentDefinitionRepository agents, ModelProviderRepository providers,
+    public RunApplicationService(AgentDefinitionRepository agents, ProviderQueryService providers,
                                  ConversationRepository conversations, ChatMessageRepository messages,
                                  AgentRunRepository runs, ModelClientFactory modelClients,
                                  QueryLoop queryLoop, RunEventBroker eventBroker,
@@ -154,8 +154,7 @@ public class RunApplicationService {
         AgentDefinition agent = agents.findById(conversation.getAgentId())
                 .orElseThrow(() -> new IllegalArgumentException("Agent not found: " + conversation.getAgentId()));
         if (!agent.isEnabled()) throw new IllegalStateException("Agent is disabled");
-        providers.findById(agent.getProviderId())
-                .orElseThrow(() -> new IllegalArgumentException("Provider not found: " + agent.getProviderId()));
+        providers.requireEnabled(agent.getProviderId());
 
         AgentRun existing = runs.findByConversationIdAndIdempotencyKey(conversationId, idempotencyKey)
                 .orElse(null);
@@ -235,8 +234,7 @@ public class RunApplicationService {
                     .orElseThrow(() -> new IllegalArgumentException("Conversation not found"));
             AgentDefinition agent = agents.findById(conversation.getAgentId())
                     .orElseThrow(() -> new IllegalArgumentException("Agent not found"));
-            ModelProvider provider = providers.findById(agent.getProviderId())
-                    .orElseThrow(() -> new IllegalArgumentException("Provider not found"));
+            ProviderRuntimeConfig provider = providers.requireEnabled(agent.getProviderId());
 
             List<RuntimeMessage> runtimeMessages = new ArrayList<>();
             runtimeMessages.add(RuntimeMessage.system(agent.getInstructions()));
@@ -245,7 +243,7 @@ public class RunApplicationService {
 
             ModelClient modelClient = modelClients.create(provider);
             String model = agent.getModel() == null || agent.getModel().isBlank()
-                    ? provider.getDefaultModel() : agent.getModel();
+                    ? provider.defaultModelId() : agent.getModel();
             AtomicBoolean cancelled = cancellations.computeIfAbsent(runId, ignored -> new AtomicBoolean(false));
             QueryLoop.RunPolicy policy = new QueryLoop.RunPolicy(agent.getMaxTurns(), maxToolCalls,
                     16_384, maxReplans, maxRetries, runTimeout, cancelled::get);

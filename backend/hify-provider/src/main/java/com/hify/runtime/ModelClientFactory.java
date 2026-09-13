@@ -1,32 +1,21 @@
 package com.hify.runtime;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hify.common.CircuitBreakerService;
-import com.hify.common.LlmHttpClient;
-import com.hify.domain.ModelProvider;
-import com.hify.domain.ProviderType;
+import com.hify.provider.api.ProviderRuntimeConfig;
+import com.hify.provider.runtime.ProviderAdapterRegistry;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ModelClientFactory {
-    private final ObjectMapper objectMapper;
-    private final LlmHttpClient httpClient;
-    private final CircuitBreakerService resilience;
+    private final ProviderAdapterRegistry adapters;
 
-    public ModelClientFactory(ObjectMapper objectMapper, LlmHttpClient httpClient,
-                              CircuitBreakerService resilience) {
-        this.objectMapper = objectMapper;
-        this.httpClient = httpClient;
-        this.resilience = resilience;
+    public ModelClientFactory(ProviderAdapterRegistry adapters) {
+        this.adapters = adapters;
     }
 
-    public ModelClient create(ModelProvider provider) {
-        if (!provider.isEnabled()) {
-            throw new IllegalStateException("Model provider is disabled: " + provider.getId());
+    public ModelClient create(ProviderRuntimeConfig provider) {
+        if (!provider.enabled()) {
+            throw new IllegalStateException("Model provider is disabled: " + provider.id());
         }
-        if (provider.getType() == ProviderType.MOCK) {
-            return new MockModelClient();
-        }
-        return new OpenAiCompatibleModelClient(provider, objectMapper, httpClient, resilience);
+        return adapters.create(provider);
     }
 }

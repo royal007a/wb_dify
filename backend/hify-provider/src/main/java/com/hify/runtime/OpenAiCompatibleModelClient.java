@@ -5,30 +5,32 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hify.common.CircuitBreakerService;
 import com.hify.common.LlmHttpClient;
-import com.hify.domain.ModelProvider;
-import org.springframework.http.HttpHeaders;
+import com.hify.provider.api.ProviderRuntimeConfig;
+import com.hify.provider.application.ProviderAuthConfig;
+import com.hify.provider.application.ProviderAuthConfigCodec;
+import com.hify.provider.runtime.CredentialResolver;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class OpenAiCompatibleModelClient implements ModelClient {
-    private final ModelProvider provider;
+    private final ProviderRuntimeConfig provider;
     private final ObjectMapper objectMapper;
     private final LlmHttpClient httpClient;
     private final CircuitBreakerService resilience;
-    private final String apiKey;
+    private final String credential;
+    private final ProviderAuthConfig auth;
 
-    public OpenAiCompatibleModelClient(ModelProvider provider, ObjectMapper objectMapper,
-                                       LlmHttpClient httpClient, CircuitBreakerService resilience) {
+    public OpenAiCompatibleModelClient(ProviderRuntimeConfig provider, ObjectMapper objectMapper,
+                                       LlmHttpClient httpClient, CircuitBreakerService resilience,
+                                       ProviderAuthConfigCodec authCodec, CredentialResolver credentials) {
         this.provider = provider;
         this.objectMapper = objectMapper;
         this.httpClient = httpClient;
         this.resilience = resilience;
-        this.apiKey = System.getenv(provider.getApiKeyEnv());
-        if (apiKey == null || apiKey.isBlank()) {
-            throw new IllegalStateException("Missing API key environment variable: " + provider.getApiKeyEnv());
-        }
+        this.auth = authCodec.decode(provider.authConfig());
+        this.credential = credentials.resolve(auth.credentialRef());
     }
 
     @Override
@@ -44,9 +46,9 @@ public class OpenAiCompatibleModelClient implements ModelClient {
         JsonNode response;
         try {
             request.control().throwIfCancelled();
-            String raw = resilience.execute(provider.getId(), request.control(), () -> httpClient.post(
-                    stripTrailingSlash(provider.getBaseUrl()) + "/chat/completions",
-                    Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey),
+            String raw = resilience.execute(provider.id(), request.control(), () -> httpClient.post(
+                    stripTrailingSlash(provider.baseUrl()) + "/chat/completions",
+                    Map.of(auth.headerName(), auth.prefix() + credential),
                     writeJson(body), request.control()));
             response = objectMapper.readTree(raw);
         } catch (com.hify.common.LlmApiException exception) {
