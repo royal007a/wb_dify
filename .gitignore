@@ -1,0 +1,11 @@
+.idea/
+.vscode/
+.DS_Store
+backend/**/target/
+frontend/node_modules/
+frontend/dist/
+.hify/
+/data/
+dist-packages/
+*.log
+.env
