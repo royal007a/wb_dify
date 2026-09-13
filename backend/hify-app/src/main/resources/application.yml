@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: hify
+  datasource:
+    url: ${HIFY_DB_URL:jdbc:h2:file:./data/hify;MODE=PostgreSQL;AUTO_SERVER=TRUE}
+    username: ${HIFY_DB_USERNAME:sa}
+    password: ${HIFY_DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+  h2:
+    console:
+      enabled: false
+  data:
+    redis:
+      host: ${HIFY_REDIS_HOST:127.0.0.1}
+      port: ${HIFY_REDIS_PORT:6379}
+      repositories:
+        enabled: false
+  mvc:
+    async:
+      request-timeout: 180s
+server:
+  port: ${HIFY_PORT:8080}
+  shutdown: graceful
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    redis:
+      enabled: false
+hify:
+  redis:
+    enabled: ${HIFY_REDIS_ENABLED:false}
+  model-timeout: 45s
+  run-timeout: 60s
+  max-tool-calls: 12
+  resilience:
+    timeout-max-attempts: 3
+    timeout-wait: 1s
+    rate-limit-max-attempts: 3
+    rate-limit-wait: 2s
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 3
+mybatis-plus:
+  global-config:
+    banner: false
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0

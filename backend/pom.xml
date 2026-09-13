@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-parent</artifactId><version>3.4.5</version><relativePath/></parent>
+    <groupId>com.hify</groupId><artifactId>hify-parent</artifactId><version>0.1.0-SNAPSHOT</version><packaging>pom</packaging>
+    <modules>
+        <module>hify-common</module><module>hify-provider</module><module>hify-tool</module><module>hify-mcp</module><module>hify-agent</module>
+        <module>hify-chat</module><module>hify-knowledge</module><module>hify-workflow</module><module>hify-demo</module><module>hify-app</module>
+    </modules>
+    <properties>
+        <java.version>17</java.version>
+        <mybatis-plus.version>3.5.17</mybatis-plus.version>
+        <resilience4j.version>2.3.0</resilience4j.version>
+        <okhttp.version>4.12.0</okhttp.version>
+    </properties>
+    <dependencyManagement><dependencies><dependency>
+        <groupId>com.baomidou</groupId><artifactId>mybatis-plus-bom</artifactId><version>${mybatis-plus.version}</version><type>pom</type><scope>import</scope>
+    </dependency><dependency>
+        <groupId>io.github.resilience4j</groupId><artifactId>resilience4j-bom</artifactId><version>${resilience4j.version}</version><type>pom</type><scope>import</scope>
+    </dependency><dependency>
+        <groupId>com.squareup.okhttp3</groupId><artifactId>okhttp-bom</artifactId><version>${okhttp.version}</version><type>pom</type><scope>import</scope>
+    </dependency></dependencies></dependencyManagement>
+    <build><pluginManagement><plugins><plugin>
+        <groupId>org.springframework.boot</groupId><artifactId>spring-boot-maven-plugin</artifactId>
+    </plugin></plugins></pluginManagement></build>
+</project>
