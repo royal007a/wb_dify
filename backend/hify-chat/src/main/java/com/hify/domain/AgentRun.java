@@ -17,6 +17,8 @@ public class AgentRun {
     @Id
     private String id;
     private String conversationId;
+    private String agentVersionId;
+    private String agentSnapshotDigest;
     private String idempotencyKey;
     private String requestHash;
     private String resumedFromRunId;
@@ -61,6 +63,11 @@ public class AgentRun {
         this.updatedAt = now;
     }
 
+    public void bindAgentSnapshot(String agentVersionId, String agentSnapshotDigest) {
+        this.agentVersionId = agentVersionId;
+        this.agentSnapshotDigest = agentSnapshotDigest;
+    }
+
     public void finish(RunState state, String terminalReason, String outputMessage,
                        int turns, int toolCalls) {
         if (this.state.terminal()) return;
@@ -81,6 +88,8 @@ public class AgentRun {
 
     public String getId() { return id; }
     public String getConversationId() { return conversationId; }
+    public String getAgentVersionId() { return agentVersionId; }
+    public String getAgentSnapshotDigest() { return agentSnapshotDigest; }
     public String getIdempotencyKey() { return idempotencyKey; }
     public String getRequestHash() { return requestHash; }
     public String getResumedFromRunId() { return resumedFromRunId; }

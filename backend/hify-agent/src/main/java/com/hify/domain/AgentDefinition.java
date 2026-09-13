@@ -3,6 +3,7 @@ package com.hify.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.Instant;
 
 @Entity
 @Table(name = "agent_definitions")
@@ -17,6 +18,12 @@ public class AgentDefinition {
     private int maxTurns;
     private String enabledTools;
     private boolean enabled;
+    private int maxTokens;
+    private int maxContextTurns;
+    private int draftRevision;
+    private String publishedVersionId;
+    private Instant createdAt;
+    private Instant updatedAt;
     @jakarta.persistence.Column(length = 8000)
     private String instructions;
 
@@ -25,6 +32,13 @@ public class AgentDefinition {
     public AgentDefinition(String id, String name, String description, String instructions,
                            String providerId, String model, double temperature, int maxTurns,
                            String enabledTools, boolean enabled) {
+        this(id, name, description, instructions, providerId, model, temperature,
+                2048, maxTurns, 10, enabledTools, enabled);
+    }
+
+    public AgentDefinition(String id, String name, String description, String instructions,
+                           String providerId, String model, double temperature, int maxTokens,
+                           int maxTurns, int maxContextTurns, String enabledTools, boolean enabled) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -35,6 +49,35 @@ public class AgentDefinition {
         this.maxTurns = maxTurns;
         this.enabledTools = enabledTools;
         this.enabled = enabled;
+        this.maxTokens = maxTokens;
+        this.maxContextTurns = maxContextTurns;
+        this.draftRevision = 1;
+        this.createdAt = Instant.now();
+        this.updatedAt = this.createdAt;
+    }
+
+    public void updateDraft(String name, String description, String instructions,
+                            String providerId, String model, double temperature,
+                            int maxTokens, int maxTurns, int maxContextTurns,
+                            String enabledTools, boolean enabled) {
+        this.name = name;
+        this.description = description;
+        this.instructions = instructions;
+        this.providerId = providerId;
+        this.model = model;
+        this.temperature = temperature;
+        this.maxTokens = maxTokens;
+        this.maxTurns = maxTurns;
+        this.maxContextTurns = maxContextTurns;
+        this.enabledTools = enabledTools;
+        this.enabled = enabled;
+        this.draftRevision++;
+        this.updatedAt = Instant.now();
+    }
+
+    public void markPublished(String versionId) {
+        this.publishedVersionId = versionId;
+        this.updatedAt = Instant.now();
     }
 
     public String getId() { return id; }
@@ -47,5 +90,10 @@ public class AgentDefinition {
     public int getMaxTurns() { return maxTurns; }
     public String getEnabledTools() { return enabledTools; }
     public boolean isEnabled() { return enabled; }
+    public int getMaxTokens() { return maxTokens; }
+    public int getMaxContextTurns() { return maxContextTurns; }
+    public int getDraftRevision() { return draftRevision; }
+    public String getPublishedVersionId() { return publishedVersionId; }
+    public Instant getCreatedAt() { return createdAt; }
+    public Instant getUpdatedAt() { return updatedAt; }
 }
-

@@ -1,56 +1,59 @@
 package com.hify.api;
 
-import com.hify.domain.AgentDefinition;
-import com.hify.infra.AgentDefinitionRepository;
+import com.hify.agent.api.AgentResponse;
+import com.hify.agent.api.AgentService;
+import com.hify.agent.api.AgentUpsertRequest;
+import com.hify.agent.api.AgentVersionResponse;
+import com.hify.common.PageResult;
+import com.hify.common.Result;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-import java.util.UUID;
 
+@Validated
 @RestController
-@RequestMapping("/api/agents")
+@RequestMapping("/api/v1/agents")
 public class AgentController {
-    private final AgentDefinitionRepository agents;
+    private final AgentService agents;
 
-    public AgentController(AgentDefinitionRepository agents) {
-        this.agents = agents;
-    }
+    public AgentController(AgentService agents) { this.agents = agents; }
 
     @GetMapping
-    public List<AgentDefinition> list() {
-        return agents.findAll();
+    public PageResult<AgentResponse> list(@RequestParam(required = false) @Min(1) Integer page,
+                                          @RequestParam(required = false) @Min(1) @Max(100) Integer pageSize) {
+        return agents.list(page, pageSize);
     }
 
     @PostMapping
-    public AgentDefinition create(@Valid @RequestBody CreateAgent request) {
-        return agents.save(new AgentDefinition(
-                UUID.randomUUID().toString(), request.name(), request.description(), request.instructions(),
-                request.providerId(), request.model(), request.temperature(), request.maxTurns(),
-                String.join(",", request.enabledTools()), true));
+    public ResponseEntity<Result<String>> create(@Valid @RequestBody AgentUpsertRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(Result.ok(agents.create(request)));
     }
 
-    public record CreateAgent(
-            @NotBlank String name,
-            String description,
-            @NotBlank String instructions,
-            @NotBlank String providerId,
-            String model,
-            @DecimalMin("0.0") @DecimalMax("2.0") double temperature,
-            @Min(1) @Max(20) int maxTurns,
-            List<String> enabledTools
-    ) {
-        public CreateAgent {
-            enabledTools = enabledTools == null ? List.of() : enabledTools;
-        }
+    @GetMapping("/{agentId}")
+    public Result<AgentResponse> get(@PathVariable String agentId) {
+        return Result.ok(agents.get(agentId));
+    }
+
+    @PutMapping("/{agentId}")
+    public Result<Void> update(@PathVariable String agentId,
+                               @Valid @RequestBody AgentUpsertRequest request) {
+        agents.update(agentId, request);
+        return Result.ok();
+    }
+
+    @PostMapping("/{agentId}/publications")
+    public Result<AgentVersionResponse> publish(@PathVariable String agentId) {
+        return Result.ok(agents.publish(agentId));
+    }
+
+    @GetMapping("/{agentId}/versions")
+    public Result<List<AgentVersionResponse>> versions(@PathVariable String agentId) {
+        return Result.ok(agents.versions(agentId));
     }
 }
-

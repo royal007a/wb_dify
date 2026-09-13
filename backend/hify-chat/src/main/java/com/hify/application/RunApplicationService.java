@@ -2,13 +2,13 @@ package com.hify.application;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hify.domain.AgentDefinition;
+import com.hify.agent.api.AgentQueryService;
+import com.hify.agent.api.AgentRuntimeSnapshot;
 import com.hify.domain.AgentRun;
 import com.hify.domain.ChatMessage;
 import com.hify.domain.Conversation;
 import com.hify.domain.RunCheckpoint;
 import com.hify.domain.RunState;
-import com.hify.infra.AgentDefinitionRepository;
 import com.hify.infra.AgentRunRepository;
 import com.hify.infra.ChatMessageRepository;
 import com.hify.infra.ConversationRepository;
@@ -42,7 +42,6 @@ import java.security.MessageDigest;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HexFormat;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -55,7 +54,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class RunApplicationService {
-    private final AgentDefinitionRepository agents;
+    private final AgentQueryService agents;
     private final ProviderQueryService providers;
     private final ConversationRepository conversations;
     private final ChatMessageRepository messages;
@@ -73,7 +72,7 @@ public class RunApplicationService {
     private final int maxRetries;
     private final Map<String, AtomicBoolean> cancellations = new ConcurrentHashMap<>();
 
-    public RunApplicationService(AgentDefinitionRepository agents, ProviderQueryService providers,
+    public RunApplicationService(AgentQueryService agents, ProviderQueryService providers,
                                  ConversationRepository conversations, ChatMessageRepository messages,
                                  AgentRunRepository runs, ModelClientFactory modelClients,
                                  QueryLoop queryLoop, RunEventBroker eventBroker,
@@ -151,10 +150,10 @@ public class RunApplicationService {
                                              String message, String hash, ResumeRequest resume) {
         Conversation conversation = conversations.findById(conversationId)
                 .orElseThrow(() -> new IllegalArgumentException("Conversation not found: " + conversationId));
-        AgentDefinition agent = agents.findById(conversation.getAgentId())
-                .orElseThrow(() -> new IllegalArgumentException("Agent not found: " + conversation.getAgentId()));
-        if (!agent.isEnabled()) throw new IllegalStateException("Agent is disabled");
-        providers.requireEnabled(agent.getProviderId());
+        AgentRuntimeSnapshot agent = conversation.getAgentVersionId() == null
+                ? agents.requirePublished(conversation.getAgentId())
+                : agents.requireVersion(conversation.getAgentVersionId());
+        providers.requireEnabled(agent.providerId());
 
         AgentRun existing = runs.findByConversationIdAndIdempotencyKey(conversationId, idempotencyKey)
                 .orElse(null);
@@ -165,6 +164,7 @@ public class RunApplicationService {
                 idempotencyKey, hash, message,
                 resume == null ? null : resume.runId(),
                 resume == null ? null : String.join(",", resume.gapIds()), now);
+        run.bindAgentSnapshot(agent.versionId(), agent.snapshotDigest());
         messages.save(new ChatMessage(conversationId, "user", message));
         conversation.touch();
         conversations.save(conversation);
@@ -232,28 +232,29 @@ public class RunApplicationService {
             AgentRun run = get(runId);
             Conversation conversation = conversations.findById(run.getConversationId())
                     .orElseThrow(() -> new IllegalArgumentException("Conversation not found"));
-            AgentDefinition agent = agents.findById(conversation.getAgentId())
-                    .orElseThrow(() -> new IllegalArgumentException("Agent not found"));
-            ProviderRuntimeConfig provider = providers.requireEnabled(agent.getProviderId());
+            AgentRuntimeSnapshot agent = run.getAgentVersionId() == null
+                    ? agents.requirePublished(conversation.getAgentId())
+                    : agents.requireVersion(run.getAgentVersionId());
+            ProviderRuntimeConfig provider = providers.requireEnabled(agent.providerId());
 
             List<RuntimeMessage> runtimeMessages = new ArrayList<>();
-            runtimeMessages.add(RuntimeMessage.system(agent.getInstructions()));
+            runtimeMessages.add(RuntimeMessage.system(agent.instructions()));
             messages.findByConversationIdOrderByCreatedAtAsc(conversation.getId()).forEach(message ->
                     runtimeMessages.add(new RuntimeMessage(message.getRole(), message.getContent(), null, List.of())));
 
             ModelClient modelClient = modelClients.create(provider);
-            String model = agent.getModel() == null || agent.getModel().isBlank()
-                    ? provider.defaultModelId() : agent.getModel();
+            String model = agent.modelId() == null || agent.modelId().isBlank()
+                    ? provider.defaultModelId() : agent.modelId();
             AtomicBoolean cancelled = cancellations.computeIfAbsent(runId, ignored -> new AtomicBoolean(false));
-            QueryLoop.RunPolicy policy = new QueryLoop.RunPolicy(agent.getMaxTurns(), maxToolCalls,
+            QueryLoop.RunPolicy policy = new QueryLoop.RunPolicy(agent.maxTurns(), maxToolCalls,
                     16_384, maxReplans, maxRetries, runTimeout, cancelled::get);
 
             QueryLoop.RunObserver observer = observer(runId);
             QueryLoop.Result result = restoreCheckpoint(runId)
                     .map(checkpoint -> queryLoop.resume(checkpoint, modelClient, model,
-                            agent.getTemperature(), enabledTools(agent), policy, observer))
+                            agent.temperature(), enabledTools(agent), policy, observer))
                     .orElseGet(() -> queryLoop.run(runtimeMessages, modelClient, model,
-                            agent.getTemperature(), enabledTools(agent), policy, observer));
+                            agent.temperature(), enabledTools(agent), policy, observer));
             finish(runId, result);
         } catch (RuntimeException exception) {
             finishFailure(runId, exception);
@@ -538,10 +539,8 @@ public class RunApplicationService {
         }
     }
 
-    private Set<String> enabledTools(AgentDefinition agent) {
-        if (agent.getEnabledTools() == null || agent.getEnabledTools().isBlank()) return Set.of();
-        return new LinkedHashSet<>(Arrays.stream(agent.getEnabledTools().split(","))
-                .map(String::trim).filter(value -> !value.isBlank()).toList());
+    private Set<String> enabledTools(AgentRuntimeSnapshot agent) {
+        return new LinkedHashSet<>(agent.enabledTools());
     }
 
     private String sha256(String value) {

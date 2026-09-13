@@ -163,6 +163,23 @@ public class ProviderServiceImpl implements ProviderService, ProviderQueryServic
 
     @Override
     @Transactional(readOnly = true)
+    public String requireEnabledModel(String publicId, String modelId) {
+        ProviderEntity provider = requireProvider(publicId);
+        if (!Boolean.TRUE.equals(provider.getEnabled())) {
+            throw new BizException(ErrorCode.CONFLICT, "Provider 已停用");
+        }
+        String selected = modelId == null || modelId.isBlank()
+                ? provider.getDefaultModelId() : modelId.trim();
+        ProviderModelEntity model = models.selectOne(new LambdaQueryWrapper<ProviderModelEntity>()
+                .eq(ProviderModelEntity::getProviderId, provider.getId())
+                .eq(ProviderModelEntity::getModelId, selected)
+                .eq(ProviderModelEntity::getEnabled, true));
+        if (model == null) throw new BizException(ErrorCode.PARAM_ERROR, "所选模型不存在或已停用");
+        return selected;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public boolean exists(String publicId) {
         return providers.selectCount(new LambdaQueryWrapper<ProviderEntity>()
                 .eq(ProviderEntity::getPublicId, publicId)) > 0;

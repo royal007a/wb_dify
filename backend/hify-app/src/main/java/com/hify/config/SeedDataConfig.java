@@ -1,6 +1,7 @@
 package com.hify.config;
 
 import com.hify.domain.AgentDefinition;
+import com.hify.agent.api.AgentService;
 import com.hify.infra.AgentDefinitionRepository;
 import com.hify.provider.api.ProviderBootstrapService;
 import org.springframework.boot.CommandLineRunner;
@@ -10,7 +11,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SeedDataConfig {
     @Bean
-    CommandLineRunner seedDemo(ProviderBootstrapService providers, AgentDefinitionRepository agents) {
+    CommandLineRunner seedDemo(ProviderBootstrapService providers, AgentDefinitionRepository agents,
+                               AgentService agentService) {
         return args -> {
             providers.ensureDevelopmentMock();
             if (!agents.existsById("demo-agent")) {
@@ -27,6 +29,8 @@ public class SeedDataConfig {
                         true
                 ));
             }
+            AgentDefinition demo = agents.findById("demo-agent").orElseThrow();
+            if (demo.getPublishedVersionId() == null) agentService.publish("demo-agent");
         };
     }
 }

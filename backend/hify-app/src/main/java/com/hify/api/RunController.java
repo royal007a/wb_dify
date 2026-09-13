@@ -1,11 +1,12 @@
 package com.hify.api;
 
 import com.hify.application.RunApplicationService;
+import com.hify.agent.api.AgentQueryService;
+import com.hify.agent.api.AgentRuntimeSnapshot;
 import com.hify.application.RunEventBroker;
 import com.hify.domain.AgentRun;
 import com.hify.domain.Conversation;
 import com.hify.domain.RunEvent;
-import com.hify.infra.AgentDefinitionRepository;
 import com.hify.infra.AgentRunRepository;
 import com.hify.infra.ConversationRepository;
 import com.hify.infra.RunEventRepository;
@@ -31,13 +32,13 @@ import java.util.UUID;
 @RequestMapping("/api/v1")
 public class RunController {
     private final ConversationRepository conversations;
-    private final AgentDefinitionRepository agents;
+    private final AgentQueryService agents;
     private final AgentRunRepository runs;
     private final RunEventRepository events;
     private final RunApplicationService runService;
     private final RunEventBroker eventBroker;
 
-    public RunController(ConversationRepository conversations, AgentDefinitionRepository agents,
+    public RunController(ConversationRepository conversations, AgentQueryService agents,
                          AgentRunRepository runs, RunEventRepository events,
                          RunApplicationService runService, RunEventBroker eventBroker) {
         this.conversations = conversations;
@@ -51,13 +52,12 @@ public class RunController {
     @PostMapping("/conversations")
     @ResponseStatus(HttpStatus.CREATED)
     public Conversation createConversation(@Valid @RequestBody CreateConversation request) {
-        if (!agents.existsById(request.agentId())) {
-            throw new IllegalArgumentException("Agent not found: " + request.agentId());
-        }
+        AgentRuntimeSnapshot version = agents.requirePublished(request.agentId());
         Instant now = Instant.now();
         String title = request.title() == null || request.title().isBlank()
                 ? "New conversation" : request.title();
-        return conversations.save(new Conversation(UUID.randomUUID().toString(), request.agentId(), title, now));
+        return conversations.save(new Conversation(UUID.randomUUID().toString(), request.agentId(),
+                version.versionId(), title, now));
     }
 
     @PostMapping("/conversations/{conversationId}/runs")
@@ -105,12 +105,14 @@ public class RunController {
                           String inputMessage, String outputMessage, int turns, int toolCalls,
                           Instant createdAt, Instant updatedAt, Instant cancelRequestedAt,
                           String resumedFromRunId, List<String> resolvedGapIds,
+                          String agentVersionId, String agentSnapshotDigest,
                           String streamUrl) {
         static RunView from(AgentRun run) {
             return new RunView(run.getId(), run.getConversationId(), run.getState().name(),
                     run.getTerminalReason(), run.getInputMessage(), run.getOutputMessage(),
                     run.getTurns(), run.getToolCalls(), run.getCreatedAt(), run.getUpdatedAt(),
                     run.getCancelRequestedAt(), run.getResumedFromRunId(), parseGapIds(run.getResolvedGapIds()),
+                    run.getAgentVersionId(), run.getAgentSnapshotDigest(),
                     "/api/v1/runs/" + run.getId() + "/events/stream");
         }
 
