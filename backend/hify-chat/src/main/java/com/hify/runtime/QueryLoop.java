@@ -98,9 +98,11 @@ public class QueryLoop {
             RuntimeMessage response;
             try {
                 observer.onModelStarted(turn);
-                response = modelClient.generate(new ModelRequest(
+                int currentTurn = turn;
+                response = modelClient.generateStream(new ModelRequest(
                         model, temperature, List.copyOf(messages),
-                        toolRuntime.definitions(enabledTools), control));
+                        toolRuntime.definitions(enabledTools), control),
+                        delta -> observer.onModelDelta(currentTurn, delta));
             } catch (ExecutionCancelledException exception) {
                 transitionIfPossible(state, PlanPhase.CANCELLED);
                 return terminal(TerminalReason.CANCELLED, "Run cancelled.", messages,
@@ -432,6 +434,7 @@ public class QueryLoop {
         default void onCheckpointCreated(ExecutionCheckpoint checkpoint) {}
         default void onCheckpointRestored(ExecutionCheckpoint checkpoint) {}
         default void onModelStarted(int turn) {}
+        default void onModelDelta(int turn, String delta) {}
         default void onModelCompleted(int turn, RuntimeMessage message) {}
         default void onToolStarted(int turn, RuntimeMessage.ToolCall call) {}
         default void onToolCompleted(int turn, RuntimeMessage.ToolCall call,

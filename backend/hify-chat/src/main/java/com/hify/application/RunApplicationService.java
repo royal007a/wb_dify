@@ -377,14 +377,17 @@ public class RunApplicationService {
             }
 
             @Override
+            public void onModelDelta(int turn, String delta) {
+                if (delta == null || delta.isEmpty()) return;
+                eventBroker.publish(runId, "message.delta", Map.of(
+                        "version", 1, "runId", runId, "turn", turn, "content", delta));
+            }
+
+            @Override
             public void onModelCompleted(int turn, RuntimeMessage message) {
                 eventBroker.publish(runId, "model.completed", Map.of(
                         "version", 1, "runId", runId, "turn", turn,
                         "toolCalls", message.toolCalls() == null ? 0 : message.toolCalls().size()));
-                if (message.content() != null && !message.content().isBlank()) {
-                    eventBroker.publish(runId, "message.delta", Map.of(
-                            "version", 1, "runId", runId, "content", message.content()));
-                }
             }
 
             @Override

@@ -90,6 +90,56 @@ public class GeminiModelClient implements ModelClient {
                 : new RuntimeMessage("assistant", text.toString(), null, calls);
     }
 
+    @Override
+    public RuntimeMessage generateStream(ModelRequest request, ModelStreamObserver observer) {
+        Map<String, String> toolNames = toolCallNames(request.messages());
+        Map<String, Object> body = new LinkedHashMap<>();
+        List<String> system = request.messages().stream().filter(message -> "system".equals(message.role()))
+                .map(RuntimeMessage::content).filter(value -> value != null && !value.isBlank()).toList();
+        if (!system.isEmpty()) body.put("systemInstruction", Map.of("parts",
+                List.of(Map.of("text", String.join("\n\n", system)))));
+        body.put("contents", request.messages().stream().filter(message -> !"system".equals(message.role()))
+                .map(message -> toContent(message, toolNames)).toList());
+        body.put("generationConfig", Map.of("temperature", request.temperature()));
+        if (!request.tools().isEmpty()) body.put("tools", List.of(Map.of("functionDeclarations",
+                request.tools().stream().map(this::toTool).toList())));
+
+        StringBuilder text = new StringBuilder();
+        Map<String, RuntimeMessage.ToolCall> calls = new LinkedHashMap<>();
+        String model = URLEncoder.encode(request.model(), StandardCharsets.UTF_8).replace("+", "%20");
+        String url = stripTrailingSlash(provider.baseUrl()) + "/models/" + model + ":streamGenerateContent?alt=sse";
+        httpClient.streamAndAwait(url, Map.of(auth.headerName(), auth.prefix() + credential),
+                writeJson(body), request.control(), new LlmHttpClient.StreamCallback() {
+                    @Override public void onEvent(String id, String type, String data) {
+                        try {
+                            JsonNode parts = objectMapper.readTree(data).path("candidates").path(0)
+                                    .path("content").path("parts");
+                            if (!parts.isArray()) return;
+                            parts.forEach(part -> {
+                                if (part.has("text")) {
+                                    String chunk = part.path("text").asText();
+                                    text.append(chunk); observer.onTextDelta(chunk);
+                                }
+                                if (part.has("functionCall")) {
+                                    JsonNode call = part.path("functionCall");
+                                    String callId = call.path("id").asText();
+                                    if (callId.isBlank()) callId = "gemini-" + UUID.randomUUID();
+                                    Map<String, Object> args = objectMapper.convertValue(call.path("args"),
+                                            new TypeReference<>() {});
+                                    calls.put(callId, new RuntimeMessage.ToolCall(callId,
+                                            call.path("name").asText(), args));
+                                }
+                            });
+                        } catch (Exception exception) {
+                            throw new IllegalStateException("Gemini stream returned invalid JSON", exception);
+                        }
+                    }
+                    @Override public void onClosed() {}
+                    @Override public void onFailure(LlmApiException exception) {}
+                });
+        return new RuntimeMessage("assistant", text.toString(), null, List.copyOf(calls.values()));
+    }
+
     private Map<String, Object> toContent(RuntimeMessage message, Map<String, String> toolNames) {
         String role = "assistant".equals(message.role()) ? "model" : "user";
         List<Map<String, Object>> parts = new ArrayList<>();

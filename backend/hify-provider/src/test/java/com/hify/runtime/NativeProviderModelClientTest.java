@@ -100,6 +100,55 @@ class NativeProviderModelClientTest {
         assertThat(result.path("name").asText()).isEqualTo("calculator");
     }
 
+    @Test
+    void streamsOpenAiTextAndReassemblesToolArguments() throws Exception {
+        String baseUrl = serve("/chat/completions", exchange -> respondSse(exchange, List.of(
+                "{\"choices\":[{\"delta\":{\"content\":\"Hel\"}}]}",
+                "{\"choices\":[{\"delta\":{\"content\":\"lo\"}}]}",
+                "{\"choices\":[{\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"call_1\",\"function\":{\"name\":\"calculator\",\"arguments\":\"{\\\"expression\\\":\"}}]}}]}",
+                "{\"choices\":[{\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"\\\"2+2\\\"}\"}}]}}]}",
+                "[DONE]")));
+        ModelClient client = new OpenAiCompatibleModelClient(config(ProviderType.OPENAI, baseUrl), json,
+                http(), resilience(), codec(), credential());
+        StringBuilder deltas = new StringBuilder();
+        RuntimeMessage result = client.generateStream(new ModelRequest("gpt-test", 0.2,
+                List.of(RuntimeMessage.user("hello")), List.of(tool())), deltas::append);
+        assertThat(deltas.toString()).isEqualTo("Hello");
+        assertThat(result.content()).isEqualTo("Hello");
+        assertThat(result.toolCalls()).singleElement().satisfies(call ->
+                assertThat(call.arguments()).containsEntry("expression", "2+2"));
+    }
+
+    @Test
+    void streamsAnthropicTextDeltas() throws Exception {
+        String baseUrl = serve("/v1/messages", exchange -> respondSse(exchange, List.of(
+                "{\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"text\",\"text\":\"\"}}",
+                "{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"Hello \"}}",
+                "{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"Claude\"}}",
+                "{\"type\":\"message_stop\"}")));
+        ModelClient client = new AnthropicModelClient(config(ProviderType.ANTHROPIC, baseUrl), json,
+                http(), resilience(), codec(), credential());
+        StringBuilder deltas = new StringBuilder();
+        RuntimeMessage result = client.generateStream(new ModelRequest("claude-test", 0.2,
+                List.of(RuntimeMessage.user("hello")), List.of()), deltas::append);
+        assertThat(deltas.toString()).isEqualTo("Hello Claude");
+        assertThat(result.content()).isEqualTo("Hello Claude");
+    }
+
+    @Test
+    void streamsGeminiTextDeltas() throws Exception {
+        String baseUrl = serve("/models/", exchange -> respondSse(exchange, List.of(
+                "{\"candidates\":[{\"content\":{\"parts\":[{\"text\":\"Hello \"}]}}]}",
+                "{\"candidates\":[{\"content\":{\"parts\":[{\"text\":\"Gemini\"}]}}]}")));
+        ModelClient client = new GeminiModelClient(config(ProviderType.GEMINI, baseUrl), json,
+                http(), resilience(), codec(), credential());
+        StringBuilder deltas = new StringBuilder();
+        RuntimeMessage result = client.generateStream(new ModelRequest("gemini-test", 0.2,
+                List.of(RuntimeMessage.user("hello")), List.of()), deltas::append);
+        assertThat(deltas.toString()).isEqualTo("Hello Gemini");
+        assertThat(result.content()).isEqualTo("Hello Gemini");
+    }
+
     private String serve(String path, ExchangeHandler handler) throws IOException {
         server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         server.createContext(path, exchange -> {
@@ -129,6 +178,15 @@ class NativeProviderModelClientTest {
                 "properties", Map.of("expression", Map.of("type", "string"))), "read");
     }
     private static void respond(HttpExchange exchange, String body) throws IOException { respond(exchange, 200, body); }
+    private static void respondSse(HttpExchange exchange, List<String> events) throws IOException {
+        String body = events.stream().map(event -> "data: " + event + "\n\n")
+                .reduce("", String::concat);
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().set("Content-Type", "text/event-stream");
+        exchange.sendResponseHeaders(200, bytes.length);
+        exchange.getResponseBody().write(bytes);
+        exchange.close();
+    }
     private static void respond(HttpExchange exchange, int status, String body) throws IOException {
         byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().set("Content-Type", "application/json");

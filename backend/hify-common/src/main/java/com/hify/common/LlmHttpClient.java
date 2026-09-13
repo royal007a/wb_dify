@@ -28,6 +28,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class LlmHttpClient {
@@ -97,7 +99,13 @@ public class LlmHttpClient {
 
             @Override
             public void onEvent(EventSource source, String id, String type, String data) {
-                callback.onEvent(id, type, data);
+                try {
+                    callback.onEvent(id, type, data);
+                } catch (RuntimeException exception) {
+                    source.cancel();
+                    callback.onFailure(new LlmApiException(LlmApiException.Type.REQUEST_FAILED,
+                            "Invalid streaming response", exception));
+                }
             }
 
             @Override
@@ -114,6 +122,41 @@ public class LlmHttpClient {
                 callback.onFailure(failure);
             }
         });
+    }
+
+    public void streamAndAwait(String url, Map<String, String> headers, String body,
+                               ExecutionControl control, StreamCallback callback) {
+        CountDownLatch completed = new CountDownLatch(1);
+        AtomicReference<LlmApiException> failure = new AtomicReference<>();
+        EventSource source = stream(url, headers, body, new StreamCallback() {
+            @Override public void onEvent(String id, String type, String data) {
+                callback.onEvent(id, type, data);
+            }
+            @Override public void onClosed() {
+                callback.onClosed();
+                completed.countDown();
+            }
+            @Override public void onFailure(LlmApiException exception) {
+                failure.compareAndSet(null, exception);
+                callback.onFailure(exception);
+                completed.countDown();
+            }
+        });
+        try {
+            while (!completed.await(100, TimeUnit.MILLISECONDS)) {
+                if (control.isCancelled() || control.isExpired()) {
+                    source.cancel();
+                    control.throwIfCancelled();
+                    throw new LlmApiException(LlmApiException.Type.TIMEOUT,
+                            "Streaming request exceeded remaining run deadline");
+                }
+            }
+        } catch (InterruptedException exception) {
+            source.cancel();
+            Thread.currentThread().interrupt();
+            throw new ExecutionCancelledException("Streaming request interrupted");
+        }
+        if (failure.get() != null) throw failure.get();
     }
 
     private String executePost(String url, Map<String, String> headers, String body) {
