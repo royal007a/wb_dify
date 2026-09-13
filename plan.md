@@ -16,17 +16,19 @@
 - [x] Replan P0-P2：Plan/Step/Attempt/Checkpoint/ReplanDecision、确定性 read-only 修复、事件、持久化取消、阻塞 HTTP 取消传播和启动恢复
 - [x] 受控 TAO P0-P2：六出口 ContinuationDecision、Claim/Evidence/Gap、FinishGate、有限 Retry、no-progress、版本化 checkpoint 快照、失败恢复事件和 NEEDS_INPUT 子 Run 恢复协议
 - [x] Provider 纵向切片：四类协议、MyBatis-Plus 聚合、credentialRef 鉴权、模型目录、独立健康状态、分页 CRUD/连接测试和真实 Console 对接
+- [x] Agent 纵向切片：草稿 CRUD、模型校验、不可变版本发布、Conversation/Run 版本钉住、digest 与真实 Console
+- [x] 原生模型流：OpenAI/compatible、Anthropic、Gemini SSE delta、工具参数重组、Run 事件投影和取消/deadline
+- [x] 模块交付 Skill：四问理解、决策、分层执行、验证、SDD 回写与 split commit
 
 ## 下一阶段
 
-1. 给 Agent 增加 draft/version/publish，并绑定 Provider modelId 快照；写入时驱逐 `agent-cache`，读取时启用 Cache-Aside。
-2. 将共享 cancellation/deadline token 接入原生模型 SSE，并补 partial stream、429、5xx、认证失败、断连契约测试。
-3. 在允许 Provider 访问内网前补 DNS 解析后校验、redirect 再校验和 allow-list；接入 Vault/Secret Manager 时只扩展 CredentialResolver，不改表结构。
-4. 依据真实压测调整 llmExecutor、runExecutor、连接池、熔断窗口和重试预算。
-5. 设计长期记忆最小切片：先做 tenant/user/project bank 隔离、Fact + source evidence、时间覆盖语义；普通静态知识仍走 RAG，不把 Recall/Reflect 默认塞入所有请求。
-6. 用当前配置模型跑 Intent Router 离线基线；补结构化输出失败率、P95、token/成本，并以 shadow event 验证后再决定是否接管 Run。
-7. 引入第一个真实 write 工具前，先完成 planDigest 确认 token、side-effect ledger、幂等执行和显式 compensation；禁止通用数据库回滚。
-8. 只有多步骤业务流进入主链路后再做 Workflow 级显式分支；统一候选排序、双层 TAO、子 Agent 与阶段/全局回滚必须由独立评测和 ADR 触发。
+1. 补原生流式 429、5xx、认证失败、半途断流和客户端断开故障注入，并记录首 token/P95/usage/cost。
+2. 在允许 Provider 访问内网前补 DNS 解析后校验、redirect 再校验和 allow-list；接入 Vault/Secret Manager 时只扩展 CredentialResolver，不改表结构。
+3. 依据真实压测调整 llmExecutor、runExecutor、连接池、熔断窗口和重试预算。
+4. 设计长期记忆最小切片：先做 tenant/user/project bank 隔离、Fact + source evidence、时间覆盖语义；普通静态知识仍走 RAG，不把 Recall/Reflect 默认塞入所有请求。
+5. 用当前配置模型跑 Intent Router 离线基线；补结构化输出失败率、P95、token/成本，并以 shadow event 验证后再决定是否接管 Run。
+6. 引入第一个真实 write 工具前，先完成 planDigest 确认 token、side-effect ledger、幂等执行和显式 compensation；禁止通用数据库回滚。
+7. 只有多步骤业务流进入主链路后再做 Workflow 级显式分支；统一候选排序、双层 TAO、子 Agent 与阶段/全局回滚必须由独立评测和 ADR 触发。
 
 ## 长期记忆的进入条件
 

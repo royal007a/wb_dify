@@ -40,8 +40,8 @@ erDiagram
 | `providers` | 内部 BIGINT `id`、外部 `public_id`、name/type/base_url、版本化 `auth_config`、default_model_id、enabled；auth JSON 只存 credentialRef 等元数据，不存 key |
 | `provider_models` | provider_id、display_name、model_id、enabled/is_default/sort_order；`provider_id+model_id` unique |
 | `provider_health` | provider_id 一对一、status/latency_ms/error_code/message/checked_at；与低频配置写分离 |
-| `agents` | name, description, current_draft_revision, published_version_id |
-| `agent_versions` | agent_id, version, immutable config JSONB, checksum；agent+version unique |
+| `agent_definitions` | 当前迁移期草稿表：id/name/prompt/provider/model/参数/draft_revision/published_version_id；后续可重命名但外部 ID 不变 |
+| `agent_versions` | agent_id、version_no、不可变规范化配置列、snapshot_digest；agent+version unique |
 | `tool_definitions` | tool identity, source, schema_version, input_schema JSONB, risk |
 | `mcp_servers` | name, transport, server_url, credential_ref, policy, status |
 | `agent_tool_bindings` | agent_version_id, tool_definition_id, schema snapshot/policy |
@@ -73,6 +73,7 @@ erDiagram
 - `provider_models(provider_id, model_id)` unique；模型目录整体替换时物理删除旧子项，避免逻辑删除 tombstone 与唯一约束冲突。
 - `provider_health(provider_id)` unique；健康检查不改变 Provider 配置行，也不驱逐 `provider-cache`。
 - `agent_runs(resumed_from_run_id)` 记录 NEEDS_INPUT 后的新 Run 恢复链；恢复必须保持 conversation 相同，`resolved_gap_ids` 是当前 MVP 的审计投影，权威 Gap 状态仍在 checkpoint context snapshot。
+- `conversations.agent_version_id` 在会话创建时固定；`agent_runs.agent_version_id/agent_snapshot_digest` 再次投影执行证据，草稿更新不得改变旧会话。
 - `tool_calls(run_id, call_id)` unique；写工具另存 idempotency key。
 - `document_chunks` 为 embedding 建 HNSW；检索必须带 knowledge_base/filter 和 LIMIT。
 - `message_citations(message_id, rank)` 与 `document_chunks(document_id, ordinal)` 建索引。

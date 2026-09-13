@@ -17,7 +17,7 @@
 
 ## Phase 1：Mock Provider 的完整 Query Loop
 
-2026-09-13 初版进度：Conversation/Message/Run/Event、并发幂等创建、终态 SQL CAS、Mock 结构化 tool call、工具 allow-list/基础 schema/read policy、Plan/Step/Attempt/Checkpoint/ReplanDecision、六出口 ContinuationDecision、Claim/Evidence/Gap、可执行 FinishGate、有限 Retry、no-progress、确定性 read-only Replan、结构化 NEEDS_INPUT 恢复、持久化取消、同步 HTTP 取消传播、checkpoint 启动恢复、SSE replay 和 Console Playground 已形成闭环。Agent version/publish、RunStep/ToolCall 表、精确 token/cost、工具 timeout、Workflow 分支、写工具确认/副作用账本和五页 Console 仍待完成。
+2026-09-13 初版进度：Conversation/Message/Run/Event、并发幂等、终态 CAS、Mock tool call、Plan/Replan、六出口、Evidence/Gap/FinishGate、有限 Retry、no-progress、NEEDS_INPUT 恢复、取消、checkpoint、SSE replay 和 Console Playground 已形成闭环。Agent 草稿/不可变发布版本、Conversation/Run 版本钉住和 Agent Console 也已完成。RunStep/ToolCall 表、精确 token/cost、工具 timeout、Workflow 分支、写工具确认/副作用账本仍待完成。
 
 - Provider/Model、Agent draft/version/publish、Conversation/Message/Run 数据模型。
 - Mock model 支持文本回答和结构化 tool calls。
@@ -30,7 +30,7 @@
 
 ## Phase 2：真实 Provider 与流式可靠性
 
-2026-09-13 进度：Provider 目录纵向切片已交付。OpenAI、Anthropic、Gemini 三个原生协议与 OpenAI-compatible 通用协议已经统一到小型 Adapter Registry；版本化鉴权 JSON 只存 credentialRef 元数据；模型展示名/调用 ID 分离；健康状态独立写；管理 API 与真实 Console 已贯通。H2 集成测试、PostgreSQL 16.15 的 V1→V5 全迁移与 JAR HTTP smoke、CRUD、模型整体替换、三原生协议最小连接请求和前端生产构建已通过。原生 token streaming、真实供应商凭证合同测试、usage/cost 和故障注入仍待完成。
+2026-09-13 进度：Provider 目录纵向切片与三协议 native streaming 已交付。OpenAI、Anthropic、Gemini 与 OpenAI-compatible 统一到小型 Adapter Registry；鉴权只存 credentialRef；模型展示名/调用 ID 分离；健康状态独立写；管理 API/Console 已贯通。V1→V6 迁移、JAR smoke、协议连接和原生 SSE happy path 已验证。真实供应商凭证合同、usage/cost、流式 429/5xx/断流故障注入仍待完成。
 
 进入自动路由前先保留一个不改变 Run 行为的 Intent Router 预览切片：`IntentDecision` 四出口契约、确定性规则、当前模型的结构化 JSON 候选、低置信/歧义/缺槽澄清和 100-200 条中文评测集。先跑 rule-only 与当前模型基线；只有混淆矩阵、成本和延迟证明必要，才增加动态 few-shot、向量候选召回或轻/深模型分层。预览与 shadow 达标前不允许自动执行 route。
 

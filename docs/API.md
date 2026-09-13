@@ -56,14 +56,12 @@ JSON 鉴权只保存版本化元数据和 `credentialRef`，不保存/回传原�
 GET    /api/v1/agents
 POST   /api/v1/agents
 GET    /api/v1/agents/{agentId}
-PATCH  /api/v1/agents/{agentId}/draft
-POST   /api/v1/agents/{agentId}/validations
-POST   /api/v1/agents/{agentId}/versions
+PUT    /api/v1/agents/{agentId}
 POST   /api/v1/agents/{agentId}/publications
 GET    /api/v1/agents/{agentId}/versions
 ```
 
-发布时将 draft 固化为不可变 `AgentVersion`，内容含 model snapshot、prompt、参数、tool schema snapshot、预算和 fallback 策略。Conversation 始终绑定版本，不追随草稿变化。
+PUT 只更新 draft；发布时将 draft 固化为不可变 `AgentVersion`，内容含 modelId、prompt、参数、工具名和 digest。Conversation 始终绑定版本，不追随草稿变化；Run 返回 `agentVersionId/agentSnapshotDigest`。完整 tool schema snapshot 在 MCP 阶段补齐。
 
 ## 4. Conversation 与 Run
 
@@ -113,6 +111,8 @@ data: {"version":1,"runId":"run_...","toolCallId":"call_...","tool":"calculator"
 ```
 
 SSE 数据不包含供应商原始请求、API Key 或未裁剪 tool result。
+
+真实 Provider 文本到达时逐块发送 `message.delta`；`model.completed` 表示该次模型流已闭合并可安全解析完整 tool call。流已经输出 delta 后不得自动重试整个请求。
 
 工具失败有两种语义：
 

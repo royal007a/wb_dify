@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hify Module Delivery"
+  short_description: "Deliver a Hify module end to end"
+  default_prompt: "Use $hify-module-delivery to design, implement, verify, and document this Hify module."
