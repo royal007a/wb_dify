@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: hify
+      POSTGRES_USER: hify
+      POSTGRES_PASSWORD: hify_local_only
+    volumes:
+      - hify-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hify -d hify"]
+      interval: 2s
+      timeout: 2s
+      retries: 20
+
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      HIFY_DB_URL: jdbc:postgresql://postgres:5432/hify
+      HIFY_DB_USERNAME: hify
+      HIFY_DB_PASSWORD: hify_local_only
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "8088:80"
+    depends_on:
+      - app
+
+volumes:
+  hify-postgres-data:

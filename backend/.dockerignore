@@ -1,0 +1,5 @@
+data
+*.iml
+**/target
+!hify-app/target/
+!hify-app/target/hify-app-0.1.0-SNAPSHOT.jar
