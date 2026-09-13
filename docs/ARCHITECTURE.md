@@ -131,7 +131,7 @@ sequenceDiagram
   CM-->>UI: terminal SSE event
 ```
 
-继续循环的唯一条件是模型返回至少一个结构化 tool call。最终答案由“没有 tool calls”判定，不解析自然语言中的 Thought/Action。
+模型返回结构化 tool call 才会进入工具路径；没有 tool call 只是完成候选，仍必须通过 `FinishGate`：最终回答非空、没有开放的 blocking Gap、所有 required Claim 至少有一条 VERIFIED evidence。模型不能自行宣布完成。
 
 一期工具串行执行，避免并行 tool result 配对、取消和副作用顺序复杂度。后续只有在 trace 证明工具等待为主要瓶颈，且工具声明无顺序依赖/副作用冲突时才加入并行。
 
@@ -155,7 +155,7 @@ stateDiagram-v2
 
 终态只能通过数据库 compare-and-set 写入一次。应用启动时扫描遗留 `RUNNING`：已有持久取消请求的收敛为 `CANCELLED`，其余从最新 restorable checkpoint 恢复；checkpoint 只覆盖当前 read-only 工具，不能被解释为外部副作用回滚。
 
-终止/暂停原因：`COMPLETED`、`MAX_TURNS`、`CANCELLED`、`TIMEOUT`、`TOKEN_BUDGET_EXCEEDED`、`COST_BUDGET_EXCEEDED`、`TOOL_BUDGET_EXCEEDED`、`HUMAN_INPUT_REQUIRED`、`PERMISSION_DENIED`、`MODEL_ERROR`、`FATAL_TOOL_ERROR`。
+终止/暂停原因：`COMPLETED`、`MAX_TURNS`、`CANCELLED`、`TIMEOUT`、`TOKEN_BUDGET_EXCEEDED`、`COST_BUDGET_EXCEEDED`、`TOOL_BUDGET_EXCEEDED`、`HUMAN_INPUT_REQUIRED`、`RETRY_EXHAUSTED`、`PERMISSION_DENIED`、`MODEL_ERROR`、`FATAL_TOOL_ERROR`。
 
 ### 3.4 默认预算
 
@@ -171,9 +171,9 @@ stateDiagram-v2
 
 ### 3.5 确定性 Replan
 
-当前 read-only Query Loop 以不可变 `ExecutionPlan` 版本记录修复过程。工具参数错误或已知只读工具别名可触发 `LOCAL_REPLAN`；无安全替代时进入 `NEEDS_INPUT`；权限拒绝、取消和 fatal error 不允许通过 Replan 绕过。Replan 不重置任何 Run 预算。
+当前 read-only Query Loop 以不可变 `ExecutionPlan` 版本和 `ContinuationDecision` 六出口记录控制过程。工具参数错误或已知只读工具别名可触发 `REPLAN`；瞬时失败只做有限 `RETRY`；无安全替代、缺输入或 no-progress 进入 `CLARIFY/NEEDS_INPUT`；权限拒绝、取消、重试耗尽和 fatal error 进入 `INTERRUPT`。Replan/Retry 不重置任何 Run 预算。
 
-失败点（Attempt）、根因点（Step）、回滚点（Checkpoint）和 Replan 起点分别记录。checkpoint 只保存已配对消息与预算计数；它不是外部副作用回滚。完整契约与适用边界见 `REPLAN.md`。
+`ExecutionContextState` 统一保存 Claim、Evidence 和 Gap；成功工具结果成为 VERIFIED evidence，重复语义状态不新增证据时触发 no-progress。失败点（Attempt）、根因点（Step）、回滚点（Checkpoint）和 Replan 起点分别记录。checkpoint 保存已配对消息、预算计数、Plan 及带版本的 Evidence/Gap 快照，但不是外部副作用回滚。完整契约与适用边界见 `REPLAN.md`。
 
 ## 4. 流式事件契约
 

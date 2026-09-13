@@ -69,11 +69,23 @@ GET    /api/v1/runs/{runId}/events/stream
 
 ```json
 {
-  "message": {"content": "现在几点，顺便计算 17*23"},
-  "agentVersionId": "av_...",
-  "responseMode": "streaming"
+  "message": "现在几点，顺便计算 17*23"
 }
 ```
+
+当上一 Run 以 `NEEDS_INPUT` 结束时，客户端从 `continuation.decided` 保存开放的 `gapIds`，下一条消息显式恢复：
+
+```json
+{
+  "message": "被除数是 42，除数是 7",
+  "resume": {
+    "runId": "run_waiting_for_input",
+    "gapIds": ["gap_missing_calculator_args"]
+  }
+}
+```
+
+恢复不会让旧 Run 从终态回退；服务创建一个带 `resumedFromRunId/resolvedGapIds` 的新 Run。源 Run 必须属于同一 Conversation、状态为 `NEEDS_INPUT` 且存在可恢复 checkpoint。未知、已关闭或跨会话 Gap 返回参数错误。
 
 创建 Run 必须提供 `Idempotency-Key`。服务先提交 user message 和 RUNNING run，再返回 `202 Accepted` 与 `runId`/stream URL。相同 `(conversationId, Idempotency-Key)` 只能创建一个 Run：第一次返回 `202`；请求体 checksum 相同的重复提交返回已有 Run、相同 stream URL 和 `200`；相同 key 但请求体不同返回 `409 IDEMPOTENCY_KEY_REUSED`。唯一约束与 user message/run/初始 event 在同一事务中写入。
 
@@ -99,7 +111,7 @@ event: run.failed
 data: {"version":1,"runId":"run_...","terminalReason":"PERMISSION_DENIED","errorCode":"TOOL_PERMISSION_DENIED"}
 ```
 
-Replan 相关事件包括 `plan.created`、`step.try.started/completed/failed`、`replan.decided`、`confirmation.required`、`checkpoint.created/restored`。`replan.decided` 明确给出 failure/root-cause/rollback/replan-start 四个位置；无安全替代时发送 `confirmation.required`，随后以 `run.needs_input` 结束本次流，等待用户通过新请求补充信息。当前没有写工具，因此 `confirmation.accepted/cancelled` 只是保留契约。
+受控 TAO 事件包括 `plan.created`、`step.try.started/completed/failed`、`continuation.decided`、`context.state.updated`、`replan.decided`、`recovery.narrated`、`confirmation.required`、`checkpoint.created/restored` 和 `run.input.accepted`。`continuation.decided.action` 只允许 `CONTINUE/FINISH/CLARIFY/RETRY/REPLAN/INTERRUPT`。`replan.decided` 明确给出 failure/root-cause/rollback/replan-start 四个位置；`context.state.updated` 给出 Evidence/Gap 快照版本与开放 Gap；`recovery.narrated` 把故障恢复原因投影为可审计事件。无安全替代时随后以 `run.needs_input` 结束本次流，等待用户通过新 Run 的 `resume` 输入恢复。当前没有写工具，因此 `confirmation.accepted/cancelled` 只是保留契约。
 
 前端不得把所有 `*.failed` 都当作 Run 终态；只有 `run.completed/run.failed/run.cancelled/run.needs_input` 结束流。
 

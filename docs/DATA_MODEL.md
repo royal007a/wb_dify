@@ -45,10 +45,10 @@ erDiagram
 | `agent_tool_bindings` | agent_version_id, tool_definition_id, schema snapshot/policy |
 | `conversations` | user_id, agent_version_id, title, status, last_message_at |
 | `messages` | conversation_id, sequence, role, content JSONB, tool_call_id, token_usage |
-| `agent_runs` | conversation_id, agent_version_id, state, terminal_reason, `cancel_requested_at`, deadlines/budgets/usage, version |
+| `agent_runs` | conversation_id, agent_version_id, state, terminal_reason, `cancel_requested_at`, `resumed_from_run_id`, `resolved_gap_ids`, deadlines/budgets/usage, version |
 | `run_steps` | run_id, sequence, kind, status, input/output summary, latency, error_code |
 | `run_events` | run_id, monotonic sequence, event_type, payload JSONB, created_at |
-| `run_checkpoints` | run_id, sequence, checkpoint_id, turn/tool 计数、plan id/version/digest、plan/messages snapshot、restorable |
+| `run_checkpoints` | run_id, sequence, checkpoint_id, turn/tool 计数、plan id/version/digest、evidence/gap version、plan/context/messages snapshot、restorable |
 | `tool_calls` | run_id, run_step_id, call_id unique per run, tool identity, input/output refs, idempotency_key |
 | `knowledge_bases` | name, embedding_model_id, chunk strategy |
 | `documents` | knowledge_base_id, object_key, checksum, version, indexing_state |
@@ -66,7 +66,8 @@ erDiagram
 - `agent_runs(conversation_id, idempotency_key)` unique；同时保存 request checksum，用于区分合法重放和 key 误复用。
 - `messages(conversation_id, sequence)` unique；列表按 sequence 游标分页。
 - `run_events(run_id, sequence)` unique；支持 `Last-Event-ID` replay。
-- `run_checkpoints(run_id, sequence)` unique；完整计划快照保证恢复前后的 id/version/digest 一致，只保存完成 tool call/result 配对后的恢复点。当前仅允许恢复 read-only Run。
+- `run_checkpoints(run_id, sequence)` unique；完整 Plan 与 ExecutionContextState 快照保证恢复前后的 plan/evidence/gap 版本一致，只保存完成 tool call/result 配对后的恢复点。当前仅允许恢复 read-only Run。
+- `agent_runs(resumed_from_run_id)` 记录 NEEDS_INPUT 后的新 Run 恢复链；恢复必须保持 conversation 相同，`resolved_gap_ids` 是当前 MVP 的审计投影，权威 Gap 状态仍在 checkpoint context snapshot。
 - `tool_calls(run_id, call_id)` unique；写工具另存 idempotency key。
 - `document_chunks` 为 embedding 建 HNSW；检索必须带 knowledge_base/filter 和 LIMIT。
 - `message_citations(message_id, rank)` 与 `document_chunks(document_id, ordinal)` 建索引。

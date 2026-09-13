@@ -14,6 +14,7 @@
 - [x] 前端设计系统、响应式管理台布局、五个公共组件和 Provider mock 验收页
 - [x] IntentDecision 四出口契约、两层 Intent Router、预览 API 和 120 条中文 rule-only 评测基线
 - [x] Replan P0-P2：Plan/Step/Attempt/Checkpoint/ReplanDecision、确定性 read-only 修复、事件、持久化取消、阻塞 HTTP 取消传播和启动恢复
+- [x] 受控 TAO P0-P2：六出口 ContinuationDecision、Claim/Evidence/Gap、FinishGate、有限 Retry、no-progress、版本化 checkpoint 快照、失败恢复事件和 NEEDS_INPUT 子 Run 恢复协议
 
 ## 下一阶段
 
@@ -24,6 +25,7 @@
 5. 设计长期记忆最小切片：先做 tenant/user/project bank 隔离、Fact + source evidence、时间覆盖语义；普通静态知识仍走 RAG，不把 Recall/Reflect 默认塞入所有请求。
 6. 用当前配置模型跑 Intent Router 离线基线；补结构化输出失败率、P95、token/成本，并以 shadow event 验证后再决定是否接管 Run。
 7. 引入第一个真实 write 工具前，先完成 planDigest 确认 token、side-effect ledger、幂等执行和显式 compensation；禁止通用数据库回滚。
+8. 只有多步骤业务流进入主链路后再做 Workflow 级显式分支；统一候选排序、双层 TAO、子 Agent 与阶段/全局回滚必须由独立评测和 ADR 触发。
 
 ## 长期记忆的进入条件
 

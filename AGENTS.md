@@ -65,6 +65,9 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 - 权限检查发生在副作用前；危险工具默认拒绝或要求显式批准。
 - tool error 可恢复时作为 `tool_result` 返回；安全违规、缺凭证、重复失败和预算耗尽直接终止。
 - Replan 必须分别记录失败点、根因点、回滚点和重计划起点；不得用 Replan 绕过权限或重置预算。
+- Query Loop 的控制出口只允许 `CONTINUE/FINISH/CLARIFY/RETRY/REPLAN/INTERRUPT`，并持久化 reason 与状态引用。
+- FINISH 必须通过代码门禁：最终回答存在、无 blocking Gap、required Claim 有 VERIFIED evidence；模型不得自行宣布成功。
+- Retry 必须受独立次数和全局预算限制；重复语义状态没有新增证据时必须停止机械循环。
 - read 工具可在 Try 中执行；write/execute/external 工具必须先有精确确认与副作用账本，禁止把 checkpoint 宣称为外部副作用回滚。
 - ConversationManager 持有持久会话；QueryLoop 只持有单次 run；ToolRuntime 持有注册、schema、权限和执行。
 - 上下文裁剪/摘要属于 ContextManager，不塞进 QueryLoop。

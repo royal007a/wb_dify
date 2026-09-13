@@ -11,8 +11,8 @@
 | Agent CRUD | `AgentController`、`AgentDefinitionRepository` | 只有 list/create；无 draft/version/publish |
 | Conversation/Message | `hify-app/RunController`、`hify-chat` repositories | 可创建会话、追加消息；无用户、分页和版本绑定 |
 | Run/Event | `hify-chat` 的 `AgentRun`、`RunEvent`、`RunApplicationService` | 并发幂等、异步执行、终态 CAS、持久化取消、事件持久化和 SSE replay 已验证 |
-| Query Loop | `runtime/QueryLoop.java`、`runtime/plan` | 结构化 tool-call 循环、Plan/Step/Attempt/Checkpoint/ReplanDecision、确定性 read-only Replan、maxTurns/replan/deadline/工具/token 预算和明确终态 |
-| Checkpoint/恢复 | `RunCheckpoint`、`V3__run_replan_control.sql` | 保存已配对消息、turn/tool 计数与完整 plan 快照；恢复前后 plan id/version/digest 一致；启动时恢复 RUNNING read-only Run，取消中的 Run 收敛为 CANCELLED |
+| Query Loop | `runtime/QueryLoop.java`、`runtime/plan`、`runtime/state` | 六出口 ContinuationDecision、Claim/Evidence/Gap、可执行 FinishGate、有限 Retry、确定性 read-only Replan、no-progress 和明确终态均有测试 |
+| Checkpoint/恢复 | `RunCheckpoint`、`V3__run_replan_control.sql`、`V4__run_context_state.sql` | 保存已配对消息、预算、完整 Plan 与 Evidence/Gap 版本化快照；启动恢复 RUNNING，结构化输入通过新子 Run 恢复 NEEDS_INPUT Gap |
 | Intent Router | `hify-chat/com.hify.intent`、`IntentRoutingController` | 四出口契约、确定性规则层、结构化模型候选、低置信/歧义/缺槽澄清、120 条中文评测集；当前仅预览，不接管 Run |
 | Mock 模型 | `MockModelClient.java` | 可触发时间或单个二元运算工具 |
 | OpenAI-compatible | `OpenAiCompatibleModelClient.java` | 能解析原生 `tool_calls` 并保留 call id；Spring RestClient 同步调用，不流式 |
@@ -35,6 +35,8 @@
 - 认证/用户、安全出口、SSRF 防护、审计日志、CI 和生产级密钥管理。
 - JPA 到 MyBatis-Plus 的 Repository 迁移；当前 MyBatis-Plus 地基已配置，已验证的持久化实现仍保留 JPA，禁止一次性重写。
 - Intent Router 的真实 Provider 离线评测、shadow 事件和主链路 dispatch；当前 rule-only v2 Top1 为 82.50%（unknown recall 100%），模型层已有契约与单测但尚无真实成本/延迟数据。
+- Workflow 级显式分支、统一候选排序/选择记录、双层 TAO、子 Agent 和阶段/全局回滚；本轮只完成单 Run read-only TAO 契约。
+- write 工具的 planDigest 确认、side-effect ledger、幂等执行和 compensation；checkpoint 不能替代这些机制。
 
 ## 现状与目标架构的冲突
 
