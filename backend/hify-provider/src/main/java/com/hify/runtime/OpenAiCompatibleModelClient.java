@@ -43,10 +43,11 @@ public class OpenAiCompatibleModelClient implements ModelClient {
 
         JsonNode response;
         try {
-            String raw = resilience.execute(provider.getId(), () -> httpClient.post(
+            request.control().throwIfCancelled();
+            String raw = resilience.execute(provider.getId(), request.control(), () -> httpClient.post(
                     stripTrailingSlash(provider.getBaseUrl()) + "/chat/completions",
                     Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey),
-                    writeJson(body)));
+                    writeJson(body), request.control()));
             response = objectMapper.readTree(raw);
         } catch (com.hify.common.LlmApiException exception) {
             throw exception;

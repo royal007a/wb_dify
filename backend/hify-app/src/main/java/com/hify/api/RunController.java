@@ -99,11 +99,13 @@ public class RunController {
 
     public record RunView(String id, String conversationId, String state, String terminalReason,
                           String inputMessage, String outputMessage, int turns, int toolCalls,
-                          Instant createdAt, Instant updatedAt, String streamUrl) {
+                          Instant createdAt, Instant updatedAt, Instant cancelRequestedAt,
+                          String streamUrl) {
         static RunView from(AgentRun run) {
             return new RunView(run.getId(), run.getConversationId(), run.getState().name(),
                     run.getTerminalReason(), run.getInputMessage(), run.getOutputMessage(),
                     run.getTurns(), run.getToolCalls(), run.getCreatedAt(), run.getUpdatedAt(),
+                    run.getCancelRequestedAt(),
                     "/api/v1/runs/" + run.getId() + "/events/stream");
         }
     }

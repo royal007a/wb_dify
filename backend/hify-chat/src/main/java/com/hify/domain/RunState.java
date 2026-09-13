@@ -6,7 +6,8 @@ public enum RunState {
     FAILED,
     CANCELLED,
     TIMED_OUT,
-    LIMIT_EXCEEDED;
+    LIMIT_EXCEEDED,
+    NEEDS_INPUT;
 
     public boolean terminal() {
         return this != RUNNING;

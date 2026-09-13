@@ -40,7 +40,8 @@ public class RunEventBroker {
                     .map(event -> event.getSequenceNo() + 1).orElse(1L);
             RunEvent event = events.saveAndFlush(new RunEvent(runId, sequence, type, toJson(data)));
             emit(runId, event);
-            if (type.equals("run.completed") || type.equals("run.failed") || type.equals("run.cancelled")) {
+            if (type.equals("run.completed") || type.equals("run.failed")
+                    || type.equals("run.cancelled") || type.equals("run.needs_input")) {
                 complete(runId);
             }
             return event;

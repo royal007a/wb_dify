@@ -86,6 +86,7 @@ function listen(run: Run) {
   source.addEventListener('run.completed', finish)
   source.addEventListener('run.failed', finish)
   source.addEventListener('run.cancelled', finish)
+  source.addEventListener('run.needs_input', finish)
 }
 
 async function cancel() {

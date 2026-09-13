@@ -2,6 +2,14 @@ package com.hify.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hify.application.RunApplicationService;
+import com.hify.domain.AgentRun;
+import com.hify.domain.RunCheckpoint;
+import com.hify.domain.RunState;
+import com.hify.infra.AgentRunRepository;
+import com.hify.infra.RunCheckpointRepository;
+import com.hify.runtime.RuntimeMessage;
+import com.hify.runtime.plan.ExecutionPlan;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,6 +19,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,6 +38,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RunFlowIntegrationTest {
     @Autowired MockMvc http;
     @Autowired ObjectMapper objectMapper;
+    @Autowired RunCheckpointRepository checkpoints;
+    @Autowired AgentRunRepository runs;
+    @Autowired RunApplicationService runService;
 
     @Test
     void createsIdempotentRunAndPersistsToolEvents() throws Exception {
@@ -75,7 +88,43 @@ class RunFlowIntegrationTest {
 
         JsonNode events = json(http.perform(get("/api/v1/runs/{id}/events", runId))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
-        assertThat(events.toString()).contains("tool.call.started", "tool.call.completed", "run.completed");
+        assertThat(events.toString()).contains("plan.created", "step.try.started", "step.try.completed",
+                "checkpoint.created", "tool.call.started", "tool.call.completed", "run.completed");
+        assertThat(checkpoints.findTopByRunIdAndRestorableTrueOrderBySequenceNoDesc(runId))
+                .hasValueSatisfying(checkpoint -> {
+                    assertThat(checkpoint.getTurnNo()).isEqualTo(1);
+                    assertThat(checkpoint.getToolCalls()).isEqualTo(1);
+                    assertThat(checkpoint.getPlanVersion()).isEqualTo(1);
+                    assertThat(checkpoint.getMessagesJson()).contains("toolCallId");
+                });
+
+        AgentRun cancellable = new AgentRun("cancel-persistence-run", conversationId,
+                "cancel-persistence-key", "hash", "wait", Instant.now());
+        runs.saveAndFlush(cancellable);
+        runService.cancel(cancellable.getId());
+        assertThat(runs.findById(cancellable.getId())).hasValueSatisfying(saved ->
+                assertThat(saved.getCancelRequestedAt()).isNotNull());
+
+        AgentRun interrupted = new AgentRun("checkpoint-recovery-run", conversationId,
+                "checkpoint-recovery-key", "hash", "recover", Instant.now());
+        runs.saveAndFlush(interrupted);
+        List<RuntimeMessage> checkpointMessages = List.of(
+                RuntimeMessage.system("test"),
+                RuntimeMessage.user("计算 8 * 8"),
+                RuntimeMessage.toolCalls(List.of(new RuntimeMessage.ToolCall(
+                        "recovered-tool-call", "calculator", Map.of("expression", "8*8")))),
+                RuntimeMessage.toolResult("recovered-tool-call", "64", false));
+        ExecutionPlan recoveryPlan = ExecutionPlan.initial("计算 8 * 8");
+        checkpoints.saveAndFlush(new RunCheckpoint(interrupted.getId(), 1, "checkpoint-recovery-1",
+                1, 1, recoveryPlan.id(), recoveryPlan.version(), recoveryPlan.digest(),
+                objectMapper.writeValueAsString(recoveryPlan), objectMapper.writeValueAsString(checkpointMessages),
+                true, Instant.now()));
+
+        runService.convergeInterruptedRuns();
+        awaitState(interrupted.getId(), RunState.COMPLETED);
+        JsonNode recoveryEvents = json(http.perform(get("/api/v1/runs/{id}/events", interrupted.getId()))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        assertThat(recoveryEvents.toString()).contains("checkpoint.restored", "run.completed");
     }
 
     private JsonNode awaitTerminal(String runId) throws Exception {
@@ -91,5 +140,15 @@ class RunFlowIntegrationTest {
 
     private JsonNode json(String value) throws Exception {
         return objectMapper.readTree(value);
+    }
+
+    private void awaitState(String runId, RunState expected) throws Exception {
+        Instant deadline = Instant.now().plus(Duration.ofSeconds(5));
+        while (Instant.now().isBefore(deadline)) {
+            RunState state = runs.findById(runId).orElseThrow().getState();
+            if (state == expected) return;
+            Thread.sleep(25);
+        }
+        throw new AssertionError("Run did not reach state " + expected);
     }
 }

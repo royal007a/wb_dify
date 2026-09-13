@@ -30,6 +30,7 @@ public class AgentRun {
     private int toolCalls;
     private Instant createdAt;
     private Instant updatedAt;
+    private Instant cancelRequestedAt;
     @Version
     private long version;
 
@@ -60,6 +61,13 @@ public class AgentRun {
         this.updatedAt = Instant.now();
     }
 
+    public void requestCancel() {
+        if (!state.terminal() && cancelRequestedAt == null) {
+            cancelRequestedAt = Instant.now();
+            updatedAt = cancelRequestedAt;
+        }
+    }
+
     public String getId() { return id; }
     public String getConversationId() { return conversationId; }
     public String getIdempotencyKey() { return idempotencyKey; }
@@ -72,5 +80,7 @@ public class AgentRun {
     public int getToolCalls() { return toolCalls; }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
+    public Instant getCancelRequestedAt() { return cancelRequestedAt; }
+    public boolean isCancelRequested() { return cancelRequestedAt != null; }
     public long getVersion() { return version; }
 }

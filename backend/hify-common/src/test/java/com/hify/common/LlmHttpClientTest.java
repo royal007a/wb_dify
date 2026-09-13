@@ -11,6 +11,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -71,5 +73,27 @@ class LlmHttpClientTest {
         assertThat(event).hasValue("7:message.delta:hello");
         handle.cancel();
     }
-}
 
+    @Test
+    void propagatesRunCancellationIntoBlockingPost() throws Exception {
+        server.enqueue(new MockResponse().setHeadersDelay(1, TimeUnit.SECONDS)
+                .setResponseCode(200).setBody("{\"ok\":true}"));
+        AtomicBoolean cancelled = new AtomicBoolean(false);
+        Thread canceller = new Thread(() -> {
+            try {
+                Thread.sleep(50);
+                cancelled.set(true);
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+            }
+        });
+        canceller.start();
+
+        long started = System.nanoTime();
+        assertThatThrownBy(() -> client.post(server.url("/slow").toString(), Map.of(), "{}",
+                ExecutionControl.withTimeout(Duration.ofSeconds(5), cancelled::get)))
+                .isInstanceOf(ExecutionCancelledException.class);
+        assertThat(TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started)).isLessThan(1_000);
+        canceller.join();
+    }
+}

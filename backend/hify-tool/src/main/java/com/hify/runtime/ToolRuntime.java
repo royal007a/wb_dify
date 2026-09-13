@@ -1,5 +1,7 @@
 package com.hify.runtime;
 
+import com.hify.common.ExecutionControl;
+import com.hify.common.ExecutionCancelledException;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -36,7 +38,16 @@ public class ToolRuntime {
     }
 
     public ExecutionResult execute(RuntimeMessage.ToolCall call, Set<String> enabledNames) {
-        if (!enabledNames.contains(call.name()) || !definitions.containsKey(call.name())) {
+        return execute(call, enabledNames, ExecutionControl.none());
+    }
+
+    public ExecutionResult execute(RuntimeMessage.ToolCall call, Set<String> enabledNames,
+                                   ExecutionControl control) {
+        control.throwIfCancelled();
+        if (!definitions.containsKey(call.name())) {
+            return ExecutionResult.unavailable("Tool is not available: " + call.name());
+        }
+        if (!enabledNames.contains(call.name())) {
             return ExecutionResult.permissionDenied("Tool is not enabled: " + call.name());
         }
         ToolDefinition definition = definitions.get(call.name());
@@ -48,14 +59,29 @@ public class ToolRuntime {
             ExecutionResult result = switch (call.name()) {
                 case "current_time" -> ExecutionResult.success(OffsetDateTime.now().toString());
                 case "calculator" -> ExecutionResult.success(calculate(call.arguments()));
-                default -> ExecutionResult.error("Unknown tool: " + call.name(), true);
+                default -> ExecutionResult.executionFailed("Unknown tool: " + call.name(), true);
             };
+            control.throwIfCancelled();
             return result.limit(32 * 1024);
+        } catch (ExecutionCancelledException exception) {
+            throw exception;
         } catch (IllegalArgumentException exception) {
-            return ExecutionResult.error(exception.getMessage(), false);
+            return ExecutionResult.invalidArguments(exception.getMessage());
         } catch (RuntimeException exception) {
-            return ExecutionResult.error("Tool execution failed", true);
+            return ExecutionResult.executionFailed("Tool execution failed", true);
         }
+    }
+
+    public java.util.Optional<String> findReadOnlyAlternative(String requestedName, Set<String> enabledNames) {
+        String alternative = switch (requestedName) {
+            case "calculate", "math" -> "calculator";
+            case "clock", "get_time" -> "current_time";
+            default -> null;
+        };
+        if (alternative == null || !enabledNames.contains(alternative)) return java.util.Optional.empty();
+        ToolDefinition definition = definitions.get(alternative);
+        return definition != null && "read".equals(definition.risk())
+                ? java.util.Optional.of(alternative) : java.util.Optional.empty();
     }
 
     @SuppressWarnings("unchecked")
@@ -107,21 +133,43 @@ public class ToolRuntime {
         return value.stripTrailingZeros().toPlainString();
     }
 
-    public record ExecutionResult(Object value, boolean error, boolean fatal, boolean permissionDenied) {
+    public enum FailureType {
+        NONE,
+        INVALID_ARGUMENTS,
+        TOOL_UNAVAILABLE,
+        PERMISSION_DENIED,
+        EXECUTION_FAILED,
+        CANCELLED
+    }
+
+    public record ExecutionResult(Object value, boolean error, boolean fatal,
+                                  boolean permissionDenied, FailureType failureType) {
         public static ExecutionResult success(Object value) {
-            return new ExecutionResult(value, false, false, false);
+            return new ExecutionResult(value, false, false, false, FailureType.NONE);
         }
-        public static ExecutionResult error(String message, boolean fatal) {
-            return new ExecutionResult(message, true, fatal, false);
+        public static ExecutionResult invalidArguments(String message) {
+            return new ExecutionResult(message, true, false, false, FailureType.INVALID_ARGUMENTS);
+        }
+        public static ExecutionResult unavailable(String message) {
+            return new ExecutionResult(message, true, false, false, FailureType.TOOL_UNAVAILABLE);
+        }
+        public static ExecutionResult executionFailed(String message, boolean fatal) {
+            return new ExecutionResult(message, true, fatal, false, FailureType.EXECUTION_FAILED);
         }
         public static ExecutionResult permissionDenied(String message) {
-            return new ExecutionResult(message, true, true, true);
+            return new ExecutionResult(message, true, true, true, FailureType.PERMISSION_DENIED);
+        }
+        public static ExecutionResult cancelled() {
+            return new ExecutionResult("Tool execution cancelled", true, true, false, FailureType.CANCELLED);
+        }
+        public static ExecutionResult skipped(String message) {
+            return new ExecutionResult(message, true, false, false, FailureType.EXECUTION_FAILED);
         }
         public ExecutionResult limit(int maxCharacters) {
             String text = String.valueOf(value);
             if (text.length() <= maxCharacters) return this;
             return new ExecutionResult(text.substring(0, maxCharacters) + "…[truncated]",
-                    error, fatal, permissionDenied);
+                    error, fatal, permissionDenied, failureType);
         }
     }
 }

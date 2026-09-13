@@ -59,19 +59,32 @@ public class CircuitBreakerService {
      * Protects a pre-stream request. Do not wrap an operation after response bytes have been emitted.
      */
     public <T> T execute(String providerName, Supplier<T> operation) {
+        return execute(providerName, ExecutionControl.none(), operation);
+    }
+
+    public <T> T execute(String providerName, ExecutionControl control, Supplier<T> operation) {
         FutureTask<T> future = new FutureTask<>(() -> executeProtected(providerName, operation));
         executor.execute(future);
+        long localDeadline = System.nanoTime() + overallTimeout.toNanos();
         try {
-            return future.get(overallTimeout.toMillis(), TimeUnit.MILLISECONDS);
-        } catch (TimeoutException exception) {
-            future.cancel(true);
-            throw new LlmApiException(LlmApiException.Type.TIMEOUT,
-                    "LLM provider attempts exceeded overall timeout", exception);
+            while (true) {
+                control.throwIfCancelled();
+                if (control.isExpired() || System.nanoTime() >= localDeadline) {
+                    future.cancel(true);
+                    throw new LlmApiException(LlmApiException.Type.TIMEOUT,
+                            "LLM provider attempts exceeded remaining run deadline");
+                }
+                long waitNanos = Math.max(1, control.remaining(Duration.ofMillis(100)).toNanos());
+                try {
+                    return future.get(waitNanos, TimeUnit.NANOSECONDS);
+                } catch (TimeoutException ignored) {
+                    // Poll cancellation/deadline between retry attempts.
+                }
+            }
         } catch (InterruptedException exception) {
             future.cancel(true);
             Thread.currentThread().interrupt();
-            throw new LlmApiException(LlmApiException.Type.REQUEST_FAILED,
-                    "LLM provider execution interrupted", exception);
+            throw new ExecutionCancelledException("LLM provider execution interrupted");
         } catch (ExecutionException exception) {
             if (exception.getCause() instanceof RuntimeException runtime) throw runtime;
             throw new LlmApiException(LlmApiException.Type.REQUEST_FAILED,

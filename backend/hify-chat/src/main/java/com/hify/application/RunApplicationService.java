@@ -1,22 +1,32 @@
 package com.hify.application;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hify.domain.AgentDefinition;
 import com.hify.domain.AgentRun;
 import com.hify.domain.ChatMessage;
 import com.hify.domain.Conversation;
 import com.hify.domain.ModelProvider;
+import com.hify.domain.RunCheckpoint;
 import com.hify.domain.RunState;
 import com.hify.infra.AgentDefinitionRepository;
 import com.hify.infra.AgentRunRepository;
 import com.hify.infra.ChatMessageRepository;
 import com.hify.infra.ConversationRepository;
 import com.hify.infra.ModelProviderRepository;
+import com.hify.infra.RunCheckpointRepository;
 import com.hify.runtime.ModelClient;
 import com.hify.runtime.ModelClientFactory;
 import com.hify.runtime.QueryLoop;
 import com.hify.runtime.RuntimeMessage;
 import com.hify.runtime.TerminalReason;
 import com.hify.runtime.ToolRuntime;
+import com.hify.runtime.plan.ExecutionCheckpoint;
+import com.hify.runtime.plan.ExecutionPlan;
+import com.hify.runtime.plan.PlanEventType;
+import com.hify.runtime.plan.PlanStep;
+import com.hify.runtime.plan.ReplanDecision;
+import com.hify.runtime.plan.StepAttempt;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -50,20 +60,25 @@ public class RunApplicationService {
     private final ModelClientFactory modelClients;
     private final QueryLoop queryLoop;
     private final RunEventBroker eventBroker;
+    private final RunCheckpointRepository checkpoints;
+    private final ObjectMapper objectMapper;
     private final TransactionTemplate transactions;
     private final Executor executor;
     private final Duration runTimeout;
     private final int maxToolCalls;
+    private final int maxReplans;
     private final Map<String, AtomicBoolean> cancellations = new ConcurrentHashMap<>();
 
     public RunApplicationService(AgentDefinitionRepository agents, ModelProviderRepository providers,
                                  ConversationRepository conversations, ChatMessageRepository messages,
                                  AgentRunRepository runs, ModelClientFactory modelClients,
                                  QueryLoop queryLoop, RunEventBroker eventBroker,
+                                 RunCheckpointRepository checkpoints, ObjectMapper objectMapper,
                                  TransactionTemplate transactions,
                                  @Qualifier("runExecutor") Executor executor,
                                  @Value("${hify.run-timeout:60s}") Duration runTimeout,
-                                 @Value("${hify.max-tool-calls:12}") int maxToolCalls) {
+                                 @Value("${hify.max-tool-calls:12}") int maxToolCalls,
+                                 @Value("${hify.max-replans:2}") int maxReplans) {
         this.agents = agents;
         this.providers = providers;
         this.conversations = conversations;
@@ -72,10 +87,13 @@ public class RunApplicationService {
         this.modelClients = modelClients;
         this.queryLoop = queryLoop;
         this.eventBroker = eventBroker;
+        this.checkpoints = checkpoints;
+        this.objectMapper = objectMapper;
         this.transactions = transactions;
         this.executor = executor;
         this.runTimeout = runTimeout;
         this.maxToolCalls = maxToolCalls;
+        this.maxReplans = maxReplans;
     }
 
     public CreateResult create(String conversationId, String idempotencyKey, String message) {
@@ -155,11 +173,14 @@ public class RunApplicationService {
     public AgentRun cancel(String runId) {
         AgentRun run = get(runId);
         if (!run.getState().terminal()) {
-            cancellations.computeIfAbsent(runId, ignored -> new AtomicBoolean()).set(true);
-            eventBroker.publish(runId, "run.cancel.requested",
-                    Map.of("version", 1, "runId", runId));
+            int updated = runs.requestCancel(runId, RunState.RUNNING, Instant.now());
+            if (updated == 1) {
+                cancellations.computeIfAbsent(runId, ignored -> new AtomicBoolean()).set(true);
+                eventBroker.publish(runId, "run.cancel.requested",
+                        Map.of("version", 1, "runId", runId));
+            }
         }
-        return run;
+        return get(runId);
     }
 
     private void execute(String runId) {
@@ -182,10 +203,14 @@ public class RunApplicationService {
                     ? provider.getDefaultModel() : agent.getModel();
             AtomicBoolean cancelled = cancellations.computeIfAbsent(runId, ignored -> new AtomicBoolean(false));
             QueryLoop.RunPolicy policy = new QueryLoop.RunPolicy(agent.getMaxTurns(), maxToolCalls,
-                    16_384, runTimeout, cancelled::get);
+                    16_384, maxReplans, runTimeout, cancelled::get);
 
-            QueryLoop.Result result = queryLoop.run(runtimeMessages, modelClient, model,
-                    agent.getTemperature(), enabledTools(agent), policy, observer(runId));
+            QueryLoop.RunObserver observer = observer(runId);
+            QueryLoop.Result result = restoreCheckpoint(runId)
+                    .map(checkpoint -> queryLoop.resume(checkpoint, modelClient, model,
+                            agent.getTemperature(), enabledTools(agent), policy, observer))
+                    .orElseGet(() -> queryLoop.run(runtimeMessages, modelClient, model,
+                            agent.getTemperature(), enabledTools(agent), policy, observer));
             finish(runId, result);
         } catch (RuntimeException exception) {
             finishFailure(runId, exception);
@@ -196,6 +221,69 @@ public class RunApplicationService {
 
     private QueryLoop.RunObserver observer(String runId) {
         return new QueryLoop.RunObserver() {
+            @Override
+            public void onPlanCreated(ExecutionPlan plan) {
+                eventBroker.publish(runId, PlanEventType.PLAN_CREATED, Map.of(
+                        "version", 1, "runId", runId, "planId", plan.id(),
+                        "planVersion", plan.version(), "digest", plan.digest(),
+                        "supersedesPlanId", plan.supersedesPlanId() == null ? "" : plan.supersedesPlanId()));
+            }
+
+            @Override
+            public void onTryStarted(int turn, ExecutionPlan plan, PlanStep step, StepAttempt attempt,
+                                     RuntimeMessage.ToolCall call) {
+                eventBroker.publish(runId, PlanEventType.TRY_STARTED, Map.of(
+                        "version", 1, "runId", runId, "planVersion", plan.version(),
+                        "stepId", step.id(), "attemptId", attempt.id(),
+                        "toolCallId", call.id(), "tool", call.name(), "turn", turn));
+                QueryLoop.RunObserver.super.onTryStarted(turn, plan, step, attempt, call);
+            }
+
+            @Override
+            public void onTryCompleted(int turn, ExecutionPlan plan, PlanStep step, StepAttempt attempt,
+                                       RuntimeMessage.ToolCall call, ToolRuntime.ExecutionResult result) {
+                eventBroker.publish(runId, result.error() ? PlanEventType.TRY_FAILED : PlanEventType.TRY_COMPLETED,
+                        Map.of("version", 1, "runId", runId, "planVersion", plan.version(),
+                                "stepId", step.id(), "attemptId", attempt.id(),
+                                "toolCallId", call.id(), "tool", call.name(),
+                                "failureClass", result.failureType().name(), "turn", turn));
+                QueryLoop.RunObserver.super.onTryCompleted(turn, plan, step, attempt, call, result);
+            }
+
+            @Override
+            public void onReplanDecided(ExecutionPlan plan, ReplanDecision decision) {
+                eventBroker.publish(runId, PlanEventType.REPLAN_DECIDED, Map.of(
+                        "version", 1, "runId", runId, "planVersion", plan.version(),
+                        "action", decision.action().name(), "failurePointId", decision.failurePointId(),
+                        "rootCausePointId", decision.rootCausePointId(),
+                        "rollbackPointId", decision.rollbackPointId(),
+                        "replanFromStepId", decision.replanFromStepId(), "reason", decision.reason()));
+            }
+
+            @Override
+            public void onConfirmationRequired(ExecutionPlan plan, PlanStep step, ReplanDecision decision) {
+                eventBroker.publish(runId, PlanEventType.CONFIRMATION_REQUIRED, Map.of(
+                        "version", 1, "runId", runId, "planId", plan.id(),
+                        "planVersion", plan.version(), "planDigest", plan.digest(),
+                        "stepId", step.id(), "reason", decision.reason()));
+            }
+
+            @Override
+            public void onCheckpointCreated(ExecutionCheckpoint checkpoint) {
+                persistCheckpoint(runId, checkpoint);
+                eventBroker.publish(runId, PlanEventType.CHECKPOINT_CREATED, Map.of(
+                        "version", 1, "runId", runId, "checkpointId", checkpoint.id(),
+                        "turn", checkpoint.turn(), "toolCalls", checkpoint.toolCalls(),
+                        "planId", checkpoint.planId(), "planVersion", checkpoint.planVersion()));
+            }
+
+            @Override
+            public void onCheckpointRestored(ExecutionCheckpoint checkpoint) {
+                eventBroker.publish(runId, PlanEventType.CHECKPOINT_RESTORED, Map.of(
+                        "version", 1, "runId", runId, "checkpointId", checkpoint.id(),
+                        "turn", checkpoint.turn(), "planVersion", checkpoint.planVersion()));
+            }
+
             @Override
             public void onModelStarted(int turn) {
                 eventBroker.publish(runId, "model.started", Map.of("version", 1, "runId", runId, "turn", turn));
@@ -235,6 +323,7 @@ public class RunApplicationService {
             case COMPLETED -> RunState.COMPLETED;
             case CANCELLED -> RunState.CANCELLED;
             case TIMEOUT -> RunState.TIMED_OUT;
+            case HUMAN_INPUT_REQUIRED -> RunState.NEEDS_INPUT;
             case MAX_TURNS, TOKEN_BUDGET_EXCEEDED, TOOL_BUDGET_EXCEEDED -> RunState.LIMIT_EXCEEDED;
             default -> RunState.FAILED;
         };
@@ -245,6 +334,7 @@ public class RunApplicationService {
         String type = switch (state) {
             case COMPLETED -> "run.completed";
             case CANCELLED -> "run.cancelled";
+            case NEEDS_INPUT -> "run.needs_input";
             default -> "run.failed";
         };
         eventBroker.publish(runId, type, Map.of(
@@ -279,10 +369,64 @@ public class RunApplicationService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void convergeInterruptedRuns() {
-        runs.findByStateIn(List.of(RunState.RUNNING)).forEach(run -> finishTerminal(
-                run.getId(), RunState.FAILED, "INTERRUPTED",
-                "Application restarted before Run completed.",
-                run.getTurns(), run.getToolCalls(), false));
+        runs.findByStateIn(List.of(RunState.RUNNING)).forEach(run -> {
+            if (run.isCancelRequested()) {
+                finishTerminal(run.getId(), RunState.CANCELLED, "CANCELLED_DURING_RESTART",
+                        "Run was cancelled before restart recovery.",
+                        run.getTurns(), run.getToolCalls(), false);
+                return;
+            }
+            cancellations.put(run.getId(), new AtomicBoolean(false));
+            executor.execute(() -> execute(run.getId()));
+        });
+    }
+
+    private void persistCheckpoint(String runId, ExecutionCheckpoint checkpoint) {
+        long sequence = checkpoints.findTopByRunIdOrderBySequenceNoDesc(runId)
+                .map(existing -> existing.getSequenceNo() + 1).orElse(1L);
+        checkpoints.saveAndFlush(new RunCheckpoint(runId, sequence, checkpoint.id(), checkpoint.turn(),
+                checkpoint.toolCalls(), checkpoint.planId(), checkpoint.planVersion(),
+                checkpoint.planDigest(), writePlan(checkpoint.plan()),
+                writeMessages(checkpoint.messages()), checkpoint.restorable(), checkpoint.createdAt()));
+    }
+
+    private java.util.Optional<ExecutionCheckpoint> restoreCheckpoint(String runId) {
+        return checkpoints.findTopByRunIdAndRestorableTrueOrderBySequenceNoDesc(runId)
+                .map(saved -> new ExecutionCheckpoint(saved.getCheckpointId(), saved.getTurnNo(),
+                        saved.getToolCalls(), readPlan(saved.getPlanJson()),
+                        readMessages(saved.getMessagesJson()), saved.isRestorable(), saved.getCreatedAt()));
+    }
+
+    private String writePlan(ExecutionPlan value) {
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (Exception exception) {
+            throw new IllegalStateException("Could not serialize Run plan", exception);
+        }
+    }
+
+    private ExecutionPlan readPlan(String value) {
+        try {
+            return objectMapper.readValue(value, ExecutionPlan.class);
+        } catch (Exception exception) {
+            throw new IllegalStateException("Could not restore Run plan", exception);
+        }
+    }
+
+    private String writeMessages(List<RuntimeMessage> value) {
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (Exception exception) {
+            throw new IllegalStateException("Could not serialize Run checkpoint", exception);
+        }
+    }
+
+    private List<RuntimeMessage> readMessages(String value) {
+        try {
+            return objectMapper.readValue(value, new TypeReference<>() {});
+        } catch (Exception exception) {
+            throw new IllegalStateException("Could not restore Run checkpoint", exception);
+        }
     }
 
     private Set<String> enabledTools(AgentDefinition agent) {

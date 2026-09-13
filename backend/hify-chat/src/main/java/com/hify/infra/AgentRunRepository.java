@@ -20,6 +20,21 @@ public interface AgentRunRepository extends JpaRepository<AgentRun, String> {
     @Transactional
     @Query("""
             update AgentRun r
+               set r.cancelRequestedAt = :requestedAt,
+                   r.updatedAt = :requestedAt,
+                   r.version = r.version + 1
+             where r.id = :id
+               and r.state = :expectedState
+               and r.cancelRequestedAt is null
+            """)
+    int requestCancel(@Param("id") String id,
+                      @Param("expectedState") RunState expectedState,
+                      @Param("requestedAt") Instant requestedAt);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Transactional
+    @Query("""
+            update AgentRun r
                set r.state = :state,
                    r.terminalReason = :terminalReason,
                    r.outputMessage = :outputMessage,

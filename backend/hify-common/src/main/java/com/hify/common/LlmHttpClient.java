@@ -53,17 +53,32 @@ public class LlmHttpClient {
     }
 
     public String post(String url, Map<String, String> headers, String body) {
+        return post(url, headers, body, ExecutionControl.none());
+    }
+
+    public String post(String url, Map<String, String> headers, String body, ExecutionControl control) {
         FutureTask<String> future = new FutureTask<>(() -> executePost(url, headers, body));
         llmExecutor.execute(future);
+        long localDeadline = System.nanoTime() + OVERALL_TIMEOUT.toNanos();
         try {
-            return future.get(OVERALL_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
-        } catch (TimeoutException exception) {
-            future.cancel(true);
-            throw new LlmApiException(LlmApiException.Type.TIMEOUT, "LLM request exceeded overall timeout", exception);
+            while (true) {
+                control.throwIfCancelled();
+                if (control.isExpired() || System.nanoTime() >= localDeadline) {
+                    future.cancel(true);
+                    throw new LlmApiException(LlmApiException.Type.TIMEOUT,
+                            "LLM request exceeded remaining run deadline");
+                }
+                long waitNanos = Math.max(1, control.remaining(Duration.ofMillis(100)).toNanos());
+                try {
+                    return future.get(waitNanos, TimeUnit.NANOSECONDS);
+                } catch (TimeoutException ignored) {
+                    // Poll the shared cancellation/deadline token instead of blocking for the full read timeout.
+                }
+            }
         } catch (InterruptedException exception) {
             future.cancel(true);
             Thread.currentThread().interrupt();
-            throw new LlmApiException(LlmApiException.Type.REQUEST_FAILED, "LLM request interrupted", exception);
+            throw new ExecutionCancelledException("LLM request interrupted");
         } catch (ExecutionException exception) {
             if (exception.getCause() instanceof RuntimeException runtime) throw runtime;
             throw new LlmApiException(LlmApiException.Type.REQUEST_FAILED, "LLM request failed", exception.getCause());

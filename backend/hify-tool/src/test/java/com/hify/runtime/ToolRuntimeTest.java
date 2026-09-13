@@ -1,10 +1,15 @@
 package com.hify.runtime;
 
+import com.hify.common.ExecutionCancelledException;
+import com.hify.common.ExecutionControl;
 import org.junit.jupiter.api.Test;
+
+import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ToolRuntimeTest {
     private final ToolRuntime tools = new ToolRuntime();
@@ -28,5 +33,27 @@ class ToolRuntimeTest {
 
         assertThat(result.permissionDenied()).isTrue();
         assertThat(result.fatal()).isTrue();
+    }
+
+    @Test
+    void distinguishesUnavailableToolAndKnownReadOnlyAlternative() {
+        ToolRuntime.ExecutionResult result = tools.execute(
+                new RuntimeMessage.ToolCall("call-1", "math", Map.of("expression", "1+1")),
+                Set.of("calculator"));
+
+        assertThat(result.failureType()).isEqualTo(ToolRuntime.FailureType.TOOL_UNAVAILABLE);
+        assertThat(result.fatal()).isFalse();
+        assertThat(tools.findReadOnlyAlternative("math", Set.of("calculator")))
+                .contains("calculator");
+    }
+
+    @Test
+    void rejectsWorkBeforeToolExecutionWhenRunIsCancelled() {
+        ExecutionControl control = ExecutionControl.withTimeout(Duration.ofSeconds(1), () -> true);
+
+        assertThatThrownBy(() -> tools.execute(
+                new RuntimeMessage.ToolCall("call-1", "calculator", Map.of("expression", "1+1")),
+                Set.of("calculator"), control))
+                .isInstanceOf(ExecutionCancelledException.class);
     }
 }

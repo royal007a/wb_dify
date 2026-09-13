@@ -44,6 +44,7 @@ hify:
   model-timeout: 45s
   run-timeout: 60s
   max-tool-calls: 12
+  max-replans: 2
   intent:
     confidence-threshold: ${HIFY_INTENT_CONFIDENCE_THRESHOLD:0.75}
     ambiguity-margin: ${HIFY_INTENT_AMBIGUITY_MARGIN:0.10}
