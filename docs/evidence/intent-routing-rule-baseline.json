@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-09-13T16:55:38+08:00",
+  "baseline": "deterministic-rules-only",
+  "dataset": "backend/hify-chat/src/test/resources/intent/intent-eval.zh-CN.tsv",
+  "datasetSize": 120,
+  "command": "mvn -pl hify-chat -am test -DskipTests=false",
+  "metrics": {
+    "top1Accuracy": 0.725,
+    "unknownPrecision": 0.2326,
+    "unknownRecall": 1.0,
+    "clarificationRate": 0.1417,
+    "slotAccuracy": 0.7,
+    "p95LatencyMs": 0.059,
+    "costPerCall": 0
+  },
+  "routeConfusionMatrix": {
+    "tool": {"tool": 50, "unknown": 17},
+    "clarify": {"unknown": 12, "clarify": 17},
+    "workflow": {"workflow": 10, "unknown": 4},
+    "unknown": {"unknown": 10}
+  },
+  "intentConfusionMatrix": {
+    "show_help": {"show_help": 10, "unknown": 5},
+    "cancel_run": {"cancel_run": 11, "unknown": 4},
+    "current_time": {"current_time": 14, "unknown": 6},
+    "calculate": {"calculate": 19, "unknown": 6},
+    "run_workflow": {"run_workflow": 14, "unknown": 11},
+    "dangerous_action": {"dangerous_action": 9, "unknown": 1},
+    "unknown": {"unknown": 10}
+  },
+  "interpretation": "The deterministic layer is intentionally conservative. Perfect unknown recall with low unknown precision shows that model/context-dependent known intents currently fail closed to unknown.",
+  "limitations": [
+    "Latency is a local JVM measurement and is not comparable to model inference latency.",
+    "Cost is zero because this baseline deliberately disables the model classifier.",
+    "The dataset is synthetic and manually labelled; production shadow samples are still required."
+  ]
+}

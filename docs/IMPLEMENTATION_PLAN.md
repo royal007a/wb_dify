@@ -30,6 +30,8 @@
 
 ## Phase 2：真实 Provider 与流式可靠性
 
+进入自动路由前先保留一个不改变 Run 行为的 Intent Router 预览切片：`IntentDecision` 四出口契约、确定性规则、当前模型的结构化 JSON 候选、低置信/歧义/缺槽澄清和 100-200 条中文评测集。先跑 rule-only 与当前模型基线；只有混淆矩阵、成本和延迟证明必要，才增加动态 few-shot、向量候选召回或轻/深模型分层。预览与 shadow 达标前不允许自动执行 route。
+
 - OpenAI-compatible adapter；tool call/result 原生格式映射。
 - connect/read-idle/overall timeout、bulkhead、熔断、分类重试。
 - usage/cost、首 token、结构化 trace；Nginx SSE 配置。

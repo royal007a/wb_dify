@@ -71,6 +71,12 @@ HTTP Controller 统一留在 `hify-app` 或模块的 adapter-in 层。禁止 `Co
 
 ## 3. Agent 运行时
 
+### 3.0 输入理解与路由
+
+在多 Agent/Workflow 自动路由进入主链路前，Hify 先以独立纵向切片建立两层 Intent Router：确定性层处理取消、帮助、危险动作、精确命令和必填槽位；结构化模型层只处理规则未覆盖的业务语义。两层输出同一个 `IntentDecision`，代码再执行置信阈值、候选差值、缺槽和可执行 route 契约。
+
+当前只开放 `/api/v1/intent-decisions` 预览，不接管 Run。Intent Router 只决定候选出口，不执行副作用；`tool/workflow` 后续接入时仍必须经过 ToolRuntime/WorkflowRuntime 的 schema、权限、预算和幂等控制。详细契约、评测集和演进门槛见 `INTENT_ROUTING.md`。
+
 ### 3.1 职责拆分
 
 ```text

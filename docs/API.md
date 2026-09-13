@@ -103,6 +103,14 @@ data: {"version":1,"runId":"run_...","terminalReason":"PERMISSION_DENIED","error
 
 ## 5. Tools 与 MCP
 
+### 5.1 意图路由预览
+
+```text
+POST /api/v1/intent-decisions
+```
+
+请求包含 `agentId` 与 `input`（最多 4000 字符），返回 `IntentDecision`：`intent/confidence/normalizedInput/slots/missingSlots/route/evidence/reason`。`route` 只允许 `unknown/clarify/tool/workflow`。这是评测和 shadow rollout 的预览接口，不执行工具或 Workflow，也不替代目标 runtime 的 schema、权限、预算和幂等校验。低置信、Top2 分差过小、缺少必填槽位或危险动作统一返回 `clarify`。
+
 ```text
 GET    /api/v1/tools
 GET    /api/v1/tool-definitions/{toolName}

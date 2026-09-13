@@ -8,6 +8,7 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 - 当前实现边界：`docs/CURRENT_STATE.md`
 - 初版交付证据：`docs/INITIAL_RELEASE.md`
 - 架构与 Query Loop：`docs/ARCHITECTURE.md`
+- 意图路由与评测：`docs/INTENT_ROUTING.md`
 - API：`docs/API.md`
 - 数据：`docs/DATA_MODEL.md`
 - 工程：`docs/ENGINEERING.md`
@@ -64,6 +65,13 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 - tool error 可恢复时作为 `tool_result` 返回；安全违规、缺凭证、重复失败和预算耗尽直接终止。
 - ConversationManager 持有持久会话；QueryLoop 只持有单次 run；ToolRuntime 持有注册、schema、权限和执行。
 - 上下文裁剪/摘要属于 ContextManager，不塞进 QueryLoop。
+
+## Intent Router 硬规则
+
+- 出口只允许 `unknown/clarify/tool/workflow`；意图判断不得直接执行副作用。
+- 取消、帮助、危险动作、精确命令和必填槽位优先走确定性规则；危险动作必须追问或批准。
+- 模型只提供结构化候选；低置信、Top2 接近、缺槽或非法结构由代码降级为 `clarify/unknown`。
+- 未经离线评测和 shadow 验证，Intent Router 不得接管 Run 主链路；优化必须同时报告质量、延迟、成本和安全。
 
 ## 完成定义
 

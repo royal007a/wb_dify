@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-09-13T17:03:00+08:00",
+  "baseline": "deterministic-rules-v2",
+  "basedOn": "docs/evidence/intent-routing-rule-baseline.json",
+  "changeReason": "The v1 intent confusion matrix showed false unknowns concentrated in unambiguous help, cancel, system-time and destructive-action wording.",
+  "dataset": "backend/hify-chat/src/test/resources/intent/intent-eval.zh-CN.tsv",
+  "datasetSize": 120,
+  "command": "mvn -pl hify-chat -am -Dtest=IntentEvaluationDatasetTest -Dsurefire.failIfNoSpecifiedTests=false test",
+  "metrics": {
+    "top1Accuracy": 0.825,
+    "unknownPrecision": 0.3226,
+    "unknownRecall": 1.0,
+    "clarificationRate": 0.15,
+    "slotAccuracy": 0.8091,
+    "p95LatencyMs": 0.065,
+    "costPerCall": 0
+  },
+  "routeConfusionMatrix": {
+    "tool": {"tool": 61, "unknown": 6},
+    "clarify": {"unknown": 11, "clarify": 18},
+    "workflow": {"workflow": 10, "unknown": 4},
+    "unknown": {"unknown": 10}
+  },
+  "intentConfusionMatrix": {
+    "show_help": {"show_help": 14, "unknown": 1},
+    "cancel_run": {"cancel_run": 14, "unknown": 1},
+    "current_time": {"current_time": 18, "unknown": 2},
+    "calculate": {"calculate": 19, "unknown": 6},
+    "run_workflow": {"run_workflow": 14, "unknown": 11},
+    "dangerous_action": {"dangerous_action": 10},
+    "unknown": {"unknown": 10}
+  },
+  "deltaVsV1": {
+    "top1Accuracy": 0.1,
+    "unknownPrecision": 0.09,
+    "slotAccuracy": 0.1091
+  },
+  "nextErrorClusters": [
+    "multi-turn references without conversation context",
+    "typos and Chinese-number arithmetic",
+    "natural-language workflow names that need catalog grounding"
+  ],
+  "decision": "Stop rule expansion here. Evaluate the existing configured model and add conversation/workflow catalog context before considering few-shot, vectors or a second model."
+}

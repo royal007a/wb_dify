@@ -12,6 +12,7 @@
 - [x] DemoItem MyBatis-Plus CRUD 参考切片
 - [x] LLM HTTP/SSE 客户端、错误分类、provider 级熔断与分类重试、请求日志
 - [x] 前端设计系统、响应式管理台布局、五个公共组件和 Provider mock 验收页
+- [x] IntentDecision 四出口契约、两层 Intent Router、预览 API 和 120 条中文 rule-only 评测基线
 
 ## 下一阶段
 
@@ -20,6 +21,7 @@
 3. 把 Query Loop 的 remaining deadline 与 cancellation token 传入 LLM HTTP/SSE；补 partial stream、429、5xx、认证失败、断连契约测试。
 4. 依据真实压测调整 llmExecutor、runExecutor、连接池、熔断窗口和重试预算。
 5. 设计长期记忆最小切片：先做 tenant/user/project bank 隔离、Fact + source evidence、时间覆盖语义；普通静态知识仍走 RAG，不把 Recall/Reflect 默认塞入所有请求。
+6. 用当前配置模型跑 Intent Router 离线基线；补结构化输出失败率、P95、token/成本，并以 shadow event 验证后再决定是否接管 Run。
 
 ## 长期记忆的进入条件
 

@@ -1,6 +1,6 @@
 # Hify 当前实现边界
 
-基线：2026-09-12 本地 `/Users/weberzhao/hify`。本目录不是 Git 仓库，无法用提交哈希标识。Maven 3.9.16 已安装；本轮已经完成单元/集成测试、Vue 生产构建、PostgreSQL/Flyway 容器启动和端到端 HTTP/SSE 冒烟验证。详细命令与结果见 `INITIAL_RELEASE.md`。
+基线：2026-09-13 本地 `/Users/weberzhao/hify`，Git `main` 分支；Maven 3.9.16 已安装。初版已经完成单元/集成测试、Vue 生产构建、PostgreSQL/Flyway 容器启动和端到端 HTTP/SSE 冒烟验证。详细命令与结果见 `INITIAL_RELEASE.md`。
 
 ## 已实现并验证的初版能力
 
@@ -12,6 +12,7 @@
 | Conversation/Message | `hify-app/RunController`、`hify-chat` repositories | 可创建会话、追加消息；无用户、分页和版本绑定 |
 | Run/Event | `hify-chat` 的 `AgentRun`、`RunEvent`、`RunApplicationService` | 并发幂等、异步执行、终态 CAS、事件持久化和 SSE replay 已验证 |
 | Query Loop | `runtime/QueryLoop.java` | 结构化 tool-call 循环、maxTurns、deadline、取消检查、工具/估算 token 预算和明确终态 |
+| Intent Router | `hify-chat/com.hify.intent`、`IntentRoutingController` | 四出口契约、确定性规则层、结构化模型候选、低置信/歧义/缺槽澄清、120 条中文评测集；当前仅预览，不接管 Run |
 | Mock 模型 | `MockModelClient.java` | 可触发时间或单个二元运算工具 |
 | OpenAI-compatible | `OpenAiCompatibleModelClient.java` | 能解析原生 `tool_calls` 并保留 call id；Spring RestClient 同步调用，不流式 |
 | 内置工具 | `ToolRuntime.java` | current_time/calculator；schema 必填/类型校验、read 权限和 32 KiB output cap |
@@ -32,6 +33,7 @@
 - MCP、RAG、Workflow、文档对象存储与 Redis；`compose.yaml` 已提供，但本机缺少 Compose plugin，实际部署由等价 `deploy/up.sh` 完成。
 - 认证/用户、安全出口、SSRF 防护、审计日志、CI 和生产级密钥管理。
 - JPA 到 MyBatis-Plus 的 Repository 迁移；当前 MyBatis-Plus 地基已配置，已验证的持久化实现仍保留 JPA，禁止一次性重写。
+- Intent Router 的真实 Provider 离线评测、shadow 事件和主链路 dispatch；当前 rule-only v2 Top1 为 82.50%（unknown recall 100%），模型层已有契约与单测但尚无真实成本/延迟数据。
 
 ## 现状与目标架构的冲突
 
