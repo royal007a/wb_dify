@@ -30,9 +30,11 @@
 
 ## Phase 2：真实 Provider 与流式可靠性
 
+2026-09-13 进度：Provider 目录纵向切片已交付。OpenAI、Anthropic、Gemini 三个原生协议与 OpenAI-compatible 通用协议已经统一到小型 Adapter Registry；版本化鉴权 JSON 只存 credentialRef 元数据；模型展示名/调用 ID 分离；健康状态独立写；管理 API 与真实 Console 已贯通。H2 集成测试、PostgreSQL 16.15 的 V1→V5 全迁移与 JAR HTTP smoke、CRUD、模型整体替换、三原生协议最小连接请求和前端生产构建已通过。原生 token streaming、真实供应商凭证合同测试、usage/cost 和故障注入仍待完成。
+
 进入自动路由前先保留一个不改变 Run 行为的 Intent Router 预览切片：`IntentDecision` 四出口契约、确定性规则、当前模型的结构化 JSON 候选、低置信/歧义/缺槽澄清和 100-200 条中文评测集。先跑 rule-only 与当前模型基线；只有混淆矩阵、成本和延迟证明必要，才增加动态 few-shot、向量候选召回或轻/深模型分层。预览与 shadow 达标前不允许自动执行 route。
 
-- OpenAI-compatible adapter；tool call/result 原生格式映射。
+- OpenAI/Anthropic/Gemini/OpenAI-compatible adapter；tool call/result 原生格式映射。
 - connect/read-idle/overall timeout、bulkhead、熔断、分类重试。
 - usage/cost、首 token、结构化 trace；Nginx SSE 配置。
 - 真实兼容服务的受控 contract test（凭证不进入 CI 日志）。

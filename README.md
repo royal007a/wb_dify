@@ -4,7 +4,7 @@ Hify 是一个面向内部 20-50 人、小规模本地部署的 AI Agent 平台�
 
 ## 当前状态
 
-当前已有可部署的初版纵向闭环：Maven 多模块后端、Vue 3 + TypeScript + Vite + Element Plus 管理台、Spring MVC API/SSE、持久化 Conversation/Message/Run/Event、Mock/OpenAI-compatible client、受预算约束的 Query Loop、时间/计算器工具、Flyway 迁移、PostgreSQL 16 和 Nginx。2026-09-12 已在本机通过开发态一键启动、真实 HTTP/Vite 代理、浏览器渲染、SSE replay、数据库迁移和 PostgreSQL 并发测试；2026-09-13 新增了不接管 Run 的两层 Intent Router 预览与 120 条中文评测基线。
+当前已有可部署的初版纵向闭环：Maven 多模块后端、Vue 3 + TypeScript + Vite + Element Plus 管理台、Spring MVC API/SSE、持久化 Conversation/Message/Run/Event、受预算约束的 Query Loop、时间/计算器工具、Flyway 迁移、PostgreSQL 16 和 Nginx。Provider 已支持 OpenAI、Anthropic、Gemini 三个原生协议与 OpenAI-compatible 通用协议，具备模型目录、credentialRef、独立健康检查和真实 Console CRUD。2026-09-13 还新增了不接管 Run 的两层 Intent Router 预览与 120 条中文评测基线。
 
 这仍不是完整 MVP：尚未完成真实 token streaming、对阻塞模型调用的强制取消、精确 token/cost 计量、Agent version/publish、MCP、RAG、Workflow、认证和生产密钥管理。精确边界与证据见 `docs/CURRENT_STATE.md`、`docs/BACKEND_FOUNDATION.md` 和 `docs/INITIAL_RELEASE.md`。
 
@@ -40,6 +40,7 @@ Hify 是一个面向内部 20-50 人、小规模本地部署的 AI Agent 平台�
 - 意图路由契约与评测：`docs/INTENT_ROUTING.md`
 - 业务基础组件交付：`docs/FOUNDATION_COMPONENTS.md`
 - 当前执行路线：`plan.md`
+- Provider 设计与交付：`docs/PROVIDER.md`
 - 四份课程材料总结：`docs/PDF_READING_SUMMARY.md`
 - 架构与运行时：`docs/ARCHITECTURE.md`
 - API：`docs/API.md`

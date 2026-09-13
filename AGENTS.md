@@ -10,6 +10,7 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 - 架构与 Query Loop：`docs/ARCHITECTURE.md`
 - 意图路由与评测：`docs/INTENT_ROUTING.md`
 - Replan 与 Try/Confirm/Cancel：`docs/REPLAN.md`
+- Provider 设计与交付：`docs/PROVIDER.md`
 - API：`docs/API.md`
 - 数据：`docs/DATA_MODEL.md`
 - 工程：`docs/ENGINEERING.md`
@@ -71,6 +72,12 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 - read 工具可在 Try 中执行；write/execute/external 工具必须先有精确确认与副作用账本，禁止把 checkpoint 宣称为外部副作用回滚。
 - ConversationManager 持有持久会话；QueryLoop 只持有单次 run；ToolRuntime 持有注册、schema、权限和执行。
 - 上下文裁剪/摘要属于 ContextManager，不塞进 QueryLoop。
+
+## Provider 硬规则
+
+- 管理 API 只开放 OpenAI、Anthropic、Gemini 和 OpenAI-compatible；Mock 仅供开发测试。
+- 鉴权 JSON 只能保存 credentialRef 和协议元数据，禁止保存 token、API Key 或 Authorization 值。
+- 模型 displayName 与供应商 modelId 分离；健康状态独立写入，不得污染 Provider 配置缓存。
 
 ## Intent Router 硬规则
 

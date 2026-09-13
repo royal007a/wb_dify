@@ -24,16 +24,31 @@
 GET    /api/v1/providers
 POST   /api/v1/providers
 GET    /api/v1/providers/{providerId}
-PATCH  /api/v1/providers/{providerId}
+PUT    /api/v1/providers/{providerId}
 DELETE /api/v1/providers/{providerId}
 POST   /api/v1/providers/{providerId}/connection-tests
-
-GET    /api/v1/models
-POST   /api/v1/models
-PATCH  /api/v1/models/{modelId}
 ```
 
-Provider 请求只接收 `credentialRef`，不回传原始凭证。连通性测试返回 `success`、`latencyMs`、`providerCode` 和脱敏错误。
+一期类型为 `OPENAI/ANTHROPIC/GEMINI/OPENAI_COMPATIBLE`；内部 `MOCK` 不能经管理 API 创建。模型目录随 Provider 聚合写入：`displayName` 只用于展示，`modelId` 才发送给供应商，且必须恰有一个启用的默认模型。
+
+```json
+{
+  "name": "Team Gateway",
+  "type": "OPENAI_COMPATIBLE",
+  "baseUrl": "https://llm.example.com/v1",
+  "enabled": true,
+  "auth": {
+    "credentialRef": "env:TEAM_LLM_KEY",
+    "headerName": "Authorization",
+    "prefix": "Bearer "
+  },
+  "models": [
+    {"displayName": "Fast Model", "modelId": "model-fast", "enabled": true, "isDefault": true}
+  ]
+}
+```
+
+JSON 鉴权只保存版本化元数据和 `credentialRef`，不保存/回传原始凭证；响应只暴露 `credentialConfigured`。PUT 的 `auth` 缺省表示保留原配置，但切换 type 时必须同时提交新鉴权。连通性测试发起一次最小真实请求，返回 `success`、`latencyMs`、`providerCode` 和脱敏错误，并只更新独立 `provider_health` 行。
 
 ## 3. Agent
 

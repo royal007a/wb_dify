@@ -15,12 +15,13 @@
 - [x] IntentDecision 四出口契约、两层 Intent Router、预览 API 和 120 条中文 rule-only 评测基线
 - [x] Replan P0-P2：Plan/Step/Attempt/Checkpoint/ReplanDecision、确定性 read-only 修复、事件、持久化取消、阻塞 HTTP 取消传播和启动恢复
 - [x] 受控 TAO P0-P2：六出口 ContinuationDecision、Claim/Evidence/Gap、FinishGate、有限 Retry、no-progress、版本化 checkpoint 快照、失败恢复事件和 NEEDS_INPUT 子 Run 恢复协议
+- [x] Provider 纵向切片：四类协议、MyBatis-Plus 聚合、credentialRef 鉴权、模型目录、独立健康状态、分页 CRUD/连接测试和真实 Console 对接
 
 ## 下一阶段
 
-1. 将 Provider 模块按 DemoItem 模板迁移为 DTO → application service → MyBatis-Plus Mapper，消除 Controller 直接返回 Entity。
-2. 给 Agent 增加 draft/version/publish，写入时驱逐 `agent-cache`，读取时启用 Cache-Aside。
-3. 将共享 cancellation/deadline token 接入原生模型 SSE，并补 partial stream、429、5xx、认证失败、断连契约测试。
+1. 给 Agent 增加 draft/version/publish，并绑定 Provider modelId 快照；写入时驱逐 `agent-cache`，读取时启用 Cache-Aside。
+2. 将共享 cancellation/deadline token 接入原生模型 SSE，并补 partial stream、429、5xx、认证失败、断连契约测试。
+3. 在允许 Provider 访问内网前补 DNS 解析后校验、redirect 再校验和 allow-list；接入 Vault/Secret Manager 时只扩展 CredentialResolver，不改表结构。
 4. 依据真实压测调整 llmExecutor、runExecutor、连接池、熔断窗口和重试预算。
 5. 设计长期记忆最小切片：先做 tenant/user/project bank 隔离、Fact + source evidence、时间覆盖语义；普通静态知识仍走 RAG，不把 Recall/Reflect 默认塞入所有请求。
 6. 用当前配置模型跑 Intent Router 离线基线；补结构化输出失败率、P95、token/成本，并以 shadow event 验证后再决定是否接管 Run。
