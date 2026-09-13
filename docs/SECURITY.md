@@ -41,6 +41,6 @@
 ## 6. 审计与保留
 
 - 审计记录：登录、Provider/MCP 配置、Agent 发布、工具授权、Run 取消、文档删除。
+- `run_checkpoints` 与会话消息使用同一数据访问边界；checkpoint 只保存恢复必需的消息，不保存 Provider 凭证或原始 Authorization/header。未来工具可能返回敏感数据时，写入 checkpoint 前必须按工具 schema 做字段级脱敏。
 - 普通运行事件默认保留 30 天；会话/文档由管理员策略决定；调试内容最短保留且默认关闭。
 - 导出和删除均记录 actor、scope、request id 和结果，不把删除对象的秘密复制进审计。
-

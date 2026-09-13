@@ -10,8 +10,9 @@
 | Provider CRUD | `ProviderController`、`ModelProviderRepository` | 只有 list/create；API `/api/providers`，直接返回 Entity |
 | Agent CRUD | `AgentController`、`AgentDefinitionRepository` | 只有 list/create；无 draft/version/publish |
 | Conversation/Message | `hify-app/RunController`、`hify-chat` repositories | 可创建会话、追加消息；无用户、分页和版本绑定 |
-| Run/Event | `hify-chat` 的 `AgentRun`、`RunEvent`、`RunApplicationService` | 并发幂等、异步执行、终态 CAS、事件持久化和 SSE replay 已验证 |
-| Query Loop | `runtime/QueryLoop.java` | 结构化 tool-call 循环、maxTurns、deadline、取消检查、工具/估算 token 预算和明确终态 |
+| Run/Event | `hify-chat` 的 `AgentRun`、`RunEvent`、`RunApplicationService` | 并发幂等、异步执行、终态 CAS、持久化取消、事件持久化和 SSE replay 已验证 |
+| Query Loop | `runtime/QueryLoop.java`、`runtime/plan` | 结构化 tool-call 循环、Plan/Step/Attempt/Checkpoint/ReplanDecision、确定性 read-only Replan、maxTurns/replan/deadline/工具/token 预算和明确终态 |
+| Checkpoint/恢复 | `RunCheckpoint`、`V3__run_replan_control.sql` | 保存已配对消息、turn/tool 计数与完整 plan 快照；恢复前后 plan id/version/digest 一致；启动时恢复 RUNNING read-only Run，取消中的 Run 收敛为 CANCELLED |
 | Intent Router | `hify-chat/com.hify.intent`、`IntentRoutingController` | 四出口契约、确定性规则层、结构化模型候选、低置信/歧义/缺槽澄清、120 条中文评测集；当前仅预览，不接管 Run |
 | Mock 模型 | `MockModelClient.java` | 可触发时间或单个二元运算工具 |
 | OpenAI-compatible | `OpenAiCompatibleModelClient.java` | 能解析原生 `tool_calls` 并保留 call id；Spring RestClient 同步调用，不流式 |
@@ -25,9 +26,9 @@
 ## 尚未实现
 
 - 模型 token 原生流式输出；当前 SSE 投影 Run/模型/工具事件，并在模型完成后发送整段 `message.delta`。
-- 对正在阻塞的真实 Provider HTTP 调用做强制取消；当前取消在轮次和工具边界检查。
+- 原生模型流式调用的取消传播；同步 Provider HTTP 已接入共享 cancellation/deadline token，并以短轮询中断阻塞 Future。
 - 精确 token/cost 计量；当前 token budget 是字符数估算，尚无价格表与成本预算。
-- RunStep/ToolCall 独立表、持久化 call/result 配对、通用完整 JSON Schema、工具超时与交互式批准。
+- RunStep/ToolCall 独立表、通用完整 JSON Schema、工具超时与写工具交互式批准；当前 Attempt/Plan 通过事件追踪，checkpoint 持久化 call/result 配对消息。
 - 高风险 write/external/execute 工具策略；当前只有 read 工具，未绑定工具会被拒绝。
 - 完整审计字段；并发幂等数据库冲突归一和终态数据库 CAS 已完成。
 - MCP、RAG、Workflow、文档对象存储与 Redis；`compose.yaml` 已提供，但本机缺少 Compose plugin，实际部署由等价 `deploy/up.sh` 完成。
@@ -39,8 +40,8 @@
 
 1. 旧同步 `/api/chat` 和长事务 `ChatService` 已删除；所有对话执行统一进入异步 Run API。
 2. Controller 直接访问 Repository 并返回 JPA Entity，违反目标的 transport/application/domain/infrastructure 边界，也可能暴露敏感字段。
-3. QueryLoop 已在调用前后检查 deadline/cancel，但 RestClient 的 read timeout 仍是固定值，尚未传入每次剩余 deadline，也不能中断正在阻塞的调用。
-4. `ToolDefinition.risk` 已执行 read-only policy，但还没有完整 policy engine、工具级超时和交互式批准。
+3. QueryLoop 已把剩余 deadline/cancellation token 传入同步 Provider HTTP；底层 socket read timeout 仍是上限值，但等待线程会按 token 提前中断。原生 SSE 模型流尚未接入同一控制对象。
+4. `ToolDefinition.risk` 已执行 read-only policy，并具备 Try/Replan 状态机；还没有完整 write policy、精确确认 token、side-effect ledger、工具级超时和补偿动作。
 5. Run 终态已使用 `state + version` 单 SQL compare-and-set；多副本事件序号仍需进一步设计。
 6. PostgreSQL/Flyway 已验证，但 pgvector、JSONB、HNSW 和生产恢复尚未进入本初版。
 7. WebFlux 已移除并对齐 Spring MVC/SseEmitter；Provider 仍是同步非流式适配器。

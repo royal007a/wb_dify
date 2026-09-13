@@ -17,7 +17,7 @@
 
 ## Phase 1：Mock Provider 的完整 Query Loop
 
-2026-09-12 初版进度：Conversation/Message/Run/Event、并发幂等创建、终态 SQL CAS、Mock 结构化 tool call、工具 allow-list/基础 schema/read policy、maxTurns/deadline/取消检查/工具与估算 token budget、SSE replay 和 Console Playground 已形成闭环。Agent version/publish、RunStep/ToolCall 表、精确 token/cost、工具 timeout 和五页 Console 仍待完成。
+2026-09-13 初版进度：Conversation/Message/Run/Event、并发幂等创建、终态 SQL CAS、Mock 结构化 tool call、工具 allow-list/基础 schema/read policy、Plan/Step/Attempt/Checkpoint/ReplanDecision、确定性 read-only Replan、持久化取消、同步 HTTP 取消传播、checkpoint 启动恢复、SSE replay 和 Console Playground 已形成闭环。Agent version/publish、RunStep/ToolCall 表、精确 token/cost、工具 timeout、写工具确认/副作用账本和五页 Console 仍待完成。
 
 - Provider/Model、Agent draft/version/publish、Conversation/Message/Run 数据模型。
 - Mock model 支持文本回答和结构化 tool calls。

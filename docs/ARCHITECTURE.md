@@ -153,9 +153,9 @@ stateDiagram-v2
   WAITING_TOOL --> TIMED_OUT
 ```
 
-终态只能通过数据库 compare-and-set 写入一次。应用启动时扫描遗留 `RUNNING/WAITING_TOOL`，一期统一写为 `FAILED` 状态并记录 `terminal_reason=INTERRUPTED`，再提示用户重试；不宣称进程级断点续跑。
+终态只能通过数据库 compare-and-set 写入一次。应用启动时扫描遗留 `RUNNING`：已有持久取消请求的收敛为 `CANCELLED`，其余从最新 restorable checkpoint 恢复；checkpoint 只覆盖当前 read-only 工具，不能被解释为外部副作用回滚。
 
-终止原因：`COMPLETED`、`MAX_TURNS`、`CANCELLED`、`TIMEOUT`、`TOKEN_BUDGET_EXCEEDED`、`COST_BUDGET_EXCEEDED`、`TOOL_BUDGET_EXCEEDED`、`PERMISSION_DENIED`、`MODEL_ERROR`、`FATAL_TOOL_ERROR`、`INTERRUPTED`。
+终止/暂停原因：`COMPLETED`、`MAX_TURNS`、`CANCELLED`、`TIMEOUT`、`TOKEN_BUDGET_EXCEEDED`、`COST_BUDGET_EXCEEDED`、`TOOL_BUDGET_EXCEEDED`、`HUMAN_INPUT_REQUIRED`、`PERMISSION_DENIED`、`MODEL_ERROR`、`FATAL_TOOL_ERROR`。
 
 ### 3.4 默认预算
 
@@ -168,6 +168,12 @@ stateDiagram-v2
 | tool result | 32 KiB | 128 KiB | 入历史前截断/摘要 |
 | output tokens | 4,096 | 16,384 | 模型请求 |
 | cost | Agent 版本配置 | 系统上限 | 每轮估算和最终记账 |
+
+### 3.5 确定性 Replan
+
+当前 read-only Query Loop 以不可变 `ExecutionPlan` 版本记录修复过程。工具参数错误或已知只读工具别名可触发 `LOCAL_REPLAN`；无安全替代时进入 `NEEDS_INPUT`；权限拒绝、取消和 fatal error 不允许通过 Replan 绕过。Replan 不重置任何 Run 预算。
+
+失败点（Attempt）、根因点（Step）、回滚点（Checkpoint）和 Replan 起点分别记录。checkpoint 只保存已配对消息与预算计数；它不是外部副作用回滚。完整契约与适用边界见 `REPLAN.md`。
 
 ## 4. 流式事件契约
 
@@ -182,9 +188,18 @@ model.completed
 tool.call.started
 tool.call.completed
 tool.call.failed
+plan.created
+step.try.started
+step.try.completed
+step.try.failed
+replan.decided
+confirmation.required
+checkpoint.created
+checkpoint.restored
 run.completed
 run.failed
 run.cancelled
+run.needs_input
 heartbeat
 ```
 

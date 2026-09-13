@@ -9,6 +9,7 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 - 初版交付证据：`docs/INITIAL_RELEASE.md`
 - 架构与 Query Loop：`docs/ARCHITECTURE.md`
 - 意图路由与评测：`docs/INTENT_ROUTING.md`
+- Replan 与 Try/Confirm/Cancel：`docs/REPLAN.md`
 - API：`docs/API.md`
 - 数据：`docs/DATA_MODEL.md`
 - 工程：`docs/ENGINEERING.md`
@@ -63,6 +64,8 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 - 必须有 `maxTurns`、wall-clock timeout、token/cost/tool-call budget、取消和明确终止原因。
 - 权限检查发生在副作用前；危险工具默认拒绝或要求显式批准。
 - tool error 可恢复时作为 `tool_result` 返回；安全违规、缺凭证、重复失败和预算耗尽直接终止。
+- Replan 必须分别记录失败点、根因点、回滚点和重计划起点；不得用 Replan 绕过权限或重置预算。
+- read 工具可在 Try 中执行；write/execute/external 工具必须先有精确确认与副作用账本，禁止把 checkpoint 宣称为外部副作用回滚。
 - ConversationManager 持有持久会话；QueryLoop 只持有单次 run；ToolRuntime 持有注册、schema、权限和执行。
 - 上下文裁剪/摘要属于 ContextManager，不塞进 QueryLoop。
 

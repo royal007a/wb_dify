@@ -99,7 +99,9 @@ event: run.failed
 data: {"version":1,"runId":"run_...","terminalReason":"PERMISSION_DENIED","errorCode":"TOOL_PERMISSION_DENIED"}
 ```
 
-前端不得把所有 `*.failed` 都当作 Run 终态；只有 `run.completed/run.failed/run.cancelled` 结束流。
+Replan 相关事件包括 `plan.created`、`step.try.started/completed/failed`、`replan.decided`、`confirmation.required`、`checkpoint.created/restored`。`replan.decided` 明确给出 failure/root-cause/rollback/replan-start 四个位置；无安全替代时发送 `confirmation.required`，随后以 `run.needs_input` 结束本次流，等待用户通过新请求补充信息。当前没有写工具，因此 `confirmation.accepted/cancelled` 只是保留契约。
+
+前端不得把所有 `*.failed` 都当作 Run 终态；只有 `run.completed/run.failed/run.cancelled/run.needs_input` 结束流。
 
 ## 5. Tools 与 MCP
 
