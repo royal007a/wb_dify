@@ -2,6 +2,7 @@ package com.hify.config;
 
 import com.hify.domain.AgentDefinition;
 import com.hify.agent.api.AgentService;
+import com.hify.agent.api.AgentToolBindingRequest;
 import com.hify.infra.AgentDefinitionRepository;
 import com.hify.provider.api.ProviderBootstrapService;
 import org.springframework.boot.CommandLineRunner;
@@ -25,9 +26,10 @@ public class SeedDataConfig {
                         "hify-mock",
                         0.2,
                         6,
-                        "current_time,calculator",
                         true
                 ));
+                agentService.replaceTools("demo-agent",
+                        new AgentToolBindingRequest(java.util.List.of("current_time", "calculator")));
             }
             AgentDefinition demo = agents.findById("demo-agent").orElseThrow();
             if (demo.getPublishedVersionId() == null) agentService.publish("demo-agent");

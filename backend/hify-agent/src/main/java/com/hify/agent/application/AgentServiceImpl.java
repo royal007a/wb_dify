@@ -4,18 +4,26 @@ import com.hify.agent.api.AgentQueryService;
 import com.hify.agent.api.AgentResponse;
 import com.hify.agent.api.AgentRuntimeSnapshot;
 import com.hify.agent.api.AgentService;
+import com.hify.agent.api.AgentToolBindingRequest;
+import com.hify.agent.api.AgentUpdateRequest;
 import com.hify.agent.api.AgentUpsertRequest;
 import com.hify.agent.api.AgentVersionResponse;
 import com.hify.common.BizException;
 import com.hify.common.ErrorCode;
 import com.hify.common.PageResult;
 import com.hify.domain.AgentDefinition;
+import com.hify.domain.AgentToolBinding;
 import com.hify.domain.AgentVersion;
+import com.hify.domain.AgentVersionToolBinding;
 import com.hify.infra.AgentDefinitionRepository;
+import com.hify.infra.AgentToolBindingRepository;
 import com.hify.infra.AgentVersionRepository;
+import com.hify.infra.AgentVersionToolBindingRepository;
 import com.hify.provider.api.ProviderQueryService;
+import com.hify.tool.api.ToolCatalog;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -24,36 +32,54 @@ import org.springframework.transaction.annotation.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.Instant;
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HexFormat;
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AgentServiceImpl implements AgentService, AgentQueryService {
     private final AgentDefinitionRepository agents;
     private final AgentVersionRepository versions;
+    private final AgentToolBindingRepository draftToolBindings;
+    private final AgentVersionToolBindingRepository versionToolBindings;
     private final ProviderQueryService providers;
+    private final ToolCatalog tools;
 
     public AgentServiceImpl(AgentDefinitionRepository agents, AgentVersionRepository versions,
-                            ProviderQueryService providers) {
+                            AgentToolBindingRepository draftToolBindings,
+                            AgentVersionToolBindingRepository versionToolBindings,
+                            ProviderQueryService providers, ToolCatalog tools) {
         this.agents = agents;
         this.versions = versions;
+        this.draftToolBindings = draftToolBindings;
+        this.versionToolBindings = versionToolBindings;
         this.providers = providers;
+        this.tools = tools;
     }
 
     @Override
     @Transactional
     public String create(AgentUpsertRequest request) {
         String name = request.name().trim();
-        if (agents.existsByName(name)) throw new BizException(ErrorCode.CONFLICT, "Agent 名称已存在");
+        if (agents.existsByName(name)) throw duplicateName();
         String model = providers.requireEnabledModel(request.providerId(), request.modelId());
+        List<String> toolNames = validateTools(request.enabledTools());
         AgentDefinition agent = new AgentDefinition(UUID.randomUUID().toString(), name,
-                clean(request.description()), request.instructions().trim(), request.providerId(), model,
+                clean(request.description()), request.instructions().trim(), request.providerId().trim(), model,
                 request.temperature(), request.maxTokens(), request.maxTurns(), request.maxContextTurns(),
-                tools(request.enabledTools()), request.enabled());
-        agents.save(agent);
+                request.enabled());
+        try {
+            agents.saveAndFlush(agent);
+        } catch (DataIntegrityViolationException exception) {
+            if (isDuplicateName(exception)) throw duplicateName();
+            throw exception;
+        }
+        saveDraftBindings(agent.getId(), toolNames);
         return agent.getId();
     }
 
@@ -61,9 +87,9 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     @Transactional(readOnly = true)
     public AgentResponse get(String id) {
         AgentDefinition agent = requireDraft(id);
-        Integer versionNo = agent.getPublishedVersionId() == null ? null
-                : versions.findById(agent.getPublishedVersionId()).map(AgentVersion::getVersionNo).orElse(null);
-        return response(agent, versionNo);
+        List<String> enabledTools = draftTools(List.of(id)).getOrDefault(id, List.of());
+        AgentVersion published = publishedVersion(agent, publishedVersions(List.of(agent)));
+        return response(agent, published, enabledTools);
     }
 
     @Override
@@ -71,41 +97,75 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     public PageResult<AgentResponse> list(Integer page, Integer pageSize) {
         int requestedPage = page == null ? 1 : Math.max(1, page);
         int requestedSize = pageSize == null ? 20 : Math.min(100, Math.max(1, pageSize));
-        var result = agents.findAll(PageRequest.of(requestedPage - 1, requestedSize,
+        var result = agents.findAllByArchivedAtIsNull(PageRequest.of(requestedPage - 1, requestedSize,
                 Sort.by(Sort.Direction.DESC, "updatedAt")));
-        return PageResult.of(result.getContent().stream().map(agent -> {
-            Integer versionNo = agent.getPublishedVersionId() == null ? null
-                    : versions.findById(agent.getPublishedVersionId()).map(AgentVersion::getVersionNo).orElse(null);
-            return response(agent, versionNo);
-        }).toList(), result.getTotalElements(), requestedPage, requestedSize);
+        List<AgentDefinition> content = result.getContent();
+        Map<String, List<String>> toolsByAgent = draftTools(content.stream().map(AgentDefinition::getId).toList());
+        Map<String, AgentVersion> versionsById = publishedVersions(content);
+        List<AgentResponse> responses = content.stream()
+                .map(agent -> response(agent, publishedVersion(agent, versionsById),
+                        toolsByAgent.getOrDefault(agent.getId(), List.of())))
+                .toList();
+        return PageResult.of(responses, result.getTotalElements(), requestedPage, requestedSize);
     }
 
     @Override
     @Transactional
-    @CacheEvict(cacheNames = "agent-cache", allEntries = true)
-    public void update(String id, AgentUpsertRequest request) {
+    public void update(String id, AgentUpdateRequest request) {
         AgentDefinition agent = requireDraft(id);
         String name = request.name().trim();
-        if (agents.existsByNameAndIdNot(name, id)) throw new BizException(ErrorCode.CONFLICT, "Agent 名称已存在");
+        if (agents.existsByNameAndIdNot(name, id)) throw duplicateName();
         String model = providers.requireEnabledModel(request.providerId(), request.modelId());
         agent.updateDraft(name, clean(request.description()), request.instructions().trim(),
-                request.providerId(), model, request.temperature(), request.maxTokens(),
-                request.maxTurns(), request.maxContextTurns(), tools(request.enabledTools()), request.enabled());
+                request.providerId().trim(), model, request.temperature(), request.maxTokens(),
+                request.maxTurns(), request.maxContextTurns(), request.enabled());
+        try {
+            agents.saveAndFlush(agent);
+        } catch (DataIntegrityViolationException exception) {
+            if (isDuplicateName(exception)) throw duplicateName();
+            throw exception;
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<String> replaceTools(String id, AgentToolBindingRequest request) {
+        AgentDefinition agent = requireDraft(id);
+        List<String> toolNames = validateTools(request.toolIds());
+        draftToolBindings.deleteByAgentId(id);
+        saveDraftBindings(id, toolNames);
+        agent.touchDraft();
+        agents.save(agent);
+        return toolNames;
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(cacheNames = "agent-cache", key = "'current:' + #id")
+    public void archive(String id) {
+        AgentDefinition agent = requireDraft(id);
+        draftToolBindings.deleteByAgentId(id);
+        agent.archive(Instant.now());
         agents.save(agent);
     }
 
     @Override
     @Transactional
-    @CacheEvict(cacheNames = "agent-cache", allEntries = true)
+    @CacheEvict(cacheNames = "agent-cache", key = "'current:' + #id")
     public AgentVersionResponse publish(String id) {
         AgentDefinition draft = requireDraft(id);
         String model = providers.requireEnabledModel(draft.getProviderId(), draft.getModel());
         if (!model.equals(draft.getModel())) throw new BizException(ErrorCode.CONFLICT, "Agent 草稿模型已失效");
+        List<String> toolNames = draftTools(List.of(id)).getOrDefault(id, List.of());
+        validateTools(toolNames);
         int versionNo = Math.toIntExact(versions.countByAgentId(id) + 1);
         String versionId = UUID.randomUUID().toString();
+        Instant now = Instant.now();
         AgentVersion version = new AgentVersion(versionId, id, versionNo, draft,
-                digest(draft), Instant.now());
+                digest(draft, toolNames), now);
         versions.save(version);
+        versionToolBindings.saveAll(toolNames.stream()
+                .map(tool -> new AgentVersionToolBinding(versionId, tool, now)).toList());
         draft.markPublished(versionId);
         agents.save(draft);
         return version(version);
@@ -126,28 +186,38 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
         if (draft.getPublishedVersionId() == null) {
             throw new BizException(ErrorCode.CONFLICT, "Agent 尚未发布");
         }
-        return requireVersion(draft.getPublishedVersionId());
+        return snapshot(requireVersionEntity(draft.getPublishedVersionId()));
     }
 
     @Override
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = "agent-cache", key = "'version:' + #versionId")
     public AgentRuntimeSnapshot requireVersion(String versionId) {
-        AgentVersion version = versions.findById(versionId)
-                .orElseThrow(() -> new BizException(ErrorCode.NOT_FOUND, "Agent 发布版本不存在"));
-        if (!version.isEnabled()) throw new BizException(ErrorCode.CONFLICT, "Agent 发布版本已停用");
-        return snapshot(version);
+        return snapshot(requireVersionEntity(versionId));
     }
 
     private AgentDefinition requireDraft(String id) {
-        return agents.findById(id).orElseThrow(() -> new BizException(ErrorCode.NOT_FOUND, "Agent 不存在"));
+        return agents.findByIdAndArchivedAtIsNull(id)
+                .orElseThrow(() -> new BizException(ErrorCode.NOT_FOUND, "Agent 不存在或已归档"));
     }
 
-    private AgentResponse response(AgentDefinition agent, Integer publishedVersionNo) {
+    private AgentVersion requireVersionEntity(String versionId) {
+        AgentVersion version = versions.findById(versionId)
+                .orElseThrow(() -> new BizException(ErrorCode.NOT_FOUND, "Agent 发布版本不存在"));
+        if (!version.isEnabled()) throw new BizException(ErrorCode.CONFLICT, "Agent 发布版本已停用");
+        return version;
+    }
+
+    private AgentResponse response(AgentDefinition agent, AgentVersion publishedVersion,
+                                   List<String> enabledTools) {
+        Integer publishedVersionNo = publishedVersion == null ? null : publishedVersion.getVersionNo();
+        boolean hasUnpublishedChanges = publishedVersion == null
+                || !digest(agent, enabledTools).equals(publishedVersion.getSnapshotDigest());
         return new AgentResponse(agent.getId(), agent.getName(), agent.getDescription(), agent.getInstructions(),
                 agent.getProviderId(), agent.getModel(), agent.getTemperature(), agent.getMaxTokens(),
-                agent.getMaxTurns(), agent.getMaxContextTurns(), splitTools(agent.getEnabledTools()),
+                agent.getMaxTurns(), agent.getMaxContextTurns(), enabledTools,
                 agent.isEnabled(), agent.getDraftRevision(), agent.getPublishedVersionId(), publishedVersionNo,
+                hasUnpublishedChanges,
                 agent.getCreatedAt(), agent.getUpdatedAt());
     }
 
@@ -157,18 +227,19 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     }
 
     private AgentRuntimeSnapshot snapshot(AgentVersion version) {
+        List<String> enabledTools = versionToolBindings.findByVersionId(version.getId()).stream()
+                .map(AgentVersionToolBinding::getToolName).toList();
         return new AgentRuntimeSnapshot(version.getId(), version.getAgentId(), version.getVersionNo(),
                 version.getSnapshotDigest(), version.getName(), version.getInstructions(),
                 version.getProviderId(), version.getModel(), version.getTemperature(), version.getMaxTokens(),
-                version.getMaxTurns(), version.getMaxContextTurns(), splitTools(version.getEnabledTools()),
-                version.isEnabled());
+                version.getMaxTurns(), version.getMaxContextTurns(), enabledTools, version.isEnabled());
     }
 
-    private String digest(AgentDefinition draft) {
+    private String digest(AgentDefinition draft, List<String> toolNames) {
         String canonical = String.join("\u001f", draft.getId(), draft.getName(), draft.getInstructions(),
                 draft.getProviderId(), draft.getModel(), String.valueOf(draft.getTemperature()),
                 String.valueOf(draft.getMaxTokens()), String.valueOf(draft.getMaxTurns()),
-                String.valueOf(draft.getMaxContextTurns()), String.valueOf(draft.getEnabledTools()),
+                String.valueOf(draft.getMaxContextTurns()), String.join(",", toolNames),
                 String.valueOf(draft.isEnabled()));
         try {
             return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
@@ -178,17 +249,67 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
         }
     }
 
-    private static String tools(List<String> values) {
-        LinkedHashSet<String> normalized = new LinkedHashSet<>();
-        for (String value : values) {
-            if (value != null && !value.isBlank()) normalized.add(value.trim());
+    private List<String> validateTools(Collection<String> requested) {
+        if (requested == null) {
+            throw new BizException(ErrorCode.PARAM_ERROR, "工具绑定不能为空");
         }
-        return String.join(",", normalized);
+        TreeSet<String> normalized = new TreeSet<>();
+        for (String value : requested) {
+            String name = value.trim();
+            if (!normalized.add(name)) {
+                throw new BizException(ErrorCode.PARAM_ERROR, "工具不能重复绑定: " + name);
+            }
+        }
+        TreeSet<String> unknown = new TreeSet<>(normalized);
+        unknown.removeAll(tools.availableToolNames());
+        if (!unknown.isEmpty()) {
+            throw new BizException(ErrorCode.PARAM_ERROR, "工具不存在或不可用: " + String.join(",", unknown));
+        }
+        return List.copyOf(normalized);
     }
 
-    private static List<String> splitTools(String value) {
-        return value == null || value.isBlank() ? List.of() : Arrays.stream(value.split(","))
-                .map(String::trim).filter(item -> !item.isBlank()).toList();
+    private void saveDraftBindings(String agentId, List<String> toolNames) {
+        Instant now = Instant.now();
+        draftToolBindings.saveAll(toolNames.stream()
+                .map(tool -> new AgentToolBinding(agentId, tool, now)).toList());
+    }
+
+    private Map<String, List<String>> draftTools(Collection<String> agentIds) {
+        if (agentIds.isEmpty()) return Map.of();
+        Map<String, List<String>> result = new HashMap<>();
+        draftToolBindings.findByAgentIds(agentIds).forEach(binding -> result
+                .computeIfAbsent(binding.getAgentId(), ignored -> new java.util.ArrayList<>())
+                .add(binding.getToolName()));
+        return result;
+    }
+
+    private Map<String, AgentVersion> publishedVersions(Collection<AgentDefinition> definitions) {
+        List<String> versionIds = definitions.stream().map(AgentDefinition::getPublishedVersionId)
+                .filter(id -> id != null && !id.isBlank()).distinct().toList();
+        if (versionIds.isEmpty()) return Map.of();
+        return versions.findAllById(versionIds).stream().collect(Collectors.toMap(
+                AgentVersion::getId, version -> version, (left, right) -> left));
+    }
+
+    private AgentVersion publishedVersion(AgentDefinition definition, Map<String, AgentVersion> versionsById) {
+        String versionId = definition.getPublishedVersionId();
+        return versionId == null ? null : versionsById.get(versionId);
+    }
+
+    private static BizException duplicateName() {
+        return new BizException(ErrorCode.CONFLICT, "Agent 名称已存在");
+    }
+
+    private static boolean isDuplicateName(DataIntegrityViolationException exception) {
+        Throwable cause = exception;
+        while (cause != null) {
+            String message = cause.getMessage();
+            if (message != null && message.toLowerCase().contains("uq_agent_definition_name")) {
+                return true;
+            }
+            cause = cause.getCause();
+        }
+        return false;
     }
 
     private static String clean(String value) {

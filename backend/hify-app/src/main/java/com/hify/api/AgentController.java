@@ -2,6 +2,8 @@ package com.hify.api;
 
 import com.hify.agent.api.AgentResponse;
 import com.hify.agent.api.AgentService;
+import com.hify.agent.api.AgentToolBindingRequest;
+import com.hify.agent.api.AgentUpdateRequest;
 import com.hify.agent.api.AgentUpsertRequest;
 import com.hify.agent.api.AgentVersionResponse;
 import com.hify.common.PageResult;
@@ -42,8 +44,20 @@ public class AgentController {
 
     @PutMapping("/{agentId}")
     public Result<Void> update(@PathVariable String agentId,
-                               @Valid @RequestBody AgentUpsertRequest request) {
+                               @Valid @RequestBody AgentUpdateRequest request) {
         agents.update(agentId, request);
+        return Result.ok();
+    }
+
+    @PutMapping("/{agentId}/tools")
+    public Result<List<String>> replaceTools(@PathVariable String agentId,
+                                             @Valid @RequestBody AgentToolBindingRequest request) {
+        return Result.ok(agents.replaceTools(agentId, request));
+    }
+
+    @DeleteMapping("/{agentId}")
+    public Result<Void> archive(@PathVariable String agentId) {
+        agents.archive(agentId);
         return Result.ok();
     }
 

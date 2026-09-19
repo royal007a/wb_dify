@@ -20,7 +20,6 @@ public class AgentVersion {
     private int maxTokens;
     private int maxTurns;
     private int maxContextTurns;
-    private String enabledTools;
     private boolean enabled;
     @jakarta.persistence.Column(length = 8000)
     private String instructions;
@@ -43,7 +42,6 @@ public class AgentVersion {
         this.maxTokens = draft.getMaxTokens();
         this.maxTurns = draft.getMaxTurns();
         this.maxContextTurns = draft.getMaxContextTurns();
-        this.enabledTools = draft.getEnabledTools();
         this.enabled = draft.isEnabled();
         this.snapshotDigest = digest;
         this.createdAt = createdAt;
@@ -60,7 +58,6 @@ public class AgentVersion {
     public int getMaxTokens() { return maxTokens; }
     public int getMaxTurns() { return maxTurns; }
     public int getMaxContextTurns() { return maxContextTurns; }
-    public String getEnabledTools() { return enabledTools; }
     public boolean isEnabled() { return enabled; }
     public String getInstructions() { return instructions; }
     public String getSnapshotDigest() { return snapshotDigest; }

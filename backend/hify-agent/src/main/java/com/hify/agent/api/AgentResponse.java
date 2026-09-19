@@ -8,5 +8,6 @@ public record AgentResponse(
         String providerId, String modelId, double temperature, int maxTokens,
         int maxTurns, int maxContextTurns, List<String> enabledTools, boolean enabled,
         int draftRevision, String publishedVersionId, Integer publishedVersionNo,
+        boolean hasUnpublishedChanges,
         Instant createdAt, Instant updatedAt
 ) {}
