@@ -4,7 +4,7 @@ import AgentList from '@/views/AgentList.vue'
 import ChatView from '@/views/ChatView.vue'
 
 export const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', redirect: '/providers' },
     { path: '/providers', name: 'providers', component: ProviderList, meta: { title: '模型管理' } },

@@ -1,14 +1,23 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import type { Agent } from '@/api/agents'
+import {
+  cancelRun,
+  createConversation,
+  createRun,
+  getRun,
+  listRunnableAgents,
+  runtimeUrl,
+  type ResumeState,
+  type Run,
+} from '@/api/chat'
 
-type Agent = { id: string; name: string; description: string; model: string; enabledTools: string }
-type Run = { id: string; state: string; terminalReason?: string; outputMessage?: string; turns: number; toolCalls: number; streamUrl: string }
 type ChatItem = { role: 'user' | 'assistant' | 'event'; content: string }
-type ResumeState = { runId: string; gapIds: string[] }
 
 const agents = ref<Agent[]>([])
-const selectedAgentId = ref('demo-agent')
+const selectedAgentId = ref('')
 const conversationId = ref<string>()
+const pinnedVersionId = ref<string>()
 const message = ref('现在几点？')
 const running = ref(false)
 const status = ref('准备就绪')
@@ -20,20 +29,21 @@ const selectedAgent = computed(() => agents.value.find(agent => agent.id === sel
 onMounted(loadAgents)
 
 async function loadAgents() {
-  const response = await fetch('/api/agents')
-  if (!response.ok) throw new Error('无法加载 Agent')
-  agents.value = await response.json()
+  try {
+    agents.value = await listRunnableAgents()
+    selectedAgentId.value = agents.value[0]?.id ?? ''
+    if (!selectedAgentId.value) status.value = '没有可运行的已发布 Agent'
+  } catch (error) {
+    status.value = error instanceof Error ? error.message : '无法加载 Agent'
+  }
 }
 
 async function ensureConversation() {
   if (conversationId.value) return conversationId.value
-  const response = await fetch('/api/v1/conversations', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ agentId: selectedAgentId.value, title: 'Hify Playground' }),
-  })
-  if (!response.ok) throw new Error(await errorMessage(response))
-  const conversation = await response.json()
+  if (!selectedAgentId.value) throw new Error('请先选择已发布 Agent')
+  const conversation = await createConversation(selectedAgentId.value)
   conversationId.value = conversation.id
+  pinnedVersionId.value = conversation.agentVersionId
   return conversation.id as string
 }
 
@@ -46,13 +56,7 @@ async function send() {
   message.value = ''
   try {
     const conversation = await ensureConversation()
-    const response = await fetch(`/api/v1/conversations/${conversation}/runs`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Idempotency-Key': crypto.randomUUID() },
-      body: JSON.stringify({ message: text, ...(resumeState.value ? { resume: resumeState.value } : {}) }),
-    })
-    if (!response.ok) throw new Error(await errorMessage(response))
-    activeRun.value = await response.json()
+    activeRun.value = await createRun(conversation, text, resumeState.value)
     resumeState.value = undefined
     status.value = `Run ${activeRun.value!.id.slice(0, 8)} 执行中`
     listen(activeRun.value!)
@@ -64,12 +68,18 @@ async function send() {
 }
 
 function listen(run: Run) {
-  const source = new EventSource(run.streamUrl)
+  const source = new EventSource(runtimeUrl(run.streamUrl))
   let answerAdded = false
+  let answerIndex = -1
+  let settled = false
   source.addEventListener('message.delta', event => {
     const payload = parsePayload((event as MessageEvent).data)
     if (payload.content) {
-      chat.value.push({ role: 'assistant', content: String(payload.content) })
+      if (answerIndex < 0) {
+        chat.value.push({ role: 'assistant', content: '' })
+        answerIndex = chat.value.length - 1
+      }
+      chat.value[answerIndex].content += String(payload.content)
       answerAdded = true
     }
   })
@@ -84,9 +94,10 @@ function listen(run: Run) {
     }
   })
   const finish = async () => {
+    if (settled) return
+    settled = true
     source.close()
-    const response = await fetch(`/api/v1/runs/${run.id}`)
-    const latest: Run = await response.json()
+    const latest = await getRun(run.id)
     activeRun.value = latest
     if (!answerAdded && latest.outputMessage) chat.value.push({ role: latest.state === 'COMPLETED' ? 'assistant' : 'event', content: latest.outputMessage })
     status.value = `${latest.state} · ${latest.turns} turns · ${latest.toolCalls} tools`
@@ -99,16 +110,20 @@ function listen(run: Run) {
   source.addEventListener('run.failed', finish)
   source.addEventListener('run.cancelled', finish)
   source.addEventListener('run.needs_input', finish)
+  source.onerror = () => {
+    if (!settled) status.value = '事件流重连中…'
+  }
 }
 
 async function cancel() {
   if (!activeRun.value || !running.value) return
-  await fetch(`/api/v1/runs/${activeRun.value.id}/cancellations`, { method: 'POST' })
+  await cancelRun(activeRun.value.id)
   status.value = '已请求取消…'
 }
 
 function newConversation() {
   conversationId.value = undefined
+  pinnedVersionId.value = undefined
   activeRun.value = undefined
   resumeState.value = undefined
   chat.value = [{ role: 'assistant', content: '新会话已就绪。' }]
@@ -122,12 +137,6 @@ function parsePayload(raw: string): Record<string, unknown> {
   } catch { return { content: raw } }
 }
 
-async function errorMessage(response: Response) {
-  try {
-    const payload = await response.json()
-    return payload.message ?? `HTTP ${response.status}`
-  } catch { return `HTTP ${response.status}` }
-}
 </script>
 
 <template>
@@ -135,8 +144,8 @@ async function errorMessage(response: Response) {
     <div class="chat-toolbar">
       <div><span class="eyebrow">CONVERSATION</span><h1>对话</h1><p>{{ status }}</p></div>
       <div class="toolbar-actions">
-        <el-select v-model="selectedAgentId" :disabled="running" @change="newConversation">
-          <el-option v-for="agent in agents" :key="agent.id" :label="agent.name" :value="agent.id" />
+        <el-select v-model="selectedAgentId" :disabled="running || !agents.length" placeholder="选择已发布 Agent" @change="newConversation">
+          <el-option v-for="agent in agents" :key="agent.id" :label="`${agent.name} · v${agent.publishedVersionNo}`" :value="agent.id" />
         </el-select>
         <el-button @click="newConversation">新会话</el-button>
       </div>
@@ -151,9 +160,9 @@ async function errorMessage(response: Response) {
       <form class="composer" @submit.prevent="send">
         <el-input v-model="message" type="textarea" :rows="2" placeholder="输入消息；例如：计算 17 * 23" />
         <div class="composer-actions">
-          <span>{{ selectedAgent?.name ?? 'Demo Agent' }}</span>
+          <span>{{ selectedAgent?.name ?? '未选择 Agent' }}<small v-if="pinnedVersionId"> · 固定版本 {{ pinnedVersionId.slice(0, 8) }}</small></span>
           <el-button v-if="running" type="danger" @click="cancel">取消</el-button>
-          <el-button v-else type="primary" class="primary-gradient" native-type="submit" :disabled="!message.trim()">运行</el-button>
+          <el-button v-else type="primary" class="primary-gradient" native-type="submit" :disabled="!message.trim() || !selectedAgentId">运行</el-button>
         </div>
       </form>
     </div>
