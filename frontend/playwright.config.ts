@@ -10,6 +10,7 @@ export default defineConfig({
   use: {
     baseURL: process.env.E2E_BASE_URL || 'http://localhost:5173/',
     channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome',
+    ignoreHTTPSErrors: process.env.E2E_IGNORE_HTTPS_ERRORS === 'true',
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
   },
