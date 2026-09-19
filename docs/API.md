@@ -139,6 +139,10 @@ data: {"version":1,"runId":"run_...","terminalReason":"PERMISSION_DENIED","error
 
 前端不得把所有 `*.failed` 都当作 Run 终态；只有 `run.completed/run.failed/run.cancelled/run.needs_input` 结束流。
 
+Playground 只列出 `enabled=true` 且已有 `publishedVersionId` 的 Agent。创建 Conversation 后，页面显示固定的
+`agentVersionId`；SSE `message.delta` 必须追加到当前 assistant 消息，而不是每个 delta 新建一条消息。
+客户端从 `streamUrl` 建立 EventSource，断线依靠事件 id 重连与服务端 replay，终态后再读取 Run 事实源收敛 UI。
+
 ## 5. Tools 与 MCP
 
 ### 5.1 意图路由预览

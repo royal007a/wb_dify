@@ -20,6 +20,7 @@
 | 持久化 | `V1__baseline.sql`、JPA Entity | Flyway + PostgreSQL 16.15 部署验证；H2 只用于本地/测试便利 |
 | Console | `frontend/` | Vue 3 + TypeScript + Vite + Element Plus；Provider 页面已用 HifyTable/HifyFormDialog 对接真实分页 CRUD、模型目录、状态和连接测试；Query Loop Playground 可用 |
 | 启停与部署 | `start.sh`、`stop.sh`、`Makefile`、`deploy/up.sh`、`compose.yaml` | 开发态入口 `http://localhost:5173`，容器入口 `http://localhost:8088`；PID、日志、健康轮询和失败回收已验证 |
+| Chat Playground | 已发布 Agent 选择、Conversation 版本固定、真实 Provider/Mock 流式、Tool Loop、SSE replay/取消、Gap resume | 浏览器端合并 delta 并在终态回读 Run；PostgreSQL 验证旧会话保持旧版本、新会话固定新版本 |
 | 后端工程 | `backend/pom.xml`、10 个子模块 | Maven reactor、统一 Result/异常、MyBatis-Plus/Redis 配置、业务模块空壳和 DemoItem 参考切片已构建验证 |
 | 业务基础组件 | `hify-common`、`hify-demo`、`V2__demo_item.sql` | BaseEntity、分页、校验、ISO 时间、可选 Redis Cache、隔离线程池、LLM HTTP/SSE、provider 级熔断/分类重试和请求日志均有测试或运行证据 |
 

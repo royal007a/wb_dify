@@ -19,6 +19,7 @@
 - [x] Agent 纵向切片：草稿 CRUD、模型校验、不可变版本发布、Conversation/Run 版本钉住、digest 与真实 Console
 - [x] Agent 管理闭环：归档语义、独立工具绑定 API、草稿/版本绑定表、发布工具快照、名称唯一约束、批量列表与精确缓存边界
 - [x] Agent Console 验收闭环：动态 Tool Catalog、归档确认、工具/参数/时间列、精确草稿发布状态、异常/缓存/PostgreSQL 并发测试与端到端场景
+- [x] Chat Playground：选择已发布 Agent、显示固定版本、Tool Loop/SSE 浏览器闭环及 PostgreSQL 跨发布版本固定验证
 - [x] 原生模型流：OpenAI/compatible、Anthropic、Gemini SSE delta、工具参数重组、Run 事件投影和取消/deadline
 - [x] 模块交付 Skill：四问理解、决策、分层执行、验证、SDD 回写与 split commit
 

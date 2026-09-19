@@ -14,6 +14,11 @@ flowchart LR
 
 Docker Compose 是默认交付物。数据库、Redis 和文档目录必须持久化 volume；应用容器无持久业务状态。开发环境允许 mock provider；生产启动时拒绝默认密码、空 signing key 和调试日志。
 
+共享宿主机时可把 Console 发布到 `/hify/`：前端以
+`VITE_BASE_PATH=/hify/ VITE_API_BASE_URL=/hify/api npm run build` 构建，并在现有 TLS server 中
+include `deploy/nginx-path.conf`。该片段将静态资源隔离在 `/hify/`，将 `/hify/api/` 去前缀后代理到应用，
+同时关闭 SSE buffering；不得让 Hify 抢占宿主机已有 `/api/` 或根页面。
+
 ## 2. SSE/Nginx
 
 - `proxy_buffering off`、关闭响应缓存；设置 `X-Accel-Buffering: no`。

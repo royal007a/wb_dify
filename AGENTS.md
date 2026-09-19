@@ -85,6 +85,7 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 
 - 管理端修改的是草稿；运行只能读取不可变发布版本，未发布 Agent 不得创建新会话。
 - Conversation 固定 agentVersionId，Run 再保存 versionId/digest；草稿和新发布不得改变旧会话行为。
+- Playground 只展示启用且已发布的 Agent；SSE delta 合并到当前 assistant 消息，终态后回读 Run 收敛 UI。
 - DELETE 只归档草稿并删除草稿工具绑定；发布版本与其工具快照必须保留，已归档名称不得复用。
 - 基本信息与工具绑定分接口更新；发布将草稿工具复制为不可变版本快照，digest 必须覆盖工具集合。
 - Console 通过只读 Tool Catalog 动态选择稳定工具 ID；发布同步状态必须比较 digest，不得用 revision/version 数字推断。
