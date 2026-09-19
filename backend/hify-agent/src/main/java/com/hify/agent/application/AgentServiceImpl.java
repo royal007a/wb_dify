@@ -89,7 +89,9 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
         AgentDefinition agent = requireDraft(id);
         List<String> enabledTools = draftTools(List.of(id)).getOrDefault(id, List.of());
         AgentVersion published = publishedVersion(agent, publishedVersions(List.of(agent)));
-        return response(agent, published, enabledTools);
+        List<String> publishedTools = published == null ? List.of()
+                : versionTools(List.of(published.getId())).getOrDefault(published.getId(), List.of());
+        return response(agent, published, enabledTools, publishedTools);
     }
 
     @Override
@@ -102,9 +104,11 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
         List<AgentDefinition> content = result.getContent();
         Map<String, List<String>> toolsByAgent = draftTools(content.stream().map(AgentDefinition::getId).toList());
         Map<String, AgentVersion> versionsById = publishedVersions(content);
+        Map<String, List<String>> toolsByVersion = versionTools(versionsById.keySet());
         List<AgentResponse> responses = content.stream()
                 .map(agent -> response(agent, publishedVersion(agent, versionsById),
-                        toolsByAgent.getOrDefault(agent.getId(), List.of())))
+                        toolsByAgent.getOrDefault(agent.getId(), List.of()),
+                        toolsByVersion.getOrDefault(agent.getPublishedVersionId(), List.of())))
                 .toList();
         return PageResult.of(responses, result.getTotalElements(), requestedPage, requestedSize);
     }
@@ -209,10 +213,10 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     }
 
     private AgentResponse response(AgentDefinition agent, AgentVersion publishedVersion,
-                                   List<String> enabledTools) {
+                                   List<String> enabledTools, List<String> publishedTools) {
         Integer publishedVersionNo = publishedVersion == null ? null : publishedVersion.getVersionNo();
         boolean hasUnpublishedChanges = publishedVersion == null
-                || !digest(agent, enabledTools).equals(publishedVersion.getSnapshotDigest());
+                || !digest(agent, enabledTools).equals(digest(publishedVersion, publishedTools));
         return new AgentResponse(agent.getId(), agent.getName(), agent.getDescription(), agent.getInstructions(),
                 agent.getProviderId(), agent.getModel(), agent.getTemperature(), agent.getMaxTokens(),
                 agent.getMaxTurns(), agent.getMaxContextTurns(), enabledTools,
@@ -236,11 +240,24 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     }
 
     private String digest(AgentDefinition draft, List<String> toolNames) {
-        String canonical = String.join("\u001f", draft.getId(), draft.getName(), draft.getInstructions(),
-                draft.getProviderId(), draft.getModel(), String.valueOf(draft.getTemperature()),
-                String.valueOf(draft.getMaxTokens()), String.valueOf(draft.getMaxTurns()),
-                String.valueOf(draft.getMaxContextTurns()), String.join(",", toolNames),
-                String.valueOf(draft.isEnabled()));
+        return digest(draft.getId(), draft.getName(), draft.getInstructions(), draft.getProviderId(),
+                draft.getModel(), draft.getTemperature(), draft.getMaxTokens(), draft.getMaxTurns(),
+                draft.getMaxContextTurns(), toolNames, draft.isEnabled());
+    }
+
+    private String digest(AgentVersion version, List<String> toolNames) {
+        return digest(version.getAgentId(), version.getName(), version.getInstructions(), version.getProviderId(),
+                version.getModel(), version.getTemperature(), version.getMaxTokens(), version.getMaxTurns(),
+                version.getMaxContextTurns(), toolNames, version.isEnabled());
+    }
+
+    private String digest(String agentId, String name, String instructions, String providerId,
+                          String model, double temperature, int maxTokens, int maxTurns,
+                          int maxContextTurns, List<String> toolNames, boolean enabled) {
+        String canonical = String.join("\u001f", agentId, name, instructions, providerId, model,
+                String.valueOf(temperature), String.valueOf(maxTokens), String.valueOf(maxTurns),
+                String.valueOf(maxContextTurns), String.join(",", new TreeSet<>(toolNames)),
+                String.valueOf(enabled));
         try {
             return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
                     .digest(canonical.getBytes(StandardCharsets.UTF_8)));
@@ -289,6 +306,15 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
         if (versionIds.isEmpty()) return Map.of();
         return versions.findAllById(versionIds).stream().collect(Collectors.toMap(
                 AgentVersion::getId, version -> version, (left, right) -> left));
+    }
+
+    private Map<String, List<String>> versionTools(Collection<String> versionIds) {
+        if (versionIds.isEmpty()) return Map.of();
+        Map<String, List<String>> result = new HashMap<>();
+        versionToolBindings.findByVersionIds(versionIds).forEach(binding -> result
+                .computeIfAbsent(binding.getAgentVersionId(), ignored -> new java.util.ArrayList<>())
+                .add(binding.getToolName()));
+        return result;
     }
 
     private AgentVersion publishedVersion(AgentDefinition definition, Map<String, AgentVersion> versionsById) {

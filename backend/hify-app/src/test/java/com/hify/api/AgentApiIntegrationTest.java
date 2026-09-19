@@ -54,6 +54,13 @@ class AgentApiIntegrationTest {
         JsonNode synchronizedDraft = json(http.perform(get("/api/v1/agents/{id}", agentId))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");
         assertThat(synchronizedDraft.path("hasUnpublishedChanges").asBoolean()).isFalse();
+        jdbc.update("UPDATE agent_versions SET snapshot_digest = ? WHERE id = ?",
+                "legacy-order-dependent-digest", v1.path("id").asText());
+        JsonNode migratedDraft = json(http.perform(get("/api/v1/agents/{id}", agentId))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");
+        assertThat(migratedDraft.path("hasUnpublishedChanges").asBoolean()).isFalse();
+        jdbc.update("UPDATE agent_versions SET snapshot_digest = ? WHERE id = ?",
+                v1.path("snapshotDigest").asText(), v1.path("id").asText());
 
         JsonNode conversation = json(http.perform(post("/api/v1/conversations")
                         .contentType(MediaType.APPLICATION_JSON)
