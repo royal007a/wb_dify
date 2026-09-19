@@ -17,6 +17,8 @@
 - [x] 受控 TAO P0-P2：六出口 ContinuationDecision、Claim/Evidence/Gap、FinishGate、有限 Retry、no-progress、版本化 checkpoint 快照、失败恢复事件和 NEEDS_INPUT 子 Run 恢复协议
 - [x] Provider 纵向切片：四类协议、MyBatis-Plus 聚合、credentialRef 鉴权、模型目录、独立健康状态、分页 CRUD/连接测试和真实 Console 对接
 - [x] Agent 纵向切片：草稿 CRUD、模型校验、不可变版本发布、Conversation/Run 版本钉住、digest 与真实 Console
+- [x] Agent 管理闭环：归档语义、独立工具绑定 API、草稿/版本绑定表、发布工具快照、名称唯一约束、批量列表与精确缓存边界
+- [x] Agent Console 验收闭环：动态 Tool Catalog、归档确认、工具/参数/时间列、精确草稿发布状态、异常/缓存/PostgreSQL 并发测试与端到端场景
 - [x] 原生模型流：OpenAI/compatible、Anthropic、Gemini SSE delta、工具参数重组、Run 事件投影和取消/deadline
 - [x] 模块交付 Skill：四问理解、决策、分层执行、验证、SDD 回写与 split commit
 

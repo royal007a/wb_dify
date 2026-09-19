@@ -8,7 +8,7 @@
 |---|---|---|
 | Spring Boot 入口 | `HifyApplication.java`、`HealthController.java` | Spring MVC/Tomcat 已运行验证；`GET /api/v1/health` 返回统一 Result 和 HTTP 200 |
 | Provider/Model | `hify-provider/provider`、`ProviderController`、`V5__provider_catalog.sql` | OpenAI/Anthropic/Gemini 原生协议 + OpenAI-compatible；分页 CRUD、模型目录、credentialRef、缓存、独立健康检查和原生 SSE 已由契约测试验证 |
-| Agent 管理/发布 | `hify-agent/agent`、`AgentController`、`V6__agent_publishing.sql` | 草稿 CRUD、Provider modelId 校验、不可变发布版本、digest、版本列表和 Agent Console 已验证 |
+| Agent 管理/发布 | `hify-agent/agent`、`AgentController`、`ToolCatalogController`、`V6-V8` migrations | 草稿 CRUD、归档、动态 Tool Catalog、独立工具绑定、Provider/model/tool 校验、不可变发布版本与工具快照、精确未发布变更状态、批量列表和 Agent Console 已验证 |
 | Conversation/Message | `hify-app/RunController`、`hify-chat` repositories | 创建会话时固定已发布 AgentVersion；Run 再保存 versionId/digest；无用户和会话分页 |
 | Run/Event | `hify-chat` 的 `AgentRun`、`RunEvent`、`RunApplicationService` | 并发幂等、异步执行、终态 CAS、持久化取消、事件持久化和 SSE replay 已验证 |
 | Query Loop | `runtime/QueryLoop.java`、`runtime/plan`、`runtime/state` | 六出口 ContinuationDecision、Claim/Evidence/Gap、可执行 FinishGate、有限 Retry、确定性 read-only Replan、no-progress 和明确终态均有测试 |
@@ -16,7 +16,7 @@
 | Intent Router | `hify-chat/com.hify.intent`、`IntentRoutingController` | 四出口契约、确定性规则层、结构化模型候选、低置信/歧义/缺槽澄清、120 条中文评测集；当前仅预览，不接管 Run |
 | Mock 模型 | `MockModelClient.java` | 可触发时间或单个二元运算工具 |
 | 模型协议适配 | `ProviderAdapterRegistry`、三个原生/一个兼容 Adapter | OpenAI tool_calls、Anthropic tool_use/tool_result、Gemini functionCall/functionResponse 的同步与流式映射；流式文本 delta 和工具参数重组已有测试 |
-| 内置工具 | `ToolRuntime.java` | current_time/calculator；schema 必填/类型校验、read 权限和 32 KiB output cap |
+| 内置工具 | `ToolRuntime.java`、`ToolCatalogController.java` | current_time/calculator；稳定只读目录、schema 必填/类型校验、read 权限和 32 KiB output cap |
 | 持久化 | `V1__baseline.sql`、JPA Entity | Flyway + PostgreSQL 16.15 部署验证；H2 只用于本地/测试便利 |
 | Console | `frontend/` | Vue 3 + TypeScript + Vite + Element Plus；Provider 页面已用 HifyTable/HifyFormDialog 对接真实分页 CRUD、模型目录、状态和连接测试；Query Loop Playground 可用 |
 | 启停与部署 | `start.sh`、`stop.sh`、`Makefile`、`deploy/up.sh`、`compose.yaml` | 开发态入口 `http://localhost:5173`，容器入口 `http://localhost:8088`；PID、日志、健康轮询和失败回收已验证 |

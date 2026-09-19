@@ -11,6 +11,7 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 - 意图路由与评测：`docs/INTENT_ROUTING.md`
 - Replan 与 Try/Confirm/Cancel：`docs/REPLAN.md`
 - Provider 设计与交付：`docs/PROVIDER.md`
+- Agent 管理与发布：`docs/AGENT.md`
 - 课程 10–17 与 Harness 阅读：`docs/PDF_READING_10_17_AND_HARNESS.md`
 - API：`docs/API.md`
 - 数据：`docs/DATA_MODEL.md`
@@ -84,6 +85,9 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 
 - 管理端修改的是草稿；运行只能读取不可变发布版本，未发布 Agent 不得创建新会话。
 - Conversation 固定 agentVersionId，Run 再保存 versionId/digest；草稿和新发布不得改变旧会话行为。
+- DELETE 只归档草稿并删除草稿工具绑定；发布版本与其工具快照必须保留，已归档名称不得复用。
+- 基本信息与工具绑定分接口更新；发布将草稿工具复制为不可变版本快照，digest 必须覆盖工具集合。
+- Console 通过只读 Tool Catalog 动态选择稳定工具 ID；发布同步状态必须比较 digest，不得用 revision/version 数字推断。
 
 ## Intent Router 硬规则
 

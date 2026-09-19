@@ -53,15 +53,24 @@ JSON 鉴权只保存版本化元数据和 `credentialRef`，不保存/回传原�
 ## 3. Agent
 
 ```text
+GET    /api/v1/tools
 GET    /api/v1/agents
 POST   /api/v1/agents
 GET    /api/v1/agents/{agentId}
 PUT    /api/v1/agents/{agentId}
+PUT    /api/v1/agents/{agentId}/tools
+DELETE /api/v1/agents/{agentId}
 POST   /api/v1/agents/{agentId}/publications
 GET    /api/v1/agents/{agentId}/versions
 ```
 
-PUT 只更新 draft；发布时将 draft 固化为不可变 `AgentVersion`，内容含 modelId、prompt、参数、工具名和 digest。Conversation 始终绑定版本，不追随草稿变化；Run 返回 `agentVersionId/agentSnapshotDigest`。完整 tool schema snapshot 在 MCP 阶段补齐。
+`GET /api/v1/tools` 返回只读 Tool Catalog：稳定 `id`、展示名、描述、来源、风险等级和可用状态。Console 必须由该接口动态渲染可选工具，不得硬编码内置工具；MCP 接入后沿用同一契约扩展来源。
+
+PUT 只更新 draft 基本信息，不修改工具。`PUT /tools` 以 `{"toolIds":[...]}` 全量替换草稿工具绑定，重复或未知工具返回参数错误。发布时将 draft 固化为不可变 `AgentVersion`，同时复制版本工具绑定并把工具集合纳入 digest。Conversation 始终绑定版本，不追随草稿变化；Run 返回 `agentVersionId/agentSnapshotDigest`。完整 tool schema snapshot 在 MCP 阶段补齐。
+
+Agent 响应的 `hasUnpublishedChanges` 由当前运行配置 digest 与已发布 digest 比较得出：未发布或模型、指令、运行参数、工具等发生变化时为 `true`，再次发布同步后为 `false`。纯管理描述不影响运行快照。前端不得用 revision/version 数字猜测该状态。
+
+DELETE 是归档而非物理删除：归档后不再列表展示，不能创建新 Conversation；草稿工具绑定被清理，发布版本和版本工具快照保留，旧 Conversation/Run 仍可重放。归档名称不允许复用。
 
 ## 4. Conversation 与 Run
 

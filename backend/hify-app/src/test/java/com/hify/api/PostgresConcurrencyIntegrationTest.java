@@ -1,6 +1,10 @@
 package com.hify.api;
 
+import com.hify.agent.api.AgentService;
+import com.hify.agent.api.AgentUpsertRequest;
 import com.hify.application.RunApplicationService;
+import com.hify.common.BizException;
+import com.hify.common.ErrorCode;
 import com.hify.domain.AgentRun;
 import com.hify.domain.Conversation;
 import com.hify.domain.RunState;
@@ -13,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -50,6 +55,48 @@ class PostgresConcurrencyIntegrationTest {
     @Autowired AgentRunRepository runs;
     @Autowired ChatMessageRepository messages;
     @Autowired RunEventRepository events;
+    @Autowired AgentService agents;
+    @Autowired JdbcTemplate jdbc;
+
+    @Test
+    void concurrentAgentCreatesUsePostgresUniqueConstraintAsFinalGuard() throws Exception {
+        String name = "Concurrent Agent " + UUID.randomUUID();
+        AgentUpsertRequest request = new AgentUpsertRequest(
+                name, "PostgreSQL uniqueness", "help", "mock", "hify-mock",
+                0.2, 2048, 6, 10, List.of("calculator"), true);
+        int callers = 8;
+        ExecutorService pool = Executors.newFixedThreadPool(callers);
+        CountDownLatch ready = new CountDownLatch(callers);
+        CountDownLatch start = new CountDownLatch(1);
+        List<Future<CreateAttempt>> futures = new ArrayList<>();
+        try {
+            for (int i = 0; i < callers; i++) {
+                futures.add(pool.submit(() -> {
+                    ready.countDown();
+                    start.await();
+                    try {
+                        agents.create(request);
+                        return new CreateAttempt(true, null);
+                    } catch (BizException exception) {
+                        return new CreateAttempt(false, exception.errorCode());
+                    }
+                }));
+            }
+            ready.await();
+            start.countDown();
+
+            List<CreateAttempt> results = new ArrayList<>();
+            for (Future<CreateAttempt> future : futures) results.add(future.get());
+            assertThat(results).filteredOn(CreateAttempt::created).hasSize(1);
+            assertThat(results).filteredOn(result -> !result.created())
+                    .extracting(CreateAttempt::errorCode).containsOnly(ErrorCode.CONFLICT);
+            assertThat(jdbc.queryForObject(
+                    "SELECT COUNT(*) FROM agent_definitions WHERE name = ?", Long.class, name))
+                    .isEqualTo(1L);
+        } finally {
+            pool.shutdownNow();
+        }
+    }
 
     @Test
     void concurrentIdempotentCreatesConvergeAndTerminalCasHasOneWinner() throws Exception {
@@ -133,4 +180,6 @@ class PostgresConcurrencyIntegrationTest {
         }
         throw new AssertionError("Run did not reach a terminal state");
     }
+
+    private record CreateAttempt(boolean created, ErrorCode errorCode) {}
 }

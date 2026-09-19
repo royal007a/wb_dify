@@ -16,8 +16,10 @@ erDiagram
   PROVIDER ||--|| PROVIDER_HEALTH : reports
   AGENT ||--o{ AGENT_VERSION : publishes
   AGENT_VERSION }o--|| PROVIDER_MODEL : uses
-  AGENT_VERSION ||--o{ AGENT_TOOL_BINDING : binds
+  AGENT ||--o{ AGENT_TOOL_BINDING : drafts
+  AGENT_VERSION ||--o{ AGENT_VERSION_TOOL_BINDING : snapshots
   TOOL_DEFINITION ||--o{ AGENT_TOOL_BINDING : selected
+  TOOL_DEFINITION ||--o{ AGENT_VERSION_TOOL_BINDING : published
   CONVERSATION }o--|| AGENT_VERSION : pins
   CONVERSATION ||--o{ MESSAGE : contains
   CONVERSATION ||--o{ AGENT_RUN : executes
@@ -40,11 +42,12 @@ erDiagram
 | `providers` | 内部 BIGINT `id`、外部 `public_id`、name/type/base_url、版本化 `auth_config`、default_model_id、enabled；auth JSON 只存 credentialRef 等元数据，不存 key |
 | `provider_models` | provider_id、display_name、model_id、enabled/is_default/sort_order；`provider_id+model_id` unique |
 | `provider_health` | provider_id 一对一、status/latency_ms/error_code/message/checked_at；与低频配置写分离 |
-| `agent_definitions` | 当前迁移期草稿表：id/name/prompt/provider/model/参数/draft_revision/published_version_id；后续可重命名但外部 ID 不变 |
+| `agent_definitions` | 当前迁移期草稿表：id/name unique/prompt/provider/model/参数/draft_revision/published_version_id/archived_at；后续可重命名但外部 ID 不变 |
 | `agent_versions` | agent_id、version_no、不可变规范化配置列、snapshot_digest；agent+version unique |
 | `tool_definitions` | tool identity, source, schema_version, input_schema JSONB, risk |
 | `mcp_servers` | name, transport, server_url, credential_ref, policy, status |
-| `agent_tool_bindings` | agent_version_id, tool_definition_id, schema snapshot/policy |
+| `agent_tool_bindings` | agent_id + tool_name unique；仅表示可变草稿工具集合，归档时物理清理 |
+| `agent_version_tool_bindings` | agent_version_id + tool_name unique；发布时复制的不可变运行快照 |
 | `conversations` | user_id, agent_version_id, title, status, last_message_at |
 | `messages` | conversation_id, sequence, role, content JSONB, tool_call_id, token_usage |
 | `agent_runs` | conversation_id, agent_version_id, state, terminal_reason, `cancel_requested_at`, `resumed_from_run_id`, `resolved_gap_ids`, deadlines/budgets/usage, version |
@@ -74,6 +77,8 @@ erDiagram
 - `provider_health(provider_id)` unique；健康检查不改变 Provider 配置行，也不驱逐 `provider-cache`。
 - `agent_runs(resumed_from_run_id)` 记录 NEEDS_INPUT 后的新 Run 恢复链；恢复必须保持 conversation 相同，`resolved_gap_ids` 是当前 MVP 的审计投影，权威 Gap 状态仍在 checkpoint context snapshot。
 - `conversations.agent_version_id` 在会话创建时固定；`agent_runs.agent_version_id/agent_snapshot_digest` 再次投影执行证据，草稿更新不得改变旧会话。
+- `agent_definitions.name` unique，归档后名称仍保留；`archived_at` 非空的草稿不能再管理或创建 Conversation。
+- `agent_tool_bindings(agent_id, tool_name)` 与 `agent_version_tool_bindings(agent_version_id, tool_name)` 分离；发布 digest 覆盖排序后的工具集合，归档只删除草稿绑定。
 - `tool_calls(run_id, call_id)` unique；写工具另存 idempotency key。
 - `document_chunks` 为 embedding 建 HNSW；检索必须带 knowledge_base/filter 和 LIMIT。
 - `message_citations(message_id, rank)` 与 `document_chunks(document_id, ordinal)` 建索引。
