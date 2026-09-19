@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-19T08:09:41Z",
+  "updatedAt": "2026-09-19T14:48:46Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -121,6 +121,81 @@
       "evidence": [],
       "createdAt": "2026-09-19T07:45:00Z",
       "updatedAt": "2026-09-19T07:45:00Z"
+    },
+    {
+      "id": "RUNTIME-001",
+      "title": "建立 Runtime 能力租约与历史提交协议",
+      "description": "为 Run 固定能力版本和工具 schema 摘要，执行前二次校验租约，并以 operation 身份和语义摘要提交 canonical history。",
+      "priority": "P0",
+      "status": "pending",
+      "scopes": ["backend", "migration", "runtime"],
+      "verifyScopes": ["backend", "migration", "runtime"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["HARNESS-001"],
+      "acceptance": [
+        "每个 Run 持久化 capabilityRevision 和 toolSchemaDigest",
+        "工具执行前用 runId/attemptId/lease/cancelRequestedAt 二次校验",
+        "canonical history 按 snapshot/mutation/reread/revision/projection/ack 提交",
+        "相同 operationId 携带不同语义摘要时确定性冲突"
+      ],
+      "planPath": "exec-plans/active/RUNTIME-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-09-19T14:48:46Z",
+      "updatedAt": "2026-09-19T14:48:46Z"
+    },
+    {
+      "id": "CONTEXT-001",
+      "title": "建立上下文预算归档与压缩评测",
+      "description": "实现可计算上下文预算、Tool Result 归档、重新测量的 checkpoint compaction 及质量评测。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["backend", "runtime", "eval"],
+      "verifyScopes": ["backend", "runtime", "eval"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["RUNTIME-001"],
+      "acceptance": [
+        "预算显式计算 input/output/reserve/safety",
+        "超预算时优先归档旧 Tool Result 且保持 call/result 配对",
+        "checkpoint 压缩后重新测量且超限失败",
+        "评测覆盖约束保持率、重复调查率和恢复成功率"
+      ],
+      "planPath": "exec-plans/active/CONTEXT-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-09-19T14:48:46Z",
+      "updatedAt": "2026-09-19T14:48:46Z"
+    },
+    {
+      "id": "SUBAGENT-001",
+      "title": "建立子 Agent 任务与延迟消费确认",
+      "description": "实现子任务独立状态机、输出引用、delivered/claimed/consumed 协议及启动 lost 收敛。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["backend", "migration", "runtime"],
+      "verifyScopes": ["backend", "migration", "runtime"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["CONTEXT-001"],
+      "acceptance": [
+        "子任务状态与输出引用独立持久化",
+        "父 Run 成功提交前不得确认 consumed",
+        "父 Run 失败时 claimed 输出仍可再次交付",
+        "启动时无执行者的活动子任务收敛为 lost"
+      ],
+      "planPath": "exec-plans/active/SUBAGENT-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-09-19T14:48:46Z",
+      "updatedAt": "2026-09-19T14:48:46Z"
     }
   ]
 }
