@@ -2,6 +2,8 @@ package com.hify.runtime;
 
 import com.hify.common.ExecutionControl;
 import com.hify.common.ExecutionCancelledException;
+import com.hify.tool.api.ToolCatalog;
+import com.hify.tool.api.ToolCatalogItem;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -14,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
-public class ToolRuntime {
+public class ToolRuntime implements ToolCatalog {
     private static final Pattern CALCULATION = Pattern.compile(
             "^\\s*(-?\\d+(?:\\.\\d+)?)\\s*([+\\-*/])\\s*(-?\\d+(?:\\.\\d+)?)\\s*$");
 
@@ -35,6 +37,26 @@ public class ToolRuntime {
 
     public List<ToolDefinition> definitions(Set<String> enabledNames) {
         return definitions.values().stream().filter(tool -> enabledNames.contains(tool.name())).toList();
+    }
+
+    @Override
+    public List<ToolCatalogItem> items() {
+        return definitions.values().stream().map(definition -> new ToolCatalogItem(
+                definition.name(),
+                displayName(definition.name()),
+                definition.description(),
+                "BUILTIN",
+                definition.risk().toUpperCase(java.util.Locale.ROOT),
+                true
+        )).toList();
+    }
+
+    private String displayName(String toolName) {
+        return switch (toolName) {
+            case "current_time" -> "当前时间";
+            case "calculator" -> "计算器";
+            default -> toolName;
+        };
     }
 
     public ExecutionResult execute(RuntimeMessage.ToolCall call, Set<String> enabledNames) {
