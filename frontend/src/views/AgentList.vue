@@ -1,25 +1,30 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { Plus, Promotion } from '@element-plus/icons-vue'
+import { Delete, Plus, Promotion } from '@element-plus/icons-vue'
 import type { FormRules } from 'element-plus'
 import HifyFormDialog from '@/components/HifyFormDialog.vue'
 import HifyTable, { type HifyColumn, type HifyPageResult } from '@/components/HifyTable.vue'
 import { notifySuccess } from '@/utils/notify'
-import { createAgent, getAgent, listAgents, publishAgent, updateAgent,
+import { archiveAgent, createAgent, getAgent, listAgents, publishAgent, replaceAgentTools, updateAgent,
   type Agent, type AgentPayload } from '@/api/agents'
 import { listProviders, type Provider } from '@/api/providers'
+import { listTools, type ToolCatalogItem } from '@/api/tools'
+import { useConfirm } from '@/composables/useConfirm'
 
 interface AgentForm extends Record<string, unknown>, AgentPayload {}
 type TableExpose = { refresh: (resetPage?: boolean) => Promise<void> }
 type DialogExpose = { open: (data?: Partial<AgentForm>) => Promise<void> }
 
 const columns: HifyColumn<Agent>[] = [
-  { label: '名称', prop: 'name', minWidth: 180 },
-  { label: '模型', prop: 'modelId', minWidth: 170 },
-  { label: '草稿', width: 90, slot: 'draft' },
-  { label: '已发布', width: 110, slot: 'published' },
+  { label: '名称', prop: 'name', minWidth: 160 },
+  { label: '模型', prop: 'modelId', minWidth: 150 },
+  { label: '工具', width: 70, slot: 'tools' },
+  { label: 'Temperature', prop: 'temperature', width: 115 },
+  { label: '草稿', width: 74, slot: 'draft' },
+  { label: '发布状态', width: 145, slot: 'published' },
   { label: '状态', width: 90, slot: 'status' },
-  { label: '操作', width: 170, slot: 'actions', align: 'right' },
+  { label: '创建时间', width: 170, slot: 'createdAt' },
+  { label: '操作', width: 210, slot: 'actions', align: 'right' },
 ]
 const tableRef = ref<TableExpose>()
 const dialogRef = ref<DialogExpose>()
@@ -27,7 +32,15 @@ const dialogVisible = ref(false)
 const editingId = ref<string>()
 const publishingId = ref<string>()
 const providers = ref<Provider[]>([])
+const toolCatalog = ref<ToolCatalogItem[]>([])
+const archiveTarget = ref<Agent>()
 const dialogTitle = computed(() => editingId.value ? '编辑 Agent 草稿' : '创建 Agent 草稿')
+const archiveMessage = computed(() => `确认归档「${archiveTarget.value?.name ?? '该 Agent'}」？归档后不能创建新会话，历史发布版本仍会保留。`)
+const { confirming: archiving, execute: confirmArchive } = useConfirm(
+  archiveMessage,
+  archiveAgent,
+  'Agent 已归档',
+)
 const rules: FormRules<AgentForm> = {
   name: [{ required: true, message: '请输入 Agent 名称', trigger: 'blur' }],
   instructions: [{ required: true, message: '请输入系统指令', trigger: 'blur' }],
@@ -47,14 +60,21 @@ async function ensureProviders() {
   if (providers.value.length) return
   providers.value = (await listProviders({ page: 1, pageSize: 100 })).data.filter(item => item.enabled)
 }
+async function ensureTools() {
+  if (toolCatalog.value.length) return
+  toolCatalog.value = await listTools()
+}
+async function ensureReferences() {
+  await Promise.all([ensureProviders(), ensureTools()])
+}
 async function openCreate() {
   editingId.value = undefined
-  await ensureProviders()
+  await ensureReferences()
   await dialogRef.value?.open()
 }
 async function openEdit(row: Agent) {
   editingId.value = row.id
-  await ensureProviders()
+  await ensureReferences()
   const agent = await getAgent(row.id)
   await dialogRef.value?.open({ ...agent })
 }
@@ -65,7 +85,12 @@ function onProviderChanged(form: AgentForm) {
 async function save(form: AgentForm, done: (success?: boolean) => void) {
   try {
     const payload: AgentPayload = { ...form, enabledTools: form.enabledTools ?? [] }
-    if (editingId.value) { await updateAgent(editingId.value, payload); notifySuccess('Agent 草稿已更新') }
+    if (editingId.value) {
+      const { enabledTools, ...configuration } = payload
+      await updateAgent(editingId.value, configuration)
+      await replaceAgentTools(editingId.value, enabledTools)
+      notifySuccess('Agent 草稿已更新')
+    }
     else { await createAgent(payload); notifySuccess('Agent 草稿已创建') }
     done(); await tableRef.value?.refresh(true)
   } catch { done(false) }
@@ -78,6 +103,17 @@ async function publish(row: Agent) {
     await tableRef.value?.refresh()
   } finally { publishingId.value = undefined }
 }
+async function archiveRow(row: Agent) {
+  archiveTarget.value = row
+  try {
+    if (await confirmArchive(row.id)) await tableRef.value?.refresh(true)
+  } finally { archiveTarget.value = undefined }
+}
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
+  }).format(new Date(value))
+}
 </script>
 
 <template>
@@ -88,12 +124,15 @@ async function publish(row: Agent) {
     </div>
     <div class="page-card">
       <HifyTable ref="tableRef" :columns="columns" :api="loadAgents">
+        <template #tools="{ row }"><span class="tool-count">{{ row.enabledTools.length }}</span></template>
         <template #draft="{ row }"><span class="revision">r{{ row.draftRevision }}</span></template>
-        <template #published="{ row }"><el-tag :type="row.publishedVersionNo ? 'success' : 'warning'" effect="light" round>{{ row.publishedVersionNo ? `v${row.publishedVersionNo}` : '未发布' }}</el-tag></template>
+        <template #published="{ row }"><el-tag :type="!row.publishedVersionNo || row.hasUnpublishedChanges ? 'warning' : 'success'" effect="light" round>{{ !row.publishedVersionNo ? '未发布' : row.hasUnpublishedChanges ? `v${row.publishedVersionNo} · 有变更` : `v${row.publishedVersionNo} · 已同步` }}</el-tag></template>
         <template #status="{ row }"><el-tag :type="row.enabled ? 'success' : 'info'" effect="light" round>{{ row.enabled ? '启用' : '禁用' }}</el-tag></template>
+        <template #createdAt="{ row }"><span class="created-at">{{ formatDate(row.createdAt) }}</span></template>
         <template #actions="{ row }"><div class="row-actions">
           <el-button link type="primary" @click="openEdit(row)">编辑</el-button>
-          <el-button link type="success" :icon="Promotion" :loading="publishingId === row.id" @click="publish(row)">发布</el-button>
+          <el-button link type="success" :icon="Promotion" :disabled="!row.hasUnpublishedChanges" :loading="publishingId === row.id" @click="publish(row)">发布</el-button>
+          <el-button link type="danger" :icon="Delete" :loading="archiving && archiveTarget?.id === row.id" @click="archiveRow(row)">归档</el-button>
         </div></template>
       </HifyTable>
     </div>
@@ -106,12 +145,19 @@ async function publish(row: Agent) {
         <el-form-item label="Provider" prop="providerId"><el-select v-model="model.providerId" style="width:100%" @change="onProviderChanged(model)"><el-option v-for="provider in providers" :key="provider.id" :label="provider.name" :value="provider.id" /></el-select></el-form-item>
         <el-form-item label="模型" prop="modelId"><el-select v-model="model.modelId" style="width:100%"><el-option v-for="item in selectedProvider(model)?.models.filter(m => m.enabled) ?? []" :key="item.modelId" :label="item.displayName" :value="item.modelId"><span>{{ item.displayName }}</span><small>{{ item.modelId }}</small></el-option></el-select></el-form-item>
         <div class="parameter-grid">
-          <el-form-item label="Temperature"><el-input-number v-model="model.temperature" :min="0" :max="2" :step="0.1" /></el-form-item>
+          <el-form-item label="Temperature"><el-input-number v-model="model.temperature" :min="0" :max="1" :step="0.1" /></el-form-item>
           <el-form-item label="最大 Token"><el-input-number v-model="model.maxTokens" :min="1" :max="32768" /></el-form-item>
           <el-form-item label="最大轮次"><el-input-number v-model="model.maxTurns" :min="1" :max="20" /></el-form-item>
           <el-form-item label="上下文轮次"><el-input-number v-model="model.maxContextTurns" :min="1" :max="100" /></el-form-item>
         </div>
-        <el-form-item label="工具"><el-checkbox-group v-model="model.enabledTools"><el-checkbox value="current_time">当前时间</el-checkbox><el-checkbox value="calculator">计算器</el-checkbox></el-checkbox-group></el-form-item>
+        <el-form-item label="工具">
+          <el-checkbox-group v-model="model.enabledTools" class="tool-options">
+            <el-checkbox v-for="tool in toolCatalog" :key="tool.id" :value="tool.id" :disabled="!tool.available" class="tool-option">
+              <span>{{ tool.displayName }}</span><el-tag size="small" effect="plain">{{ tool.risk }}</el-tag>
+              <small>{{ tool.description }}</small>
+            </el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
         <el-form-item label="启用"><el-switch v-model="model.enabled" /></el-form-item>
         <div class="publish-note">保存只更新草稿；点击列表中的“发布”后，新会话才会使用新版本，旧会话保持原快照。</div>
       </template>
@@ -121,11 +167,17 @@ async function publish(row: Agent) {
 
 <style scoped>
 .revision { color: var(--color-primary-700); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 700; }
+.tool-count { display: inline-grid; min-width: 26px; height: 26px; place-items: center; color: var(--color-primary-700); font-size: 12px; font-weight: 700; background: var(--color-primary-50); border-radius: 999px; }
+.created-at { color: var(--color-text-secondary); font-size: 12px; }
 .row-actions { display: flex; justify-content: flex-end; gap: 8px; }
 .row-actions .el-button + .el-button { margin-left: 0; }
 .parameter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
 .parameter-grid :deep(.el-input-number) { width: 100%; }
 .publish-note { padding: 10px 12px; color: var(--color-text-secondary); font-size: 12px; line-height: 1.6; background: var(--color-primary-50); border-radius: var(--radius-md); }
+.tool-options { display: grid; width: 100%; gap: 8px; }
+.tool-option { width: 100%; height: auto; margin-right: 0; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+.tool-option :deep(.el-checkbox__label) { display: grid; grid-template-columns: auto 1fr; align-items: center; width: 100%; gap: 2px 8px; }
+.tool-option small { grid-column: 1 / -1; overflow: hidden; color: var(--color-text-tertiary); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
 .el-select-dropdown__item small { float: right; color: var(--color-text-tertiary); }
 @media (max-width: 760px) { .parameter-grid { grid-template-columns: 1fr; } }
 </style>
