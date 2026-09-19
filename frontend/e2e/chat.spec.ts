@@ -25,6 +25,7 @@ test('published Agent completes a streamed calculator run', async ({ page }) => 
   await expect(page.locator('.chat-toolbar p')).toContainText('COMPLETED')
   await expect(page.locator('.composer-actions')).toContainText('固定版本')
   if (process.env.E2E_SCREENSHOT) {
+    await page.evaluate(() => window.scrollTo(0, 0))
     await page.screenshot({ path: process.env.E2E_SCREENSHOT, fullPage: true })
   }
 })
