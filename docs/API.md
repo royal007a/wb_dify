@@ -141,6 +141,8 @@ data: {"version":1,"runId":"run_...","terminalReason":"PERMISSION_DENIED","error
 
 `history.committed` 表示某个 `operationId` 的 canonical history 已经持久化、回读并取得 revision；其 `semanticDigest` 用于识别合法重放和身份冲突。它不是外部工具副作用已提交的证明。
 
+`context.prepared` 只在发生归档或压缩时发送，包含 `originalTokens/preparedTokens/archivedToolResults/compacted`。它描述模型输入投影，不表示 canonical history 被删除。
+
 前端不得把所有 `*.failed` 都当作 Run 终态；只有 `run.completed/run.failed/run.cancelled/run.needs_input` 结束流。
 
 Playground 只列出 `enabled=true` 且已有 `publishedVersionId` 的 Agent。创建 Conversation 后，页面显示固定的

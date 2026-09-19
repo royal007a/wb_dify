@@ -137,6 +137,8 @@ sequenceDiagram
 
 Run 接纳时固定 `capabilityRevision/toolSchemaDigest`，模型工具定义与实际执行共享同一能力视图。每个 Attempt 在 schema/权限检查后、调用工具前再次校验 runId、attemptId、能力 revision 和持久化取消状态。模型响应与 tool result 按 operationId 写入 canonical history；只有完成语义快照、mutation、回读校验、revision 和 `history.committed` 投影后，QueryLoop 才继续。相同 operationId 内容不同会失败，不用后写覆盖前写。
 
+每次模型请求前由 ContextManager 计算 `window - output - reserve - safety` 输入预算，消息和工具 schema 一并计量。超限时先把大 Tool Result 投影成 canonical history 引用，重新测量；仍超限才做保留关键约束与最新交互闭包的 checkpoint compaction，再次测量。归档和压缩不改 canonical history，仍超限时明确失败。
+
 ### 3.3 Run 状态机
 
 ```mermaid
@@ -199,6 +201,7 @@ confirmation.required
 checkpoint.created
 checkpoint.restored
 history.committed
+context.prepared
 run.completed
 run.failed
 run.cancelled

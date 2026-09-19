@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-19T15:00:20Z",
+  "updatedAt": "2026-09-19T15:06:30Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -220,7 +220,7 @@
       "title": "建立上下文预算归档与压缩评测",
       "description": "实现可计算上下文预算、Tool Result 归档、重新测量的 checkpoint compaction 及质量评测。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "runtime",
@@ -243,12 +243,22 @@
         "checkpoint 压缩后重新测量且超限失败",
         "评测覆盖约束保持率、重复调查率和恢复成功率"
       ],
-      "planPath": "exec-plans/active/CONTEXT-001.md",
+      "planPath": "exec-plans/completed/CONTEXT-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "CONTEXT-001-20260919T150026Z-8930877a",
+          "path": "harness/evidence/CONTEXT-001/CONTEXT-001-20260919T150026Z-8930877a",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "1cd00f4854f2050f58f7188a167689db9229fe4a",
+          "headCommit": "1cd00f4854f2050f58f7188a167689db9229fe4a",
+          "recordedAt": "2026-09-19T15:06:30Z"
+        }
+      ],
       "createdAt": "2026-09-19T14:48:46Z",
-      "updatedAt": "2026-09-19T14:48:46Z"
+      "updatedAt": "2026-09-19T15:06:30Z"
     },
     {
       "id": "SUBAGENT-001",

@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "RUNTIME-001-20260919T144937Z-2d63f8ee",
-    "path": "harness/evidence/RUNTIME-001/RUNTIME-001-20260919T144937Z-2d63f8ee",
+    "runId": "CONTEXT-001-20260919T150026Z-8930877a",
+    "path": "harness/evidence/CONTEXT-001/CONTEXT-001-20260919T150026Z-8930877a",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "2c56524db69cfebea73a6887c4475a4b387695ab",
-    "headCommit": "2c56524db69cfebea73a6887c4475a4b387695ab",
-    "recordedAt": "2026-09-19T15:00:20Z"
+    "baselineCommit": "1cd00f4854f2050f58f7188a167689db9229fe4a",
+    "headCommit": "1cd00f4854f2050f58f7188a167689db9229fe4a",
+    "recordedAt": "2026-09-19T15:06:30Z"
   },
-  "lastCompletedTaskId": "RUNTIME-001",
-  "updatedAt": "2026-09-19T15:00:20Z"
+  "lastCompletedTaskId": "CONTEXT-001",
+  "updatedAt": "2026-09-19T15:06:30Z"
 }

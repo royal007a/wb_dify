@@ -14,6 +14,7 @@
 | Query Loop | `runtime/QueryLoop.java`、`runtime/plan`、`runtime/state` | 六出口 ContinuationDecision、Claim/Evidence/Gap、可执行 FinishGate、有限 Retry、确定性 read-only Replan、no-progress 和明确终态均有测试 |
 | Checkpoint/恢复 | `RunCheckpoint`、`V3__run_replan_control.sql`、`V4__run_context_state.sql` | 保存已配对消息、预算、完整 Plan 与 Evidence/Gap 版本化快照；启动恢复 RUNNING，结构化输入通过新子 Run 恢复 NEEDS_INPUT Gap |
 | Runtime 能力/历史提交 | `CapabilitySnapshot`、`ToolExecutionLease`、`CommittedHistoryWriter`、`V9__runtime_capability_and_history.sql` | Run 固定 capability/tool schema 摘要；执行前二次校验 attempt lease；模型/工具结果按 operation identity 提交、回读、投影，冲突不覆盖 |
+| Context 治理 | `runtime/context/*`、`ContextManagementEvaluationTest`、ADR-0010 | 输入/输出/预留/安全预算；Tool Result 先归档、checkpoint 后压缩且每步重测；评测语义安全而非只看 token 降幅 |
 | Intent Router | `hify-chat/com.hify.intent`、`IntentRoutingController` | 四出口契约、确定性规则层、结构化模型候选、低置信/歧义/缺槽澄清、120 条中文评测集；当前仅预览，不接管 Run |
 | Mock 模型 | `MockModelClient.java` | 可触发时间或单个二元运算工具 |
 | 模型协议适配 | `ProviderAdapterRegistry`、三个原生/一个兼容 Adapter | OpenAI tool_calls、Anthropic tool_use/tool_result、Gemini functionCall/functionResponse 的同步与流式映射；流式文本 delta 和工具参数重组已有测试 |

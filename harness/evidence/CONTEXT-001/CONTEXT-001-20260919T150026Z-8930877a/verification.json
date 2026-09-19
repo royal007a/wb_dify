@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "backend",
+    "runtime",
+    "eval"
+  ],
+  "base": "working-tree",
+  "headCommit": "1cd00f4854f2050f58f7188a167689db9229fe4a",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "backend-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/CONTEXT-001/CONTEXT-001-20260919T150026Z-8930877a/backend-tests.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/CONTEXT-001/CONTEXT-001-20260919T150026Z-8930877a/runtime-tests.log"
+    },
+    {
+      "name": "intent-and-context-eval",
+      "exitCode": 0,
+      "log": "harness/evidence/CONTEXT-001/CONTEXT-001-20260919T150026Z-8930877a/intent-and-context-eval.log"
+    }
+  ],
+  "finishedAt": "2026-09-19T15:06:16Z"
+}

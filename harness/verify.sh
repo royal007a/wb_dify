@@ -71,7 +71,7 @@ detect_scopes() {
       backend/hify-chat/src/main/java/com/hify/runtime/*|backend/hify-chat/src/test/java/com/hify/runtime/*|backend/hify-app/src/main/java/com/hify/api/RunController.java|backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java) add_scope runtime ;;
     esac
     case "$path" in
-      backend/hify-chat/src/main/java/com/hify/intent/*|backend/hify-chat/src/test/java/com/hify/intent/*|backend/hify-chat/src/test/resources/intent/*|docs/evidence/intent-*) add_scope eval ;;
+      backend/hify-chat/src/main/java/com/hify/intent/*|backend/hify-chat/src/test/java/com/hify/intent/*|backend/hify-chat/src/test/resources/intent/*|backend/hify-chat/src/main/java/com/hify/runtime/context/*|backend/hify-chat/src/test/java/com/hify/runtime/context/*|docs/evidence/intent-*) add_scope eval ;;
     esac
   done <"$changes_file"
   [ -n "${SCOPES# }" ] || add_scope harness
@@ -156,7 +156,7 @@ for scope in $SCOPES; do
       run_step runtime-tests sh -c "cd '$ROOT_DIR/backend' && mvn -pl hify-app -am -Dtest=QueryLoopTest,PlanStateMachineTest,ExecutionContextStateTest,RunFlowIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test"
       ;;
     eval)
-      run_step intent-eval sh -c "cd '$ROOT_DIR/backend' && mvn -pl hify-chat -am -Dtest=IntentDecisionTest,DeterministicIntentRouterTest,LayeredIntentRouterTest,StructuredModelIntentClassifierTest,IntentEvaluationDatasetTest -Dsurefire.failIfNoSpecifiedTests=false test"
+      run_step intent-and-context-eval sh -c "cd '$ROOT_DIR/backend' && mvn -pl hify-chat -am -Dtest=IntentDecisionTest,DeterministicIntentRouterTest,LayeredIntentRouterTest,StructuredModelIntentClassifierTest,IntentEvaluationDatasetTest,ContextManagementEvaluationTest -Dsurefire.failIfNoSpecifiedTests=false test"
       ;;
     frontend)
       if [ ! -d "$ROOT_DIR/frontend/node_modules" ]; then

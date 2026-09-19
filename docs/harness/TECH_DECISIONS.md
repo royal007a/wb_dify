@@ -24,5 +24,6 @@
 - 原生 Provider 流：`../decisions/ADR-0007-native-provider-streaming.md`
 - Agent 归档/工具快照：`../decisions/ADR-0008-agent-archive-and-tool-snapshots.md`
 - Runtime 能力租约/历史提交：`../decisions/ADR-0009-runtime-capability-and-history-commit.md`
+- 上下文预算/归档/压缩：`../decisions/ADR-0010-context-budget-and-compaction.md`
 
 当 Harness 的状态模型、授权语义或 evidence 保留策略发生不兼容变化时，新增正式 ADR，不在本索引中直接覆盖历史理由。

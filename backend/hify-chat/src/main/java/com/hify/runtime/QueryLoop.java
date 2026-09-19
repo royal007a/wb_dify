@@ -17,7 +17,11 @@ import com.hify.runtime.state.ExecutionContextState;
 import com.hify.runtime.state.FinishGate;
 import com.hify.runtime.state.GapState;
 import com.hify.runtime.state.RecoveryNarrative;
+import com.hify.runtime.context.ContextBudget;
+import com.hify.runtime.context.ContextManager;
+import com.hify.runtime.context.ContextWindowExceededException;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,9 +32,16 @@ import java.util.function.BooleanSupplier;
 @Component
 public class QueryLoop {
     private final ToolRuntime toolRuntime;
+    private final ContextManager contextManager;
 
+    @Autowired
     public QueryLoop(ToolRuntime toolRuntime) {
+        this(toolRuntime, new ContextManager());
+    }
+
+    QueryLoop(ToolRuntime toolRuntime, ContextManager contextManager) {
         this.toolRuntime = toolRuntime;
+        this.contextManager = contextManager;
     }
 
     public Result run(List<RuntimeMessage> initialMessages, ModelClient modelClient,
@@ -84,7 +95,6 @@ public class QueryLoop {
         Set<String> seenToolCallIds = existingToolCallIds(initialMessages);
         ExecutionControl control = ExecutionControl.withTimeout(policy.timeout(), policy.cancelled());
         int toolCalls = completedToolCalls;
-        int estimatedTokens = estimateTokens(messages);
         ExecutionPlan plan = initialPlan;
         ExecutionContextState contextState = initialContext;
         PlanStateMachine state = new PlanStateMachine();
@@ -107,21 +117,22 @@ public class QueryLoop {
                 return terminal(TerminalReason.TIMEOUT, "Run timed out.", messages,
                         turn - 1, toolCalls, plan, replanDecisions, checkpoint);
             }
-            if (estimatedTokens >= policy.maxEstimatedTokens()) {
-                transitionIfPossible(state, PlanPhase.FAILED);
-                return terminal(TerminalReason.TOKEN_BUDGET_EXCEEDED,
-                        "Estimated token budget exceeded.", messages, turn - 1, toolCalls,
-                        plan, replanDecisions, checkpoint);
-            }
-
             RuntimeMessage response;
             try {
                 observer.onModelStarted(turn);
                 int currentTurn = turn;
+                ContextManager.PreparedContext prepared = contextManager.prepare(
+                        messages, capability.definitions(), ContextBudget.fromWindow(policy.maxEstimatedTokens()));
+                observer.onContextPrepared(turn, prepared);
                 response = modelClient.generateStream(new ModelRequest(
-                        model, temperature, List.copyOf(messages),
+                        model, temperature, prepared.messages(),
                         capability.definitions(), control),
                         delta -> observer.onModelDelta(currentTurn, delta));
+            } catch (ContextWindowExceededException exception) {
+                transitionIfPossible(state, PlanPhase.FAILED);
+                return terminal(TerminalReason.TOKEN_BUDGET_EXCEEDED,
+                        exception.getMessage(), messages, turn - 1, toolCalls,
+                        plan, replanDecisions, checkpoint);
             } catch (ExecutionCancelledException exception) {
                 transitionIfPossible(state, PlanPhase.CANCELLED);
                 return terminal(TerminalReason.CANCELLED, "Run cancelled.", messages,
@@ -143,7 +154,6 @@ public class QueryLoop {
                         plan, replanDecisions, checkpoint);
             }
             messages.add(response);
-            estimatedTokens += estimateTokens(List.of(response));
             commitHistory(identity, "model:" + turn, messages, observer);
             observer.onModelCompleted(turn, response);
 
@@ -248,7 +258,6 @@ public class QueryLoop {
 
                 RuntimeMessage toolResult = RuntimeMessage.toolResult(call.id(), result.value(), result.error());
                 messages.add(toolResult);
-                estimatedTokens += estimateTokens(List.of(toolResult));
                 commitHistory(identity, "tool:" + call.id(), messages, observer);
 
                 if (result.error()) {
@@ -420,13 +429,6 @@ public class QueryLoop {
         };
     }
 
-    private int estimateTokens(List<RuntimeMessage> messages) {
-        int characters = messages.stream()
-                .mapToInt(message -> message.content() == null ? 0 : message.content().length())
-                .sum();
-        return Math.max(1, (characters + 3) / 4);
-    }
-
     private Set<String> existingToolCallIds(List<RuntimeMessage> messages) {
         Set<String> ids = new HashSet<>();
         for (RuntimeMessage message : messages) {
@@ -483,6 +485,7 @@ public class QueryLoop {
         default void onModelDelta(int turn, String delta) {}
         default void onModelCompleted(int turn, RuntimeMessage message) {}
         default void onHistoryCommitted(String operationId, HistoryCommitter.CommitReceipt receipt) {}
+        default void onContextPrepared(int turn, ContextManager.PreparedContext context) {}
         default void onToolStarted(int turn, RuntimeMessage.ToolCall call) {}
         default void onToolCompleted(int turn, RuntimeMessage.ToolCall call,
                                      ToolRuntime.ExecutionResult result) {}

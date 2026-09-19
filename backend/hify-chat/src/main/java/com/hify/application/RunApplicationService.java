@@ -32,6 +32,7 @@ import com.hify.runtime.plan.StepAttempt;
 import com.hify.runtime.state.ContinuationDecision;
 import com.hify.runtime.state.ExecutionContextState;
 import com.hify.runtime.state.RecoveryNarrative;
+import com.hify.runtime.context.ContextManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -356,6 +357,17 @@ public class RunApplicationService {
                         "claimCount", contextState.claims().size(),
                         "evidenceCount", contextState.evidence().size(),
                         "openGapCount", openGaps.size(), "openGaps", openGaps));
+            }
+
+            @Override
+            public void onContextPrepared(int turn, ContextManager.PreparedContext context) {
+                if (!context.archived() && !context.compacted()) return;
+                eventBroker.publish(runId, "context.prepared", Map.of(
+                        "version", 1, "runId", runId, "turn", turn,
+                        "originalTokens", context.originalTokens(),
+                        "preparedTokens", context.preparedTokens(),
+                        "archivedToolResults", context.archiveReferences().size(),
+                        "compacted", context.compacted()));
             }
 
             @Override

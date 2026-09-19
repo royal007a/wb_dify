@@ -138,6 +138,42 @@ class QueryLoopTest {
     }
 
     @Test
+    void archivesLargeToolResultBeforeTheNextModelRequestWithoutChangingCanonicalHistory() {
+        ToolRuntime largeResultTool = new ToolRuntime() {
+            @Override
+            public ExecutionResult execute(RuntimeMessage.ToolCall call, CapabilitySnapshot capability,
+                                           ToolExecutionLease lease,
+                                           com.hify.common.ExecutionControl control) {
+                return ExecutionResult.success("diagnostic:" + "x".repeat(4_000));
+            }
+        };
+        AtomicInteger modelCalls = new AtomicInteger();
+        AtomicBoolean sawArchiveReference = new AtomicBoolean();
+        ModelClient model = request -> {
+            if (modelCalls.incrementAndGet() == 1) {
+                return RuntimeMessage.toolCalls(List.of(new RuntimeMessage.ToolCall(
+                        "large-output", "calculator", Map.of("expression", "1+1"))));
+            }
+            sawArchiveReference.set(request.messages().stream()
+                    .anyMatch(message -> "tool".equals(message.role())
+                            && message.content().contains("history://tool-result/large-output")));
+            return RuntimeMessage.assistant("done");
+        };
+
+        QueryLoop.Result result = new QueryLoop(largeResultTool).run(
+                List.of(RuntimeMessage.user("inspect")), model, "mock", 0,
+                Set.of("calculator"),
+                new QueryLoop.RunPolicy(3, 3, 512, Duration.ofSeconds(5), () -> false),
+                QueryLoop.RunObserver.NOOP);
+
+        assertThat(result.reason()).isEqualTo(TerminalReason.COMPLETED);
+        assertThat(sawArchiveReference).isTrue();
+        assertThat(result.messages()).filteredOn(message -> "tool".equals(message.role()))
+                .singleElement().extracting(RuntimeMessage::content).asString()
+                .contains("x".repeat(100));
+    }
+
+    @Test
     void locallyReplansInvalidCalculatorArgumentsAndTracksDistinctCauseCoordinates() {
         AtomicInteger calls = new AtomicInteger();
         List<Integer> observedPlanVersions = new ArrayList<>();

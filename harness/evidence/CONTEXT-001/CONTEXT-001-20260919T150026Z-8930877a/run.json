@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "CONTEXT-001-20260919T150026Z-8930877a",
+  "taskId": "CONTEXT-001",
+  "status": "completed",
+  "baselineCommit": "1cd00f4854f2050f58f7188a167689db9229fe4a",
+  "approvalRef": null,
+  "startedAt": "2026-09-19T15:00:26Z",
+  "exitCode": 0,
+  "reason": "backend runtime and context evaluation passed",
+  "headCommit": "1cd00f4854f2050f58f7188a167689db9229fe4a",
+  "finishedAt": "2026-09-19T15:06:30Z"
+}
