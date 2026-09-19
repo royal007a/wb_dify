@@ -40,6 +40,8 @@ Hify 是一个面向内部 20-50 人、小规模本地部署的 AI Agent 平台�
 - 意图路由契约与评测：`docs/INTENT_ROUTING.md`
 - 业务基础组件交付：`docs/FOUNDATION_COMPONENTS.md`
 - 当前执行路线：`plan.md`
+- 机器任务与自动进度：`harness/tasks.json`、`harness/progress.md`
+- Harness 制度与操作：`docs/harness/README.md`
 - Provider 设计与交付：`docs/PROVIDER.md`
 - 四份课程材料总结：`docs/PDF_READING_SUMMARY.md`
 - 架构与运行时：`docs/ARCHITECTURE.md`

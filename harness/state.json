@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "currentTaskId": null,
+  "runId": null,
+  "baselineCommit": null,
+  "startedAt": null,
+  "evidencePath": null,
+  "lastCheckpoint": null,
+  "lastVerification": {
+    "runId": "HARNESS-001-bootstrap",
+    "path": "harness/evidence/HARNESS-001/bootstrap",
+    "result": "completed",
+    "exitCode": 0,
+    "baselineCommit": "638457d444d36e903496023ac4263ada4e77ca11",
+    "headCommit": "638457d444d36e903496023ac4263ada4e77ca11",
+    "recordedAt": "2026-09-19T08:09:41Z"
+  },
+  "lastCompletedTaskId": "HARNESS-001",
+  "updatedAt": "2026-09-19T08:09:41Z"
+}

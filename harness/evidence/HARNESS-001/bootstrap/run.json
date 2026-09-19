@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "runId": "HARNESS-001-bootstrap",
+  "taskId": "HARNESS-001",
+  "status": "completed",
+  "baselineCommit": "638457d444d36e903496023ac4263ada4e77ca11",
+  "headCommit": "638457d444d36e903496023ac4263ada4e77ca11",
+  "approvalRef": null,
+  "startedAt": "2026-09-19T07:35:00Z",
+  "finishedAt": "2026-09-19T08:09:41Z",
+  "exitCode": 0,
+  "reason": null,
+  "verification": "harness/evidence/HARNESS-001/bootstrap/verification.json"
+}

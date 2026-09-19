@@ -10,4 +10,11 @@ frontend/playwright-report/
 /data/
 dist-packages/
 *.log
+__pycache__/
+*.py[cod]
 .env
+harness/.run-lock/
+harness/evidence/**/*.log
+harness/evidence/**/*.tmp
+harness/evidence/**/changed-files.txt
+harness/evidence/manual/

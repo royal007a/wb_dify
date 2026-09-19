@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hify.local/schemas/tasks-v1.json",
+  "title": "Hify Harness Task State",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "project", "updatedAt", "tasks"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "project": {"const": "hify"},
+    "updatedAt": {"type": "string", "format": "date-time"},
+    "tasks": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/task"}
+    }
+  },
+  "$defs": {
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "title", "description", "priority", "status", "scopes", "verifyScopes",
+        "risk", "operation", "approvalRef", "dependsOn", "acceptance", "planPath",
+        "checkpoint", "blockedReason", "evidence", "createdAt", "updatedAt"
+      ],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[A-Z][A-Z0-9]+-[0-9]{3}$"},
+        "title": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1},
+        "priority": {"enum": ["P0", "P1", "P2"]},
+        "status": {"enum": ["pending", "running", "completed", "blocked"]},
+        "scopes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["backend", "frontend", "migration", "runtime", "eval", "harness"]}},
+        "verifyScopes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["backend", "frontend", "migration", "runtime", "eval", "harness"]}},
+        "risk": {"enum": ["read_only", "reversible_write", "high_risk", "prohibited"]},
+        "operation": {"type": "string", "minLength": 1},
+        "approvalRef": {"type": ["string", "null"]},
+        "dependsOn": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "acceptance": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "planPath": {"type": ["string", "null"]},
+        "checkpoint": {"type": ["object", "null"]},
+        "blockedReason": {"type": ["string", "null"]},
+        "evidence": {"type": "array", "items": {"type": "object"}},
+        "createdAt": {"type": "string", "format": "date-time"},
+        "updatedAt": {"type": "string", "format": "date-time"}
+      }
+    }
+  }
+}

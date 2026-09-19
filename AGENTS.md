@@ -6,6 +6,9 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 
 - 产品范围：`docs/SPEC.md`
 - 当前实现边界：`docs/CURRENT_STATE.md`
+- 机器任务状态：`harness/tasks.json`（唯一真源）
+- 自动进度：`harness/progress.md`（禁止手改）
+- Harness 制度：`docs/harness/README.md`
 - 初版交付证据：`docs/INITIAL_RELEASE.md`
 - 架构与 Query Loop：`docs/ARCHITECTURE.md`
 - 意图路由与评测：`docs/INTENT_ROUTING.md`
@@ -44,6 +47,9 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 - 父 POM 的 modules 必须与目录一一对应；版本只由父 POM/BOM 管理，子模块禁止重复版本。
 - 异常响应必须使用 `Result.fail()` 和 `ErrorCode`；禁止硬编码错误码或错误文案。
 - 空壳模块只建立约定目录和 module marker；没有验收用例前禁止生成推测性 CRUD。
+- 工程任务必须先登记到 `tasks.json`；复杂任务写 `exec-plans/active/<TASK-ID>.md`，不得在聊天或 Markdown 维护第二份状态。
+- 一次只运行一个原子任务；使用 `run-task.sh` 保存 baseline/checkpoint/evidence，高风险操作必须有审批引用。
+- `progress.md` 只能由 `harness.py render-progress` 生成；验收必须由 `verify.sh` 的显式 scope 返回 0。
 
 ## 产品边界
 

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "defaultRisk": "high_risk",
+  "riskLevels": {
+    "read_only": {
+      "allowed": true,
+      "requiresApproval": false,
+      "description": "Inspection, tests, builds, metrics and evidence collection without external mutation."
+    },
+    "reversible_write": {
+      "allowed": true,
+      "requiresApproval": false,
+      "description": "Workspace edits and generated artifacts recoverable through Git or a task checkpoint."
+    },
+    "high_risk": {
+      "allowed": true,
+      "requiresApproval": true,
+      "description": "Deployments, database migrations, external writes and credential-bound operations require a recorded approval reference."
+    },
+    "prohibited": {
+      "allowed": false,
+      "requiresApproval": true,
+      "description": "Credential export, destructive reset and unbounded deletion are never delegated through run-task.sh."
+    }
+  },
+  "operations": {
+    "inspect": "read_only",
+    "verify": "read_only",
+    "workspace_write": "reversible_write",
+    "generated_state": "reversible_write",
+    "database_migration": "high_risk",
+    "deployment": "high_risk",
+    "external_write": "high_risk",
+    "credential_use": "high_risk",
+    "credential_export": "prohibited",
+    "destructive_reset": "prohibited"
+  }
+}

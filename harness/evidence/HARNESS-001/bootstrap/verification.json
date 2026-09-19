@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "migration",
+    "backend",
+    "runtime",
+    "eval",
+    "frontend"
+  ],
+  "base": "working-tree",
+  "headCommit": "638457d444d36e903496023ac4263ada4e77ca11",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/HARNESS-001/bootstrap/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/HARNESS-001/bootstrap/harness-progress.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/HARNESS-001/bootstrap/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/HARNESS-001/bootstrap/harness-shell-syntax.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/HARNESS-001/bootstrap/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/HARNESS-001/bootstrap/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/HARNESS-001/bootstrap/migration-not-skipped.log"
+    },
+    {
+      "name": "backend-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/HARNESS-001/bootstrap/backend-tests.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/HARNESS-001/bootstrap/runtime-tests.log"
+    },
+    {
+      "name": "intent-eval",
+      "exitCode": 0,
+      "log": "harness/evidence/HARNESS-001/bootstrap/intent-eval.log"
+    },
+    {
+      "name": "frontend-typecheck",
+      "exitCode": 0,
+      "log": "harness/evidence/HARNESS-001/bootstrap/frontend-typecheck.log"
+    },
+    {
+      "name": "frontend-build",
+      "exitCode": 0,
+      "log": "harness/evidence/HARNESS-001/bootstrap/frontend-build.log"
+    }
+  ],
+  "finishedAt": "2026-09-19T08:09:41Z"
+}
