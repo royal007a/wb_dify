@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-19T14:48:46Z",
+  "updatedAt": "2026-09-19T15:00:20Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -9,8 +9,12 @@
       "description": "建立唯一任务状态、权限策略、原子运行、验证矩阵、执行计划和证据闭环。",
       "priority": "P0",
       "status": "completed",
-      "scopes": ["harness"],
-      "verifyScopes": ["harness"],
+      "scopes": [
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
@@ -44,12 +48,20 @@
       "description": "冻结 holdout，生成版本化评测 artifact，并以指标阈值控制退出码。",
       "priority": "P0",
       "status": "pending",
-      "scopes": ["eval", "runtime"],
-      "verifyScopes": ["eval", "runtime"],
+      "scopes": [
+        "eval",
+        "runtime"
+      ],
+      "verifyScopes": [
+        "eval",
+        "runtime"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["HARNESS-001"],
+      "dependsOn": [
+        "HARNESS-001"
+      ],
       "acceptance": [
         "开发集与冻结 holdout 分离",
         "评测 artifact 包含 commit、dataset hash、逐样本结果和指标",
@@ -68,13 +80,24 @@
       "description": "覆盖 429、5xx、认证失败、半途断流和客户端断开，并记录延迟与 usage。",
       "priority": "P1",
       "status": "pending",
-      "scopes": ["backend", "runtime"],
-      "verifyScopes": ["backend", "runtime"],
+      "scopes": [
+        "backend",
+        "runtime"
+      ],
+      "verifyScopes": [
+        "backend",
+        "runtime"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["HARNESS-001"],
-      "acceptance": ["五类失败均有确定性契约测试", "已经输出首 token/P95/usage 证据"],
+      "dependsOn": [
+        "HARNESS-001"
+      ],
+      "acceptance": [
+        "五类失败均有确定性契约测试",
+        "已经输出首 token/P95/usage 证据"
+      ],
       "planPath": null,
       "checkpoint": null,
       "blockedReason": null,
@@ -88,13 +111,24 @@
       "description": "增加 DNS 解析后校验、redirect 再校验和允许列表策略。",
       "priority": "P1",
       "status": "pending",
-      "scopes": ["backend", "runtime"],
-      "verifyScopes": ["backend", "runtime"],
+      "scopes": [
+        "backend",
+        "runtime"
+      ],
+      "verifyScopes": [
+        "backend",
+        "runtime"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["HARNESS-001"],
-      "acceptance": ["内网、重绑定和 redirect 绕过均被测试拒绝", "现有合法 Provider 连接保持兼容"],
+      "dependsOn": [
+        "HARNESS-001"
+      ],
+      "acceptance": [
+        "内网、重绑定和 redirect 绕过均被测试拒绝",
+        "现有合法 Provider 连接保持兼容"
+      ],
       "planPath": null,
       "checkpoint": null,
       "blockedReason": null,
@@ -108,13 +142,27 @@
       "description": "在引入 write 工具前实现 planDigest 确认、side-effect ledger、幂等和显式补偿。",
       "priority": "P2",
       "status": "pending",
-      "scopes": ["backend", "migration", "runtime"],
-      "verifyScopes": ["backend", "migration", "runtime"],
+      "scopes": [
+        "backend",
+        "migration",
+        "runtime"
+      ],
+      "verifyScopes": [
+        "backend",
+        "migration",
+        "runtime"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["EVAL-001"],
-      "acceptance": ["未确认写操作无法执行", "重复执行不产生重复副作用", "补偿结果可审计"],
+      "dependsOn": [
+        "EVAL-001"
+      ],
+      "acceptance": [
+        "未确认写操作无法执行",
+        "重复执行不产生重复副作用",
+        "补偿结果可审计"
+      ],
       "planPath": null,
       "checkpoint": null,
       "blockedReason": null,
@@ -127,25 +175,45 @@
       "title": "建立 Runtime 能力租约与历史提交协议",
       "description": "为 Run 固定能力版本和工具 schema 摘要，执行前二次校验租约，并以 operation 身份和语义摘要提交 canonical history。",
       "priority": "P0",
-      "status": "pending",
-      "scopes": ["backend", "migration", "runtime"],
-      "verifyScopes": ["backend", "migration", "runtime"],
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "migration",
+        "runtime"
+      ],
+      "verifyScopes": [
+        "backend",
+        "migration",
+        "runtime"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["HARNESS-001"],
+      "dependsOn": [
+        "HARNESS-001"
+      ],
       "acceptance": [
         "每个 Run 持久化 capabilityRevision 和 toolSchemaDigest",
         "工具执行前用 runId/attemptId/lease/cancelRequestedAt 二次校验",
         "canonical history 按 snapshot/mutation/reread/revision/projection/ack 提交",
         "相同 operationId 携带不同语义摘要时确定性冲突"
       ],
-      "planPath": "exec-plans/active/RUNTIME-001.md",
+      "planPath": "exec-plans/completed/RUNTIME-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "RUNTIME-001-20260919T144937Z-2d63f8ee",
+          "path": "harness/evidence/RUNTIME-001/RUNTIME-001-20260919T144937Z-2d63f8ee",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "2c56524db69cfebea73a6887c4475a4b387695ab",
+          "headCommit": "2c56524db69cfebea73a6887c4475a4b387695ab",
+          "recordedAt": "2026-09-19T15:00:20Z"
+        }
+      ],
       "createdAt": "2026-09-19T14:48:46Z",
-      "updatedAt": "2026-09-19T14:48:46Z"
+      "updatedAt": "2026-09-19T15:00:20Z"
     },
     {
       "id": "CONTEXT-001",
@@ -153,12 +221,22 @@
       "description": "实现可计算上下文预算、Tool Result 归档、重新测量的 checkpoint compaction 及质量评测。",
       "priority": "P1",
       "status": "pending",
-      "scopes": ["backend", "runtime", "eval"],
-      "verifyScopes": ["backend", "runtime", "eval"],
+      "scopes": [
+        "backend",
+        "runtime",
+        "eval"
+      ],
+      "verifyScopes": [
+        "backend",
+        "runtime",
+        "eval"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["RUNTIME-001"],
+      "dependsOn": [
+        "RUNTIME-001"
+      ],
       "acceptance": [
         "预算显式计算 input/output/reserve/safety",
         "超预算时优先归档旧 Tool Result 且保持 call/result 配对",
@@ -178,12 +256,22 @@
       "description": "实现子任务独立状态机、输出引用、delivered/claimed/consumed 协议及启动 lost 收敛。",
       "priority": "P2",
       "status": "pending",
-      "scopes": ["backend", "migration", "runtime"],
-      "verifyScopes": ["backend", "migration", "runtime"],
+      "scopes": [
+        "backend",
+        "migration",
+        "runtime"
+      ],
+      "verifyScopes": [
+        "backend",
+        "migration",
+        "runtime"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["CONTEXT-001"],
+      "dependsOn": [
+        "CONTEXT-001"
+      ],
       "acceptance": [
         "子任务状态与输出引用独立持久化",
         "父 Run 成功提交前不得确认 consumed",

@@ -7,7 +7,12 @@ import com.hify.tool.api.ToolCatalogItem;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +44,19 @@ public class ToolRuntime implements ToolCatalog {
         return definitions.values().stream().filter(tool -> enabledNames.contains(tool.name())).toList();
     }
 
+    public CapabilitySnapshot snapshot(String ownerRevision, Set<String> enabledNames) {
+        Set<String> enabled = Set.copyOf(enabledNames);
+        Set<String> unknown = new java.util.TreeSet<>(enabled);
+        unknown.removeAll(definitions.keySet());
+        if (!unknown.isEmpty()) throw new IllegalArgumentException("Unknown tools in capability snapshot: " + unknown);
+        List<ToolDefinition> selected = definitions(enabled).stream()
+                .sorted(Comparator.comparing(ToolDefinition::name)).toList();
+        String schemaDigest = sha256(canonical(selected));
+        String revision = sha256(ownerRevision + "\u001f" + schemaDigest + "\u001f"
+                + String.join(",", new java.util.TreeSet<>(enabled)));
+        return new CapabilitySnapshot(revision, schemaDigest, enabled, selected);
+    }
+
     @Override
     public List<ToolCatalogItem> items() {
         return definitions.values().stream().map(definition -> new ToolCatalogItem(
@@ -65,11 +83,24 @@ public class ToolRuntime implements ToolCatalog {
 
     public ExecutionResult execute(RuntimeMessage.ToolCall call, Set<String> enabledNames,
                                    ExecutionControl control) {
-        control.throwIfCancelled();
+        CapabilitySnapshot snapshot = snapshot("local", enabledNames);
+        return execute(call, snapshot, ToolExecutionLease.local(call.id(), snapshot.revision()), control);
+    }
+
+    public ExecutionResult execute(RuntimeMessage.ToolCall call, CapabilitySnapshot snapshot,
+                                   ToolExecutionLease lease, ExecutionControl control) {
+        try {
+            lease.assertUsable(control);
+        } catch (StaleToolExecutionException exception) {
+            return ExecutionResult.staleLease(exception.getMessage());
+        }
+        if (!lease.capabilityRevision().equals(snapshot.revision())) {
+            return ExecutionResult.staleLease("Capability revision changed before tool execution");
+        }
         if (!definitions.containsKey(call.name())) {
             return ExecutionResult.unavailable("Tool is not available: " + call.name());
         }
-        if (!enabledNames.contains(call.name())) {
+        if (!snapshot.enabledTools().contains(call.name())) {
             return ExecutionResult.permissionDenied("Tool is not enabled: " + call.name());
         }
         ToolDefinition definition = definitions.get(call.name());
@@ -78,6 +109,9 @@ public class ToolRuntime implements ToolCatalog {
         }
         try {
             validateSchema(definition, call.arguments());
+            // Permission and schema checks may wait on external approval in future tool types.
+            // Revalidate the run/attempt lease after those checks and immediately before execution.
+            lease.assertUsable(control);
             ExecutionResult result = switch (call.name()) {
                 case "current_time" -> ExecutionResult.success(OffsetDateTime.now().toString());
                 case "calculator" -> ExecutionResult.success(calculate(call.arguments()));
@@ -87,6 +121,8 @@ public class ToolRuntime implements ToolCatalog {
             return result.limit(32 * 1024);
         } catch (ExecutionCancelledException exception) {
             throw exception;
+        } catch (StaleToolExecutionException exception) {
+            return ExecutionResult.staleLease(exception.getMessage());
         } catch (IllegalArgumentException exception) {
             return ExecutionResult.invalidArguments(exception.getMessage());
         } catch (RuntimeException exception) {
@@ -155,6 +191,47 @@ public class ToolRuntime implements ToolCatalog {
         return value.stripTrailingZeros().toPlainString();
     }
 
+    private String canonical(List<ToolDefinition> tools) {
+        StringBuilder value = new StringBuilder();
+        for (ToolDefinition tool : tools) {
+            value.append(tool.name()).append('\u001f')
+                    .append(tool.description()).append('\u001f')
+                    .append(tool.risk()).append('\u001f');
+            appendCanonical(value, tool.inputSchema());
+            value.append('\u001e');
+        }
+        return value.toString();
+    }
+
+    private void appendCanonical(StringBuilder target, Object value) {
+        if (value instanceof Map<?, ?> map) {
+            target.append('{');
+            List<Map.Entry<?, ?>> entries = new ArrayList<>(map.entrySet());
+            entries.sort(Comparator.comparing(entry -> String.valueOf(entry.getKey())));
+            for (Map.Entry<?, ?> entry : entries) {
+                target.append(entry.getKey()).append(':');
+                appendCanonical(target, entry.getValue());
+                target.append(',');
+            }
+            target.append('}');
+        } else if (value instanceof List<?> list) {
+            target.append('[');
+            list.forEach(item -> { appendCanonical(target, item); target.append(','); });
+            target.append(']');
+        } else {
+            target.append(String.valueOf(value));
+        }
+    }
+
+    private String sha256(String value) {
+        try {
+            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
+                    .digest(value.getBytes(StandardCharsets.UTF_8)));
+        } catch (Exception exception) {
+            throw new IllegalStateException("SHA-256 unavailable", exception);
+        }
+    }
+
     public enum FailureType {
         NONE,
         INVALID_ARGUMENTS,
@@ -162,6 +239,7 @@ public class ToolRuntime implements ToolCatalog {
         PERMISSION_DENIED,
         TRANSIENT,
         EXECUTION_FAILED,
+        STALE_LEASE,
         CANCELLED
     }
 
@@ -184,6 +262,9 @@ public class ToolRuntime implements ToolCatalog {
         }
         public static ExecutionResult transientFailure(String message) {
             return new ExecutionResult(message, true, false, false, FailureType.TRANSIENT);
+        }
+        public static ExecutionResult staleLease(String message) {
+            return new ExecutionResult(message, true, true, true, FailureType.STALE_LEASE);
         }
         public static ExecutionResult cancelled() {
             return new ExecutionResult("Tool execution cancelled", true, true, false, FailureType.CANCELLED);

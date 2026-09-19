@@ -20,6 +20,7 @@ import com.hify.runtime.state.RecoveryNarrative;
 import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
@@ -42,27 +43,45 @@ public class QueryLoop {
     public Result run(List<RuntimeMessage> initialMessages, ModelClient modelClient,
                       String model, double temperature, Set<String> enabledTools,
                       RunPolicy policy, RunObserver observer) {
+        CapabilitySnapshot capability = toolRuntime.snapshot("local", enabledTools);
+        return run(initialMessages, modelClient, model, temperature, capability,
+                policy, observer, RunRuntimeIdentity.local(capability));
+    }
+
+    public Result run(List<RuntimeMessage> initialMessages, ModelClient modelClient,
+                      String model, double temperature, CapabilitySnapshot capability,
+                      RunPolicy policy, RunObserver observer, RunRuntimeIdentity identity) {
         ExecutionPlan plan = ExecutionPlan.initial(goal(initialMessages));
-        return run(initialMessages, modelClient, model, temperature, enabledTools,
-                policy, observer, plan, ExecutionContextState.empty(), 0, 0, false);
+        return run(initialMessages, modelClient, model, temperature, capability,
+                policy, observer, identity, plan, ExecutionContextState.empty(), 0, 0, false);
     }
 
     public Result resume(ExecutionCheckpoint checkpoint, ModelClient modelClient,
                          String model, double temperature, Set<String> enabledTools,
                          RunPolicy policy, RunObserver observer) {
+        CapabilitySnapshot capability = toolRuntime.snapshot("local", enabledTools);
+        return resume(checkpoint, modelClient, model, temperature, capability,
+                policy, observer, RunRuntimeIdentity.local(capability));
+    }
+
+    public Result resume(ExecutionCheckpoint checkpoint, ModelClient modelClient,
+                         String model, double temperature, CapabilitySnapshot capability,
+                         RunPolicy policy, RunObserver observer, RunRuntimeIdentity identity) {
         ExecutionPlan plan = checkpoint.plan();
         observer.onCheckpointRestored(checkpoint);
-        return run(checkpoint.messages(), modelClient, model, temperature, enabledTools,
-                policy, observer, plan, checkpoint.contextState(),
+        return run(checkpoint.messages(), modelClient, model, temperature, capability,
+                policy, observer, identity, plan, checkpoint.contextState(),
                 checkpoint.turn(), checkpoint.toolCalls(), true);
     }
 
     private Result run(List<RuntimeMessage> initialMessages, ModelClient modelClient,
-                       String model, double temperature, Set<String> enabledTools,
-                       RunPolicy policy, RunObserver observer, ExecutionPlan initialPlan,
+                       String model, double temperature, CapabilitySnapshot capability,
+                       RunPolicy policy, RunObserver observer, RunRuntimeIdentity identity,
+                       ExecutionPlan initialPlan,
                        ExecutionContextState initialContext,
                        int completedTurns, int completedToolCalls, boolean resumed) {
         List<RuntimeMessage> messages = new ArrayList<>(initialMessages);
+        Set<String> seenToolCallIds = existingToolCallIds(initialMessages);
         ExecutionControl control = ExecutionControl.withTimeout(policy.timeout(), policy.cancelled());
         int toolCalls = completedToolCalls;
         int estimatedTokens = estimateTokens(messages);
@@ -101,7 +120,7 @@ public class QueryLoop {
                 int currentTurn = turn;
                 response = modelClient.generateStream(new ModelRequest(
                         model, temperature, List.copyOf(messages),
-                        toolRuntime.definitions(enabledTools), control),
+                        capability.definitions(), control),
                         delta -> observer.onModelDelta(currentTurn, delta));
             } catch (ExecutionCancelledException exception) {
                 transitionIfPossible(state, PlanPhase.CANCELLED);
@@ -125,6 +144,7 @@ public class QueryLoop {
             }
             messages.add(response);
             estimatedTokens += estimateTokens(List.of(response));
+            commitHistory(identity, "model:" + turn, messages, observer);
             observer.onModelCompleted(turn, response);
 
             if (control.isCancelled()) {
@@ -161,6 +181,12 @@ public class QueryLoop {
             TerminalReason pendingTerminalReason = null;
             String pendingTerminalText = null;
             for (RuntimeMessage.ToolCall call : response.toolCalls()) {
+                if (!seenToolCallIds.add(call.id())) {
+                    transitionIfPossible(state, PlanPhase.FAILED);
+                    return terminal(TerminalReason.DUPLICATE_TOOL_CALL,
+                            "Duplicate tool-call id: " + call.id(), messages, turn, toolCalls,
+                            plan, replanDecisions, checkpoint);
+                }
                 PlanStep step = plan.steps().get(0);
                 if (pendingContinuation != null && (pendingContinuation.action() == ContinuationAction.CLARIFY
                         || pendingContinuation.action() == ContinuationAction.INTERRUPT)) {
@@ -169,6 +195,7 @@ public class QueryLoop {
                             "Skipped because an earlier action stopped this TAO turn");
                     observer.onTryStarted(turn, plan, step, skipped, call);
                     messages.add(RuntimeMessage.toolResult(call.id(), skippedResult.value(), true));
+                    commitHistory(identity, "tool:" + call.id(), messages, observer);
                     observer.onTryCompleted(turn, plan, step,
                             skipped.skip("SKIPPED_AFTER_DECISION_GATE"), call, skippedResult);
                     continue;
@@ -194,7 +221,10 @@ public class QueryLoop {
                     StepAttempt attempt = StepAttempt.start(step, toolCalls, call.id(), call.name());
                     observer.onTryStarted(turn, plan, step, attempt, call);
                     try {
-                        result = toolRuntime.execute(call, enabledTools, control);
+                        ToolExecutionLease lease = new ToolExecutionLease(identity.runId(), attempt.id(),
+                                identity.capabilityRevision(), () -> identity.executionLeaseValidator()
+                                .test(attempt.id(), identity.capabilityRevision()));
+                        result = toolRuntime.execute(call, capability, lease, control);
                     } catch (ExecutionCancelledException exception) {
                         result = ToolRuntime.ExecutionResult.cancelled();
                     }
@@ -219,10 +249,11 @@ public class QueryLoop {
                 RuntimeMessage toolResult = RuntimeMessage.toolResult(call.id(), result.value(), result.error());
                 messages.add(toolResult);
                 estimatedTokens += estimateTokens(List.of(toolResult));
+                commitHistory(identity, "tool:" + call.id(), messages, observer);
 
                 if (result.error()) {
                     java.util.Optional<String> alternative =
-                            toolRuntime.findReadOnlyAlternative(call.name(), enabledTools);
+                            toolRuntime.findReadOnlyAlternative(call.name(), capability.enabledTools());
                     if (result.failureType() != ToolRuntime.FailureType.CANCELLED) {
                         contextState = contextState.openGap(gapFor(result, completedAttempt, alternative));
                     }
@@ -375,7 +406,7 @@ public class QueryLoop {
                     "tool:" + alternative.orElse(attempt.toolName()),
                     alternative.<List<String>>map(name -> List.of("use_tool:" + name))
                             .orElseGet(() -> List.of("ask_user", "interrupt")), attempt.id());
-            case PERMISSION_DENIED -> GapState.open(GapState.Kind.MISSING_PERMISSION,
+            case PERMISSION_DENIED, STALE_LEASE -> GapState.open(GapState.Kind.MISSING_PERMISSION,
                     String.valueOf(result.value()), true, "permission:" + attempt.toolName(),
                     List.of("request_permission", "interrupt"), attempt.id());
             case TRANSIENT -> GapState.open(GapState.Kind.TRANSIENT_FAILURE,
@@ -394,6 +425,21 @@ public class QueryLoop {
                 .mapToInt(message -> message.content() == null ? 0 : message.content().length())
                 .sum();
         return Math.max(1, (characters + 3) / 4);
+    }
+
+    private Set<String> existingToolCallIds(List<RuntimeMessage> messages) {
+        Set<String> ids = new HashSet<>();
+        for (RuntimeMessage message : messages) {
+            if (message.toolCalls() != null) message.toolCalls().forEach(call -> ids.add(call.id()));
+        }
+        return ids;
+    }
+
+    private void commitHistory(RunRuntimeIdentity identity, String operationId,
+                               List<RuntimeMessage> messages, RunObserver observer) {
+        HistoryCommitter.CommitReceipt receipt = identity.historyCommitter()
+                .commit(operationId, List.copyOf(messages));
+        observer.onHistoryCommitted(operationId, receipt);
     }
 
     public record RunPolicy(int maxTurns, int maxToolCalls, int maxEstimatedTokens,
@@ -436,6 +482,7 @@ public class QueryLoop {
         default void onModelStarted(int turn) {}
         default void onModelDelta(int turn, String delta) {}
         default void onModelCompleted(int turn, RuntimeMessage message) {}
+        default void onHistoryCommitted(String operationId, HistoryCommitter.CommitReceipt receipt) {}
         default void onToolStarted(int turn, RuntimeMessage.ToolCall call) {}
         default void onToolCompleted(int turn, RuntimeMessage.ToolCall call,
                                      ToolRuntime.ExecutionResult result) {}

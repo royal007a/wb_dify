@@ -3,11 +3,14 @@ package com.hify.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hify.application.RunApplicationService;
+import com.hify.application.CommittedHistoryWriter;
+import com.hify.application.HistoryOperationConflictException;
 import com.hify.domain.AgentRun;
 import com.hify.domain.RunCheckpoint;
 import com.hify.domain.RunState;
 import com.hify.infra.AgentRunRepository;
 import com.hify.infra.RunCheckpointRepository;
+import com.hify.infra.RunHistoryCommitRepository;
 import com.hify.runtime.RuntimeMessage;
 import com.hify.runtime.plan.ExecutionPlan;
 import com.hify.runtime.state.ExecutionContextState;
@@ -43,6 +46,8 @@ class RunFlowIntegrationTest {
     @Autowired RunCheckpointRepository checkpoints;
     @Autowired AgentRunRepository runs;
     @Autowired RunApplicationService runService;
+    @Autowired RunHistoryCommitRepository historyCommits;
+    @Autowired CommittedHistoryWriter historyWriter;
 
     @Test
     void createsIdempotentRunAndPersistsToolEvents() throws Exception {
@@ -87,12 +92,24 @@ class RunFlowIntegrationTest {
         assertThat(run.path("state").asText()).isEqualTo("COMPLETED");
         assertThat(run.path("outputMessage").asText()).contains("391");
         assertThat(run.path("toolCalls").asInt()).isEqualTo(1);
+        assertThat(run.path("capabilityRevision").asText()).hasSize(64);
+        assertThat(run.path("toolSchemaDigest").asText()).hasSize(64);
+        assertThat(historyCommits.findByRunIdOrderByRevisionAsc(runId))
+                .extracting(commit -> commit.getRevision())
+                .containsExactly(1L, 2L, 3L);
+
+        historyWriter.commit(runId, "contract:replay", List.of(RuntimeMessage.user("same")));
+        assertThat(historyWriter.commit(runId, "contract:replay", List.of(RuntimeMessage.user("same"))).replayed())
+                .isTrue();
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> historyWriter.commit(
+                        runId, "contract:replay", List.of(RuntimeMessage.user("different"))))
+                .isInstanceOf(HistoryOperationConflictException.class);
 
         JsonNode events = json(http.perform(get("/api/v1/runs/{id}/events", runId))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
         assertThat(events.toString()).contains("plan.created", "step.try.started", "step.try.completed",
                 "checkpoint.created", "tool.call.started", "tool.call.completed",
-                "context.state.updated", "continuation.decided", "run.completed");
+                "context.state.updated", "continuation.decided", "history.committed", "run.completed");
         assertThat(checkpoints.findTopByRunIdAndRestorableTrueOrderBySequenceNoDesc(runId))
                 .hasValueSatisfying(checkpoint -> {
                     assertThat(checkpoint.getTurnNo()).isEqualTo(1);

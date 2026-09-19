@@ -19,6 +19,8 @@ public class AgentRun {
     private String conversationId;
     private String agentVersionId;
     private String agentSnapshotDigest;
+    private String capabilityRevision;
+    private String toolSchemaDigest;
     private String idempotencyKey;
     private String requestHash;
     private String resumedFromRunId;
@@ -68,6 +70,17 @@ public class AgentRun {
         this.agentSnapshotDigest = agentSnapshotDigest;
     }
 
+    public void bindCapabilitySnapshot(String capabilityRevision, String toolSchemaDigest) {
+        if (this.capabilityRevision != null && !this.capabilityRevision.equals(capabilityRevision)) {
+            throw new IllegalStateException("Run capability revision is immutable");
+        }
+        if (this.toolSchemaDigest != null && !this.toolSchemaDigest.equals(toolSchemaDigest)) {
+            throw new IllegalStateException("Run tool schema digest is immutable");
+        }
+        this.capabilityRevision = capabilityRevision;
+        this.toolSchemaDigest = toolSchemaDigest;
+    }
+
     public void finish(RunState state, String terminalReason, String outputMessage,
                        int turns, int toolCalls) {
         if (this.state.terminal()) return;
@@ -90,6 +103,8 @@ public class AgentRun {
     public String getConversationId() { return conversationId; }
     public String getAgentVersionId() { return agentVersionId; }
     public String getAgentSnapshotDigest() { return agentSnapshotDigest; }
+    public String getCapabilityRevision() { return capabilityRevision; }
+    public String getToolSchemaDigest() { return toolSchemaDigest; }
     public String getIdempotencyKey() { return idempotencyKey; }
     public String getRequestHash() { return requestHash; }
     public String getResumedFromRunId() { return resumedFromRunId; }

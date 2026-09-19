@@ -118,13 +118,13 @@ sequenceDiagram
     QL->>QL: check cancel/deadline/budgets
     QL->>MC: generate(messages, tools)
     MC-->>QL: text deltas + structured tool calls
-    QL->>DB: append model step/events
+    QL->>DB: commit canonical history revision
     alt no tool calls
       QL-->>CM: COMPLETED
     else tool calls
-      QL->>TR: validate -> authorize -> execute
+      QL->>TR: validate -> authorize -> revalidate lease -> execute
       TR-->>QL: tool_result success/error
-      QL->>DB: append tool result/events
+      QL->>DB: commit canonical history revision
     end
   end
   CM->>DB: compare-and-set terminal state
@@ -134,6 +134,8 @@ sequenceDiagram
 模型返回结构化 tool call 才会进入工具路径；没有 tool call 只是完成候选，仍必须通过 `FinishGate`：最终回答非空、没有开放的 blocking Gap、所有 required Claim 至少有一条 VERIFIED evidence。模型不能自行宣布完成。
 
 一期工具串行执行，避免并行 tool result 配对、取消和副作用顺序复杂度。后续只有在 trace 证明工具等待为主要瓶颈，且工具声明无顺序依赖/副作用冲突时才加入并行。
+
+Run 接纳时固定 `capabilityRevision/toolSchemaDigest`，模型工具定义与实际执行共享同一能力视图。每个 Attempt 在 schema/权限检查后、调用工具前再次校验 runId、attemptId、能力 revision 和持久化取消状态。模型响应与 tool result 按 operationId 写入 canonical history；只有完成语义快照、mutation、回读校验、revision 和 `history.committed` 投影后，QueryLoop 才继续。相同 operationId 内容不同会失败，不用后写覆盖前写。
 
 ### 3.3 Run 状态机
 
@@ -196,6 +198,7 @@ replan.decided
 confirmation.required
 checkpoint.created
 checkpoint.restored
+history.committed
 run.completed
 run.failed
 run.cancelled

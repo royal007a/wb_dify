@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "HARNESS-001-bootstrap",
-    "path": "harness/evidence/HARNESS-001/bootstrap",
+    "runId": "RUNTIME-001-20260919T144937Z-2d63f8ee",
+    "path": "harness/evidence/RUNTIME-001/RUNTIME-001-20260919T144937Z-2d63f8ee",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "638457d444d36e903496023ac4263ada4e77ca11",
-    "headCommit": "638457d444d36e903496023ac4263ada4e77ca11",
-    "recordedAt": "2026-09-19T08:09:41Z"
+    "baselineCommit": "2c56524db69cfebea73a6887c4475a4b387695ab",
+    "headCommit": "2c56524db69cfebea73a6887c4475a4b387695ab",
+    "recordedAt": "2026-09-19T15:00:20Z"
   },
-  "lastCompletedTaskId": "HARNESS-001",
-  "updatedAt": "2026-09-19T08:09:41Z"
+  "lastCompletedTaskId": "RUNTIME-001",
+  "updatedAt": "2026-09-19T15:00:20Z"
 }

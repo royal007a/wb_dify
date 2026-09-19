@@ -111,6 +111,8 @@ GET    /api/v1/runs/{runId}/events/stream
 
 创建 Run 必须提供 `Idempotency-Key`。服务先提交 user message 和 RUNNING run，再返回 `202 Accepted` 与 `runId`/stream URL。相同 `(conversationId, Idempotency-Key)` 只能创建一个 Run：第一次返回 `202`；请求体 checksum 相同的重复提交返回已有 Run、相同 stream URL 和 `200`；相同 key 但请求体不同返回 `409 IDEMPOTENCY_KEY_REUSED`。唯一约束与 user message/run/初始 event 在同一事务中写入。
 
+Run 响应同时返回 `agentVersionId/agentSnapshotDigest/capabilityRevision/toolSchemaDigest`。前两项固定产品配置，后两项固定本轮实际暴露的工具定义；执行时不匹配会终止，不静默升级能力。
+
 SSE 示例：
 
 ```text
@@ -136,6 +138,8 @@ data: {"version":1,"runId":"run_...","terminalReason":"PERMISSION_DENIED","error
 ```
 
 受控 TAO 事件包括 `plan.created`、`step.try.started/completed/failed`、`continuation.decided`、`context.state.updated`、`replan.decided`、`recovery.narrated`、`confirmation.required`、`checkpoint.created/restored` 和 `run.input.accepted`。`continuation.decided.action` 只允许 `CONTINUE/FINISH/CLARIFY/RETRY/REPLAN/INTERRUPT`。`replan.decided` 明确给出 failure/root-cause/rollback/replan-start 四个位置；`context.state.updated` 给出 Evidence/Gap 快照版本与开放 Gap；`recovery.narrated` 把故障恢复原因投影为可审计事件。无安全替代时随后以 `run.needs_input` 结束本次流，等待用户通过新 Run 的 `resume` 输入恢复。当前没有写工具，因此 `confirmation.accepted/cancelled` 只是保留契约。
+
+`history.committed` 表示某个 `operationId` 的 canonical history 已经持久化、回读并取得 revision；其 `semanticDigest` 用于识别合法重放和身份冲突。它不是外部工具副作用已提交的证明。
 
 前端不得把所有 `*.failed` 都当作 Run 终态；只有 `run.completed/run.failed/run.cancelled/run.needs_input` 结束流。
 

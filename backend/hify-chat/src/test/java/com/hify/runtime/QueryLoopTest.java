@@ -42,6 +42,49 @@ class QueryLoopTest {
     }
 
     @Test
+    void commitsCanonicalHistoryBeforeTheNextModelRequest() {
+        ToolRuntime tools = new ToolRuntime();
+        CapabilitySnapshot capability = tools.snapshot("agent-v1", Set.of("calculator"));
+        List<String> operations = new ArrayList<>();
+        AtomicInteger modelCalls = new AtomicInteger();
+        ModelClient model = request -> {
+            if (modelCalls.incrementAndGet() == 1) {
+                return RuntimeMessage.toolCalls(List.of(new RuntimeMessage.ToolCall(
+                        "history-call", "calculator", Map.of("expression", "2+2"))));
+            }
+            assertThat(operations).containsExactly("model:1", "tool:history-call");
+            return RuntimeMessage.assistant("4");
+        };
+        RunRuntimeIdentity identity = new RunRuntimeIdentity("run-1", capability.revision(),
+                capability.toolSchemaDigest(), (attempt, revision) -> true,
+                (operation, messages) -> {
+                    operations.add(operation);
+                    return new HistoryCommitter.CommitReceipt(operations.size(), operation, false);
+                });
+
+        QueryLoop.Result result = new QueryLoop(tools).run(List.of(RuntimeMessage.user("2+2")),
+                model, "mock", 0, capability,
+                new QueryLoop.RunPolicy(3, 3, 4096, Duration.ofSeconds(5), () -> false),
+                QueryLoop.RunObserver.NOOP, identity);
+
+        assertThat(result.reason()).isEqualTo(TerminalReason.COMPLETED);
+        assertThat(operations).containsExactly("model:1", "tool:history-call", "model:2");
+    }
+
+    @Test
+    void rejectsDuplicateToolCallIdentity() {
+        ModelClient model = request -> RuntimeMessage.toolCalls(List.of(
+                new RuntimeMessage.ToolCall("duplicate", "calculator", Map.of("expression", "1+1"))));
+        QueryLoop.Result result = loop.run(List.of(RuntimeMessage.user("repeat")), model,
+                "mock", 0, Set.of("calculator"),
+                new QueryLoop.RunPolicy(3, 3, 4096, Duration.ofSeconds(5), () -> false),
+                QueryLoop.RunObserver.NOOP);
+
+        assertThat(result.reason()).isEqualTo(TerminalReason.DUPLICATE_TOOL_CALL);
+        assertThat(result.toolCalls()).isEqualTo(1);
+    }
+
+    @Test
     void stopsBeforeExecutingToolPastBudget() {
         ModelClient alwaysCallsTool = request -> RuntimeMessage.toolCalls(List.of(
                 new RuntimeMessage.ToolCall("call-1", "current_time", Map.of())));
@@ -212,10 +255,11 @@ class QueryLoopTest {
         AtomicInteger executions = new AtomicInteger();
         ToolRuntime flakyCalculator = new ToolRuntime() {
             @Override
-            public ExecutionResult execute(RuntimeMessage.ToolCall call, Set<String> enabledNames,
+            public ExecutionResult execute(RuntimeMessage.ToolCall call, CapabilitySnapshot capability,
+                                           ToolExecutionLease lease,
                                            com.hify.common.ExecutionControl control) {
                 if (executions.incrementAndGet() == 1) return ExecutionResult.transientFailure("temporary timeout");
-                return super.execute(call, enabledNames, control);
+                return super.execute(call, capability, lease, control);
             }
         };
         QueryLoop retryingLoop = new QueryLoop(flakyCalculator);
@@ -255,7 +299,8 @@ class QueryLoopTest {
     void interruptsWhenTransientRetryBudgetIsExhausted() {
         ToolRuntime unavailableCalculator = new ToolRuntime() {
             @Override
-            public ExecutionResult execute(RuntimeMessage.ToolCall call, Set<String> enabledNames,
+            public ExecutionResult execute(RuntimeMessage.ToolCall call, CapabilitySnapshot capability,
+                                           ToolExecutionLease lease,
                                            com.hify.common.ExecutionControl control) {
                 return ExecutionResult.transientFailure("temporary timeout");
             }

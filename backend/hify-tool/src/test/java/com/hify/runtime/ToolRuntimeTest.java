@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -55,5 +56,33 @@ class ToolRuntimeTest {
                 new RuntimeMessage.ToolCall("call-1", "calculator", Map.of("expression", "1+1")),
                 Set.of("calculator"), control))
                 .isInstanceOf(ExecutionCancelledException.class);
+    }
+
+    @Test
+    void capabilitySnapshotIsDeterministicAndOwnerRevisionIsPinned() {
+        CapabilitySnapshot first = tools.snapshot("agent-v1", Set.of("calculator", "current_time"));
+        CapabilitySnapshot reordered = tools.snapshot("agent-v1", Set.of("current_time", "calculator"));
+        CapabilitySnapshot nextVersion = tools.snapshot("agent-v2", Set.of("calculator", "current_time"));
+
+        assertThat(first.toolSchemaDigest()).isEqualTo(reordered.toolSchemaDigest());
+        assertThat(first.revision()).isEqualTo(reordered.revision());
+        assertThat(nextVersion.toolSchemaDigest()).isEqualTo(first.toolSchemaDigest());
+        assertThat(nextVersion.revision()).isNotEqualTo(first.revision());
+    }
+
+    @Test
+    void revalidatesLeaseAfterPermissionAndBeforeExecution() {
+        CapabilitySnapshot snapshot = tools.snapshot("agent-v1", Set.of("calculator"));
+        AtomicInteger validations = new AtomicInteger();
+        ToolExecutionLease lease = new ToolExecutionLease("run-1", "attempt-1", snapshot.revision(),
+                () -> validations.incrementAndGet() == 1);
+
+        ToolRuntime.ExecutionResult result = tools.execute(
+                new RuntimeMessage.ToolCall("call-1", "calculator", Map.of("expression", "1+1")),
+                snapshot, lease, ExecutionControl.none());
+
+        assertThat(validations).hasValue(2);
+        assertThat(result.failureType()).isEqualTo(ToolRuntime.FailureType.STALE_LEASE);
+        assertThat(result.permissionDenied()).isTrue();
     }
 }

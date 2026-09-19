@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "RUNTIME-001-20260919T144937Z-2d63f8ee",
+  "taskId": "RUNTIME-001",
+  "status": "completed",
+  "baselineCommit": "2c56524db69cfebea73a6887c4475a4b387695ab",
+  "approvalRef": null,
+  "startedAt": "2026-09-19T14:49:37Z",
+  "exitCode": 0,
+  "reason": "capability snapshot, execution lease, canonical history commit, operation conflict and PostgreSQL/runtime verification passed",
+  "headCommit": "2c56524db69cfebea73a6887c4475a4b387695ab",
+  "finishedAt": "2026-09-19T15:00:20Z"
+}

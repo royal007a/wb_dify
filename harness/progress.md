@@ -2,15 +2,15 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-09-19T14:48:46Z`
+- Generated from task state updated at: `2026-09-19T15:00:20Z`
 - Current task: `none`
-- Counts: pending 7 · running 0 · blocked 0 · completed 1
+- Counts: pending 6 · running 0 · blocked 0 · completed 2
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
 | `EVAL-001` | P0 | pending | eval, runtime | reversible_write | 将 Intent 评测升级为回归门禁 |
 | `HARNESS-001` | P0 | completed | harness | reversible_write | 建立机器状态工程 Harness |
-| `RUNTIME-001` | P0 | pending | backend, migration, runtime | reversible_write | 建立 Runtime 能力租约与历史提交协议 |
+| `RUNTIME-001` | P0 | completed | backend, migration, runtime | reversible_write | 建立 Runtime 能力租约与历史提交协议 |
 | `CONTEXT-001` | P1 | pending | backend, runtime, eval | reversible_write | 建立上下文预算归档与压缩评测 |
 | `PROVIDER-001` | P1 | pending | backend, runtime | reversible_write | 补原生流式故障注入矩阵 |
 | `SECURITY-001` | P1 | pending | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |

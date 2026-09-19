@@ -106,6 +106,7 @@ public class RunController {
                           Instant createdAt, Instant updatedAt, Instant cancelRequestedAt,
                           String resumedFromRunId, List<String> resolvedGapIds,
                           String agentVersionId, String agentSnapshotDigest,
+                          String capabilityRevision, String toolSchemaDigest,
                           String streamUrl) {
         static RunView from(AgentRun run) {
             return new RunView(run.getId(), run.getConversationId(), run.getState().name(),
@@ -113,6 +114,7 @@ public class RunController {
                     run.getTurns(), run.getToolCalls(), run.getCreatedAt(), run.getUpdatedAt(),
                     run.getCancelRequestedAt(), run.getResumedFromRunId(), parseGapIds(run.getResolvedGapIds()),
                     run.getAgentVersionId(), run.getAgentSnapshotDigest(),
+                    run.getCapabilityRevision(), run.getToolSchemaDigest(),
                     "/api/v1/runs/" + run.getId() + "/events/stream");
         }
 

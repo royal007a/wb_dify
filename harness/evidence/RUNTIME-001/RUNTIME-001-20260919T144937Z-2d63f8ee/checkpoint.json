@@ -1,0 +1,7 @@
+{
+  "summary": "P0 contracts implemented; targeted ToolRuntime, QueryLoop, RunFlow tests pass",
+  "headCommit": "2c56524db69cfebea73a6887c4475a4b387695ab",
+  "workingTreeHash": "5430375b4d8be105e2b01f21e0b78424f6030285cf175092a7fb8fa79e50ff70",
+  "evidencePath": "harness/evidence/RUNTIME-001/RUNTIME-001-20260919T144937Z-2d63f8ee",
+  "updatedAt": "2026-09-19T14:56:19Z"
+}

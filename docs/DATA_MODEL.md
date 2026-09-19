@@ -26,6 +26,7 @@ erDiagram
   AGENT_RUN ||--o{ RUN_STEP : traces
   AGENT_RUN ||--o{ RUN_EVENT : streams
   AGENT_RUN ||--o{ RUN_CHECKPOINT : resumes
+  AGENT_RUN ||--o{ RUN_HISTORY_COMMIT : commits
   RUN_STEP ||--o| TOOL_CALL : may_execute
   KNOWLEDGE_BASE ||--o{ DOCUMENT : owns
   DOCUMENT ||--o{ DOCUMENT_CHUNK : splits
@@ -50,10 +51,11 @@ erDiagram
 | `agent_version_tool_bindings` | agent_version_id + tool_name unique；发布时复制的不可变运行快照 |
 | `conversations` | user_id, agent_version_id, title, status, last_message_at |
 | `messages` | conversation_id, sequence, role, content JSONB, tool_call_id, token_usage |
-| `agent_runs` | conversation_id, agent_version_id, state, terminal_reason, `cancel_requested_at`, `resumed_from_run_id`, `resolved_gap_ids`, deadlines/budgets/usage, version |
+| `agent_runs` | conversation_id, agent_version_id, agent_snapshot_digest, capability_revision, tool_schema_digest, state, terminal_reason, `cancel_requested_at`, `resumed_from_run_id`, `resolved_gap_ids`, deadlines/budgets/usage, version |
 | `run_steps` | run_id, sequence, kind, status, input/output summary, latency, error_code |
 | `run_events` | run_id, monotonic sequence, event_type, payload JSONB, created_at |
 | `run_checkpoints` | run_id, sequence, checkpoint_id, turn/tool 计数、plan id/version/digest、evidence/gap version、plan/context/messages snapshot、restorable |
+| `run_history_commits` | run_id、revision、operation_id、semantic_digest、messages_json、committed_at/projected_at；run+revision 与 run+operation unique |
 | `tool_calls` | run_id, run_step_id, call_id unique per run, tool identity, input/output refs, idempotency_key |
 | `knowledge_bases` | name, embedding_model_id, chunk strategy |
 | `documents` | knowledge_base_id, object_key, checksum, version, indexing_state |
@@ -72,6 +74,7 @@ erDiagram
 - `messages(conversation_id, sequence)` unique；列表按 sequence 游标分页。
 - `run_events(run_id, sequence)` unique；支持 `Last-Event-ID` replay。
 - `run_checkpoints(run_id, sequence)` unique；完整 Plan 与 ExecutionContextState 快照保证恢复前后的 plan/evidence/gap 版本一致，只保存完成 tool call/result 配对后的恢复点。当前仅允许恢复 read-only Run。
+- `run_history_commits(run_id, operation_id)` unique；相同 operation 只有 semantic digest 相同时可重放，内容变化必须冲突。`projected_at` 非空表示必要 `history.committed` 投影已经完成。
 - `providers(public_id)` 与 `providers(name)` unique；Agent 引用不透明 public_id，运行时从 ProviderQueryService 获取已启用配置快照。
 - `provider_models(provider_id, model_id)` unique；模型目录整体替换时物理删除旧子项，避免逻辑删除 tombstone 与唯一约束冲突。
 - `provider_health(provider_id)` unique；健康检查不改变 Provider 配置行，也不驱逐 `provider-cache`。
@@ -88,6 +91,7 @@ erDiagram
 
 - 创建 Run：user message、run、初始 event 同事务提交，之后才调用模型。
 - 外部模型/工具 I/O 不放数据库事务中；结果用短事务追加 step/event。
+- canonical history 在短事务中捕获快照、写入并回读；必要投影完成后才向 QueryLoop ack。该协议不覆盖远端副作用事务。
 - 终态写入 compare-and-set，取消、超时、成功只能有一个胜者。
 - Agent/Workflow 发布：校验、版本快照、published pointer 同事务。
 - 文档索引：document 状态与 chunk 批次可重试；原文件和向量写入失败时有补偿/重建路径。

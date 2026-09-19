@@ -17,7 +17,9 @@ import com.hify.provider.api.ProviderRuntimeConfig;
 import com.hify.infra.RunCheckpointRepository;
 import com.hify.runtime.ModelClient;
 import com.hify.runtime.ModelClientFactory;
+import com.hify.runtime.CapabilitySnapshot;
 import com.hify.runtime.QueryLoop;
+import com.hify.runtime.RunRuntimeIdentity;
 import com.hify.runtime.RuntimeMessage;
 import com.hify.runtime.TerminalReason;
 import com.hify.runtime.ToolRuntime;
@@ -61,6 +63,8 @@ public class RunApplicationService {
     private final AgentRunRepository runs;
     private final ModelClientFactory modelClients;
     private final QueryLoop queryLoop;
+    private final ToolRuntime toolRuntime;
+    private final CommittedHistoryWriter historyWriter;
     private final RunEventBroker eventBroker;
     private final RunCheckpointRepository checkpoints;
     private final ObjectMapper objectMapper;
@@ -71,11 +75,13 @@ public class RunApplicationService {
     private final int maxReplans;
     private final int maxRetries;
     private final Map<String, AtomicBoolean> cancellations = new ConcurrentHashMap<>();
+    private final Map<String, String> activeAttempts = new ConcurrentHashMap<>();
 
     public RunApplicationService(AgentQueryService agents, ProviderQueryService providers,
                                  ConversationRepository conversations, ChatMessageRepository messages,
                                  AgentRunRepository runs, ModelClientFactory modelClients,
-                                 QueryLoop queryLoop, RunEventBroker eventBroker,
+                                 QueryLoop queryLoop, ToolRuntime toolRuntime,
+                                 CommittedHistoryWriter historyWriter, RunEventBroker eventBroker,
                                  RunCheckpointRepository checkpoints, ObjectMapper objectMapper,
                                  TransactionTemplate transactions,
                                  @Qualifier("runExecutor") Executor executor,
@@ -90,6 +96,8 @@ public class RunApplicationService {
         this.runs = runs;
         this.modelClients = modelClients;
         this.queryLoop = queryLoop;
+        this.toolRuntime = toolRuntime;
+        this.historyWriter = historyWriter;
         this.eventBroker = eventBroker;
         this.checkpoints = checkpoints;
         this.objectMapper = objectMapper;
@@ -131,7 +139,9 @@ public class RunApplicationService {
         if (!created.replayed()) {
             String runId = created.run().getId();
             eventBroker.publish(runId, "run.created",
-                    Map.of("version", 1, "runId", runId));
+                    Map.of("version", 1, "runId", runId,
+                            "capabilityRevision", created.run().getCapabilityRevision(),
+                            "toolSchemaDigest", created.run().getToolSchemaDigest()));
             eventBroker.publish(runId, "run.started",
                     Map.of("version", 1, "runId", runId));
             if (created.run().getResumedFromRunId() != null) {
@@ -165,6 +175,8 @@ public class RunApplicationService {
                 resume == null ? null : resume.runId(),
                 resume == null ? null : String.join(",", resume.gapIds()), now);
         run.bindAgentSnapshot(agent.versionId(), agent.snapshotDigest());
+        CapabilitySnapshot capability = toolRuntime.snapshot(agent.versionId(), enabledTools(agent));
+        run.bindCapabilitySnapshot(capability.revision(), capability.toolSchemaDigest());
         messages.save(new ChatMessage(conversationId, "user", message));
         conversation.touch();
         conversations.save(conversation);
@@ -236,6 +248,14 @@ public class RunApplicationService {
                     ? agents.requirePublished(conversation.getAgentId())
                     : agents.requireVersion(run.getAgentVersionId());
             ProviderRuntimeConfig provider = providers.requireEnabled(agent.providerId());
+            CapabilitySnapshot capability = toolRuntime.snapshot(agent.versionId(), enabledTools(agent));
+            if (run.getCapabilityRevision() == null || run.getToolSchemaDigest() == null) {
+                run.bindCapabilitySnapshot(capability.revision(), capability.toolSchemaDigest());
+                runs.saveAndFlush(run);
+            } else if (!run.getCapabilityRevision().equals(capability.revision())
+                    || !run.getToolSchemaDigest().equals(capability.toolSchemaDigest())) {
+                throw new CapabilityMismatchException(runId);
+            }
 
             List<RuntimeMessage> runtimeMessages = new ArrayList<>();
             runtimeMessages.add(RuntimeMessage.system(agent.instructions()));
@@ -250,16 +270,21 @@ public class RunApplicationService {
                     16_384, maxReplans, maxRetries, runTimeout, cancelled::get);
 
             QueryLoop.RunObserver observer = observer(runId);
+            RunRuntimeIdentity identity = new RunRuntimeIdentity(runId, capability.revision(),
+                    capability.toolSchemaDigest(),
+                    (attemptId, revision) -> executionLeaseActive(runId, attemptId, revision),
+                    historyWriter.forRun(runId));
             QueryLoop.Result result = restoreCheckpoint(runId)
                     .map(checkpoint -> queryLoop.resume(checkpoint, modelClient, model,
-                            agent.temperature(), enabledTools(agent), policy, observer))
+                            agent.temperature(), capability, policy, observer, identity))
                     .orElseGet(() -> queryLoop.run(runtimeMessages, modelClient, model,
-                            agent.temperature(), enabledTools(agent), policy, observer));
+                            agent.temperature(), capability, policy, observer, identity));
             finish(runId, result);
         } catch (RuntimeException exception) {
             finishFailure(runId, exception);
         } finally {
             cancellations.remove(runId);
+            activeAttempts.remove(runId);
         }
     }
 
@@ -276,6 +301,7 @@ public class RunApplicationService {
             @Override
             public void onTryStarted(int turn, ExecutionPlan plan, PlanStep step, StepAttempt attempt,
                                      RuntimeMessage.ToolCall call) {
+                activeAttempts.put(runId, attempt.id());
                 eventBroker.publish(runId, PlanEventType.TRY_STARTED, Map.of(
                         "version", 1, "runId", runId, "planVersion", plan.version(),
                         "stepId", step.id(), "attemptId", attempt.id(),
@@ -292,6 +318,7 @@ public class RunApplicationService {
                                 "toolCallId", call.id(), "tool", call.name(),
                                 "failureClass", result.failureType().name(), "turn", turn));
                 QueryLoop.RunObserver.super.onTryCompleted(turn, plan, step, attempt, call, result);
+                activeAttempts.remove(runId, attempt.id());
             }
 
             @Override
@@ -438,12 +465,16 @@ public class RunApplicationService {
     }
 
     private void finishFailure(String runId, RuntimeException exception) {
-        boolean won = finishTerminal(runId, RunState.FAILED, TerminalReason.MODEL_ERROR.name(),
+        TerminalReason reason = exception instanceof CapabilityMismatchException
+                ? TerminalReason.CAPABILITY_MISMATCH
+                : exception instanceof HistoryOperationConflictException
+                ? TerminalReason.HISTORY_COMMIT_FAILED : TerminalReason.MODEL_ERROR;
+        boolean won = finishTerminal(runId, RunState.FAILED, reason.name(),
                 "Run failed: " + exception.getMessage(), 0, 0, false);
         if (!won) return;
         eventBroker.publish(runId, "run.failed", Map.of(
                 "version", 1, "runId", runId, "state", RunState.FAILED.name(),
-                "terminalReason", TerminalReason.MODEL_ERROR.name()));
+                "terminalReason", reason.name()));
     }
 
     private boolean finishTerminal(String runId, RunState state, String terminalReason,
@@ -544,6 +575,13 @@ public class RunApplicationService {
 
     private Set<String> enabledTools(AgentRuntimeSnapshot agent) {
         return new LinkedHashSet<>(agent.enabledTools());
+    }
+
+    private boolean executionLeaseActive(String runId, String attemptId, String capabilityRevision) {
+        if (!attemptId.equals(activeAttempts.get(runId))) return false;
+        return runs.findById(runId).map(run -> run.getState() == RunState.RUNNING
+                && run.getCancelRequestedAt() == null
+                && capabilityRevision.equals(run.getCapabilityRevision())).orElse(false);
     }
 
     private String sha256(String value) {
