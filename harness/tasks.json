@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-19T15:06:30Z",
+  "updatedAt": "2026-09-19T15:12:19Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -265,7 +265,7 @@
       "title": "建立子 Agent 任务与延迟消费确认",
       "description": "实现子任务独立状态机、输出引用、delivered/claimed/consumed 协议及启动 lost 收敛。",
       "priority": "P2",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "migration",
@@ -288,12 +288,22 @@
         "父 Run 失败时 claimed 输出仍可再次交付",
         "启动时无执行者的活动子任务收敛为 lost"
       ],
-      "planPath": "exec-plans/active/SUBAGENT-001.md",
+      "planPath": "exec-plans/completed/SUBAGENT-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SUBAGENT-001-20260919T150635Z-76a3775b",
+          "path": "harness/evidence/SUBAGENT-001/SUBAGENT-001-20260919T150635Z-76a3775b",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "fcdce73332ee729cfcec960b3e722cb1313104bb",
+          "headCommit": "fcdce73332ee729cfcec960b3e722cb1313104bb",
+          "recordedAt": "2026-09-19T15:12:19Z"
+        }
+      ],
       "createdAt": "2026-09-19T14:48:46Z",
-      "updatedAt": "2026-09-19T14:48:46Z"
+      "updatedAt": "2026-09-19T15:12:19Z"
     }
   ]
 }

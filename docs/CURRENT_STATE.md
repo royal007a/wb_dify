@@ -15,6 +15,7 @@
 | Checkpoint/恢复 | `RunCheckpoint`、`V3__run_replan_control.sql`、`V4__run_context_state.sql` | 保存已配对消息、预算、完整 Plan 与 Evidence/Gap 版本化快照；启动恢复 RUNNING，结构化输入通过新子 Run 恢复 NEEDS_INPUT Gap |
 | Runtime 能力/历史提交 | `CapabilitySnapshot`、`ToolExecutionLease`、`CommittedHistoryWriter`、`V9__runtime_capability_and_history.sql` | Run 固定 capability/tool schema 摘要；执行前二次校验 attempt lease；模型/工具结果按 operation identity 提交、回读、投影，冲突不覆盖 |
 | Context 治理 | `runtime/context/*`、`ContextManagementEvaluationTest`、ADR-0010 | 输入/输出/预留/安全预算；Tool Result 先归档、checkpoint 后压缩且每步重测；评测语义安全而非只看 token 降幅 |
+| 子任务控制协议 | `ChildAgentTask`、`ChildAgentTaskService`、`V10__child_agent_task_protocol.sql` | 独立状态机、outputRef、delivered/claimed/consumed、父成功后确认、lost 收敛已验证；尚无真实子 Agent worker/调度器 |
 | Intent Router | `hify-chat/com.hify.intent`、`IntentRoutingController` | 四出口契约、确定性规则层、结构化模型候选、低置信/歧义/缺槽澄清、120 条中文评测集；当前仅预览，不接管 Run |
 | Mock 模型 | `MockModelClient.java` | 可触发时间或单个二元运算工具 |
 | 模型协议适配 | `ProviderAdapterRegistry`、三个原生/一个兼容 Adapter | OpenAI tool_calls、Anthropic tool_use/tool_result、Gemini functionCall/functionResponse 的同步与流式映射；流式文本 delta 和工具参数重组已有测试 |
@@ -37,7 +38,7 @@
 - 认证/用户、完整 SSRF/DNS rebinding/redirect 防护、审计日志、CI 和 Vault/云 Secret Manager；Provider 当前仅允许 http/https、拒绝 userinfo/fragment，并支持 env/system 引用。
 - JPA 到 MyBatis-Plus 的全仓 Repository 迁移；Provider 与 DemoItem 已迁移，Agent/Chat/Run 仍保留 JPA，禁止一次性重写。
 - Intent Router 的真实 Provider 离线评测、shadow 事件和主链路 dispatch；当前 rule-only v2 Top1 为 82.50%（unknown recall 100%），模型层已有契约与单测但尚无真实成本/延迟数据。
-- Workflow 级显式分支、统一候选排序/选择记录、双层 TAO、子 Agent 和阶段/全局回滚；本轮只完成单 Run read-only TAO 契约。
+- Workflow 级显式分支、统一候选排序/选择记录、双层 TAO、真实子 Agent worker/调度器和阶段/全局回滚；当前只有子任务持久状态与延迟消费协议。
 - write 工具的 planDigest 确认、side-effect ledger、幂等执行和 compensation；checkpoint 不能替代这些机制。
 
 ## 现状与目标架构的冲突

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "backend",
+    "migration",
+    "runtime"
+  ],
+  "base": "working-tree",
+  "headCommit": "fcdce73332ee729cfcec960b3e722cb1313104bb",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "backend-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SUBAGENT-001/SUBAGENT-001-20260919T150635Z-76a3775b/backend-tests.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/SUBAGENT-001/SUBAGENT-001-20260919T150635Z-76a3775b/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/SUBAGENT-001/SUBAGENT-001-20260919T150635Z-76a3775b/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SUBAGENT-001/SUBAGENT-001-20260919T150635Z-76a3775b/migration-not-skipped.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SUBAGENT-001/SUBAGENT-001-20260919T150635Z-76a3775b/runtime-tests.log"
+    }
+  ],
+  "finishedAt": "2026-09-19T15:12:12Z"
+}

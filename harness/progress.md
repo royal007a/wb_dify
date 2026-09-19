@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-09-19T15:06:30Z`
+- Generated from task state updated at: `2026-09-19T15:12:19Z`
 - Current task: `none`
-- Counts: pending 5 · running 0 · blocked 0 · completed 3
+- Counts: pending 4 · running 0 · blocked 0 · completed 4
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -14,7 +14,7 @@
 | `CONTEXT-001` | P1 | completed | backend, runtime, eval | reversible_write | 建立上下文预算归档与压缩评测 |
 | `PROVIDER-001` | P1 | pending | backend, runtime | reversible_write | 补原生流式故障注入矩阵 |
 | `SECURITY-001` | P1 | pending | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |
-| `SUBAGENT-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立子 Agent 任务与延迟消费确认 |
+| `SUBAGENT-001` | P2 | completed | backend, migration, runtime | reversible_write | 建立子 Agent 任务与延迟消费确认 |
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |
 
 Regenerate with `python3 harness/harness.py render-progress`; verify with `python3 harness/harness.py check-progress`.

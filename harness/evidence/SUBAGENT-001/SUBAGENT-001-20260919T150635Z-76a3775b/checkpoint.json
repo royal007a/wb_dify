@@ -1,0 +1,7 @@
+{
+  "summary": "Child task lifecycle, delayed consumption, output references and lost recovery decisions implemented; backend/PostgreSQL/runtime matrix passed",
+  "headCommit": "fcdce73332ee729cfcec960b3e722cb1313104bb",
+  "workingTreeHash": "7468cca68f9e535141ca730a5acb3e02f52a41a987be1afec3e019ccd05db320",
+  "evidencePath": "harness/evidence/SUBAGENT-001/SUBAGENT-001-20260919T150635Z-76a3775b",
+  "updatedAt": "2026-09-19T15:12:19Z"
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SUBAGENT-001-20260919T150635Z-76a3775b",
+  "taskId": "SUBAGENT-001",
+  "status": "completed",
+  "baselineCommit": "fcdce73332ee729cfcec960b3e722cb1313104bb",
+  "approvalRef": null,
+  "startedAt": "2026-09-19T15:06:35Z",
+  "exitCode": 0,
+  "reason": "child task protocol and recovery tests passed on H2 and PostgreSQL migration matrix",
+  "headCommit": "fcdce73332ee729cfcec960b3e722cb1313104bb",
+  "finishedAt": "2026-09-19T15:12:19Z"
+}

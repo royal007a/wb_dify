@@ -68,6 +68,7 @@ public class RunApplicationService {
     private final CommittedHistoryWriter historyWriter;
     private final RunEventBroker eventBroker;
     private final RunCheckpointRepository checkpoints;
+    private final ChildAgentTaskService childTasks;
     private final ObjectMapper objectMapper;
     private final TransactionTemplate transactions;
     private final Executor executor;
@@ -83,7 +84,8 @@ public class RunApplicationService {
                                  AgentRunRepository runs, ModelClientFactory modelClients,
                                  QueryLoop queryLoop, ToolRuntime toolRuntime,
                                  CommittedHistoryWriter historyWriter, RunEventBroker eventBroker,
-                                 RunCheckpointRepository checkpoints, ObjectMapper objectMapper,
+                                 RunCheckpointRepository checkpoints, ChildAgentTaskService childTasks,
+                                 ObjectMapper objectMapper,
                                  TransactionTemplate transactions,
                                  @Qualifier("runExecutor") Executor executor,
                                  @Value("${hify.run-timeout:60s}") Duration runTimeout,
@@ -101,6 +103,7 @@ public class RunApplicationService {
         this.historyWriter = historyWriter;
         this.eventBroker = eventBroker;
         this.checkpoints = checkpoints;
+        this.childTasks = childTasks;
         this.objectMapper = objectMapper;
         this.transactions = transactions;
         this.executor = executor;
@@ -459,6 +462,7 @@ public class RunApplicationService {
         boolean won = finishTerminal(runId, state, result.reason().name(), result.finalText(),
                 result.turns(), result.toolCalls(), state == RunState.COMPLETED);
         if (!won) return;
+        if (state == RunState.COMPLETED) childTasks.acknowledgeClaimedForCompletedParent(runId);
 
         String type = switch (state) {
             case COMPLETED -> "run.completed";

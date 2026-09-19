@@ -153,7 +153,7 @@ for scope in $SCOPES; do
       fi
       ;;
     runtime)
-      run_step runtime-tests sh -c "cd '$ROOT_DIR/backend' && mvn -pl hify-app -am -Dtest=QueryLoopTest,PlanStateMachineTest,ExecutionContextStateTest,RunFlowIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test"
+      run_step runtime-tests sh -c "cd '$ROOT_DIR/backend' && mvn -pl hify-app -am -Dtest=QueryLoopTest,PlanStateMachineTest,ExecutionContextStateTest,ChildAgentTaskTest,RunFlowIntegrationTest,ChildAgentTaskIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test"
       ;;
     eval)
       run_step intent-and-context-eval sh -c "cd '$ROOT_DIR/backend' && mvn -pl hify-chat -am -Dtest=IntentDecisionTest,DeterministicIntentRouterTest,LayeredIntentRouterTest,StructuredModelIntentClassifierTest,IntentEvaluationDatasetTest,ContextManagementEvaluationTest -Dsurefire.failIfNoSpecifiedTests=false test"
