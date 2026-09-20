@@ -17,6 +17,7 @@
 | Context 治理 | `runtime/context/*`、`ContextManagementEvaluationTest`、ADR-0010 | 输入/输出/预留/安全预算；Tool Result 先归档、checkpoint 后压缩且每步重测；评测语义安全而非只看 token 降幅 |
 | 摘要与细节目录 | `memory/*`、`V11__context_memory_catalog.sql`、ADR-0012 | 所有 canonical message 建统一 DetailRef；结构化 checkpoint 摘要带逐 Claim sourceRefs、原文 digest 校验与冲突/缺源状态；摘要明确不作为证据 |
 | 分层上下文/历史召回 | `LayeredContextMemoryService`、`HistoryRecallService`、`history.search/detail`、V12/V13、ADR-0013/0014 | 最近 3 轮原文 + 更早摘要/目录；PostgreSQL FTS + pgvector HNSW + 加权 RRF，并支持时间/类型/实体过滤；search 为导航、detail 才是 VERIFIED evidence；有 recall/no-progress 预算和只读 HTTP API |
+| Knowledge/RAG 数据管线 | `hify-knowledge`、V14/V15、`KnowledgeApiIntegrationTest` | PostgreSQL 单库；TXT/Markdown 上传、持久索引任务、递归分块、确定性 bootstrap embedding、FTS/pgvector HNSW 候选与加权 RRF、canonical chunk digest/citation、归档已通过 H2 与 PostgreSQL 门禁；尚未绑定 AgentVersion/Chat ContextManager |
 | 子任务控制协议 | `ChildAgentTask`、`ChildAgentTaskService`、`V10__child_agent_task_protocol.sql` | 独立状态机、outputRef、delivered/claimed/consumed、父成功后确认、lost 收敛已验证；尚无真实子 Agent worker/调度器 |
 | Intent Router | `hify-chat/com.hify.intent`、`IntentRoutingController` | 四出口契约、确定性规则层、结构化模型候选、低置信/歧义/缺槽澄清、120 条中文评测集；当前仅预览，不接管 Run |
 | Mock 模型 | `MockModelClient.java` | 可触发时间或单个二元运算工具 |
@@ -36,7 +37,7 @@
 - RunStep/ToolCall 独立表、通用完整 JSON Schema、工具超时与写工具交互式批准；当前 Attempt/Plan 通过事件追踪，checkpoint 与 canonical history 持久化 call/result 配对消息。
 - 高风险 write/external/execute 工具策略；当前只有 read 工具，未绑定工具会被拒绝。
 - 完整审计字段；并发幂等数据库冲突归一和终态数据库 CAS 已完成。
-- MCP、RAG、Workflow、文档对象存储与 Redis；`compose.yaml` 已提供，但本机缺少 Compose plugin，实际部署由等价 `deploy/up.sh` 完成。
+- MCP、Workflow、Knowledge 到 AgentVersion/Chat 的运行绑定、文档对象存储与 Redis；Knowledge 独立数据管线与检索 API 已实现，原文暂存 PostgreSQL canonical_content，后续再抽象 S3-compatible object port。
 - 认证/用户、完整 SSRF/DNS rebinding/redirect 防护、审计日志、CI 和 Vault/云 Secret Manager；Provider 当前仅允许 http/https、拒绝 userinfo/fragment，并支持 env/system 引用。
 - JPA 到 MyBatis-Plus 的全仓 Repository 迁移；Provider 与 DemoItem 已迁移，Agent/Chat/Run 仍保留 JPA，禁止一次性重写。
 - Intent Router 的真实 Provider 离线评测、shadow 事件和主链路 dispatch；当前 rule-only v2 Top1 为 82.50%（unknown recall 100%），模型层已有契约与单测但尚无真实成本/延迟数据。

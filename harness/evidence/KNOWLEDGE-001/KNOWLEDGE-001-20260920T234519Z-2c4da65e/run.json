@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "KNOWLEDGE-001-20260920T234519Z-2c4da65e",
+  "taskId": "KNOWLEDGE-001",
+  "status": "completed",
+  "baselineCommit": "51038ac2fef0629af5f2f44ae69a3aa1b2cbfa0b",
+  "approvalRef": null,
+  "startedAt": "2026-09-20T23:45:19Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "51038ac2fef0629af5f2f44ae69a3aa1b2cbfa0b",
+  "finishedAt": "2026-09-20T23:53:19Z"
+}

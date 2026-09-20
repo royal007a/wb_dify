@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "backend",
+    "migration",
+    "runtime",
+    "eval"
+  ],
+  "base": "working-tree",
+  "headCommit": "51038ac2fef0629af5f2f44ae69a3aa1b2cbfa0b",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "backend-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/KNOWLEDGE-001/KNOWLEDGE-001-20260920T234519Z-2c4da65e/backend-tests.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/KNOWLEDGE-001/KNOWLEDGE-001-20260920T234519Z-2c4da65e/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/KNOWLEDGE-001/KNOWLEDGE-001-20260920T234519Z-2c4da65e/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/KNOWLEDGE-001/KNOWLEDGE-001-20260920T234519Z-2c4da65e/migration-not-skipped.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/KNOWLEDGE-001/KNOWLEDGE-001-20260920T234519Z-2c4da65e/runtime-tests.log"
+    },
+    {
+      "name": "intent-context-recall-eval",
+      "exitCode": 0,
+      "log": "harness/evidence/KNOWLEDGE-001/KNOWLEDGE-001-20260920T234519Z-2c4da65e/intent-context-recall-eval.log"
+    }
+  ],
+  "finishedAt": "2026-09-20T23:53:02Z"
+}

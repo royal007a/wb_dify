@@ -2,16 +2,16 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-09-20T23:44:35Z`
+- Generated from task state updated at: `2026-09-20T23:53:19Z`
 - Current task: `none`
-- Counts: pending 9 · running 0 · blocked 0 · completed 9
+- Counts: pending 8 · running 0 · blocked 0 · completed 10
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
 | `COURSE-018-025` | P0 | completed | harness | reversible_write | 吸收课程 18-25 并更新目标规格 |
 | `EVAL-001` | P0 | pending | eval, runtime | reversible_write | 将 Intent 评测升级为回归门禁 |
 | `HARNESS-001` | P0 | completed | harness | reversible_write | 建立机器状态工程 Harness |
-| `KNOWLEDGE-001` | P0 | pending | backend, migration, runtime, eval | reversible_write | 交付可引用的知识库纵向切片 |
+| `KNOWLEDGE-001` | P0 | completed | backend, migration, runtime, eval | reversible_write | 交付可引用的知识库纵向切片 |
 | `MEMORY-002` | P0 | completed | backend, migration, runtime | reversible_write | 建立结构化摘要与统一细节目录 |
 | `RECALL-001` | P0 | completed | backend, migration, runtime, eval | reversible_write | 完成分层上下文与迭代式细节召回 |
 | `RUNTIME-001` | P0 | completed | backend, migration, runtime | reversible_write | 建立 Runtime 能力租约与历史提交协议 |
