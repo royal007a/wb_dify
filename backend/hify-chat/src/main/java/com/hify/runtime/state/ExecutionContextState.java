@@ -1,6 +1,7 @@
 package com.hify.runtime.state;
 
 import com.hify.runtime.ToolRuntime;
+import com.hify.runtime.ToolEvidencePayload;
 import com.hify.runtime.plan.ExecutionPlan;
 import com.hify.runtime.plan.StepAttempt;
 
@@ -38,16 +39,26 @@ public record ExecutionContextState(
         String claimId = UUID.randomUUID().toString();
         EvidenceItem item = EvidenceItem.toolResult(claimId, attempt.toolCallId(), attempt.toolName(),
                 attempt.id(), result.value(), result.failureType().name(), plan.version());
+        boolean navigation = result.value() instanceof ToolEvidencePayload payload
+                && payload.evidenceKind() == ToolEvidencePayload.EvidenceKind.NAVIGATION;
         ClaimState claim = new ClaimState(claimId,
                 result.error() ? "Tool attempt failed: " + attempt.toolName()
                         : "Tool produced a result: " + attempt.toolName(),
-                ClaimState.Kind.FACT, ClaimState.Status.VERIFIED, !result.error(), List.of(item.id()));
+                ClaimState.Kind.FACT,
+                navigation ? ClaimState.Status.UNVERIFIED : ClaimState.Status.VERIFIED,
+                !result.error() && !navigation, List.of(item.id()));
         List<ClaimState> nextClaims = new ArrayList<>(claims);
         nextClaims.add(claim);
         List<EvidenceItem> nextEvidence = new ArrayList<>(evidence);
         nextEvidence.add(item);
         ExecutionContextState next = new ExecutionContextState(evidenceVersion + 1, gapVersion,
                 nextClaims, nextEvidence, gaps, lastSemanticFingerprint, repeatedStateCount);
+        if (navigation) {
+            return next.openGap(GapState.open(GapState.Kind.UNVERIFIED_CLAIM,
+                    "History search returned navigation candidates; canonical detail is still required",
+                    true, "tool:history.detail", List.of("call_history_detail", "clarify"),
+                    attempt.id()));
+        }
         return result.error() ? next : next.resolveGaps("tool:" + attempt.toolName());
     }
 

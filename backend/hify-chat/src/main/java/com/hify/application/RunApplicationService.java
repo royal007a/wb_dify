@@ -364,13 +364,18 @@ public class RunApplicationService {
 
             @Override
             public void onContextPrepared(int turn, ContextManager.PreparedContext context) {
-                if (!context.archived() && !context.compacted()) return;
-                eventBroker.publish(runId, "context.prepared", Map.of(
-                        "version", 1, "runId", runId, "turn", turn,
-                        "originalTokens", context.originalTokens(),
-                        "preparedTokens", context.preparedTokens(),
-                        "archivedToolResults", context.archiveReferences().size(),
-                        "compacted", context.compacted()));
+                if (!context.archived() && !context.compacted() && !context.layeredMemory()) return;
+                Map<String, Object> payload = new java.util.LinkedHashMap<>();
+                payload.put("version", 1); payload.put("runId", runId); payload.put("turn", turn);
+                payload.put("originalTokens", context.originalTokens());
+                payload.put("preparedTokens", context.preparedTokens());
+                payload.put("archivedToolResults", context.archiveReferences().size());
+                payload.put("compacted", context.compacted());
+                payload.put("layeredMemory", context.layeredMemory());
+                payload.put("summaryId", context.summaryId());
+                payload.put("catalogRefCount", context.catalogRefs().size());
+                payload.put("retainedFromIndex", context.retainedFromIndex());
+                eventBroker.publish(runId, "context.prepared", payload);
             }
 
             @Override

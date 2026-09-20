@@ -17,6 +17,7 @@ import com.hify.infra.AgentRunRepository;
 import com.hify.infra.ChatMessageRepository;
 import com.hify.infra.ConversationRepository;
 import com.hify.infra.RunEventRepository;
+import com.hify.memory.HistoryRecallService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -74,6 +75,7 @@ class PostgresConcurrencyIntegrationTest {
     @Autowired JdbcTemplate jdbc;
     @Autowired MockMvc http;
     @Autowired ObjectMapper objectMapper;
+    @Autowired HistoryRecallService historyRecall;
 
     @Test
     void chatSlicePinsPublishedVersionAndReplaysTerminalSseOnPostgres() throws Exception {
@@ -96,6 +98,14 @@ class PostgresConcurrencyIntegrationTest {
         assertThat(events.findByRunIdOrderByIdAsc(firstRunId))
                 .extracting(event -> event.getEventType())
                 .contains("message.delta", "tool.call.started", "tool.call.completed", "run.completed");
+        HistoryRecallService.SearchResult recalled = historyRecall.search(firstRunId,
+                new HistoryRecallService.SearchQuery("17 * 23", null, null, null, null, 5));
+        assertThat(recalled.strategy()).isEqualTo("POSTGRES_FTS_KEYWORD");
+        assertThat(recalled.matches()).isNotEmpty();
+        assertThat(jdbc.queryForObject("""
+                SELECT COUNT(*) FROM pg_indexes
+                 WHERE schemaname = 'public' AND indexname = 'idx_detail_ref_fts'
+                """, Long.class)).isEqualTo(1L);
 
         MvcResult stream = http.perform(get("/api/v1/runs/{id}/events/stream", firstRunId)
                         .header("Last-Event-ID", "0")

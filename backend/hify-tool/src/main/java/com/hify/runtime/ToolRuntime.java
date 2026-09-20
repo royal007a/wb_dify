@@ -5,6 +5,7 @@ import com.hify.common.ExecutionCancelledException;
 import com.hify.tool.api.ToolCatalog;
 import com.hify.tool.api.ToolCatalogItem;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.nio.charset.StandardCharsets;
@@ -26,8 +27,14 @@ public class ToolRuntime implements ToolCatalog {
             "^\\s*(-?\\d+(?:\\.\\d+)?)\\s*([+\\-*/])\\s*(-?\\d+(?:\\.\\d+)?)\\s*$");
 
     private final Map<String, ToolDefinition> definitions = new LinkedHashMap<>();
+    private final Map<String, RuntimeToolExtension> extensions = new LinkedHashMap<>();
 
     public ToolRuntime() {
+        this(List.of());
+    }
+
+    @Autowired
+    public ToolRuntime(List<RuntimeToolExtension> toolExtensions) {
         definitions.put("current_time", new ToolDefinition(
                 "current_time", "Get the current time in an ISO-8601 offset format",
                 Map.of("type", "object", "properties", Map.of()), "read"));
@@ -38,6 +45,14 @@ public class ToolRuntime implements ToolCatalog {
                         "properties", Map.of("expression", Map.of("type", "string")),
                         "required", List.of("expression")
                 ), "read"));
+        for (RuntimeToolExtension extension : toolExtensions) {
+            for (ToolDefinition definition : extension.definitions()) {
+                if (definitions.putIfAbsent(definition.name(), definition) != null) {
+                    throw new IllegalArgumentException("Duplicate tool definition: " + definition.name());
+                }
+                extensions.put(definition.name(), extension);
+            }
+        }
     }
 
     public List<ToolDefinition> definitions(Set<String> enabledNames) {
@@ -73,6 +88,8 @@ public class ToolRuntime implements ToolCatalog {
         return switch (toolName) {
             case "current_time" -> "当前时间";
             case "calculator" -> "计算器";
+            case "history.search" -> "历史搜索";
+            case "history.detail" -> "历史详情";
             default -> toolName;
         };
     }
@@ -115,7 +132,7 @@ public class ToolRuntime implements ToolCatalog {
             ExecutionResult result = switch (call.name()) {
                 case "current_time" -> ExecutionResult.success(OffsetDateTime.now().toString());
                 case "calculator" -> ExecutionResult.success(calculate(call.arguments()));
-                default -> ExecutionResult.executionFailed("Unknown tool: " + call.name(), true);
+                default -> extensions.get(call.name()).execute(call, lease, control);
             };
             control.throwIfCancelled();
             return result.limit(32 * 1024);

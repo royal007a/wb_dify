@@ -27,5 +27,6 @@
 - 上下文预算/归档/压缩：`../decisions/ADR-0010-context-budget-and-compaction.md`
 - 子任务延迟消费确认：`../decisions/ADR-0011-child-task-delayed-consumption.md`
 - 摘要/细节/证据边界：`../decisions/ADR-0012-summary-detail-evidence-boundary.md`
+- 分层上下文/迭代召回：`../decisions/ADR-0013-layered-context-and-iterative-recall.md`
 
 当 Harness 的状态模型、授权语义或 evidence 保留策略发生不兼容变化时，新增正式 ADR，不在本索引中直接覆盖历史理由。

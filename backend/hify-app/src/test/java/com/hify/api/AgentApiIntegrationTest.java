@@ -219,9 +219,11 @@ class AgentApiIntegrationTest {
         JsonNode catalog = json(http.perform(get("/api/v1/tools"))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");
 
-        assertThat(catalog).hasSize(2);
-        assertThat(catalog.findValuesAsText("id")).containsExactly("current_time", "calculator");
-        assertThat(catalog.findValuesAsText("displayName")).containsExactly("当前时间", "计算器");
+        assertThat(catalog).hasSize(4);
+        assertThat(catalog.findValuesAsText("id")).containsExactly(
+                "current_time", "calculator", "history.search", "history.detail");
+        assertThat(catalog.findValuesAsText("displayName")).containsExactly(
+                "当前时间", "计算器", "历史搜索", "历史详情");
         assertThat(catalog.findValuesAsText("source")).containsOnly("BUILTIN");
         assertThat(catalog.findValuesAsText("risk")).containsOnly("READ");
         assertThat(catalog.findValues("available")).allMatch(JsonNode::asBoolean);

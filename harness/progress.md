@@ -2,16 +2,16 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-09-20T15:51:40Z`
+- Generated from task state updated at: `2026-09-20T16:03:46Z`
 - Current task: `none`
-- Counts: pending 7 · running 0 · blocked 0 · completed 5
+- Counts: pending 6 · running 0 · blocked 0 · completed 6
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
 | `EVAL-001` | P0 | pending | eval, runtime | reversible_write | 将 Intent 评测升级为回归门禁 |
 | `HARNESS-001` | P0 | completed | harness | reversible_write | 建立机器状态工程 Harness |
 | `MEMORY-002` | P0 | completed | backend, migration, runtime | reversible_write | 建立结构化摘要与统一细节目录 |
-| `RECALL-001` | P0 | pending | backend, migration, runtime, eval | reversible_write | 完成分层上下文与迭代式细节召回 |
+| `RECALL-001` | P0 | completed | backend, migration, runtime, eval | reversible_write | 完成分层上下文与迭代式细节召回 |
 | `RUNTIME-001` | P0 | completed | backend, migration, runtime | reversible_write | 建立 Runtime 能力租约与历史提交协议 |
 | `CONTEXT-001` | P1 | completed | backend, runtime, eval | reversible_write | 建立上下文预算归档与压缩评测 |
 | `DEPLOY-001` | P1 | pending | backend, frontend, migration, runtime, eval | high_risk | 部署摘要与细节召回纵向切片 |

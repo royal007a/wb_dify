@@ -143,6 +143,18 @@ data: {"version":1,"runId":"run_...","terminalReason":"PERMISSION_DENIED","error
 
 `context.prepared` 只在发生归档或压缩时发送，包含 `originalTokens/preparedTokens/archivedToolResults/compacted`。它描述模型输入投影，不表示 canonical history 被删除。
 
+历史记忆提供只读审计/诊断 API：
+
+```text
+GET  /api/v1/runs/{runId}/memory
+POST /api/v1/runs/{runId}/memory/search
+GET  /api/v1/runs/{runId}/memory/details/{refId}
+```
+
+`memory` 返回该 Run 的结构化摘要和 Detail Catalog。`search` 请求为
+`query/kind/from/to/entity/limit`，返回带分数的 ref 候选；它只是导航结果，不是事实证据。
+`details` 必须与当前 Run 属于同一 Conversation，并从指定 canonical revision/message index 回读、校验 digest 后返回原文。运行时对应的模型工具名是 `history.search` 与 `history.detail`；前者打开未验证 Gap，后者成功后才形成 VERIFIED evidence。
+
 前端不得把所有 `*.failed` 都当作 Run 终态；只有 `run.completed/run.failed/run.cancelled/run.needs_input` 结束流。
 
 Playground 只列出 `enabled=true` 且已有 `publishedVersionId` 的 Agent。创建 Conversation 后，页面显示固定的

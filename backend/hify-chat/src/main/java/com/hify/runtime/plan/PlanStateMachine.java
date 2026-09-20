@@ -34,7 +34,8 @@ public final class PlanStateMachine {
                 EnumSet.of(PlanPhase.CHECKPOINTED, PlanPhase.DIAGNOSING,
                         PlanPhase.CANCELLED, PlanPhase.FAILED));
         transitions.put(PlanPhase.CHECKPOINTED,
-                EnumSet.of(PlanPhase.TRYING, PlanPhase.COMPLETED, PlanPhase.CANCELLED, PlanPhase.FAILED));
+                EnumSet.of(PlanPhase.TRYING, PlanPhase.AWAITING_CONFIRMATION,
+                        PlanPhase.COMPLETED, PlanPhase.CANCELLED, PlanPhase.FAILED));
         transitions.put(PlanPhase.DIAGNOSING,
                 EnumSet.of(PlanPhase.REPLANNING, PlanPhase.AWAITING_CONFIRMATION,
                         PlanPhase.CANCELLED, PlanPhase.FAILED));

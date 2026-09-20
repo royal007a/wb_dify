@@ -34,12 +34,10 @@ public class QueryLoop {
     private final ToolRuntime toolRuntime;
     private final ContextManager contextManager;
 
-    @Autowired
-    public QueryLoop(ToolRuntime toolRuntime) {
-        this(toolRuntime, new ContextManager());
-    }
+    public QueryLoop(ToolRuntime toolRuntime) { this(toolRuntime, new ContextManager()); }
 
-    QueryLoop(ToolRuntime toolRuntime, ContextManager contextManager) {
+    @Autowired
+    public QueryLoop(ToolRuntime toolRuntime, ContextManager contextManager) {
         this.toolRuntime = toolRuntime;
         this.contextManager = contextManager;
     }
@@ -95,6 +93,9 @@ public class QueryLoop {
         Set<String> seenToolCallIds = existingToolCallIds(initialMessages);
         ExecutionControl control = ExecutionControl.withTimeout(policy.timeout(), policy.cancelled());
         int toolCalls = completedToolCalls;
+        int recallCalls = existingRecallCalls(initialMessages);
+        int recallTokens = existingRecallTokens(initialMessages);
+        long recallLatencyMs = 0;
         ExecutionPlan plan = initialPlan;
         ExecutionContextState contextState = initialContext;
         PlanStateMachine state = new PlanStateMachine();
@@ -121,7 +122,7 @@ public class QueryLoop {
             try {
                 observer.onModelStarted(turn);
                 int currentTurn = turn;
-                ContextManager.PreparedContext prepared = contextManager.prepare(
+                ContextManager.PreparedContext prepared = contextManager.prepare(identity.runId(),
                         messages, capability.definitions(), ContextBudget.fromWindow(policy.maxEstimatedTokens()));
                 observer.onContextPrepared(turn, prepared);
                 response = modelClient.generateStream(new ModelRequest(
@@ -216,6 +217,14 @@ public class QueryLoop {
                             "Tool-call budget exceeded.", messages, turn, toolCalls,
                             plan, replanDecisions, checkpoint);
                 }
+                if (isRecallTool(call.name()) && (recallCalls >= policy.maxRecallCalls()
+                        || recallTokens >= policy.maxRecallTokens()
+                        || recallLatencyMs >= policy.maxRecallLatencyMs())) {
+                    transitionIfPossible(state, PlanPhase.FAILED);
+                    return terminal(TerminalReason.RECALL_BUDGET_EXCEEDED,
+                            "History recall budget exceeded.", messages, turn, toolCalls,
+                            plan, replanDecisions, checkpoint);
+                }
                 if (control.isCancelled()) {
                     transitionIfPossible(state, PlanPhase.CANCELLED);
                     return terminal(TerminalReason.CANCELLED, "Run cancelled.", messages,
@@ -231,10 +240,16 @@ public class QueryLoop {
                     StepAttempt attempt = StepAttempt.start(step, toolCalls, call.id(), call.name());
                     observer.onTryStarted(turn, plan, step, attempt, call);
                     try {
+                        long startedAt = System.nanoTime();
                         ToolExecutionLease lease = new ToolExecutionLease(identity.runId(), attempt.id(),
                                 identity.capabilityRevision(), () -> identity.executionLeaseValidator()
                                 .test(attempt.id(), identity.capabilityRevision()));
                         result = toolRuntime.execute(call, capability, lease, control);
+                        if (isRecallTool(call.name())) {
+                            recallCalls++;
+                            recallLatencyMs += Math.max(0, (System.nanoTime() - startedAt) / 1_000_000);
+                            recallTokens += estimatedTokens(result.value());
+                        }
                     } catch (ExecutionCancelledException exception) {
                         result = ToolRuntime.ExecutionResult.cancelled();
                     }
@@ -259,6 +274,14 @@ public class QueryLoop {
                 RuntimeMessage toolResult = RuntimeMessage.toolResult(call.id(), result.value(), result.error());
                 messages.add(toolResult);
                 commitHistory(identity, "tool:" + call.id(), messages, observer);
+
+                if (isRecallTool(call.name()) && (recallTokens > policy.maxRecallTokens()
+                        || recallLatencyMs > policy.maxRecallLatencyMs())) {
+                    transitionIfPossible(state, PlanPhase.FAILED);
+                    return terminal(TerminalReason.RECALL_BUDGET_EXCEEDED,
+                            "History recall result exceeded token or latency budget.", messages,
+                            turn, toolCalls, plan, replanDecisions, checkpoint);
+                }
 
                 if (result.error()) {
                     java.util.Optional<String> alternative =
@@ -339,6 +362,18 @@ public class QueryLoop {
                 } else {
                     contextState = contextState.observeProgress();
                     observer.onContextStateChanged(contextState);
+                    if (isRecallTool(call.name()) && contextState.hasNoProgress(2)) {
+                        contextState = contextState.openGap(GapState.open(GapState.Kind.NO_PROGRESS,
+                                "Repeated history recall produced no new canonical evidence", true,
+                                "user:clarification", List.of("change_recall_query", "clarify", "interrupt"),
+                                completedAttempt.id()));
+                        observer.onContextStateChanged(contextState);
+                        pendingContinuation = ContinuationDecision.of(ContinuationAction.CLARIFY,
+                                "recall_no_progress", contextState, plan.version(), completedAttempt.id());
+                        observer.onContinuationDecided(pendingContinuation);
+                        transitionIfPossible(state, PlanPhase.AWAITING_CONFIRMATION);
+                        continue;
+                    }
                     pendingContinuation = ContinuationDecision.of(ContinuationAction.CONTINUE,
                             "verified_tool_result_recorded", contextState,
                             plan.version(), completedAttempt.id());
@@ -437,6 +472,27 @@ public class QueryLoop {
         return ids;
     }
 
+    private int existingRecallCalls(List<RuntimeMessage> messages) {
+        return (int) messages.stream().flatMap(message -> message.toolCalls().stream())
+                .filter(call -> isRecallTool(call.name())).count();
+    }
+
+    private int existingRecallTokens(List<RuntimeMessage> messages) {
+        Set<String> recallIds = new HashSet<>();
+        messages.forEach(message -> message.toolCalls().stream()
+                .filter(call -> isRecallTool(call.name())).forEach(call -> recallIds.add(call.id())));
+        return messages.stream().filter(message -> "tool".equals(message.role())
+                        && recallIds.contains(message.toolCallId()) && message.content() != null)
+                .mapToInt(message -> Math.max(1, message.content().length() / 4)).sum();
+    }
+
+    private boolean isRecallTool(String name) { return name != null && name.startsWith("history."); }
+
+    private int estimatedTokens(Object value) {
+        if (value instanceof ToolEvidencePayload payload) return payload.estimatedTokens();
+        return Math.max(1, String.valueOf(value).length() / 4);
+    }
+
     private void commitHistory(RunRuntimeIdentity identity, String operationId,
                                List<RuntimeMessage> messages, RunObserver observer) {
         HistoryCommitter.CommitReceipt receipt = identity.historyCommitter()
@@ -445,21 +501,32 @@ public class QueryLoop {
     }
 
     public record RunPolicy(int maxTurns, int maxToolCalls, int maxEstimatedTokens,
-                            int maxReplans, int maxRetries,
+                            int maxReplans, int maxRetries, int maxRecallCalls,
+                            int maxRecallTokens, long maxRecallLatencyMs,
                             Duration timeout, BooleanSupplier cancelled) {
         public RunPolicy(int maxTurns, int maxToolCalls, int maxEstimatedTokens,
                          Duration timeout, BooleanSupplier cancelled) {
-            this(maxTurns, maxToolCalls, maxEstimatedTokens, 2, 1, timeout, cancelled);
+            this(maxTurns, maxToolCalls, maxEstimatedTokens, 2, 1,
+                    6, 4_096, 5_000, timeout, cancelled);
         }
 
         public RunPolicy(int maxTurns, int maxToolCalls, int maxEstimatedTokens,
                          int maxReplans, Duration timeout, BooleanSupplier cancelled) {
-            this(maxTurns, maxToolCalls, maxEstimatedTokens, maxReplans, 1, timeout, cancelled);
+            this(maxTurns, maxToolCalls, maxEstimatedTokens, maxReplans, 1,
+                    6, 4_096, 5_000, timeout, cancelled);
+        }
+
+        public RunPolicy(int maxTurns, int maxToolCalls, int maxEstimatedTokens,
+                         int maxReplans, int maxRetries,
+                         Duration timeout, BooleanSupplier cancelled) {
+            this(maxTurns, maxToolCalls, maxEstimatedTokens, maxReplans, maxRetries,
+                    6, 4_096, 5_000, timeout, cancelled);
         }
 
         public RunPolicy {
             if (maxTurns < 1 || maxToolCalls < 0 || maxEstimatedTokens < 1
-                    || maxReplans < 0 || maxRetries < 0) {
+                    || maxReplans < 0 || maxRetries < 0 || maxRecallCalls < 0
+                    || maxRecallTokens < 1 || maxRecallLatencyMs < 1) {
                 throw new IllegalArgumentException("Run budgets must be positive");
             }
         }

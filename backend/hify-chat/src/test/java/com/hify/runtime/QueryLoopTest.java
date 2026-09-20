@@ -100,6 +100,45 @@ class QueryLoopTest {
     }
 
     @Test
+    void searchIsNavigationOnlyAndCannotFinishWithoutCanonicalDetail() {
+        ToolRuntime tools = recallTools();
+        AtomicInteger calls = new AtomicInteger();
+        ModelClient model = request -> calls.incrementAndGet() == 1
+                ? RuntimeMessage.toolCalls(List.of(new RuntimeMessage.ToolCall(
+                "search-1", "history.search", Map.of("query", "old fact"))))
+                : RuntimeMessage.assistant("I will guess from the summary");
+
+        QueryLoop.Result result = new QueryLoop(tools).run(List.of(RuntimeMessage.user("question")),
+                model, "mock", 0, Set.of("history.search"),
+                new QueryLoop.RunPolicy(3, 3, 4096, Duration.ofSeconds(5), () -> false),
+                QueryLoop.RunObserver.NOOP);
+
+        assertThat(result.reason()).isEqualTo(TerminalReason.HUMAN_INPUT_REQUIRED);
+        assertThat(result.contextState().evidence()).singleElement()
+                .satisfies(item -> assertThat(item.status()).isEqualTo(
+                        com.hify.runtime.state.EvidenceItem.Status.UNVERIFIED));
+        assertThat(result.contextState().openBlockingGaps()).isNotEmpty();
+    }
+
+    @Test
+    void enforcesDedicatedRecallBudgetBeforeRepeatedInvestigation() {
+        ToolRuntime tools = recallTools();
+        AtomicInteger calls = new AtomicInteger();
+        ModelClient model = request -> RuntimeMessage.toolCalls(List.of(new RuntimeMessage.ToolCall(
+                "search-" + calls.incrementAndGet(), "history.search", Map.of("query", "same"))));
+        CapabilitySnapshot capability = tools.snapshot("recall", Set.of("history.search"));
+
+        QueryLoop.Result result = new QueryLoop(tools).run(List.of(RuntimeMessage.user("question")),
+                model, "mock", 0, capability,
+                new QueryLoop.RunPolicy(4, 4, 4096, 2, 1,
+                        1, 512, 5_000, Duration.ofSeconds(5), () -> false),
+                QueryLoop.RunObserver.NOOP, RunRuntimeIdentity.local(capability));
+
+        assertThat(result.reason()).isEqualTo(TerminalReason.RECALL_BUDGET_EXCEEDED);
+        assertThat(result.toolCalls()).isEqualTo(1);
+    }
+
+    @Test
     void stopsWhenCancelledBeforeModelCall() {
         AtomicBoolean cancelled = new AtomicBoolean(true);
 
@@ -261,6 +300,31 @@ class QueryLoopTest {
         assertThat(result.messages()).filteredOn(message -> "tool".equals(message.role()))
                 .extracting(RuntimeMessage::toolCallId)
                 .containsExactly("unknown-call", "skipped-call");
+    }
+
+    private ToolRuntime recallTools() {
+        return new ToolRuntime(List.of(new RuntimeToolExtension() {
+            @Override
+            public List<ToolDefinition> definitions() {
+                return List.of(new ToolDefinition("history.search", "search history",
+                        Map.of("type", "object", "properties", Map.of(
+                                "query", Map.of("type", "string")), "required", List.of("query")), "read"));
+            }
+
+            @Override
+            public ToolRuntime.ExecutionResult execute(RuntimeMessage.ToolCall call,
+                                                       ToolExecutionLease lease,
+                                                       com.hify.common.ExecutionControl control) {
+                return ToolRuntime.ExecutionResult.success(new NavigationResult(
+                        "history-search:fixed", "a".repeat(64), 12));
+            }
+        }));
+    }
+
+    private record NavigationResult(String sourceRef, String valueDigest, int estimatedTokens)
+            implements ToolEvidencePayload {
+        @Override public EvidenceKind evidenceKind() { return EvidenceKind.NAVIGATION; }
+        @Override public String evidenceSummary() { return "navigation only"; }
     }
 
     @Test

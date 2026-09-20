@@ -9,6 +9,16 @@ import com.hify.domain.SummaryClaimStatus;
 import com.hify.infra.HistoryDetailRefRepository;
 import com.hify.memory.CanonicalDetailReader;
 import com.hify.memory.StructuredSummaryService;
+import com.hify.runtime.CapabilitySnapshot;
+import com.hify.runtime.HistoryCommitter;
+import com.hify.runtime.ModelClient;
+import com.hify.runtime.QueryLoop;
+import com.hify.runtime.RunRuntimeIdentity;
+import com.hify.runtime.RuntimeMessage;
+import com.hify.runtime.TerminalReason;
+import com.hify.runtime.ToolRuntime;
+import com.hify.runtime.context.ContextManager;
+import com.hify.runtime.state.EvidenceItem;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,6 +29,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -38,6 +53,8 @@ class ContextMemoryIntegrationTest {
     @Autowired StructuredSummaryService summaries;
     @Autowired CanonicalDetailReader reader;
     @Autowired JdbcTemplate jdbc;
+    @Autowired ToolRuntime toolRuntime;
+    @Autowired ContextManager contextManager;
 
     @Test
     void derivesVerifiableDetailsAndSourceBoundStructuredSummaryFromCanonicalHistory() throws Exception {
@@ -82,6 +99,77 @@ class ContextMemoryIntegrationTest {
         assertThatThrownBy(() -> reader.read(sourceRef))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("digest");
+    }
+
+    @Test
+    void layersRecentTurnsAndRequiresSearchThenCanonicalDetailForVerifiedEvidence() throws Exception {
+        JsonNode conversation = json(http.perform(post("/api/v1/conversations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"agentId\":\"demo-agent\",\"title\":\"Recall contract\"}"))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString());
+        String conversationId = conversation.path("id").asText();
+        JsonNode created = json(http.perform(post("/api/v1/conversations/{id}/runs", conversationId)
+                        .header("Idempotency-Key", "recall-contract")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"message\":\"必须记住暗号 mint-42，并计算 8 * 8\"}"))
+                .andExpect(status().isAccepted()).andReturn().getResponse().getContentAsString());
+        String runId = created.path("id").asText();
+        awaitTerminal(runId);
+        HistoryDetailRef target = details.findByRunIdOrderBySourceMessageIndexAsc(runId).stream()
+                .filter(ref -> ref.getContentPreview().contains("mint-42")).findFirst().orElseThrow();
+
+        JsonNode search = json(http.perform(post("/api/v1/runs/{runId}/memory/search", runId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"query\":\"mint-42\",\"limit\":5}"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        assertThat(search.path("matches").get(0).path("refId").asText()).isEqualTo(target.getId());
+        JsonNode detail = json(http.perform(get("/api/v1/runs/{runId}/memory/details/{refId}",
+                        runId, target.getId()))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        assertThat(detail.path("content").asText()).contains("mint-42");
+
+        CapabilitySnapshot capability = toolRuntime.snapshot("recall-test",
+                Set.of("history.search", "history.detail"));
+        AtomicInteger calls = new AtomicInteger();
+        AtomicBoolean sawLayeredContext = new AtomicBoolean();
+        AtomicReference<String> searchedRef = new AtomicReference<>();
+        ModelClient model = request -> switch (calls.incrementAndGet()) {
+            case 1 -> {
+                sawLayeredContext.set(request.messages().stream().anyMatch(message ->
+                        message.content() != null && message.content().contains("HIFY_CONTEXT_MEMORY")));
+                yield RuntimeMessage.toolCalls(List.of(new RuntimeMessage.ToolCall(
+                        "recall-search", "history.search", Map.of("query", "mint-42", "limit", 5))));
+            }
+            case 2 -> {
+                searchedRef.set(target.getId());
+                yield RuntimeMessage.toolCalls(List.of(new RuntimeMessage.ToolCall(
+                        "recall-detail", "history.detail", Map.of("ref", target.getId()))));
+            }
+            default -> RuntimeMessage.assistant("暗号是 mint-42，有 canonical evidence 支撑。");
+        };
+        List<RuntimeMessage> longConversation = List.of(
+                RuntimeMessage.system("You are evidence driven"),
+                RuntimeMessage.user("第一轮：暗号 mint-42"), RuntimeMessage.assistant("收到"),
+                RuntimeMessage.user("第二轮：继续"), RuntimeMessage.assistant("继续"),
+                RuntimeMessage.user("第三轮：检查"), RuntimeMessage.assistant("检查"),
+                RuntimeMessage.user("第四轮：回答"));
+        QueryLoop.Result result = new QueryLoop(toolRuntime, contextManager).run(longConversation,
+                model, "mock", 0, capability,
+                new QueryLoop.RunPolicy(5, 5, 16_384, 2, 1,
+                        4, 2_048, 5_000, Duration.ofSeconds(5), () -> false),
+                QueryLoop.RunObserver.NOOP,
+                new RunRuntimeIdentity(runId, capability.revision(), capability.toolSchemaDigest(),
+                        (attempt, revision) -> true, HistoryCommitter.NOOP));
+
+        assertThat(result.reason()).isEqualTo(TerminalReason.COMPLETED);
+        assertThat(sawLayeredContext).isTrue();
+        assertThat(searchedRef).hasValue(target.getId());
+        assertThat(result.contextState().evidence()).extracting(EvidenceItem::status)
+                .contains(EvidenceItem.Status.UNVERIFIED, EvidenceItem.Status.VERIFIED);
+        assertThat(result.contextState().evidence()).filteredOn(item ->
+                        item.status() == EvidenceItem.Status.VERIFIED)
+                .anyMatch(item -> item.sourceRef().equals(target.getId()));
+        assertThat(result.contextState().openBlockingGaps()).isEmpty();
     }
 
     private JsonNode awaitTerminal(String runId) throws Exception {

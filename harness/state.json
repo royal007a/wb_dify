@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "MEMORY-002-20260920T154414Z-5b6db58e",
-    "path": "harness/evidence/MEMORY-002/MEMORY-002-20260920T154414Z-5b6db58e",
+    "runId": "RECALL-001-20260920T155145Z-eb16d6bf",
+    "path": "harness/evidence/RECALL-001/RECALL-001-20260920T155145Z-eb16d6bf",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "68e45f3bc86c48aa455e9857da334e4bb61e2bf5",
-    "headCommit": "68e45f3bc86c48aa455e9857da334e4bb61e2bf5",
-    "recordedAt": "2026-09-20T15:51:40Z"
+    "baselineCommit": "60362870a430409cac87a88859f501781a9483a5",
+    "headCommit": "60362870a430409cac87a88859f501781a9483a5",
+    "recordedAt": "2026-09-20T16:03:46Z"
   },
-  "lastCompletedTaskId": "MEMORY-002",
-  "updatedAt": "2026-09-20T15:51:40Z"
+  "lastCompletedTaskId": "RECALL-001",
+  "updatedAt": "2026-09-20T16:03:46Z"
 }

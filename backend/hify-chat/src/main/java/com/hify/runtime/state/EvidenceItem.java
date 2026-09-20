@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.HexFormat;
 import java.util.UUID;
+import com.hify.runtime.ToolEvidencePayload;
 
 public record EvidenceItem(
         String id,
@@ -35,6 +36,13 @@ public record EvidenceItem(
     public static EvidenceItem toolResult(String claimId, String toolCallId, String toolName,
                                           String attemptId, Object value, String failureType,
                                           int planVersion) {
+        if (value instanceof ToolEvidencePayload payload) {
+            Status evidenceStatus = payload.evidenceKind() == ToolEvidencePayload.EvidenceKind.CANONICAL
+                    ? Status.VERIFIED : Status.UNVERIFIED;
+            return new EvidenceItem(UUID.randomUUID().toString(), claimId, Type.SYSTEM_RECORD,
+                    evidenceStatus, payload.sourceRef(), payload.valueDigest(),
+                    payload.evidenceSummary(), planVersion, attemptId, Instant.now());
+        }
         String canonical = toolName + "|" + failureType + "|" + String.valueOf(value);
         return new EvidenceItem(UUID.randomUUID().toString(), claimId, Type.TOOL_RESULT,
                 Status.VERIFIED, toolCallId, sha256(canonical),
