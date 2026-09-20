@@ -27,6 +27,9 @@ erDiagram
   AGENT_RUN ||--o{ RUN_EVENT : streams
   AGENT_RUN ||--o{ RUN_CHECKPOINT : resumes
   AGENT_RUN ||--o{ RUN_HISTORY_COMMIT : commits
+  AGENT_RUN ||--o{ HISTORY_DETAIL_REF : indexes
+  AGENT_RUN ||--o{ CONTEXT_SUMMARY : summarizes
+  CONTEXT_SUMMARY ||--o{ CONTEXT_SUMMARY_CLAIM : contains
   RUN_STEP ||--o| TOOL_CALL : may_execute
   KNOWLEDGE_BASE ||--o{ DOCUMENT : owns
   DOCUMENT ||--o{ DOCUMENT_CHUNK : splits
@@ -56,6 +59,9 @@ erDiagram
 | `run_events` | run_id, monotonic sequence, event_type, payload JSONB, created_at |
 | `run_checkpoints` | run_id, sequence, checkpoint_id, turn/tool 计数、plan id/version/digest、evidence/gap version、plan/context/messages snapshot、restorable |
 | `run_history_commits` | run_id、revision、operation_id、semantic_digest、messages_json、committed_at/projected_at；run+revision 与 run+operation unique |
+| `history_detail_refs` | run/conversation、canonical revision + message index、kind、digest、preview、关键词/实体/token；只保存派生目录，不保存第二份权威原文 |
+| `context_summaries` | run/conversation、range、kind、结构化目标/事实/约束/决策/gap、source refs、digest、version、CURRENT/INVALID/CONFLICTING |
+| `context_summary_claims` | summary、claim key/type、statement、source refs、VERIFIED/MISSING_SOURCE/CONTRADICTED；每条关键结论可追溯 |
 | `child_agent_tasks` | parent_run_id、child_run_id、task_digest、state、output_ref/digest、output_state、claim_token、recovery_action、executor_id、attempt_count、version |
 | `tool_calls` | run_id, run_step_id, call_id unique per run, tool identity, input/output refs, idempotency_key |
 | `knowledge_bases` | name, embedding_model_id, chunk strategy |
@@ -76,6 +82,8 @@ erDiagram
 - `run_events(run_id, sequence)` unique；支持 `Last-Event-ID` replay。
 - `run_checkpoints(run_id, sequence)` unique；完整 Plan 与 ExecutionContextState 快照保证恢复前后的 plan/evidence/gap 版本一致，只保存完成 tool call/result 配对后的恢复点。当前仅允许恢复 read-only Run。
 - `run_history_commits(run_id, operation_id)` unique；相同 operation 只有 semantic digest 相同时可重放，内容变化必须冲突。`projected_at` 非空表示必要 `history.committed` 投影已经完成。
+- `history_detail_refs(run_id, source_message_index, content_digest)` unique；读取细节必须按 source revision/message index 回到 canonical history 并重新校验 digest。
+- `context_summaries(run_id, kind, summary_version)` unique；摘要是导航而非证据，无有效 source refs 的 claim 使摘要无效，同 key 不同陈述使摘要进入冲突态。
 - `child_agent_tasks` 将执行生命周期和输出消费生命周期分离；数据库约束保证非 SUCCEEDED 任务没有输出、CLAIMED/CONSUMED 必须有 claim token。父 Run COMPLETED 后才可从 CLAIMED 进入 CONSUMED。
 - `providers(public_id)` 与 `providers(name)` unique；Agent 引用不透明 public_id，运行时从 ProviderQueryService 获取已启用配置快照。
 - `provider_models(provider_id, model_id)` unique；模型目录整体替换时物理删除旧子项，避免逻辑删除 tombstone 与唯一约束冲突。

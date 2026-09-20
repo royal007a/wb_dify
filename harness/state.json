@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SUBAGENT-001-20260919T150635Z-76a3775b",
-    "path": "harness/evidence/SUBAGENT-001/SUBAGENT-001-20260919T150635Z-76a3775b",
+    "runId": "MEMORY-002-20260920T154414Z-5b6db58e",
+    "path": "harness/evidence/MEMORY-002/MEMORY-002-20260920T154414Z-5b6db58e",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "fcdce73332ee729cfcec960b3e722cb1313104bb",
-    "headCommit": "fcdce73332ee729cfcec960b3e722cb1313104bb",
-    "recordedAt": "2026-09-19T15:12:19Z"
+    "baselineCommit": "68e45f3bc86c48aa455e9857da334e4bb61e2bf5",
+    "headCommit": "68e45f3bc86c48aa455e9857da334e4bb61e2bf5",
+    "recordedAt": "2026-09-20T15:51:40Z"
   },
-  "lastCompletedTaskId": "SUBAGENT-001",
-  "updatedAt": "2026-09-19T15:12:19Z"
+  "lastCompletedTaskId": "MEMORY-002",
+  "updatedAt": "2026-09-20T15:51:40Z"
 }

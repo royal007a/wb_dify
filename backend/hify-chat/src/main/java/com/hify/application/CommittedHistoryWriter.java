@@ -5,6 +5,9 @@ import com.hify.domain.RunHistoryCommit;
 import com.hify.infra.RunHistoryCommitRepository;
 import com.hify.runtime.HistoryCommitter;
 import com.hify.runtime.RuntimeMessage;
+import com.hify.memory.CanonicalMemoryIndexer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -18,17 +21,21 @@ import java.util.Map;
 /** Durable canonical history writer: snapshot -> mutation -> reread -> revision -> projection -> ack. */
 @Service
 public class CommittedHistoryWriter {
+    private static final Logger log = LoggerFactory.getLogger(CommittedHistoryWriter.class);
     private final RunHistoryCommitRepository commits;
     private final TransactionTemplate transactions;
     private final ObjectMapper objectMapper;
     private final RunEventBroker events;
+    private final CanonicalMemoryIndexer memoryIndexer;
 
     public CommittedHistoryWriter(RunHistoryCommitRepository commits, TransactionTemplate transactions,
-                                  ObjectMapper objectMapper, RunEventBroker events) {
+                                  ObjectMapper objectMapper, RunEventBroker events,
+                                  CanonicalMemoryIndexer memoryIndexer) {
         this.commits = commits;
         this.transactions = transactions;
         this.objectMapper = objectMapper;
         this.events = events;
+        this.memoryIndexer = memoryIndexer;
     }
 
     public HistoryCommitter forRun(String runId) {
@@ -60,6 +67,14 @@ public class CommittedHistoryWriter {
                         value.markProjected(Instant.now());
                         commits.save(value);
                     }));
+        }
+        try {
+            memoryIndexer.index(runId, mutation.commit().getRevision(), sourceMessages,
+                    mutation.commit().getCommittedAt());
+        } catch (RuntimeException exception) {
+            // The derived catalog is repairable from canonical history and must never corrupt its commit.
+            log.warn("history.memory.index.failed runId={} revision={}", runId,
+                    mutation.commit().getRevision(), exception);
         }
         return new HistoryCommitter.CommitReceipt(mutation.commit().getRevision(),
                 mutation.commit().getSemanticDigest(), mutation.replayed());

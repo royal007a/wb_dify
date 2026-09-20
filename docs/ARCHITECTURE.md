@@ -139,6 +139,8 @@ Run 接纳时固定 `capabilityRevision/toolSchemaDigest`，模型工具定义�
 
 每次模型请求前由 ContextManager 计算 `window - output - reserve - safety` 输入预算，消息和工具 schema 一并计量。超限时先把大 Tool Result 投影成 canonical history 引用，重新测量；仍超限才做保留关键约束与最新交互闭包的 checkpoint compaction，再次测量。归档和压缩不改 canonical history，仍超限时明确失败。
 
+长期上下文采用“canonical history → Detail Catalog → ContextSummary”的单向派生关系。每条 system/user/assistant/tool 消息都有统一 DetailRef，引用精确 revision/message index 并带内容 digest；模型可读摘要只组织目标、事实、约束、决策和 gap，关键 Claim 必须绑定 sourceRefs。摘要与搜索索引只负责导航，不能成为 VERIFIED evidence；最终完成所需证据必须通过 DetailRef 回读 canonical 原文并校验 digest。边界与失效/冲突规则见 ADR-0012。
+
 子 Agent 当前只落地控制协议：每个 ChildTask 有独立生命周期与 outputRef；输出按 delivered → claimed → consumed 演进。父 Run 可在执行中 claim，但只有 COMPLETED 事务已提交才 ack consumed。启动恢复把无执行者 RUNNING 子任务标为 LOST，再记录 RETRY、REPLAN 或 RETURN_TO_USER；当前没有 worker 调度器或自动并行执行。
 
 ### 3.3 Run 状态机

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-20T15:43:12Z",
+  "updatedAt": "2026-09-20T15:51:40Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -310,25 +310,45 @@
       "title": "建立结构化摘要与统一细节目录",
       "description": "以 canonical history 为事实源，持久化 ContextSummary、SummaryClaim 和可校验 DetailRef，并建立覆盖/冲突/引用完整性契约。",
       "priority": "P0",
-      "status": "pending",
-      "scopes": ["backend", "migration", "runtime"],
-      "verifyScopes": ["backend", "migration", "runtime"],
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "migration",
+        "runtime"
+      ],
+      "verifyScopes": [
+        "backend",
+        "migration",
+        "runtime"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["CONTEXT-001"],
+      "dependsOn": [
+        "CONTEXT-001"
+      ],
       "acceptance": [
         "摘要包含种类、范围、结构化事实/约束/决策/Gap 和 sourceRefs",
         "所有旧消息与长输出生成统一 DetailRef，读取时回到 canonical history 并校验 digest",
         "无来源摘要 Claim 不能标记 VERIFIED，冲突和陈旧状态可表达",
         "PostgreSQL 与 H2 迁移及完整性测试通过"
       ],
-      "planPath": "exec-plans/active/MEMORY-002.md",
+      "planPath": "exec-plans/completed/MEMORY-002.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "MEMORY-002-20260920T154414Z-5b6db58e",
+          "path": "harness/evidence/MEMORY-002/MEMORY-002-20260920T154414Z-5b6db58e",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "68e45f3bc86c48aa455e9857da334e4bb61e2bf5",
+          "headCommit": "68e45f3bc86c48aa455e9857da334e4bb61e2bf5",
+          "recordedAt": "2026-09-20T15:51:40Z"
+        }
+      ],
       "createdAt": "2026-09-20T15:43:12Z",
-      "updatedAt": "2026-09-20T15:43:12Z"
+      "updatedAt": "2026-09-20T15:51:40Z"
     },
     {
       "id": "RECALL-001",
@@ -336,12 +356,24 @@
       "description": "保留最近 K 轮原文，旧历史仅注入摘要/目录；提供关键词、时间、类型、实体检索与 history.search/history.detail 工具，并将详情召回写入 Evidence State。",
       "priority": "P0",
       "status": "pending",
-      "scopes": ["backend", "migration", "runtime", "eval"],
-      "verifyScopes": ["backend", "migration", "runtime", "eval"],
+      "scopes": [
+        "backend",
+        "migration",
+        "runtime",
+        "eval"
+      ],
+      "verifyScopes": [
+        "backend",
+        "migration",
+        "runtime",
+        "eval"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["MEMORY-002"],
+      "dependsOn": [
+        "MEMORY-002"
+      ],
       "acceptance": [
         "最近 K 轮原文不依赖异步索引，旧内容以摘要和 catalog 进入模型上下文",
         "history.search 支持 query/type/time/entity/topK，history.detail 校验引用后返回原文",
@@ -361,12 +393,24 @@
       "description": "评测关键细节、证据落地、冲突裁决、摘要忠实度、精度噪声、重复调查、端到端成功和成本延迟；仅在词法基线暴露语义缺口时引入 pgvector/RRF。",
       "priority": "P1",
       "status": "pending",
-      "scopes": ["backend", "migration", "runtime", "eval"],
-      "verifyScopes": ["backend", "migration", "runtime", "eval"],
+      "scopes": [
+        "backend",
+        "migration",
+        "runtime",
+        "eval"
+      ],
+      "verifyScopes": [
+        "backend",
+        "migration",
+        "runtime",
+        "eval"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["RECALL-001"],
+      "dependsOn": [
+        "RECALL-001"
+      ],
       "acceptance": [
         "版本化数据集与评测 artifact 覆盖八项召回指标",
         "阈值不达标时验证退出非零",
@@ -386,12 +430,26 @@
       "description": "将通过门禁的版本部署到本地和既有 118.196.123.132 环境，执行迁移、健康检查、浏览器/HTTP smoke 和回滚证据记录。",
       "priority": "P1",
       "status": "pending",
-      "scopes": ["backend", "frontend", "migration", "runtime", "eval"],
-      "verifyScopes": ["backend", "frontend", "migration", "runtime", "eval"],
+      "scopes": [
+        "backend",
+        "frontend",
+        "migration",
+        "runtime",
+        "eval"
+      ],
+      "verifyScopes": [
+        "backend",
+        "frontend",
+        "migration",
+        "runtime",
+        "eval"
+      ],
       "risk": "high_risk",
       "operation": "deployment",
       "approvalRef": "lark:/goal-2026-09-20-implement-verify-deploy",
-      "dependsOn": ["RECALL-002"],
+      "dependsOn": [
+        "RECALL-002"
+      ],
       "acceptance": [
         "本地与远端 Flyway 升级成功且健康检查返回 200",
         "浏览器或 HTTP smoke 覆盖摘要目录、search、detail 和最终 grounded answer",
