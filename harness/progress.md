@@ -4,20 +4,26 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-09-20T16:24:35Z`
 - Current task: `none`
-- Counts: pending 4 · running 0 · blocked 0 · completed 8
+- Counts: pending 10 · running 0 · blocked 0 · completed 8
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
+| `COURSE-018-025` | P0 | pending | harness | reversible_write | 吸收课程 18-25 并更新目标规格 |
 | `EVAL-001` | P0 | pending | eval, runtime | reversible_write | 将 Intent 评测升级为回归门禁 |
 | `HARNESS-001` | P0 | completed | harness | reversible_write | 建立机器状态工程 Harness |
+| `KNOWLEDGE-001` | P0 | pending | backend, migration, runtime, eval | reversible_write | 交付可引用的知识库纵向切片 |
 | `MEMORY-002` | P0 | completed | backend, migration, runtime | reversible_write | 建立结构化摘要与统一细节目录 |
 | `RECALL-001` | P0 | completed | backend, migration, runtime, eval | reversible_write | 完成分层上下文与迭代式细节召回 |
 | `RUNTIME-001` | P0 | completed | backend, migration, runtime | reversible_write | 建立 Runtime 能力租约与历史提交协议 |
+| `CONSOLE-002` | P1 | pending | frontend, runtime | reversible_write | 交付知识库工作流 MCP 管理台 |
 | `CONTEXT-001` | P1 | completed | backend, runtime, eval | reversible_write | 建立上下文预算归档与压缩评测 |
 | `DEPLOY-001` | P1 | completed | backend, frontend, migration, runtime, eval | high_risk | 部署摘要与细节召回纵向切片 |
+| `DEPLOY-002` | P1 | pending | backend, frontend, migration, runtime, eval | high_risk | 推送并部署高级能力纵向切片 |
+| `MCP-001` | P1 | pending | backend, migration, runtime | reversible_write | 交付 MCP Server 目录与安全调试闭环 |
 | `PROVIDER-001` | P1 | pending | backend, runtime | reversible_write | 补原生流式故障注入矩阵 |
 | `RECALL-002` | P1 | completed | backend, migration, runtime, eval | reversible_write | 建立召回评测门禁并按证据演进检索 |
 | `SECURITY-001` | P1 | pending | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |
+| `WORKFLOW-001` | P1 | pending | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
 | `SUBAGENT-001` | P2 | completed | backend, migration, runtime | reversible_write | 建立子 Agent 任务与延迟消费确认 |
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |
 
