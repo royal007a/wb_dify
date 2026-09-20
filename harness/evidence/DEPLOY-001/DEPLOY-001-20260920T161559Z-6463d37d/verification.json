@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "backend",
+    "frontend",
+    "migration",
+    "runtime",
+    "eval",
+    "harness"
+  ],
+  "base": "working-tree",
+  "headCommit": "7bb703138a6dc2ccb23f51832f6aebea94997c98",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "backend-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-001/DEPLOY-001-20260920T161559Z-6463d37d/backend-tests.log"
+    },
+    {
+      "name": "frontend-typecheck",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-001/DEPLOY-001-20260920T161559Z-6463d37d/frontend-typecheck.log"
+    },
+    {
+      "name": "frontend-build",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-001/DEPLOY-001-20260920T161559Z-6463d37d/frontend-build.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-001/DEPLOY-001-20260920T161559Z-6463d37d/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-001/DEPLOY-001-20260920T161559Z-6463d37d/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-001/DEPLOY-001-20260920T161559Z-6463d37d/migration-not-skipped.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-001/DEPLOY-001-20260920T161559Z-6463d37d/runtime-tests.log"
+    },
+    {
+      "name": "intent-context-recall-eval",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-001/DEPLOY-001-20260920T161559Z-6463d37d/intent-context-recall-eval.log"
+    },
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-001/DEPLOY-001-20260920T161559Z-6463d37d/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-001/DEPLOY-001-20260920T161559Z-6463d37d/harness-progress.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-001/DEPLOY-001-20260920T161559Z-6463d37d/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-001/DEPLOY-001-20260920T161559Z-6463d37d/harness-shell-syntax.log"
+    }
+  ],
+  "finishedAt": "2026-09-20T16:24:23Z"
+}

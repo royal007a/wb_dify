@@ -1,0 +1,7 @@
+{
+  "summary": "Local and remote V13 deployments healthy; HTTP memory slice and remote Playwright smoke passed; rollback artifacts saved",
+  "headCommit": "7bb703138a6dc2ccb23f51832f6aebea94997c98",
+  "workingTreeHash": "1f1a6118a843a9e075700cec3c9f1c690d3cf13267987156377b85586be2dc1d",
+  "evidencePath": "harness/evidence/DEPLOY-001/DEPLOY-001-20260920T161559Z-6463d37d",
+  "updatedAt": "2026-09-20T16:24:35Z"
+}

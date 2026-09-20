@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-20T16:15:51Z",
+  "updatedAt": "2026-09-20T16:24:35Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -449,7 +449,7 @@
       "title": "部署摘要与细节召回纵向切片",
       "description": "将通过门禁的版本部署到本地和既有 118.196.123.132 环境，执行迁移、健康检查、浏览器/HTTP smoke 和回滚证据记录。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "frontend",
@@ -475,12 +475,22 @@
         "浏览器或 HTTP smoke 覆盖摘要目录、search、detail 和最终 grounded answer",
         "部署版本、URL、检查结果和回滚边界写入 evidence"
       ],
-      "planPath": "exec-plans/active/DEPLOY-001.md",
+      "planPath": "exec-plans/completed/DEPLOY-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "DEPLOY-001-20260920T161559Z-6463d37d",
+          "path": "harness/evidence/DEPLOY-001/DEPLOY-001-20260920T161559Z-6463d37d",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "7bb703138a6dc2ccb23f51832f6aebea94997c98",
+          "headCommit": "7bb703138a6dc2ccb23f51832f6aebea94997c98",
+          "recordedAt": "2026-09-20T16:24:35Z"
+        }
+      ],
       "createdAt": "2026-09-20T15:43:12Z",
-      "updatedAt": "2026-09-20T15:43:12Z"
+      "updatedAt": "2026-09-20T16:24:35Z"
     }
   ]
 }

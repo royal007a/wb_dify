@@ -35,8 +35,10 @@ include `deploy/nginx-path.conf`。该片段将静态资源隔离在 `/hify/`，
 
 ## 4. 发布与回滚
 
-1. 备份并校验恢复点。
-2. 执行向后兼容迁移；应用先兼容旧/新 schema。
+1. 备份并校验恢复点。PostgreSQL 宿主机预装 pgvector 包，并由数据库管理员执行一次
+   `CREATE EXTENSION IF NOT EXISTS vector`；应用账号不授予 superuser。
+2. 执行向后兼容迁移；应用先兼容旧/新 schema。Flyway V13 负责 embedding 列、旧目录回填和 HNSW，
+   但不把扩展安装权限当成应用运行权限。
 3. 健康检查覆盖 DB、迁移版本、provider adapter 装配，不主动调用付费模型。
 4. 发布后执行 mock provider 对话、工具调用、SSE、取消和检索 smoke test。
 5. 应用可回滚；不可逆数据迁移必须分 expand/backfill/contract 三次发布。

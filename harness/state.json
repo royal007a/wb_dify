@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "RECALL-002-20260920T160349Z-fe885bf9",
-    "path": "harness/evidence/RECALL-002/RECALL-002-20260920T160349Z-fe885bf9",
+    "runId": "DEPLOY-001-20260920T161559Z-6463d37d",
+    "path": "harness/evidence/DEPLOY-001/DEPLOY-001-20260920T161559Z-6463d37d",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "b3a2ccb1d71d3898d9d98f4f88c818635f94202e",
-    "headCommit": "b3a2ccb1d71d3898d9d98f4f88c818635f94202e",
-    "recordedAt": "2026-09-20T16:15:51Z"
+    "baselineCommit": "7bb703138a6dc2ccb23f51832f6aebea94997c98",
+    "headCommit": "7bb703138a6dc2ccb23f51832f6aebea94997c98",
+    "recordedAt": "2026-09-20T16:24:35Z"
   },
-  "lastCompletedTaskId": "RECALL-002",
-  "updatedAt": "2026-09-20T16:15:51Z"
+  "lastCompletedTaskId": "DEPLOY-001",
+  "updatedAt": "2026-09-20T16:24:35Z"
 }
