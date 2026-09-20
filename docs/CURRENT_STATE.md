@@ -16,7 +16,7 @@
 | Runtime 能力/历史提交 | `CapabilitySnapshot`、`ToolExecutionLease`、`CommittedHistoryWriter`、`V9__runtime_capability_and_history.sql` | Run 固定 capability/tool schema 摘要；执行前二次校验 attempt lease；模型/工具结果按 operation identity 提交、回读、投影，冲突不覆盖 |
 | Context 治理 | `runtime/context/*`、`ContextManagementEvaluationTest`、ADR-0010 | 输入/输出/预留/安全预算；Tool Result 先归档、checkpoint 后压缩且每步重测；评测语义安全而非只看 token 降幅 |
 | 摘要与细节目录 | `memory/*`、`V11__context_memory_catalog.sql`、ADR-0012 | 所有 canonical message 建统一 DetailRef；结构化 checkpoint 摘要带逐 Claim sourceRefs、原文 digest 校验与冲突/缺源状态；摘要明确不作为证据 |
-| 分层上下文/历史召回 | `LayeredContextMemoryService`、`HistoryRecallService`、`history.search/detail`、ADR-0013 | 最近 3 轮原文 + 更早摘要/目录；关键词/时间/类型/实体过滤；search 为导航、detail 才是 VERIFIED evidence；有 recall/no-progress 预算和只读 HTTP API |
+| 分层上下文/历史召回 | `LayeredContextMemoryService`、`HistoryRecallService`、`history.search/detail`、V12/V13、ADR-0013/0014 | 最近 3 轮原文 + 更早摘要/目录；PostgreSQL FTS + pgvector HNSW + 加权 RRF，并支持时间/类型/实体过滤；search 为导航、detail 才是 VERIFIED evidence；有 recall/no-progress 预算和只读 HTTP API |
 | 子任务控制协议 | `ChildAgentTask`、`ChildAgentTaskService`、`V10__child_agent_task_protocol.sql` | 独立状态机、outputRef、delivered/claimed/consumed、父成功后确认、lost 收敛已验证；尚无真实子 Agent worker/调度器 |
 | Intent Router | `hify-chat/com.hify.intent`、`IntentRoutingController` | 四出口契约、确定性规则层、结构化模型候选、低置信/歧义/缺槽澄清、120 条中文评测集；当前仅预览，不接管 Run |
 | Mock 模型 | `MockModelClient.java` | 可触发时间或单个二元运算工具 |
@@ -50,7 +50,7 @@
 3. QueryLoop 已把 deadline/cancellation token 传入同步与原生 SSE Provider HTTP；底层 socket timeout 仍是上限，控制循环可提前取消连接。
 4. `ToolDefinition.risk` 已执行 read-only policy，并具备 Try/Replan 状态机；还没有完整 write policy、精确确认 token、side-effect ledger、工具级超时和补偿动作。
 5. Run 终态已使用 `state + version` 单 SQL compare-and-set；多副本事件序号仍需进一步设计。
-6. PostgreSQL/Flyway 已验证，但 pgvector、JSONB、HNSW 和生产恢复尚未进入本初版。
+6. PostgreSQL/Flyway、pgvector 与 HNSW 已验证；JSONB 深度利用和生产级备份恢复演练尚未进入本初版。
 7. WebFlux 已移除并对齐 Spring MVC/SseEmitter；Provider 原生 token stream 已统一投影为持久 Run 事件。
 
 ## 处理原则

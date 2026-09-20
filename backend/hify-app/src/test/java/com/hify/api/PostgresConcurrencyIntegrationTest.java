@@ -31,6 +31,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -54,7 +55,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Testcontainers(disabledWithoutDocker = true)
 class PostgresConcurrencyIntegrationTest {
     @Container
-    static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine")
+    static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>(
+            DockerImageName.parse("pgvector/pgvector:pg16").asCompatibleSubstituteFor("postgres"))
             .withDatabaseName("hify_test")
             .withUsername("hify")
             .withPassword("hify");
@@ -100,11 +102,15 @@ class PostgresConcurrencyIntegrationTest {
                 .contains("message.delta", "tool.call.started", "tool.call.completed", "run.completed");
         HistoryRecallService.SearchResult recalled = historyRecall.search(firstRunId,
                 new HistoryRecallService.SearchQuery("17 * 23", null, null, null, null, 5));
-        assertThat(recalled.strategy()).isEqualTo("POSTGRES_FTS_KEYWORD");
+        assertThat(recalled.strategy()).isEqualTo("POSTGRES_FTS_PGVECTOR_RRF");
         assertThat(recalled.matches()).isNotEmpty();
         assertThat(jdbc.queryForObject("""
                 SELECT COUNT(*) FROM pg_indexes
                  WHERE schemaname = 'public' AND indexname = 'idx_detail_ref_fts'
+                """, Long.class)).isEqualTo(1L);
+        assertThat(jdbc.queryForObject("""
+                SELECT COUNT(*) FROM pg_indexes
+                 WHERE schemaname = 'public' AND indexname = 'idx_detail_ref_embedding_hnsw'
                 """, Long.class)).isEqualTo(1L);
 
         MvcResult stream = http.perform(get("/api/v1/runs/{id}/events/stream", firstRunId)

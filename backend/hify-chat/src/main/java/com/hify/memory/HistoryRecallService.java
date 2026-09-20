@@ -17,12 +17,16 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
 public class HistoryRecallService {
     private static final Pattern TERM = Pattern.compile("[\\p{L}\\p{N}_-]{2,}");
+    private static final double LEXICAL_RRF_WEIGHT = 1.25d;
+    private static final double SEMANTIC_RRF_WEIGHT = 1d;
     private final AgentRunRepository runs;
     private final HistoryDetailRefRepository details;
     private final CanonicalDetailReader reader;
@@ -38,18 +42,32 @@ public class HistoryRecallService {
         AgentRun run = runs.findById(runId)
                 .orElseThrow(() -> new IllegalArgumentException("Run not found: " + runId));
         SearchQuery query = request.normalized();
-        Set<String> terms = terms(query.query());
+        String normalizedPhrase = LocalHistoryEmbedding.normalizeText(query.query());
+        Set<String> terms = terms(normalizedPhrase);
         List<ScoredDetail> ranked = new ArrayList<>();
         boolean postgresSearch = !query.query().isBlank() && isPostgres();
-        List<HistoryDetailRef> candidates = postgresSearch
-                ? details.searchPostgres(run.getConversationId(), query.query(), Math.max(100, query.limit() * 10))
-                : details.findByConversationIdOrderByOccurredAtAsc(run.getConversationId());
+        Map<String, Double> fused = new LinkedHashMap<>();
+        List<HistoryDetailRef> candidates;
+        if (postgresSearch) {
+            int candidateLimit = Math.max(100, query.limit() * 10);
+            List<HistoryDetailRef> lexical = details.searchPostgres(
+                    run.getConversationId(), query.query(), candidateLimit);
+            List<HistoryDetailRef> semantic = details.searchPostgresVector(run.getConversationId(),
+                    LocalHistoryEmbedding.postgresLiteral(LocalHistoryEmbedding.embed(query.query())),
+                    candidateLimit);
+            Map<String, HistoryDetailRef> unique = new LinkedHashMap<>();
+            addRrf(lexical, LEXICAL_RRF_WEIGHT, fused, unique);
+            addRrf(semantic, SEMANTIC_RRF_WEIGHT, fused, unique);
+            candidates = new ArrayList<>(unique.values());
+        } else {
+            candidates = details.findByConversationIdOrderByOccurredAtAsc(run.getConversationId());
+        }
         for (HistoryDetailRef ref : candidates) {
             if (query.kind() != null && ref.getKind() != query.kind()) continue;
             if (query.from() != null && ref.getOccurredAt().isBefore(query.from())) continue;
             if (query.to() != null && ref.getOccurredAt().isAfter(query.to())) continue;
             if (query.entity() != null && !contains(ref.getEntitiesText(), query.entity())) continue;
-            double score = score(ref, query.query(), terms);
+            double score = score(ref, normalizedPhrase, terms) + fused.getOrDefault(ref.getId(), 0d) * 100d;
             if (score > 0 || query.query().isBlank()) ranked.add(ScoredDetail.from(ref, score));
         }
         ranked.sort(Comparator.comparingDouble(ScoredDetail::score).reversed()
@@ -59,7 +77,7 @@ public class HistoryRecallService {
         String digest = MemoryDigests.sha256(query + "|" + matches.stream()
                 .map(value -> value.refId() + ":" + value.score()).toList());
         return new SearchResult("history-search:" + digest.substring(0, 24), digest,
-                postgresSearch ? "POSTGRES_FTS_KEYWORD" : "PORTABLE_KEYWORD",
+                postgresSearch ? "POSTGRES_FTS_PGVECTOR_RRF" : "PORTABLE_KEYWORD",
                 query, matches, Math.max(1, matches.toString().length() / 4));
     }
 
@@ -81,9 +99,9 @@ public class HistoryRecallService {
     }
 
     private double score(HistoryDetailRef ref, String phrase, Set<String> terms) {
-        String text = lower(ref.getSearchText());
-        String keywords = lower(ref.getKeywordsText());
-        String entities = lower(ref.getEntitiesText());
+        String text = LocalHistoryEmbedding.normalizeText(ref.getSearchText());
+        String keywords = LocalHistoryEmbedding.normalizeText(ref.getKeywordsText());
+        String entities = LocalHistoryEmbedding.normalizeText(ref.getEntitiesText());
         double score = !phrase.isBlank() && text.contains(lower(phrase)) ? 12 : 0;
         for (String term : terms) {
             if (text.contains(term)) score += 3;
@@ -93,11 +111,32 @@ public class HistoryRecallService {
         return score;
     }
 
+    private void addRrf(List<HistoryDetailRef> values, double weight, Map<String, Double> fused,
+                        Map<String, HistoryDetailRef> unique) {
+        for (int index = 0; index < values.size(); index++) {
+            HistoryDetailRef ref = values.get(index);
+            unique.putIfAbsent(ref.getId(), ref);
+            fused.merge(ref.getId(), weight / (60d + index + 1), Double::sum);
+        }
+    }
+
     private Set<String> terms(String value) {
         LinkedHashSet<String> values = new LinkedHashSet<>();
         Matcher matcher = TERM.matcher(lower(value));
-        while (matcher.find()) values.add(matcher.group());
+        while (matcher.find()) {
+            String token = matcher.group();
+            values.add(token);
+            if (containsHan(token)) {
+                for (int index = 0; index + 1 < token.length(); index++) {
+                    values.add(token.substring(index, index + 2));
+                }
+            }
+        }
         return values;
+    }
+    private boolean containsHan(String value) {
+        return value.codePoints().anyMatch(codePoint ->
+                Character.UnicodeScript.of(codePoint) == Character.UnicodeScript.HAN);
     }
     private boolean contains(String value, String part) { return lower(value).contains(lower(part)); }
     private String lower(String value) { return value == null ? "" : value.toLowerCase(Locale.ROOT); }

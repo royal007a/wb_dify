@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "backend",
+    "migration",
+    "runtime",
+    "eval",
+    "harness"
+  ],
+  "base": "working-tree",
+  "headCommit": "b3a2ccb1d71d3898d9d98f4f88c818635f94202e",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "backend-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/RECALL-002/RECALL-002-20260920T160349Z-fe885bf9/backend-tests.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/RECALL-002/RECALL-002-20260920T160349Z-fe885bf9/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/RECALL-002/RECALL-002-20260920T160349Z-fe885bf9/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/RECALL-002/RECALL-002-20260920T160349Z-fe885bf9/migration-not-skipped.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/RECALL-002/RECALL-002-20260920T160349Z-fe885bf9/runtime-tests.log"
+    },
+    {
+      "name": "intent-context-recall-eval",
+      "exitCode": 0,
+      "log": "harness/evidence/RECALL-002/RECALL-002-20260920T160349Z-fe885bf9/intent-context-recall-eval.log"
+    },
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/RECALL-002/RECALL-002-20260920T160349Z-fe885bf9/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/RECALL-002/RECALL-002-20260920T160349Z-fe885bf9/harness-progress.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/RECALL-002/RECALL-002-20260920T160349Z-fe885bf9/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/RECALL-002/RECALL-002-20260920T160349Z-fe885bf9/harness-shell-syntax.log"
+    }
+  ],
+  "finishedAt": "2026-09-20T16:15:23Z"
+}

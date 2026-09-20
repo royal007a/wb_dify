@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "dataset": "recall-eval-v1.jsonl",
+  "sampleCount": 12,
+  "lexicalTop1Recall": 0.5,
+  "hybridTop1Recall": 1.0,
+  "retrievalPrecisionAt3": 0.3333,
+  "evidenceGrounding": 1.0,
+  "conflictResolutionAccuracy": 1.0,
+  "summaryFaithfulness": 1.0,
+  "repeatedInvestigationRate": 0.0,
+  "endToEndSuccess": 1.0,
+  "rankingP95BudgetMicros": 50000,
+  "observedRankingP95Micros": 5248,
+  "additionalTokenBudgetPerRun": 4096,
+  "bootstrapEmbeddingCostUsd": 0.0,
+  "decision": "ENABLE_PGVECTOR_RRF",
+  "metricSources": {
+    "ranking": "HistoryRecallEvaluationTest + recall-eval-v1.jsonl",
+    "evidenceGrounding": "ContextMemoryIntegrationTest and QueryLoopTest",
+    "conflictResolution": "conflict category in recall-eval-v1.jsonl",
+    "summaryFaithfulness": "ContextMemoryIntegrationTest sourceRefs/digest checks",
+    "repeatedInvestigation": "QueryLoopTest recall no-progress budget",
+    "endToEnd": "ContextMemoryIntegrationTest search-detail-evidence-finish slice"
+  },
+  "notes": "The 64D local embedding is zero-cost bootstrap/evaluation plumbing, not a substitute for a configured production embedding model."
+}

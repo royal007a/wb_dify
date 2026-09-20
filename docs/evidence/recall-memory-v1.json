@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "evaluatedAt": "2026-09-21",
+  "dataset": "backend/hify-chat/src/test/resources/recall/recall-eval-v1.jsonl",
+  "sampleCount": 12,
+  "ranking": {
+    "literalLexicalTop1Recall": 0.5,
+    "hybridTop1Recall": 1.0,
+    "retrievalPrecisionAt3": 0.3333,
+    "rankingP95BudgetMicros": 50000,
+    "observedRankingP95Micros": 5248
+  },
+  "contractMetrics": {
+    "evidenceGrounding": 1.0,
+    "conflictResolutionAccuracy": 1.0,
+    "summaryFaithfulness": 1.0,
+    "repeatedInvestigationRate": 0.0,
+    "endToEndSuccess": 1.0
+  },
+  "budget": {
+    "additionalTokensPerRun": 4096,
+    "bootstrapEmbeddingCostUsd": 0.0
+  },
+  "decision": "ENABLE_PGVECTOR_RRF",
+  "limits": [
+    "Small synthetic Chinese acceptance set; not a production quality benchmark.",
+    "One relevant document per four candidates caps Precision@3 at 0.3333.",
+    "The local 64D embedding validates system plumbing and is replaceable by a versioned provider model."
+  ],
+  "tests": [
+    "HistoryRecallEvaluationTest",
+    "ContextMemoryIntegrationTest",
+    "QueryLoopTest"
+  ]
+}

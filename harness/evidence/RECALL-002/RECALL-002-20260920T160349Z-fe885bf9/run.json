@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "RECALL-002-20260920T160349Z-fe885bf9",
+  "taskId": "RECALL-002",
+  "status": "completed",
+  "baselineCommit": "b3a2ccb1d71d3898d9d98f4f88c818635f94202e",
+  "approvalRef": null,
+  "startedAt": "2026-09-20T16:03:49Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "b3a2ccb1d71d3898d9d98f4f88c818635f94202e",
+  "finishedAt": "2026-09-20T16:15:51Z"
+}

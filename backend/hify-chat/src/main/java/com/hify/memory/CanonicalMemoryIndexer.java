@@ -9,6 +9,8 @@ import com.hify.infra.HistoryDetailRefRepository;
 import com.hify.runtime.RuntimeMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.jdbc.core.JdbcTemplate;
+import javax.sql.DataSource;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -24,10 +26,13 @@ public class CanonicalMemoryIndexer {
     private final HistoryDetailRefRepository details;
     private final AgentRunRepository runs;
     private final ObjectMapper objectMapper;
+    private final JdbcTemplate jdbc;
+    private final DataSource dataSource;
 
     public CanonicalMemoryIndexer(HistoryDetailRefRepository details, AgentRunRepository runs,
-                                  ObjectMapper objectMapper) {
+                                  ObjectMapper objectMapper, JdbcTemplate jdbc, DataSource dataSource) {
         this.details = details; this.runs = runs; this.objectMapper = objectMapper;
+        this.jdbc = jdbc; this.dataSource = dataSource;
     }
 
     @Transactional
@@ -36,6 +41,7 @@ public class CanonicalMemoryIndexer {
         AgentRun run = runs.findById(runId)
                 .orElseThrow(() -> new IllegalArgumentException("Run not found for memory index: " + runId));
         List<HistoryDetailRef> indexed = new ArrayList<>();
+        List<HistoryDetailRef> created = new ArrayList<>();
         for (int index = 0; index < messages.size(); index++) {
             RuntimeMessage message = messages.get(index);
             String canonical = write(message);
@@ -51,7 +57,16 @@ public class CanonicalMemoryIndexer {
                     index, kind(message), message.role(), digest, truncate(searchText, 2000), searchText,
                     String.join(" ", keywords), String.join(" ", entities),
                     Math.max(1, (canonical.length() + 3) / 4), occurredAt, Instant.now());
-            indexed.add(details.save(ref));
+            HistoryDetailRef saved = details.save(ref);
+            indexed.add(saved); created.add(saved);
+        }
+        if (!created.isEmpty() && isPostgres()) {
+            details.flush();
+            for (HistoryDetailRef ref : created) {
+                jdbc.update("UPDATE history_detail_refs SET embedding = CAST(? AS vector) WHERE id = ?",
+                        LocalHistoryEmbedding.postgresLiteral(LocalHistoryEmbedding.embed(ref.getSearchText())),
+                        ref.getId());
+            }
         }
         return List.copyOf(indexed);
     }
@@ -97,4 +112,12 @@ public class CanonicalMemoryIndexer {
         catch (Exception exception) { throw new IllegalStateException("Could not index history message", exception); }
     }
     private String truncate(String value, int length) { return value.length() <= length ? value : value.substring(0, length); }
+    private boolean isPostgres() {
+        try (java.sql.Connection connection = dataSource.getConnection()) {
+            return connection.getMetaData().getDatabaseProductName().toLowerCase(Locale.ROOT)
+                    .contains("postgresql");
+        } catch (java.sql.SQLException exception) {
+            throw new IllegalStateException("Could not determine memory index database", exception);
+        }
+    }
 }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-20T16:03:46Z",
+  "updatedAt": "2026-09-20T16:15:51Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -402,7 +402,7 @@
       "title": "建立召回评测门禁并按证据演进检索",
       "description": "评测关键细节、证据落地、冲突裁决、摘要忠实度、精度噪声、重复调查、端到端成功和成本延迟；仅在词法基线暴露语义缺口时引入 pgvector/RRF。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "migration",
@@ -427,12 +427,22 @@
         "是否增加向量通道由混淆样本和指标证据决定并记录",
         "若启用向量通道，RRF 融合而非直接相加不可比分数"
       ],
-      "planPath": "exec-plans/active/RECALL-002.md",
+      "planPath": "exec-plans/completed/RECALL-002.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "RECALL-002-20260920T160349Z-fe885bf9",
+          "path": "harness/evidence/RECALL-002/RECALL-002-20260920T160349Z-fe885bf9",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "b3a2ccb1d71d3898d9d98f4f88c818635f94202e",
+          "headCommit": "b3a2ccb1d71d3898d9d98f4f88c818635f94202e",
+          "recordedAt": "2026-09-20T16:15:51Z"
+        }
+      ],
       "createdAt": "2026-09-20T15:43:12Z",
-      "updatedAt": "2026-09-20T15:43:12Z"
+      "updatedAt": "2026-09-20T16:15:51Z"
     },
     {
       "id": "DEPLOY-001",

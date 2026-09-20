@@ -141,7 +141,7 @@ Run 接纳时固定 `capabilityRevision/toolSchemaDigest`，模型工具定义�
 
 长期上下文采用“canonical history → Detail Catalog → ContextSummary”的单向派生关系。每条 system/user/assistant/tool 消息都有统一 DetailRef，引用精确 revision/message index 并带内容 digest；模型可读摘要只组织目标、事实、约束、决策和 gap，关键 Claim 必须绑定 sourceRefs。摘要与搜索索引只负责导航，不能成为 VERIFIED evidence；最终完成所需证据必须通过 DetailRef 回读 canonical 原文并校验 digest。边界与失效/冲突规则见 ADR-0012。
 
-模型输入默认保留最近 3 轮原文，更早历史只放摘要和目录。模型通过 `history.search` 按关键词/类型/时间/实体找候选，再用 `history.detail` 精确读原文；search 会打开 blocking Gap，只有 detail 的 canonical digest 校验成功才关闭。召回单独限制调用次数、返回 token 和累计延迟，重复召回没有新增 VERIFIED evidence 时进入 CLARIFY。详见 ADR-0013。
+模型输入默认保留最近 3 轮原文，更早历史只放摘要和目录。模型通过 `history.search` 按关键词/类型/时间/实体找候选，再用 `history.detail` 精确读原文；PostgreSQL 候选由 FTS 与 pgvector HNSW 并行产生并用加权 RRF 融合。search 会打开 blocking Gap，只有 detail 的 canonical digest 校验成功才关闭。召回单独限制调用次数、返回 token 和累计延迟，重复召回没有新增 VERIFIED evidence 时进入 CLARIFY。详见 ADR-0013、ADR-0014。
 
 子 Agent 当前只落地控制协议：每个 ChildTask 有独立生命周期与 outputRef；输出按 delivered → claimed → consumed 演进。父 Run 可在执行中 claim，但只有 COMPLETED 事务已提交才 ack consumed。启动恢复把无执行者 RUNNING 子任务标为 LOST，再记录 RETRY、REPLAN 或 RETURN_TO_USER；当前没有 worker 调度器或自动并行执行。
 

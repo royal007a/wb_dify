@@ -1,0 +1,12 @@
+{"id":"exact-01","category":"exact","query":"错误码 HIFY-409","documents":{"a":"接口返回错误码 HIFY-409，表示幂等键冲突","b":"服务启动成功","c":"缓存过期三十分钟","d":"张三下午开会"},"relevant":["a"]}
+{"id":"exact-02","category":"exact","query":"mint-42","documents":{"a":"项目暗号是 mint-42","b":"项目版本是 v42","c":"使用薄荷绿色主题","d":"部署窗口是周五"},"relevant":["a"]}
+{"id":"exact-03","category":"exact","query":"PostgreSQL HNSW","documents":{"a":"向量索引采用 PostgreSQL HNSW","b":"Redis 用于短期缓存","c":"MySQL 使用 BTree","d":"前端使用 Vue"},"relevant":["a"]}
+{"id":"semantic-01","category":"semantic","query":"发布前需要人确认吗","documents":{"a":"数据库每天备份","b":"按钮使用蓝紫色","c":"生产部署必须经过用户人工审批","d":"测试环境可以自动发布"},"relevant":["c"]}
+{"id":"semantic-02","category":"semantic","query":"之前的报错怎么修复","documents":{"a":"今天新增一个页面","b":"模型温度设为零点二","c":"用户喜欢下午开会","d":"上次故障最终通过重启连接池解决"},"relevant":["d"]}
+{"id":"semantic-03","category":"semantic","query":"接口模型调用失败","documents":{"a":"前端表格分页二十条","b":"LLM API 故障时先检查认证和限流","c":"数据库迁移已经完成","d":"发布需要审批"},"relevant":["b"]}
+{"id":"semantic-04","category":"semantic","query":"用户倾向什么时间开会","documents":{"a":"李四负责支付系统","b":"风控昨天故障","c":"张三最近喜欢下午安排会议","d":"API 返回成功"},"relevant":["c"]}
+{"id":"noise-01","category":"noise","query":"calculator 参数格式","documents":{"a":"calculator 只接受 expression 字符串","b":"calculator 执行成功返回 42","c":"模型提到 calculator 但没有调用","d":"current_time 返回 ISO 时间"},"relevant":["a"]}
+{"id":"noise-02","category":"noise","query":"取消请求时间","documents":{"a":"cancel_requested_at 必须持久化并传播到阻塞调用","b":"取消按钮颜色是红色","c":"请求耗时记录在日志","d":"时间字段使用 ISO 8601"},"relevant":["a"]}
+{"id":"conflict-01","category":"conflict","query":"当前会议偏好","documents":{"old":"旧记录：张三喜欢上午开会","new":"最新记录：张三最近喜欢下午开会","x":"李四上午值班","y":"会议室下午空闲"},"relevant":["new"],"recency":{"old":1,"new":2}}
+{"id":"conflict-02","category":"conflict","query":"当前部署方案","documents":{"old":"旧决定：采用方案 A 发布","new":"最新决定：放弃方案 A，选择方案 B 部署","x":"方案 A 成本低","y":"方案 B 文档齐全"},"relevant":["new"],"recency":{"old":1,"new":2}}
+{"id":"entity-01","category":"entity","query":"支付系统受什么影响","documents":{"a":"小李负责支付系统，支付系统依赖风控服务，风控昨天故障","b":"小王负责搜索系统","c":"支付页面使用蓝色按钮","d":"风控规则今天更新"},"relevant":["a"]}

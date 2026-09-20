@@ -32,4 +32,14 @@ public interface HistoryDetailRefRepository extends JpaRepository<HistoryDetailR
     List<HistoryDetailRef> searchPostgres(@Param("conversationId") String conversationId,
                                           @Param("query") String query,
                                           @Param("candidateLimit") int candidateLimit);
+
+    @Query(value = """
+            SELECT * FROM history_detail_refs
+             WHERE conversation_id = :conversationId AND embedding IS NOT NULL
+             ORDER BY embedding <=> CAST(:embedding AS vector)
+             LIMIT :candidateLimit
+            """, nativeQuery = true)
+    List<HistoryDetailRef> searchPostgresVector(@Param("conversationId") String conversationId,
+                                                @Param("embedding") String embedding,
+                                                @Param("candidateLimit") int candidateLimit);
 }

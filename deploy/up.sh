@@ -20,7 +20,7 @@ docker build -t hify-frontend:dev -f "$ROOT_DIR/frontend/Dockerfile" "$ROOT_DIR"
 docker run -d --name hify-postgres --network "$NETWORK" \
   -e POSTGRES_DB=hify -e POSTGRES_USER=hify -e POSTGRES_PASSWORD=hify_local_only \
   -v hify-postgres-data:/var/lib/postgresql/data \
-  postgres:16-alpine >/dev/null
+  pgvector/pgvector:pg16 >/dev/null
 
 until docker exec hify-postgres pg_isready -U hify -d hify >/dev/null 2>&1; do sleep 1; done
 
