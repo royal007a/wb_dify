@@ -29,13 +29,13 @@ Hify 是一个可在单机或内网服务器部署的轻量 AI Agent 平台，�
 - Agent：草稿编辑、校验、不可变版本、发布、停用。
 - Chat：多轮会话、持久消息、SSE、取消、重连 replay。
 - Query Loop：结构化 tool call、预算、超时、明确终态、完整审计事件。
-- Tool：`current_time`、`calculator`，加一个只读 MCP Server 作为真实集成。
-- Console：Provider、Agent、工具、Playground、Run 详情五个页面。
+- Tool：`current_time`、`calculator`，加一个只读 MCP Server 作为真实集成；write 工具默认拒绝。
+- Console：Provider、Agent、工具、Knowledge、Workflow、MCP、Playground、Run 详情。
 
 **P1 价值增强（产品优先级，不等同于实施 Phase 编号）**
 
-- Knowledge（实施 Phase 4）：TXT/Markdown、固定/递归分块、embedding、HNSW 检索、引用溯源。
-- Workflow（实施 Phase 5）：版本化 JSON DSL，只支持 Start、LLM、Tool、Knowledge、Condition、End。
+- Knowledge（实施 Phase 4）：TXT/Markdown、递归分块、FTS + embedding、RRF、HNSW、引用溯源。
+- Workflow（实施 Phase 5）：版本化 JSON DSL，首片支持 Start、Template、Knowledge、Condition、End；LLM/Tool 复用统一 Runtime 后开放。
 
 **非目标**
 
@@ -55,6 +55,9 @@ Hify 是一个可在单机或内网服务器部署的轻量 AI Agent 平台，�
 | 流式体验 | 首 token P50 < 3s（不含供应商异常）；heartbeat 防止空闲断链 |
 | 安全 | 凭证不入 DB/日志/事件；危险 URL 和内网元数据地址被拒绝 |
 | 可恢复 | 浏览器断线可按 event id 重放；应用重启后运行中 Run 被明确收敛为失败/中断 |
+| Knowledge | 关键引用能回读原始 chunk；空命中不编造；文档隔离与归档正确 |
+| Workflow | 非法图不能发布；Run 固定版本；每个节点状态与输出可回放 |
+| MCP | 工具 schema 漂移不改变运行中 Run；未授权 write 工具执行率为 0 |
 
 ## 3. 设计约束
 

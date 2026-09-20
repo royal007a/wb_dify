@@ -16,6 +16,7 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 - Provider 设计与交付：`docs/PROVIDER.md`
 - Agent 管理与发布：`docs/AGENT.md`
 - 课程 10–17 与 Harness 阅读：`docs/PDF_READING_10_17_AND_HARNESS.md`
+- 课程 18–25 阅读与技术取舍：`docs/PDF_READING_18_25.md`
 - API：`docs/API.md`
 - 数据：`docs/DATA_MODEL.md`
 - 工程：`docs/ENGINEERING.md`
@@ -33,13 +34,13 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 - `backend/hify-chat`：会话、消息、Query Loop、Run、流事件
 - `backend/hify-tool`：内置工具、权限与执行
 - `backend/hify-mcp`：MCP 客户端、Server 配置与工具发现
-- `backend/hify-knowledge`：文档、分块、embedding、检索、引用
-- `backend/hify-workflow`：JSON 线性/条件工作流
+- `backend/hify-knowledge`：文档、分块、embedding、混合检索、引用
+- `backend/hify-workflow`：版本化 JSON 线性/条件工作流与执行记录
 - `backend/hify-demo`：MyBatis-Plus CRUD 参考切片，不属于产品域
 - `backend/hify-common`：业务无关基础类型；禁止成为杂物间
 - `frontend/`：Vue 3 管理台和 Playground
 
-当前已建立 Maven 多模块 reactor，并将已实现代码迁入对应模块；`hify-knowledge`、`hify-workflow`、`hify-mcp` 目前仅有明确空壳，不能把目录存在误报为业务已实现。开始改造前先读 `docs/CURRENT_STATE.md`。
+当前已建立 Maven 多模块 reactor，并将已实现代码迁入对应模块；模块是否从空壳升级为可用能力，以 `docs/CURRENT_STATE.md` 和 Harness evidence 为准，不能把目录或 API 存在误报为纵向闭环。
 
 ## 生成约束
 
@@ -80,6 +81,9 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 - read 工具可在 Try 中执行；write/execute/external 工具必须先有精确确认与副作用账本，禁止把 checkpoint 宣称为外部副作用回滚。
 - ConversationManager 持有持久会话；QueryLoop 只持有单次 run；ToolRuntime 持有注册、schema、权限和执行。
 - 上下文裁剪/摘要属于 ContextManager，不塞进 QueryLoop。
+- Knowledge 检索返回的是带 canonical chunk 引用的候选；检索摘要不能直接成为 VERIFIED evidence。
+- Workflow 运行只读取不可变发布版本；节点输出只增不改，非法图在发布前拒绝。
+- MCP 运行使用 Run 固定的工具 schema 快照；tools/list 刷新不能改变执行中的 Run。
 
 ## Provider 硬规则
 

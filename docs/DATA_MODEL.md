@@ -33,9 +33,15 @@ erDiagram
   RUN_STEP ||--o| TOOL_CALL : may_execute
   KNOWLEDGE_BASE ||--o{ DOCUMENT : owns
   DOCUMENT ||--o{ DOCUMENT_CHUNK : splits
+  DOCUMENT ||--o{ DOCUMENT_INDEX_TASK : indexes
   MESSAGE ||--o{ MESSAGE_CITATION : cites
   DOCUMENT_CHUNK ||--o{ MESSAGE_CITATION : supports
   WORKFLOW ||--o{ WORKFLOW_VERSION : publishes
+  WORKFLOW ||--o{ WORKFLOW_NODE : drafts
+  WORKFLOW ||--o{ WORKFLOW_EDGE : connects
+  WORKFLOW_VERSION ||--o{ WORKFLOW_RUN : executes
+  WORKFLOW_RUN ||--o{ WORKFLOW_NODE_RUN : traces
+  MCP_SERVER ||--o{ MCP_TOOL_SNAPSHOT : discovers
 ```
 
 ## 3. 表清单
@@ -49,7 +55,9 @@ erDiagram
 | `agent_definitions` | 当前迁移期草稿表：id/name unique/prompt/provider/model/参数/draft_revision/published_version_id/archived_at；后续可重命名但外部 ID 不变 |
 | `agent_versions` | agent_id、version_no、不可变规范化配置列、snapshot_digest；agent+version unique |
 | `tool_definitions` | tool identity, source, schema_version, input_schema JSONB, risk |
-| `mcp_servers` | name, transport, server_url, credential_ref, policy, status |
+| `mcp_servers` | public_id、name、transport、server_url、credential_ref、policy、revision、schema_digest、status |
+| `mcp_tool_snapshots` | server_id、server_revision、tool_name、description、input_schema JSONB、risk、schema_digest；server revision + tool unique |
+| `mcp_debug_calls` | call_id、server/tool/schema digest、arguments digest、result ref、is_error、elapsed_ms；不保存凭证明文 |
 | `agent_tool_bindings` | agent_id + tool_name unique；仅表示可变草稿工具集合，归档时物理清理 |
 | `agent_version_tool_bindings` | agent_version_id + tool_name unique；发布时复制的不可变运行快照 |
 | `conversations` | user_id, agent_version_id, title, status, last_message_at |
@@ -64,12 +72,17 @@ erDiagram
 | `context_summary_claims` | summary、claim key/type、statement、source refs、VERIFIED/MISSING_SOURCE/CONTRADICTED；每条关键结论可追溯 |
 | `child_agent_tasks` | parent_run_id、child_run_id、task_digest、state、output_ref/digest、output_state、claim_token、recovery_action、executor_id、attempt_count、version |
 | `tool_calls` | run_id, run_step_id, call_id unique per run, tool identity, input/output refs, idempotency_key |
-| `knowledge_bases` | name, embedding_model_id, chunk strategy |
-| `documents` | knowledge_base_id, object_key, checksum, version, indexing_state |
-| `document_chunks` | document_id, ordinal, content, embedding vector, metadata JSONB |
+| `knowledge_bases` | public_id、name、description、embedding profile、chunk strategy、enabled、archived_at |
+| `documents` | public_id、knowledge_base_id、name/MIME/size、canonical content/object_key、checksum、version、indexing_state/error、archived_at |
+| `document_index_tasks` | document/version、state、attempt、lease、checkpoint、error、started/finished；可恢复派生任务 |
+| `document_chunks` | public_id、document/version、ordinal、content、content_digest、token_count、tsvector、embedding vector、metadata JSONB |
 | `message_citations` | message_id, chunk_id, score, rank, retrieval snapshot |
-| `workflows` | name, draft revision, published_version_id |
-| `workflow_versions` | workflow_id, version, schema_version, immutable DSL JSONB, checksum |
+| `workflows` | public_id、name、description、draft_revision、published_version_id、archived_at |
+| `workflow_nodes` | workflow_id、node_key、type、name、config JSONB；workflow+node_key unique |
+| `workflow_edges` | workflow_id、edge_key、source/target、condition/default flag |
+| `workflow_versions` | workflow_id、version、schema_version、immutable DSL JSONB、checksum |
+| `workflow_runs` | workflow_version_id/digest、status、input/output/error、context snapshot、elapsed、version |
+| `workflow_node_runs` | run_id、sequence、node key/type、status、input/output refs、error、elapsed |
 
 ## 4. 约束与索引
 
@@ -95,6 +108,9 @@ erDiagram
 - `agent_tool_bindings(agent_id, tool_name)` 与 `agent_version_tool_bindings(agent_version_id, tool_name)` 分离；发布 digest 覆盖排序后的工具集合，归档只删除草稿绑定。
 - `tool_calls(run_id, call_id)` unique；写工具另存 idempotency key。
 - `document_chunks` 为 embedding 建 HNSW；检索必须带 knowledge_base/filter 和 LIMIT。
+- `document_chunks` 同时建 FTS GIN；全文与向量候选只融合排名，不直接相加不可比分数。
+- `workflow_nodes(workflow_id,node_key)`、`workflow_edges(workflow_id,edge_key)` unique；发布校验拒绝悬空边、不可达节点、无默认分支和环。
+- `mcp_tool_snapshots(server_id,server_revision,tool_name)` unique；刷新只追加 revision，Run 通过 schema digest 固定旧版本。
 - `message_citations(message_id, rank)` 与 `document_chunks(document_id, ordinal)` 建索引。
 - 删除策略按 owner 定义：配置型实体优先停用；Conversation/Document 的级联删除走异步清理并保留审计结果。
 

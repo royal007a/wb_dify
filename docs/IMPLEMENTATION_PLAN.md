@@ -43,6 +43,8 @@
 
 ## Phase 3：MCP
 
+2026-09-21 决策：八讲课程吸收采用“先独立能力、再主链路”的顺序。本轮先交付只读 Server 目录、工具发现快照和调试调用；真实 write Server 在 side-effect ledger 后实施。
+
 - MCP Server CRUD、连接测试、tools/list、schema snapshot、工具刷新。
 - SSRF/DNS/redirect 防护、credentialRef、只读 allow policy。
 - 至少一个真实只读 MCP 集成。
@@ -51,6 +53,8 @@
 
 ## Phase 4：简版 RAG
 
+2026-09-21 启动 `KNOWLEDGE-001`：统一 PostgreSQL，不采用课程 MySQL + pgvector 双库；先完成可引用的独立数据管线和检索测试，再接 ContextManager。
+
 - TXT/Markdown 上传、checksum/version、分块、embedding、HNSW。
 - 检索测试、ContextManager 注入、message citation。
 - 索引任务持久化、重试和应用重启恢复。
@@ -58,6 +62,8 @@
 验收：答案显示可点击引用；删除/重建、失败恢复和 prompt injection 边界通过测试。
 
 ## Phase 5：JSON Workflow
+
+2026-09-21 启动 `WORKFLOW-001`：在课程 node/edge + VariablePool 基础上增加不可变发布版本、digest 和运行记录；先完成确定性节点闭环，再开放 LLM/Tool 节点。
 
 - 版本化 DSL 与 Start/LLM/Tool/Knowledge/Condition/End 节点。
 - 静态校验、Run snapshot、统一预算/事件/错误。

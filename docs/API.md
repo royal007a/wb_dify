@@ -190,27 +190,44 @@ MCP Server 保存 URL、transport、credentialRef、allow policy 和最近一次
 
 ```text
 GET/POST /api/v1/knowledge-bases
+GET/PUT/DELETE /api/v1/knowledge-bases/{id}
 POST     /api/v1/knowledge-bases/{id}/documents
+GET      /api/v1/knowledge-bases/{id}/documents
 GET      /api/v1/documents/{documentId}
+GET      /api/v1/documents/{documentId}/chunks
 DELETE   /api/v1/documents/{documentId}
 POST     /api/v1/knowledge-bases/{id}/retrieval-tests
 ```
 
-上传接受 TXT/Markdown，限制单文件大小、总量和 MIME。索引异步语义在单实例内可使用受控 executor，但任务和进度必须持久化；应用重启后可从数据库恢复待处理任务。
+上传接受 TXT/Markdown，限制单文件大小、总量和 MIME。索引异步语义在单实例内可使用受控 executor，但任务和进度必须持久化；应用重启后可从数据库恢复待处理任务。检索返回 `chunkId/documentId/documentVersion/content/digest/score/rank`，客户端引用必须保存这些字段，不能只保存展示文本。
 
 ## 7. Workflow（P1）
 
 ```text
 GET/POST /api/v1/workflows
+GET/DELETE /api/v1/workflows/{id}
 PATCH    /api/v1/workflows/{id}/draft
 POST     /api/v1/workflows/{id}/validations
 POST     /api/v1/workflows/{id}/versions
 POST     /api/v1/workflow-versions/{id}/runs
+GET      /api/v1/workflow-runs/{id}
 ```
 
 Workflow DSL 使用显式 `schemaVersion`。发布前验证入口/终点、节点 ID 唯一、边可达、Condition 默认分支、无循环和引用资源版本存在。
 
-## 8. 稳定错误码
+## 8. MCP Server 与调试
+
+```text
+GET/POST /api/v1/mcp-servers
+GET/PUT/DELETE /api/v1/mcp-servers/{id}
+POST     /api/v1/mcp-servers/{id}/connection-tests
+POST     /api/v1/mcp-servers/{id}/tool-refreshes
+POST     /api/v1/mcp-servers/{id}/debug-calls
+```
+
+`tool-refreshes` 调 `tools/list`，以 server revision 保存完整 schema 和 digest；不会修改已固定的 AgentVersion/Run 快照。`debug-calls` 只能调用已发现且 risk=read 的工具，请求包含 toolName、arguments 和可选 timeout；响应包含 callId、result、isError、elapsedMs、schemaDigest。write/external/execute 返回 `TOOL_PERMISSION_DENIED`。
+
+## 9. 稳定错误码
 
 | 范围 | 示例 |
 |---|---|
