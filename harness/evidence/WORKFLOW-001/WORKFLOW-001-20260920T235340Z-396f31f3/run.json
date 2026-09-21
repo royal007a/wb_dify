@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "WORKFLOW-001-20260920T235340Z-396f31f3",
+  "taskId": "WORKFLOW-001",
+  "status": "completed",
+  "baselineCommit": "8a4ea0b30344cabedc8d34818d9e882289a1177c",
+  "approvalRef": null,
+  "startedAt": "2026-09-20T23:53:40Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "8a4ea0b30344cabedc8d34818d9e882289a1177c",
+  "finishedAt": "2026-09-21T00:01:42Z"
+}

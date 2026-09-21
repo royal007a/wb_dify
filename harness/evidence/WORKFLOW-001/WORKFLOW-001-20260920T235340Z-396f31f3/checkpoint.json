@@ -1,0 +1,7 @@
+{
+  "summary": "版本化 Workflow 纵向切片完成：图校验、不可变发布、条件分支、Knowledge 节点、运行轨迹；backend/migration/runtime 门禁通过",
+  "headCommit": "8a4ea0b30344cabedc8d34818d9e882289a1177c",
+  "workingTreeHash": "77756cdb3933e53c965b53400bb073a30612ac1fe36405178b58eabf67cc0df8",
+  "evidencePath": "harness/evidence/WORKFLOW-001/WORKFLOW-001-20260920T235340Z-396f31f3",
+  "updatedAt": "2026-09-21T00:01:42Z"
+}

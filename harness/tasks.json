@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-20T23:53:19Z",
+  "updatedAt": "2026-09-21T00:01:42Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -584,7 +584,7 @@
       "title": "交付版本化工作流与确定性执行引擎",
       "description": "实现工作流草稿/发布版本、节点边校验、不可变变量池、执行记录和线性/条件分支。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "migration",
@@ -607,12 +607,22 @@
         "缺 START、悬空边、无匹配分支、循环和步数超限确定性失败",
         "线性与条件分支纵向测试通过"
       ],
-      "planPath": "exec-plans/active/WORKFLOW-001.md",
+      "planPath": "exec-plans/completed/WORKFLOW-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "WORKFLOW-001-20260920T235340Z-396f31f3",
+          "path": "harness/evidence/WORKFLOW-001/WORKFLOW-001-20260920T235340Z-396f31f3",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "8a4ea0b30344cabedc8d34818d9e882289a1177c",
+          "headCommit": "8a4ea0b30344cabedc8d34818d9e882289a1177c",
+          "recordedAt": "2026-09-21T00:01:42Z"
+        }
+      ],
       "createdAt": "2026-09-21T04:30:00Z",
-      "updatedAt": "2026-09-21T04:30:00Z"
+      "updatedAt": "2026-09-21T00:01:42Z"
     },
     {
       "id": "MCP-001",
