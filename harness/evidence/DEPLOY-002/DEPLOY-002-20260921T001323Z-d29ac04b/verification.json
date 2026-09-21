@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "backend",
+    "frontend",
+    "migration",
+    "runtime",
+    "eval"
+  ],
+  "base": "working-tree",
+  "headCommit": "d39427fc937526d6469a55a465a9f7470de62eae",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "backend-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-002/DEPLOY-002-20260921T001323Z-d29ac04b/backend-tests.log"
+    },
+    {
+      "name": "frontend-typecheck",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-002/DEPLOY-002-20260921T001323Z-d29ac04b/frontend-typecheck.log"
+    },
+    {
+      "name": "frontend-build",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-002/DEPLOY-002-20260921T001323Z-d29ac04b/frontend-build.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-002/DEPLOY-002-20260921T001323Z-d29ac04b/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-002/DEPLOY-002-20260921T001323Z-d29ac04b/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-002/DEPLOY-002-20260921T001323Z-d29ac04b/migration-not-skipped.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-002/DEPLOY-002-20260921T001323Z-d29ac04b/runtime-tests.log"
+    },
+    {
+      "name": "intent-context-recall-eval",
+      "exitCode": 0,
+      "log": "harness/evidence/DEPLOY-002/DEPLOY-002-20260921T001323Z-d29ac04b/intent-context-recall-eval.log"
+    }
+  ],
+  "finishedAt": "2026-09-21T00:14:26Z"
+}

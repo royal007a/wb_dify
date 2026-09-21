@@ -1,0 +1,7 @@
+{
+  "summary": "全矩阵通过；origin/main 已推送；本地与远端 V17、health、API 与 Playwright smoke 均通过，远端 URL 已验证",
+  "headCommit": "d39427fc937526d6469a55a465a9f7470de62eae",
+  "workingTreeHash": "a47b6a63680d7580f52921fece0d08643c2633576da0b686463ba0017c576013",
+  "evidencePath": "harness/evidence/DEPLOY-002/DEPLOY-002-20260921T001323Z-d29ac04b",
+  "updatedAt": "2026-09-21T00:18:41Z"
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "kind": "deployment",
+  "approvalRef": "lark:/goal-2026-09-21-eight-hour-implementation-deploy",
+  "deployedCommit": "d39427f",
+  "rollbackCommit": "7bb7031",
+  "push": {"remote": "origin", "branch": "main", "result": "passed"},
+  "local": {
+    "url": "http://localhost:8088/",
+    "health": 200,
+    "flywayVersion": "17",
+    "browserTests": {"passed": 2, "failed": 0}
+  },
+  "remote": {
+    "url": "https://118.196.123.132/hify/",
+    "topology": "systemd + nginx + PostgreSQL",
+    "service": "active",
+    "health": 200,
+    "flywayVersion": "17",
+    "apiSmoke": ["knowledge-bases", "workflows", "mcp-servers"],
+    "browserTests": {"passed": 2, "failed": 0},
+    "screenshot": "harness/evidence/DEPLOY-002/DEPLOY-002-20260921T001323Z-d29ac04b/remote-knowledge.png"
+  },
+  "recovery": "Docker Hub resolution timed out; deployment completed on the existing host-native systemd/nginx topology.",
+  "result": "passed",
+  "finishedAt": "2026-09-21T00:20:00Z"
+}

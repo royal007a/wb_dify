@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-21T00:12:52Z",
+  "updatedAt": "2026-09-21T00:18:41Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -717,7 +717,7 @@
       "title": "推送并部署高级能力纵向切片",
       "description": "分拆提交并推送通过门禁的版本，重新部署本地和 118.196.123.132，执行迁移、HTTP 与浏览器 smoke。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "frontend",
@@ -744,12 +744,22 @@
         "浏览器 smoke 覆盖管理页面与既有 Chat",
         "部署版本、访问 URL 和回滚基线进入 evidence"
       ],
-      "planPath": "exec-plans/active/DEPLOY-002.md",
+      "planPath": "exec-plans/completed/DEPLOY-002.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "DEPLOY-002-20260921T001323Z-d29ac04b",
+          "path": "harness/evidence/DEPLOY-002/DEPLOY-002-20260921T001323Z-d29ac04b",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "d39427fc937526d6469a55a465a9f7470de62eae",
+          "headCommit": "d39427fc937526d6469a55a465a9f7470de62eae",
+          "recordedAt": "2026-09-21T00:18:41Z"
+        }
+      ],
       "createdAt": "2026-09-21T04:30:00Z",
-      "updatedAt": "2026-09-21T04:30:00Z"
+      "updatedAt": "2026-09-21T00:18:41Z"
     }
   ]
 }
