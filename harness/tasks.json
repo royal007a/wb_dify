@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-21T00:01:42Z",
+  "updatedAt": "2026-09-21T00:08:47Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -629,7 +629,7 @@
       "title": "交付 MCP Server 目录与安全调试闭环",
       "description": "实现 MCP Server 注册、工具发现快照、只读调试调用、超时/SSRF 边界和调用证据，不先开放 write 工具。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "migration",
@@ -652,12 +652,22 @@
         "连接超时、协议错误、工具错误和取消均归一化",
         "write/external 工具在 side-effect ledger 完成前被拒绝"
       ],
-      "planPath": "exec-plans/active/MCP-001.md",
+      "planPath": "exec-plans/completed/MCP-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "MCP-001-20260921T000216Z-d1b51317",
+          "path": "harness/evidence/MCP-001/MCP-001-20260921T000216Z-d1b51317",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "086d933b273e685b2c5efcb296a1642f59361b96",
+          "headCommit": "086d933b273e685b2c5efcb296a1642f59361b96",
+          "recordedAt": "2026-09-21T00:08:47Z"
+        }
+      ],
       "createdAt": "2026-09-21T04:30:00Z",
-      "updatedAt": "2026-09-21T04:30:00Z"
+      "updatedAt": "2026-09-21T00:08:47Z"
     },
     {
       "id": "CONSOLE-002",

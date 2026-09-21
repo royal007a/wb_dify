@@ -1,0 +1,24 @@
+package com.hify.api;
+import com.fasterxml.jackson.databind.*; import com.hify.common.BizException; import com.hify.mcp.application.McpEndpointGuard; import com.sun.net.httpserver.*; import org.junit.jupiter.api.*; import org.springframework.beans.factory.annotation.Autowired; import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc; import org.springframework.boot.test.context.SpringBootTest; import org.springframework.test.context.TestPropertySource; import org.springframework.test.web.servlet.MockMvc; import java.io.*; import java.net.*; import java.nio.charset.StandardCharsets; import static org.assertj.core.api.Assertions.*; import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*; import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest @AutoConfigureMockMvc
+@TestPropertySource(properties={"spring.datasource.url=jdbc:h2:mem:hify-mcp-test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1","spring.datasource.username=sa","spring.datasource.password=","hify.mcp.allow-private=true"})
+class McpServerApiIntegrationTest {
+ static HttpServer remote; static int port; @Autowired MockMvc http; @Autowired ObjectMapper json;
+ @BeforeAll static void server()throws Exception{remote=HttpServer.create(new InetSocketAddress("127.0.0.1",0),0);port=remote.getAddress().getPort();remote.createContext("/mcp",McpServerApiIntegrationTest::handle);remote.start();}
+ @AfterAll static void stop(){remote.stop(0);}
+
+ @Test void discoversVersionedToolsAndOnlyExecutesReadTools()throws Exception{
+  String payload="{\"name\":\"local-catalog\",\"endpointUrl\":\"http://127.0.0.1:"+port+"/mcp\",\"enabled\":true}";
+  String id=body(http.perform(post("/api/v1/mcp-servers").contentType("application/json").content(payload)).andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();
+  JsonNode first=body(http.perform(post("/api/v1/mcp-servers/{id}/tools:refresh",id)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");assertThat(first).hasSize(2);assertThat(first.get(0).path("serverRevision").asLong()).isEqualTo(1);
+  JsonNode second=body(http.perform(post("/api/v1/mcp-servers/{id}/tools:refresh",id)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");assertThat(second.get(0).path("serverRevision").asLong()).isEqualTo(2);
+  JsonNode call=body(http.perform(post("/api/v1/mcp-servers/{id}/tools/lookup_order:call",id).contentType("application/json").content("{\"arguments\":{\"orderId\":\"A-1\"}}")).andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");assertThat(call.path("result").path("content").get(0).path("text").asText()).isEqualTo("order:A-1");assertThat(call.path("schemaDigest").asText()).hasSize(64);
+  http.perform(post("/api/v1/mcp-servers/{id}/tools/lookup_order:call",id).contentType("application/json").content("{\"arguments\":{}}")).andExpect(status().isBadRequest());
+  http.perform(post("/api/v1/mcp-servers/{id}/tools/submit_refund:call",id).contentType("application/json").content("{\"arguments\":{}}")).andExpect(status().isForbidden());
+ }
+
+ @Test void blocksPrivateEndpointsByDefault(){assertThatThrownBy(()->new McpEndpointGuard(false).validate("http://127.0.0.1:8080/mcp")).isInstanceOf(BizException.class);}
+ private JsonNode body(String value)throws Exception{return json.readTree(value);}
+ private static void handle(HttpExchange x)throws IOException{String request=new String(x.getRequestBody().readAllBytes(),StandardCharsets.UTF_8);if(request.contains("notifications/initialized")){x.sendResponseHeaders(202,-1);x.close();return;}String response;if(request.contains("\"method\":\"initialize\""))response="{\"jsonrpc\":\"2.0\",\"id\":\"1\",\"result\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{\"tools\":{}},\"serverInfo\":{\"name\":\"fake\",\"version\":\"1\"}}}";else if(request.contains("\"method\":\"tools/list\""))response="{\"jsonrpc\":\"2.0\",\"id\":\"2\",\"result\":{\"tools\":[{\"name\":\"lookup_order\",\"description\":\"Lookup order\",\"inputSchema\":{\"type\":\"object\",\"properties\":{\"orderId\":{\"type\":\"string\"}},\"required\":[\"orderId\"]},\"annotations\":{\"readOnlyHint\":true}},{\"name\":\"submit_refund\",\"description\":\"Refund\",\"inputSchema\":{\"type\":\"object\"},\"annotations\":{\"readOnlyHint\":false}}]}}";else {String order=request.contains("A-1")?"A-1":"unknown";response="{\"jsonrpc\":\"2.0\",\"id\":\"3\",\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"order:"+order+"\"}],\"isError\":false}}";}byte[] bytes=response.getBytes(StandardCharsets.UTF_8);x.getResponseHeaders().set("Content-Type","application/json");x.getResponseHeaders().set("mcp-session-id","fake-session");x.sendResponseHeaders(200,bytes.length);try(OutputStream out=x.getResponseBody()){out.write(bytes);}}
+}

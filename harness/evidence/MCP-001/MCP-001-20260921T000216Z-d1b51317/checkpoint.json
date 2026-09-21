@@ -1,0 +1,7 @@
+{
+  "summary": "MCP 注册、tools/list 版本快照、只读 tools/call 调试、安全边界与 PostgreSQL/runtime 门禁通过",
+  "headCommit": "086d933b273e685b2c5efcb296a1642f59361b96",
+  "workingTreeHash": "a27010371757f2525a99fb54faadef26c900dcc847e565eac857ed74f75f2404",
+  "evidencePath": "harness/evidence/MCP-001/MCP-001-20260921T000216Z-d1b51317",
+  "updatedAt": "2026-09-21T00:08:47Z"
+}

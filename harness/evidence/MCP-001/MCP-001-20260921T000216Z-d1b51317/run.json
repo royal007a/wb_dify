@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "MCP-001-20260921T000216Z-d1b51317",
+  "taskId": "MCP-001",
+  "status": "completed",
+  "baselineCommit": "086d933b273e685b2c5efcb296a1642f59361b96",
+  "approvalRef": null,
+  "startedAt": "2026-09-21T00:02:16Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "086d933b273e685b2c5efcb296a1642f59361b96",
+  "finishedAt": "2026-09-21T00:08:47Z"
+}

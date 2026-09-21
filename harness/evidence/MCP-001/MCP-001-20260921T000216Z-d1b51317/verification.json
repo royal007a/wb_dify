@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "backend",
+    "migration",
+    "runtime"
+  ],
+  "base": "working-tree",
+  "headCommit": "086d933b273e685b2c5efcb296a1642f59361b96",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "backend-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-001/MCP-001-20260921T000216Z-d1b51317/backend-tests.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-001/MCP-001-20260921T000216Z-d1b51317/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-001/MCP-001-20260921T000216Z-d1b51317/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-001/MCP-001-20260921T000216Z-d1b51317/migration-not-skipped.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-001/MCP-001-20260921T000216Z-d1b51317/runtime-tests.log"
+    }
+  ],
+  "finishedAt": "2026-09-21T00:08:26Z"
+}

@@ -19,6 +19,7 @@
 | 分层上下文/历史召回 | `LayeredContextMemoryService`、`HistoryRecallService`、`history.search/detail`、V12/V13、ADR-0013/0014 | 最近 3 轮原文 + 更早摘要/目录；PostgreSQL FTS + pgvector HNSW + 加权 RRF，并支持时间/类型/实体过滤；search 为导航、detail 才是 VERIFIED evidence；有 recall/no-progress 预算和只读 HTTP API |
 | Knowledge/RAG 数据管线 | `hify-knowledge`、V14/V15、`KnowledgeApiIntegrationTest` | PostgreSQL 单库；TXT/Markdown 上传、持久索引任务、递归分块、确定性 bootstrap embedding、FTS/pgvector HNSW 候选与加权 RRF、canonical chunk digest/citation、归档已通过 H2 与 PostgreSQL 门禁；尚未绑定 AgentVersion/Chat ContextManager |
 | Workflow 版本化运行时 | `hify-workflow`、V16、`WorkflowApiIntegrationTest` | 草稿图 CRUD、结构校验、不可变发布版本、START/TEMPLATE/CONDITION/KNOWLEDGE/END 确定性执行、变量池与节点轨迹已通过 H2/PostgreSQL 门禁；尚未绑定 Chat/Agent，也未接入 LLM/Tool 节点 |
+| MCP Server 管理 | `hify-mcp`、V17、`McpServerApiIntegrationTest` | Streamable HTTP 初始化、tools/list 版本快照、schema digest、READ 工具 tools/call 调试、参数校验、credentialRef 与私网/重定向边界已验证；尚未绑定 AgentVersion/Query Loop，完整 SDK conformance 与 DNS rebinding 固定解析待补 |
 | 子任务控制协议 | `ChildAgentTask`、`ChildAgentTaskService`、`V10__child_agent_task_protocol.sql` | 独立状态机、outputRef、delivered/claimed/consumed、父成功后确认、lost 收敛已验证；尚无真实子 Agent worker/调度器 |
 | Intent Router | `hify-chat/com.hify.intent`、`IntentRoutingController` | 四出口契约、确定性规则层、结构化模型候选、低置信/歧义/缺槽澄清、120 条中文评测集；当前仅预览，不接管 Run |
 | Mock 模型 | `MockModelClient.java` | 可触发时间或单个二元运算工具 |
@@ -38,8 +39,9 @@
 - RunStep/ToolCall 独立表、通用完整 JSON Schema、工具超时与写工具交互式批准；当前 Attempt/Plan 通过事件追踪，checkpoint 与 canonical history 持久化 call/result 配对消息。
 - 高风险 write/external/execute 工具策略；当前只有 read 工具，未绑定工具会被拒绝。
 - 完整审计字段；并发幂等数据库冲突归一和终态数据库 CAS 已完成。
-- MCP、Workflow/Knowledge 到 AgentVersion/Chat 的运行绑定、文档对象存储与 Redis；Knowledge 独立数据管线与 Workflow 确定性版本运行时已实现，原文暂存 PostgreSQL canonical_content，后续再抽象 S3-compatible object port。
+- MCP/Workflow/Knowledge 到 AgentVersion/Chat 的运行绑定、文档对象存储与 Redis；三者均已有独立纵向切片，原文暂存 PostgreSQL canonical_content，后续再抽象 S3-compatible object port。
 - 认证/用户、完整 SSRF/DNS rebinding/redirect 防护、审计日志、CI 和 Vault/云 Secret Manager；Provider 当前仅允许 http/https、拒绝 userinfo/fragment，并支持 env/system 引用。
+- MCP 当前使用受约束的 Streamable HTTP JSON-RPC 子集并关闭重定向；正式对接复杂 session/SSE/MRTR 服务前仍需接入官方 Java SDK 并跑 MCP conformance suite。
 - JPA 到 MyBatis-Plus 的全仓 Repository 迁移；Provider 与 DemoItem 已迁移，Agent/Chat/Run 仍保留 JPA，禁止一次性重写。
 - Intent Router 的真实 Provider 离线评测、shadow 事件和主链路 dispatch；当前 rule-only v2 Top1 为 82.50%（unknown recall 100%），模型层已有契约与单测但尚无真实成本/延迟数据。
 - Workflow 已有显式条件分支和不可变发布版本，但尚无 LLM/Tool 节点、统一候选排序/选择记录、双层 TAO、真实子 Agent worker/调度器和阶段/全局回滚；当前只有子任务持久状态与延迟消费协议。

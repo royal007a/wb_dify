@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "WORKFLOW-001-20260920T235340Z-396f31f3",
-    "path": "harness/evidence/WORKFLOW-001/WORKFLOW-001-20260920T235340Z-396f31f3",
+    "runId": "MCP-001-20260921T000216Z-d1b51317",
+    "path": "harness/evidence/MCP-001/MCP-001-20260921T000216Z-d1b51317",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "8a4ea0b30344cabedc8d34818d9e882289a1177c",
-    "headCommit": "8a4ea0b30344cabedc8d34818d9e882289a1177c",
-    "recordedAt": "2026-09-21T00:01:42Z"
+    "baselineCommit": "086d933b273e685b2c5efcb296a1642f59361b96",
+    "headCommit": "086d933b273e685b2c5efcb296a1642f59361b96",
+    "recordedAt": "2026-09-21T00:08:47Z"
   },
-  "lastCompletedTaskId": "WORKFLOW-001",
-  "updatedAt": "2026-09-21T00:01:42Z"
+  "lastCompletedTaskId": "MCP-001",
+  "updatedAt": "2026-09-21T00:08:47Z"
 }
