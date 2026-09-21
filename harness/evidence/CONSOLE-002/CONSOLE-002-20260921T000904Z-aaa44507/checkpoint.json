@@ -1,0 +1,7 @@
+{
+  "summary": "Knowledge/Workflow/MCP 三个真实管理页完成；typecheck、生产构建和 Playwright 路由 smoke 通过",
+  "headCommit": "dd69dba2f70367965bc78f095592a2cca6c092d4",
+  "workingTreeHash": "f17a56909be399b99d285c95e2e812314a5a4906d3e3bec7ac4880369ba0c167",
+  "evidencePath": "harness/evidence/CONSOLE-002/CONSOLE-002-20260921T000904Z-aaa44507",
+  "updatedAt": "2026-09-21T00:12:52Z"
+}

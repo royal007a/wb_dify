@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-21T00:08:47Z",
+  "updatedAt": "2026-09-21T00:12:52Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -674,7 +674,7 @@
       "title": "交付知识库工作流 MCP 管理台",
       "description": "实现知识库上传/检索、工作流 JSON 编辑/试跑、MCP 工具发现/调试页面，并回归流式聊天。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "frontend",
         "runtime"
@@ -695,12 +695,22 @@
         "Chat SSE delta/replay/cancel 浏览器回归通过",
         "窄屏导航和关键空状态可用"
       ],
-      "planPath": "exec-plans/active/CONSOLE-002.md",
+      "planPath": "exec-plans/completed/CONSOLE-002.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "CONSOLE-002-20260921T000904Z-aaa44507",
+          "path": "harness/evidence/CONSOLE-002/CONSOLE-002-20260921T000904Z-aaa44507",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "dd69dba2f70367965bc78f095592a2cca6c092d4",
+          "headCommit": "dd69dba2f70367965bc78f095592a2cca6c092d4",
+          "recordedAt": "2026-09-21T00:12:52Z"
+        }
+      ],
       "createdAt": "2026-09-21T04:30:00Z",
-      "updatedAt": "2026-09-21T04:30:00Z"
+      "updatedAt": "2026-09-21T00:12:52Z"
     },
     {
       "id": "DEPLOY-002",

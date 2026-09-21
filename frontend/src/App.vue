@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-import { ChatDotRound, Fold, Setting, User, UserFilled } from '@element-plus/icons-vue'
+import { ChatDotRound, Collection, Connection, Fold, Operation, Setting, User, UserFilled } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -43,6 +43,18 @@ onBeforeUnmount(() => media?.removeEventListener('change', syncViewport))
         <el-menu-item index="/agents">
           <el-icon><User /></el-icon>
           <template #title>Agent 管理</template>
+        </el-menu-item>
+        <el-menu-item index="/knowledge">
+          <el-icon><Collection /></el-icon>
+          <template #title>知识库</template>
+        </el-menu-item>
+        <el-menu-item index="/workflows">
+          <el-icon><Operation /></el-icon>
+          <template #title>Workflow</template>
+        </el-menu-item>
+        <el-menu-item index="/mcp">
+          <el-icon><Connection /></el-icon>
+          <template #title>MCP Servers</template>
         </el-menu-item>
         <el-menu-item index="/chat">
           <el-icon><ChatDotRound /></el-icon>

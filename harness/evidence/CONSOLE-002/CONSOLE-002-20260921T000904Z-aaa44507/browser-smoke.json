@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "kind": "browser-smoke",
+  "command": "npx playwright test e2e/management.spec.ts",
+  "result": "passed",
+  "tests": 1,
+  "routes": ["/knowledge", "/workflows", "/mcp"],
+  "verifiedAt": "2026-09-21T00:12:00Z"
+}

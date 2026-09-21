@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "CONSOLE-002-20260921T000904Z-aaa44507",
+  "taskId": "CONSOLE-002",
+  "status": "completed",
+  "baselineCommit": "dd69dba2f70367965bc78f095592a2cca6c092d4",
+  "approvalRef": null,
+  "startedAt": "2026-09-21T00:09:04Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "dd69dba2f70367965bc78f095592a2cca6c092d4",
+  "finishedAt": "2026-09-21T00:12:52Z"
+}
