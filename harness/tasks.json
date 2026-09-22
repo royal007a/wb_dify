@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-22T04:24:58Z",
+  "updatedAt": "2026-09-22T04:25:54Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -908,6 +908,38 @@
       ],
       "createdAt": "2026-09-22T03:20:00Z",
       "updatedAt": "2026-09-22T04:24:58Z"
+    },
+    {
+      "id": "CONSOLE-003",
+      "title": "交付 Workflow 可视化画布与 Agent 能力绑定控制台",
+      "description": "在 Runtime 契约稳定后，以同一 Workflow DSL 实现节点面板、连线、属性编辑、服务端校验、试跑与版本 Diff，并在 Agent 表单中配置 Workflow/MCP READ 能力。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": [
+        "frontend"
+      ],
+      "verifyScopes": [
+        "frontend"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [
+        "CAPABILITY-002"
+      ],
+      "acceptance": [
+        "Workflow 画布可增删和拖动节点、创建连线并编辑节点属性",
+        "保存必须调用 Runtime 同源的服务端图校验，试跑只执行已发布不可变版本",
+        "版本 Diff 同时展示当前草稿与最新发布快照",
+        "Agent 控制台可绑定已发布 Workflow 与 MCP READ 工具",
+        "前端类型检查、生产构建和浏览器管理台回归通过"
+      ],
+      "planPath": "exec-plans/active/CONSOLE-003.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-09-22T04:25:54Z",
+      "updatedAt": "2026-09-22T04:25:54Z"
     }
   ]
 }
