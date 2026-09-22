@@ -854,6 +854,31 @@
       ],
       "createdAt": "2026-09-22T02:57:00Z",
       "updatedAt": "2026-09-22T03:02:22Z"
+    },
+    {
+      "id": "CAPABILITY-002",
+      "title": "绑定 Workflow 与 MCP 到 AgentVersion 和 Chat Runtime",
+      "description": "冻结 Workflow published version/checksum 与 MCP server revision/tool schema 到 AgentVersion；Chat 按固定版本执行确定性 Workflow，并把 READ MCP 工具适配为 QueryLoop ToolDefinition。",
+      "priority": "P0",
+      "status": "pending",
+      "scopes": ["backend", "migration", "runtime"],
+      "verifyScopes": ["backend", "migration", "runtime"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["DEPLOY-003"],
+      "acceptance": [
+        "Agent 草稿可绑定一个 Workflow 与多个 MCP READ 工具，发布时冻结版本、revision、checksum 和 schema",
+        "Chat 使用固定 AgentVersion 时先进入确定性 Workflow executor，历史版本不漂移",
+        "MCP READ 工具以冻结 schema 进入 QueryLoop，执行前校验 capability revision、lease 与 cancel",
+        "迁移、后端测试和运行时纵向测试通过"
+      ],
+      "planPath": "exec-plans/active/CAPABILITY-002.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-09-22T03:20:00Z",
+      "updatedAt": "2026-09-22T03:20:00Z"
     }
   ]
 }
