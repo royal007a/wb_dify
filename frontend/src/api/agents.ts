@@ -13,6 +13,8 @@ export interface Agent extends Record<string, unknown> {
   maxContextTurns: number
   enabledTools: string[]
   knowledgeBindings: AgentKnowledgeBinding[]
+  workflowBinding?: AgentWorkflowBinding | null
+  mcpTools: AgentMcpTool[]
   enabled: boolean
   draftRevision: number
   publishedVersionId: string | null
@@ -29,6 +31,8 @@ export interface AgentKnowledgeBinding {
   corpusVersionId?: string | null
   manifestDigest?: string | null
 }
+export interface AgentWorkflowBinding { workflowId:string; workflowVersionId?:string|null; versionNo?:number|null; checksum?:string|null }
+export interface AgentMcpTool { serverId:string; serverRevision?:number|null; serverSchemaDigest?:string|null; toolName:string; runtimeToolName?:string|null; description:string; inputSchema:Record<string,unknown>; toolSchemaDigest?:string|null; risk:string }
 
 export interface AgentPayload {
   name: string
@@ -64,6 +68,9 @@ export const replaceAgentTools = (id: string, toolIds: string[]) =>
   put<string[]>(`/v1/agents/${id}/tools`, { toolIds })
 export const replaceAgentKnowledge = (id: string, bindings: AgentKnowledgeBinding[]) =>
   put<AgentKnowledgeBinding[]>(`/v1/agents/${id}/knowledge-bindings`, { bindings })
+export const replaceAgentWorkflow = (id:string, workflowId:string) => put<AgentWorkflowBinding>(`/v1/agents/${id}/workflow-binding`,{workflowId})
+export const clearAgentWorkflow = (id:string) => del<void>(`/v1/agents/${id}/workflow-binding`)
+export const replaceAgentMcp = (id:string, bindings:Array<{serverId:string;toolNames:string[]}>) => put<AgentMcpTool[]>(`/v1/agents/${id}/mcp-bindings`,{bindings})
 export const archiveAgent = (id: string) => del<void>(`/v1/agents/${id}`)
 export const publishAgent = (id: string) => post<AgentVersion>(`/v1/agents/${id}/publications`)
 export const listAgentVersions = (id: string) => get<AgentVersion[]>(`/v1/agents/${id}/versions`)

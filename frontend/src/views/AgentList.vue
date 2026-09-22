@@ -5,14 +5,16 @@ import type { FormRules } from 'element-plus'
 import HifyFormDialog from '@/components/HifyFormDialog.vue'
 import HifyTable, { type HifyColumn, type HifyPageResult } from '@/components/HifyTable.vue'
 import { notifySuccess } from '@/utils/notify'
-import { archiveAgent, createAgent, getAgent, listAgents, publishAgent, replaceAgentKnowledge, replaceAgentTools, updateAgent,
+import { archiveAgent, clearAgentWorkflow, createAgent, getAgent, listAgents, publishAgent, replaceAgentKnowledge, replaceAgentMcp, replaceAgentTools, replaceAgentWorkflow, updateAgent,
   type Agent, type AgentPayload } from '@/api/agents'
 import { listProviders, type Provider } from '@/api/providers'
 import { listTools, type ToolCatalogItem } from '@/api/tools'
 import { useConfirm } from '@/composables/useConfirm'
 import { listKnowledgeBases, type KnowledgeBase } from '@/api/knowledge'
+import { listWorkflows, type Workflow } from '@/api/workflows'
+import { listMcpServers, listMcpTools, type McpServer, type McpTool } from '@/api/mcp'
 
-interface AgentForm extends Record<string, unknown>, AgentPayload { knowledgeBaseIds: string[] }
+interface AgentForm extends Record<string, unknown>, AgentPayload { knowledgeBaseIds: string[]; workflowId:string; mcpToolKeys:string[] }
 type TableExpose = { refresh: (resetPage?: boolean) => Promise<void> }
 type DialogExpose = { open: (data?: Partial<AgentForm>) => Promise<void> }
 
@@ -21,6 +23,7 @@ const columns: HifyColumn<Agent>[] = [
   { label: '模型', prop: 'modelId', minWidth: 150 },
   { label: '工具', width: 70, slot: 'tools' },
   { label: '知识库', width: 78, slot: 'knowledge' },
+  { label: '流程/MCP', width: 90, slot: 'capabilities' },
   { label: 'Temperature', prop: 'temperature', width: 115 },
   { label: '草稿', width: 74, slot: 'draft' },
   { label: '发布状态', width: 145, slot: 'published' },
@@ -36,6 +39,7 @@ const publishingId = ref<string>()
 const providers = ref<Provider[]>([])
 const toolCatalog = ref<ToolCatalogItem[]>([])
 const knowledgeBases = ref<KnowledgeBase[]>([])
+const workflows=ref<Workflow[]>([]);const mcpServers=ref<McpServer[]>([]);const mcpTools=ref<Array<McpTool&{serverId:string;serverName:string}>>([])
 const archiveTarget = ref<Agent>()
 const dialogTitle = computed(() => editingId.value ? '编辑 Agent 草稿' : '创建 Agent 草稿')
 const archiveMessage = computed(() => `确认归档「${archiveTarget.value?.name ?? '该 Agent'}」？归档后不能创建新会话，历史发布版本仍会保留。`)
@@ -54,7 +58,7 @@ const selectedProvider = (form: AgentForm) => providers.value.find(item => item.
 
 function emptyForm(): AgentForm {
   return { name: '', description: '', instructions: '', providerId: '', modelId: '', temperature: 0.2,
-    maxTokens: 2048, maxTurns: 6, maxContextTurns: 10, enabledTools: [], knowledgeBaseIds: [], enabled: true }
+    maxTokens: 2048, maxTurns: 6, maxContextTurns: 10, enabledTools: [], knowledgeBaseIds: [], workflowId:'', mcpToolKeys:[], enabled: true }
 }
 function loadAgents(params: { page: number; pageSize: number }): Promise<HifyPageResult<Agent>> {
   return listAgents(params)
@@ -71,8 +75,9 @@ async function ensureKnowledgeBases() {
   if (knowledgeBases.value.length) return
   knowledgeBases.value = (await listKnowledgeBases({ page: 1, pageSize: 100 })).data.filter(item => item.enabled)
 }
+async function ensureCapabilities(){if(!workflows.value.length)workflows.value=(await listWorkflows({page:1,pageSize:100})).data.filter(item=>item.publishedVersionId);if(!mcpServers.value.length){mcpServers.value=(await listMcpServers()).filter(item=>item.enabled&&item.status==='READY');mcpTools.value=(await Promise.all(mcpServers.value.map(async server=>(await listMcpTools(server.id)).filter(tool=>tool.risk==='READ').map(tool=>({...tool,serverId:server.id,serverName:server.name}))))).flat()}}
 async function ensureReferences() {
-  await Promise.all([ensureProviders(), ensureTools(), ensureKnowledgeBases()])
+  await Promise.all([ensureProviders(), ensureTools(), ensureKnowledgeBases(),ensureCapabilities()])
 }
 async function openCreate() {
   editingId.value = undefined
@@ -83,7 +88,7 @@ async function openEdit(row: Agent) {
   editingId.value = row.id
   await ensureReferences()
   const agent = await getAgent(row.id)
-  await dialogRef.value?.open({ ...agent, knowledgeBaseIds: agent.knowledgeBindings.map(item => item.knowledgeBaseId) })
+  await dialogRef.value?.open({ ...agent, knowledgeBaseIds: agent.knowledgeBindings.map(item => item.knowledgeBaseId),workflowId:agent.workflowBinding?.workflowId??'',mcpToolKeys:agent.mcpTools.map(item=>`${item.serverId}::${item.toolName}`) })
 }
 function onProviderChanged(form: AgentForm) {
   const provider = selectedProvider(form)
@@ -91,7 +96,7 @@ function onProviderChanged(form: AgentForm) {
 }
 async function save(form: AgentForm, done: (success?: boolean) => void) {
   try {
-    const { knowledgeBaseIds, ...values } = form
+    const { knowledgeBaseIds,workflowId,mcpToolKeys, ...values } = form
     const payload: AgentPayload = { ...values, enabledTools: form.enabledTools ?? [] }
     let agentId = editingId.value
     if (editingId.value) {
@@ -103,6 +108,8 @@ async function save(form: AgentForm, done: (success?: boolean) => void) {
     await replaceAgentKnowledge(agentId!, (knowledgeBaseIds ?? []).map((knowledgeBaseId, priority) => ({
       knowledgeBaseId, topK: 5, priority,
     })))
+    if(workflowId)await replaceAgentWorkflow(agentId!,workflowId);else await clearAgentWorkflow(agentId!)
+    const byServer=new Map<string,string[]>();(mcpToolKeys??[]).forEach(key=>{const [serverId,toolName]=key.split('::');byServer.set(serverId,[...(byServer.get(serverId)??[]),toolName])});await replaceAgentMcp(agentId!,[...byServer].map(([serverId,toolNames])=>({serverId,toolNames})))
     notifySuccess(editingId.value ? 'Agent 草稿已更新' : 'Agent 草稿已创建')
     done(); await tableRef.value?.refresh(true)
   } catch { done(false) }
@@ -138,6 +145,7 @@ function formatDate(value: string) {
       <HifyTable ref="tableRef" :columns="columns" :api="loadAgents">
         <template #tools="{ row }"><span class="tool-count">{{ row.enabledTools.length }}</span></template>
         <template #knowledge="{ row }"><span class="tool-count">{{ row.knowledgeBindings.length }}</span></template>
+        <template #capabilities="{ row }"><span class="tool-count">{{ (row.workflowBinding?1:0)+row.mcpTools.length }}</span></template>
         <template #draft="{ row }"><span class="revision">r{{ row.draftRevision }}</span></template>
         <template #published="{ row }"><el-tag :type="!row.publishedVersionNo || row.hasUnpublishedChanges ? 'warning' : 'success'" effect="light" round>{{ !row.publishedVersionNo ? '未发布' : row.hasUnpublishedChanges ? `v${row.publishedVersionNo} · 有变更` : `v${row.publishedVersionNo} · 已同步` }}</el-tag></template>
         <template #status="{ row }"><el-tag :type="row.enabled ? 'success' : 'info'" effect="light" round>{{ row.enabled ? '启用' : '禁用' }}</el-tag></template>
@@ -174,6 +182,16 @@ function formatDate(value: string) {
         <el-form-item label="知识库">
           <el-select v-model="model.knowledgeBaseIds" multiple clearable collapse-tags style="width:100%" placeholder="可选；发布时冻结当前语料版本">
             <el-option v-for="base in knowledgeBases" :key="base.id" :label="base.name" :value="base.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="入口 Workflow">
+          <el-select v-model="model.workflowId" clearable style="width:100%" placeholder="可选；发布时冻结 WorkflowVersion">
+            <el-option v-for="workflow in workflows" :key="workflow.id" :label="workflow.name" :value="workflow.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="MCP READ 工具">
+          <el-select v-model="model.mcpToolKeys" multiple clearable collapse-tags style="width:100%" placeholder="可选；发布时冻结 revision 与 schema">
+            <el-option v-for="tool in mcpTools" :key="`${tool.serverId}::${tool.name}`" :label="`${tool.serverName} / ${tool.name}`" :value="`${tool.serverId}::${tool.name}`" />
           </el-select>
         </el-form-item>
         <el-form-item label="启用"><el-switch v-model="model.enabled" /></el-form-item>
