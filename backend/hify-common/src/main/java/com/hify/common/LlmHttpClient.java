@@ -51,6 +51,8 @@ public class LlmHttpClient {
                 .connectTimeout(Duration.ofSeconds(5))
                 .readTimeout(Duration.ofSeconds(120))
                 .callTimeout(Duration.ofSeconds(125))
+                .followRedirects(false)
+                .followSslRedirects(false)
                 .build();
     }
 
@@ -169,6 +171,9 @@ public class LlmHttpClient {
                     .body(body)
                     .retrieve()
                     .toEntity(String.class);
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw classify(response.getStatusCode().value(), null);
+            }
             log.info("llm.http target={} status={} latencyMs={}", safeTarget(url),
                     response.getStatusCode().value(), elapsedMs(started));
             return response.getBody() == null ? "" : response.getBody();

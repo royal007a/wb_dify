@@ -2,6 +2,7 @@ package com.hify.provider.runtime;
 
 import com.hify.provider.api.ProviderRuntimeConfig;
 import com.hify.provider.api.ProviderType;
+import com.hify.provider.application.ProviderUrlPolicy;
 import com.hify.runtime.ModelClient;
 import com.hify.runtime.ModelRequest;
 import com.hify.runtime.RuntimeMessage;
@@ -15,8 +16,9 @@ import java.util.Map;
 @Component
 public class ProviderAdapterRegistry {
     private final Map<ProviderType, ProviderProtocolAdapter> adapters;
+    private final ProviderUrlPolicy urlPolicy;
 
-    public ProviderAdapterRegistry(List<ProviderProtocolAdapter> adapters) {
+    public ProviderAdapterRegistry(List<ProviderProtocolAdapter> adapters, ProviderUrlPolicy urlPolicy) {
         EnumMap<ProviderType, ProviderProtocolAdapter> indexed = new EnumMap<>(ProviderType.class);
         adapters.forEach(adapter -> {
             if (indexed.put(adapter.type(), adapter) != null) {
@@ -24,12 +26,17 @@ public class ProviderAdapterRegistry {
             }
         });
         this.adapters = Map.copyOf(indexed);
+        this.urlPolicy = urlPolicy;
     }
 
     public ModelClient create(ProviderRuntimeConfig provider) {
         ProviderProtocolAdapter adapter = adapters.get(provider.type());
         if (adapter == null) throw new IllegalStateException("Provider adapter is unavailable: " + provider.type());
-        return adapter.create(provider);
+        String validatedBaseUrl = provider.type() == ProviderType.MOCK
+                ? provider.baseUrl() : urlPolicy.validate(provider.baseUrl());
+        ProviderRuntimeConfig checked = new ProviderRuntimeConfig(provider.id(), provider.name(), provider.type(),
+                validatedBaseUrl, provider.authConfig(), provider.defaultModelId(), provider.enabled());
+        return adapter.create(checked);
     }
 
     public AdapterHealth test(ProviderRuntimeConfig provider) {

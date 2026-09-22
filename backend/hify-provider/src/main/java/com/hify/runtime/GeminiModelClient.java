@@ -112,7 +112,13 @@ public class GeminiModelClient implements ModelClient {
                 writeJson(body), request.control(), new LlmHttpClient.StreamCallback() {
                     @Override public void onEvent(String id, String type, String data) {
                         try {
-                            JsonNode parts = objectMapper.readTree(data).path("candidates").path(0)
+                            JsonNode event = objectMapper.readTree(data);
+                            JsonNode usage = event.path("usageMetadata");
+                            if (usage.isObject()) observer.onUsage(ModelUsage.of(
+                                    usage.path("promptTokenCount").asLong(),
+                                    usage.path("candidatesTokenCount").asLong(),
+                                    usage.path("totalTokenCount").asLong()));
+                            JsonNode parts = event.path("candidates").path(0)
                                     .path("content").path("parts");
                             if (!parts.isArray()) return;
                             parts.forEach(part -> {

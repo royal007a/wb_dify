@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -147,6 +150,38 @@ class NativeProviderModelClientTest {
                 List.of(RuntimeMessage.user("hello")), List.of()), deltas::append);
         assertThat(deltas.toString()).isEqualTo("Hello Gemini");
         assertThat(result.content()).isEqualTo("Hello Gemini");
+    }
+
+    @Test
+    void recordsFirstTokenP95AndUsageEvidence() throws Exception {
+        String baseUrl = serve("/chat/completions", exchange -> respondSse(exchange, List.of(
+                "{\"choices\":[{\"delta\":{\"content\":\"OK\"}}]}",
+                "{\"choices\":[],\"usage\":{\"prompt_tokens\":7,\"completion_tokens\":2,\"total_tokens\":9}}",
+                "[DONE]")));
+        ModelClient client = new OpenAiCompatibleModelClient(config(ProviderType.OPENAI, baseUrl), json,
+                http(), resilience(), codec(), credential());
+        List<Long> firstTokenMs = new ArrayList<>();
+        AtomicReference<ModelUsage> usage = new AtomicReference<>();
+        for (int index = 0; index < 10; index++) {
+            long started = System.nanoTime();
+            AtomicReference<Long> first = new AtomicReference<>();
+            client.generateStream(new ModelRequest("gpt-test", 0.2,
+                    List.of(RuntimeMessage.user("hello")), List.of()), new ModelStreamObserver() {
+                @Override public void onTextDelta(String delta) {
+                    first.compareAndSet(null, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started));
+                }
+                @Override public void onUsage(ModelUsage value) { usage.set(value); }
+            });
+            firstTokenMs.add(first.get());
+        }
+        Collections.sort(firstTokenMs);
+        long p95 = firstTokenMs.get((int) Math.ceil(firstTokenMs.size() * 0.95) - 1);
+        assertThat(p95).isLessThan(3_000);
+        assertThat(usage.get()).isEqualTo(new ModelUsage(7, 2, 9));
+        System.out.printf("PROVIDER_STREAM_EVAL {\"samples\":%d,\"firstTokenP95Ms\":%d,"
+                + "\"usage\":{\"input\":%d,\"output\":%d,\"total\":%d}}%n",
+                firstTokenMs.size(), p95, usage.get().inputTokens(), usage.get().outputTokens(),
+                usage.get().totalTokens());
     }
 
     private String serve(String path, ExchangeHandler handler) throws IOException {

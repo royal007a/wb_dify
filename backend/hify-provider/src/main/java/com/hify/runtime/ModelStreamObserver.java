@@ -4,4 +4,6 @@ package com.hify.runtime;
 public interface ModelStreamObserver {
     ModelStreamObserver NOOP = delta -> {};
     void onTextDelta(String delta);
+
+    default void onUsage(ModelUsage usage) {}
 }

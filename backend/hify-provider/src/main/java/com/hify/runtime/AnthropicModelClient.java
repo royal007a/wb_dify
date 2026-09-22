@@ -91,12 +91,20 @@ public class AnthropicModelClient implements ModelClient {
         headers.put("anthropic-version", "2023-06-01");
         StringBuilder text = new StringBuilder();
         Map<Integer, PartialToolUse> partial = new TreeMap<>();
+        long[] usageTotals = new long[2];
         httpClient.streamAndAwait(stripTrailingSlash(provider.baseUrl()) + "/v1/messages", headers,
                 writeJson(body), request.control(), new LlmHttpClient.StreamCallback() {
                     @Override public void onEvent(String id, String type, String data) {
                         try {
                             JsonNode event = objectMapper.readTree(data);
                             String eventType = event.path("type").asText(type == null ? "" : type);
+                            JsonNode usage = "message_start".equals(eventType)
+                                    ? event.path("message").path("usage") : event.path("usage");
+                            if (usage.isObject()) {
+                                if (usage.has("input_tokens")) usageTotals[0] = usage.path("input_tokens").asLong();
+                                if (usage.has("output_tokens")) usageTotals[1] = usage.path("output_tokens").asLong();
+                                observer.onUsage(ModelUsage.of(usageTotals[0], usageTotals[1], 0));
+                            }
                             int index = event.path("index").asInt(0);
                             if ("content_block_start".equals(eventType)) {
                                 JsonNode block = event.path("content_block");

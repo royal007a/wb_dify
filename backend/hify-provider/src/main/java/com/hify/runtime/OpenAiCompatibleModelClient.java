@@ -76,6 +76,7 @@ public class OpenAiCompatibleModelClient implements ModelClient {
         body.put("model", request.model());
         body.put("temperature", request.temperature());
         body.put("stream", true);
+        body.put("stream_options", Map.of("include_usage", true));
         body.put("messages", request.messages().stream().map(this::toMessage).toList());
         if (!request.tools().isEmpty()) body.put("tools", request.tools().stream().map(this::toTool).toList());
 
@@ -87,7 +88,13 @@ public class OpenAiCompatibleModelClient implements ModelClient {
                     @Override public void onEvent(String id, String type, String data) {
                         if ("[DONE]".equals(data)) return;
                         try {
-                            JsonNode delta = objectMapper.readTree(data).path("choices").path(0).path("delta");
+                            JsonNode event = objectMapper.readTree(data);
+                            JsonNode usage = event.path("usage");
+                            if (usage.isObject()) observer.onUsage(ModelUsage.of(
+                                    usage.path("prompt_tokens").asLong(),
+                                    usage.path("completion_tokens").asLong(),
+                                    usage.path("total_tokens").asLong()));
+                            JsonNode delta = event.path("choices").path(0).path("delta");
                             String chunk = nullableText(delta.get("content"));
                             if (!chunk.isEmpty()) { text.append(chunk); observer.onTextDelta(chunk); }
                             JsonNode tools = delta.path("tool_calls");

@@ -33,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "spring.datasource.url=jdbc:h2:mem:hify-provider-test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
         "spring.datasource.username=sa",
         "spring.datasource.password=",
+        "hify.provider.allow-private=true",
         "hify.resilience.timeout-max-attempts=1",
         "hify.resilience.rate-limit-max-attempts=1"
 })

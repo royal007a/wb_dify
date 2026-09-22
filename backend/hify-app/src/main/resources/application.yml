@@ -51,6 +51,9 @@ hify:
     ambiguity-margin: ${HIFY_INTENT_AMBIGUITY_MARGIN:0.10}
   mcp:
     allow-private: ${HIFY_MCP_ALLOW_PRIVATE:false}
+  provider:
+    allow-private: ${HIFY_PROVIDER_ALLOW_PRIVATE:false}
+    host-allowlist: ${HIFY_PROVIDER_HOST_ALLOWLIST:}
   resilience:
     timeout-max-attempts: 3
     timeout-wait: 1s
