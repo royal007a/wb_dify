@@ -2,14 +2,15 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-09-22T04:36:46Z`
+- Generated from task state updated at: `2026-09-22T06:47:42Z`
 - Current task: `none`
-- Counts: pending 4 · running 0 · blocked 0 · completed 19
+- Counts: pending 4 · running 0 · blocked 0 · completed 20
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
 | `CAPABILITY-001` | P0 | completed | backend, frontend, migration, runtime | reversible_write | 绑定 Knowledge 到 Agent 发布版本与 Chat Runtime |
 | `CAPABILITY-002` | P0 | completed | backend, migration, runtime | reversible_write | 绑定 Workflow 与 MCP 到 AgentVersion 和 Chat Runtime |
+| `CAPABILITY-003` | P0 | completed | backend, runtime | reversible_write | 验证 MCP 不可变能力与故障恢复边界 |
 | `COURSE-018-025` | P0 | completed | harness | reversible_write | 吸收课程 18-25 并更新目标规格 |
 | `DEPLOY-003` | P0 | completed | backend, frontend, migration, runtime | high_risk | 部署 Agent Knowledge capability slice |
 | `DEPLOY-004` | P0 | completed | backend, frontend, migration, runtime | high_risk | 部署 Workflow/MCP Runtime 与画布版本 |

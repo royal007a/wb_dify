@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-22T04:36:46Z",
+  "updatedAt": "2026-09-22T06:47:42Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -1013,7 +1013,7 @@
       "title": "验证 MCP 不可变能力与故障恢复边界",
       "description": "覆盖 MCP schema 漂移、服务不可用、超时、取消、SSE replay，以及旧 AgentVersion 继续执行旧能力快照。",
       "priority": "P0",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "runtime"
@@ -1033,12 +1033,22 @@
         "服务不可用与超时返回稳定错误，Run 取消可中断阻塞 MCP 调用",
         "SSE Last-Event-ID 只 replay 游标之后的持久化工具与终态事件"
       ],
-      "planPath": "exec-plans/active/CAPABILITY-003.md",
+      "planPath": "exec-plans/completed/CAPABILITY-003.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "CAPABILITY-003-20260922T064636Z-57fa0d91",
+          "path": "harness/evidence/CAPABILITY-003/CAPABILITY-003-20260922T064636Z-57fa0d91",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "74d8561c738f6bf4e7beffb48ee67779fcb2e6e1",
+          "headCommit": "74d8561c738f6bf4e7beffb48ee67779fcb2e6e1",
+          "recordedAt": "2026-09-22T06:47:42Z"
+        }
+      ],
       "createdAt": "2026-09-22T06:40:00Z",
-      "updatedAt": "2026-09-22T06:40:00Z"
+      "updatedAt": "2026-09-22T06:47:42Z"
     }
   ]
 }
