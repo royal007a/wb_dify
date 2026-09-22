@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-22T06:47:42Z",
+  "updatedAt": "2026-09-22T06:49:02Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -79,7 +79,7 @@
       "title": "补原生流式故障注入矩阵",
       "description": "覆盖 429、5xx、认证失败、半途断流和客户端断开，并记录延迟与 usage。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "runtime"
@@ -98,12 +98,22 @@
         "五类失败均有确定性契约测试",
         "已经输出首 token/P95/usage 证据"
       ],
-      "planPath": "exec-plans/active/PROVIDER-001.md",
+      "planPath": "exec-plans/completed/PROVIDER-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "PROVIDER-001-20260922T064758Z-30ffba0a",
+          "path": "harness/evidence/PROVIDER-001/PROVIDER-001-20260922T064758Z-30ffba0a",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "c08a7c5a91931ef7a883464151da6ab8293aef8b",
+          "headCommit": "c08a7c5a91931ef7a883464151da6ab8293aef8b",
+          "recordedAt": "2026-09-22T06:49:02Z"
+        }
+      ],
       "createdAt": "2026-09-19T07:45:00Z",
-      "updatedAt": "2026-09-19T07:45:00Z"
+      "updatedAt": "2026-09-22T06:49:02Z"
     },
     {
       "id": "SECURITY-001",

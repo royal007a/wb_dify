@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "PROVIDER-001-20260922T064758Z-30ffba0a",
+  "taskId": "PROVIDER-001",
+  "status": "completed",
+  "baselineCommit": "c08a7c5a91931ef7a883464151da6ab8293aef8b",
+  "approvalRef": null,
+  "startedAt": "2026-09-22T06:47:58Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "c08a7c5a91931ef7a883464151da6ab8293aef8b",
+  "finishedAt": "2026-09-22T06:49:02Z"
+}

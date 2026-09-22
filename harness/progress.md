@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-09-22T06:47:42Z`
+- Generated from task state updated at: `2026-09-22T06:49:02Z`
 - Current task: `none`
-- Counts: pending 4 · running 0 · blocked 0 · completed 20
+- Counts: pending 3 · running 0 · blocked 0 · completed 21
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -25,7 +25,7 @@
 | `DEPLOY-001` | P1 | completed | backend, frontend, migration, runtime, eval | high_risk | 部署摘要与细节召回纵向切片 |
 | `DEPLOY-002` | P1 | completed | backend, frontend, migration, runtime, eval | high_risk | 推送并部署高级能力纵向切片 |
 | `MCP-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付 MCP Server 目录与安全调试闭环 |
-| `PROVIDER-001` | P1 | pending | backend, runtime | reversible_write | 补原生流式故障注入矩阵 |
+| `PROVIDER-001` | P1 | completed | backend, runtime | reversible_write | 补原生流式故障注入矩阵 |
 | `RECALL-002` | P1 | completed | backend, migration, runtime, eval | reversible_write | 建立召回评测门禁并按证据演进检索 |
 | `SECURITY-001` | P1 | pending | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |

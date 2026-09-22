@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "backend",
+    "runtime"
+  ],
+  "base": "working-tree",
+  "headCommit": "c08a7c5a91931ef7a883464151da6ab8293aef8b",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "backend-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/PROVIDER-001/PROVIDER-001-20260922T064758Z-30ffba0a/backend-tests.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/PROVIDER-001/PROVIDER-001-20260922T064758Z-30ffba0a/runtime-tests.log"
+    }
+  ],
+  "finishedAt": "2026-09-22T06:49:02Z"
+}
