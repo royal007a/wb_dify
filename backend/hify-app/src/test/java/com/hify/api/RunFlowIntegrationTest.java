@@ -30,7 +30,9 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -110,6 +112,15 @@ class RunFlowIntegrationTest {
         assertThat(events.toString()).contains("plan.created", "step.try.started", "step.try.completed",
                 "checkpoint.created", "tool.call.started", "tool.call.completed",
                 "context.state.updated", "continuation.decided", "history.committed", "run.completed");
+        long replayCursor = events.get(0).path("id").asLong();
+        var replayRequest = http.perform(get("/api/v1/runs/{id}/events/stream", runId)
+                        .header("Last-Event-ID", replayCursor))
+                .andExpect(request().asyncStarted()).andReturn();
+        String replayedEvents = http.perform(asyncDispatch(replayRequest))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        assertThat(replayedEvents).contains("event:tool.call.started", "event:tool.call.completed",
+                "event:run.completed");
+        assertThat(replayedEvents).doesNotContain("id:" + replayCursor + "\n");
         assertThat(checkpoints.findTopByRunIdAndRestorableTrueOrderBySequenceNoDesc(runId))
                 .hasValueSatisfying(checkpoint -> {
                     assertThat(checkpoint.getTurnNo()).isEqualTo(1);
