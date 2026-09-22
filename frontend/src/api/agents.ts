@@ -12,6 +12,7 @@ export interface Agent extends Record<string, unknown> {
   maxTurns: number
   maxContextTurns: number
   enabledTools: string[]
+  knowledgeBindings: AgentKnowledgeBinding[]
   enabled: boolean
   draftRevision: number
   publishedVersionId: string | null
@@ -19,6 +20,14 @@ export interface Agent extends Record<string, unknown> {
   hasUnpublishedChanges: boolean
   createdAt: string
   updatedAt: string
+}
+
+export interface AgentKnowledgeBinding {
+  knowledgeBaseId: string
+  topK: number
+  priority: number
+  corpusVersionId?: string | null
+  manifestDigest?: string | null
 }
 
 export interface AgentPayload {
@@ -53,6 +62,8 @@ export const createAgent = (payload: AgentPayload) => post<string>('/v1/agents',
 export const updateAgent = (id: string, payload: AgentUpdatePayload) => put<void>(`/v1/agents/${id}`, payload)
 export const replaceAgentTools = (id: string, toolIds: string[]) =>
   put<string[]>(`/v1/agents/${id}/tools`, { toolIds })
+export const replaceAgentKnowledge = (id: string, bindings: AgentKnowledgeBinding[]) =>
+  put<AgentKnowledgeBinding[]>(`/v1/agents/${id}/knowledge-bindings`, { bindings })
 export const archiveAgent = (id: string) => del<void>(`/v1/agents/${id}`)
 export const publishAgent = (id: string) => post<AgentVersion>(`/v1/agents/${id}/publications`)
 export const listAgentVersions = (id: string) => get<AgentVersion[]>(`/v1/agents/${id}/versions`)

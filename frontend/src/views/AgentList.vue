@@ -5,13 +5,14 @@ import type { FormRules } from 'element-plus'
 import HifyFormDialog from '@/components/HifyFormDialog.vue'
 import HifyTable, { type HifyColumn, type HifyPageResult } from '@/components/HifyTable.vue'
 import { notifySuccess } from '@/utils/notify'
-import { archiveAgent, createAgent, getAgent, listAgents, publishAgent, replaceAgentTools, updateAgent,
+import { archiveAgent, createAgent, getAgent, listAgents, publishAgent, replaceAgentKnowledge, replaceAgentTools, updateAgent,
   type Agent, type AgentPayload } from '@/api/agents'
 import { listProviders, type Provider } from '@/api/providers'
 import { listTools, type ToolCatalogItem } from '@/api/tools'
 import { useConfirm } from '@/composables/useConfirm'
+import { listKnowledgeBases, type KnowledgeBase } from '@/api/knowledge'
 
-interface AgentForm extends Record<string, unknown>, AgentPayload {}
+interface AgentForm extends Record<string, unknown>, AgentPayload { knowledgeBaseIds: string[] }
 type TableExpose = { refresh: (resetPage?: boolean) => Promise<void> }
 type DialogExpose = { open: (data?: Partial<AgentForm>) => Promise<void> }
 
@@ -19,6 +20,7 @@ const columns: HifyColumn<Agent>[] = [
   { label: '名称', prop: 'name', minWidth: 160 },
   { label: '模型', prop: 'modelId', minWidth: 150 },
   { label: '工具', width: 70, slot: 'tools' },
+  { label: '知识库', width: 78, slot: 'knowledge' },
   { label: 'Temperature', prop: 'temperature', width: 115 },
   { label: '草稿', width: 74, slot: 'draft' },
   { label: '发布状态', width: 145, slot: 'published' },
@@ -33,6 +35,7 @@ const editingId = ref<string>()
 const publishingId = ref<string>()
 const providers = ref<Provider[]>([])
 const toolCatalog = ref<ToolCatalogItem[]>([])
+const knowledgeBases = ref<KnowledgeBase[]>([])
 const archiveTarget = ref<Agent>()
 const dialogTitle = computed(() => editingId.value ? '编辑 Agent 草稿' : '创建 Agent 草稿')
 const archiveMessage = computed(() => `确认归档「${archiveTarget.value?.name ?? '该 Agent'}」？归档后不能创建新会话，历史发布版本仍会保留。`)
@@ -51,7 +54,7 @@ const selectedProvider = (form: AgentForm) => providers.value.find(item => item.
 
 function emptyForm(): AgentForm {
   return { name: '', description: '', instructions: '', providerId: '', modelId: '', temperature: 0.2,
-    maxTokens: 2048, maxTurns: 6, maxContextTurns: 10, enabledTools: [], enabled: true }
+    maxTokens: 2048, maxTurns: 6, maxContextTurns: 10, enabledTools: [], knowledgeBaseIds: [], enabled: true }
 }
 function loadAgents(params: { page: number; pageSize: number }): Promise<HifyPageResult<Agent>> {
   return listAgents(params)
@@ -64,8 +67,12 @@ async function ensureTools() {
   if (toolCatalog.value.length) return
   toolCatalog.value = await listTools()
 }
+async function ensureKnowledgeBases() {
+  if (knowledgeBases.value.length) return
+  knowledgeBases.value = (await listKnowledgeBases({ page: 1, pageSize: 100 })).data.filter(item => item.enabled)
+}
 async function ensureReferences() {
-  await Promise.all([ensureProviders(), ensureTools()])
+  await Promise.all([ensureProviders(), ensureTools(), ensureKnowledgeBases()])
 }
 async function openCreate() {
   editingId.value = undefined
@@ -76,7 +83,7 @@ async function openEdit(row: Agent) {
   editingId.value = row.id
   await ensureReferences()
   const agent = await getAgent(row.id)
-  await dialogRef.value?.open({ ...agent })
+  await dialogRef.value?.open({ ...agent, knowledgeBaseIds: agent.knowledgeBindings.map(item => item.knowledgeBaseId) })
 }
 function onProviderChanged(form: AgentForm) {
   const provider = selectedProvider(form)
@@ -84,14 +91,19 @@ function onProviderChanged(form: AgentForm) {
 }
 async function save(form: AgentForm, done: (success?: boolean) => void) {
   try {
-    const payload: AgentPayload = { ...form, enabledTools: form.enabledTools ?? [] }
+    const { knowledgeBaseIds, ...values } = form
+    const payload: AgentPayload = { ...values, enabledTools: form.enabledTools ?? [] }
+    let agentId = editingId.value
     if (editingId.value) {
       const { enabledTools, ...configuration } = payload
       await updateAgent(editingId.value, configuration)
       await replaceAgentTools(editingId.value, enabledTools)
-      notifySuccess('Agent 草稿已更新')
     }
-    else { await createAgent(payload); notifySuccess('Agent 草稿已创建') }
+    else { agentId = await createAgent(payload) }
+    await replaceAgentKnowledge(agentId!, (knowledgeBaseIds ?? []).map((knowledgeBaseId, priority) => ({
+      knowledgeBaseId, topK: 5, priority,
+    })))
+    notifySuccess(editingId.value ? 'Agent 草稿已更新' : 'Agent 草稿已创建')
     done(); await tableRef.value?.refresh(true)
   } catch { done(false) }
 }
@@ -125,6 +137,7 @@ function formatDate(value: string) {
     <div class="page-card">
       <HifyTable ref="tableRef" :columns="columns" :api="loadAgents">
         <template #tools="{ row }"><span class="tool-count">{{ row.enabledTools.length }}</span></template>
+        <template #knowledge="{ row }"><span class="tool-count">{{ row.knowledgeBindings.length }}</span></template>
         <template #draft="{ row }"><span class="revision">r{{ row.draftRevision }}</span></template>
         <template #published="{ row }"><el-tag :type="!row.publishedVersionNo || row.hasUnpublishedChanges ? 'warning' : 'success'" effect="light" round>{{ !row.publishedVersionNo ? '未发布' : row.hasUnpublishedChanges ? `v${row.publishedVersionNo} · 有变更` : `v${row.publishedVersionNo} · 已同步` }}</el-tag></template>
         <template #status="{ row }"><el-tag :type="row.enabled ? 'success' : 'info'" effect="light" round>{{ row.enabled ? '启用' : '禁用' }}</el-tag></template>
@@ -157,6 +170,11 @@ function formatDate(value: string) {
               <small>{{ tool.description }}</small>
             </el-checkbox>
           </el-checkbox-group>
+        </el-form-item>
+        <el-form-item label="知识库">
+          <el-select v-model="model.knowledgeBaseIds" multiple clearable collapse-tags style="width:100%" placeholder="可选；发布时冻结当前语料版本">
+            <el-option v-for="base in knowledgeBases" :key="base.id" :label="base.name" :value="base.id" />
+          </el-select>
         </el-form-item>
         <el-form-item label="启用"><el-switch v-model="model.enabled" /></el-form-item>
         <div class="publish-note">保存只更新草稿；点击列表中的“发布”后，新会话才会使用新版本，旧会话保持原快照。</div>
