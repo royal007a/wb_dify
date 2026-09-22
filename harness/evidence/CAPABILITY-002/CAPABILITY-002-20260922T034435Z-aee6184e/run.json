@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "CAPABILITY-002-20260922T034435Z-aee6184e",
+  "taskId": "CAPABILITY-002",
+  "status": "blocked",
+  "baselineCommit": "4c8e7a656e8d2000f04bcc305f78d22159f9e131",
+  "approvalRef": null,
+  "startedAt": "2026-09-22T03:44:35Z",
+  "exitCode": 130,
+  "reason": "task interrupted",
+  "headCommit": "4c8e7a656e8d2000f04bcc305f78d22159f9e131",
+  "finishedAt": "2026-09-22T03:44:54Z"
+}
