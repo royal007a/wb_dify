@@ -13,6 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -36,6 +39,45 @@ class AgentApiIntegrationTest {
     @Autowired AgentQueryService agents;
     @Autowired JdbcTemplate jdbc;
     @Autowired EntityManagerFactory entityManagerFactory;
+
+    @Test
+    void publishesKnowledgeRevisionAndPreparesItBeforeQueryLoop() throws Exception {
+        String suffix=UUID.randomUUID().toString().substring(0,8);
+        String baseId=json(http.perform(post("/api/v1/knowledge-bases")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"Agent KB "+suffix+"\",\"chunkSize\":64,\"chunkOverlap\":8}"))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString())
+                .path("data").asText();
+        String agentId=json(http.perform(post("/api/v1/agents")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload("Knowledge Agent "+suffix,"Answer with grounded context",0.2)))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString())
+                .path("data").asText();
+        http.perform(put("/api/v1/agents/{id}/knowledge-bindings",agentId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"bindings\":[{\"knowledgeBaseId\":\""+baseId+"\",\"topK\":5,\"priority\":0}]}"))
+                .andExpect(status().isOk());
+        String versionId=json(http.perform(post("/api/v1/agents/{id}/publications",agentId))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString())
+                .path("data").path("id").asText();
+        assertThat(agents.requireVersion(versionId).knowledgeBindings()).singleElement().satisfies(binding->{
+            assertThat(binding.knowledgeBaseId()).isEqualTo(baseId);
+            assertThat(binding.corpusVersionId()).isNotBlank();
+            assertThat(binding.manifestDigest()).hasSize(64);
+        });
+        JsonNode conversation=json(http.perform(post("/api/v1/conversations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"agentId\":\""+agentId+"\",\"title\":\"Knowledge runtime\"}"))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString());
+        JsonNode run=json(http.perform(post("/api/v1/conversations/{id}/runs",conversation.path("id").asText())
+                        .header("Idempotency-Key","knowledge-runtime-"+suffix)
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"message\":\"hello\"}"))
+                .andExpect(status().isAccepted()).andReturn().getResponse().getContentAsString());
+        awaitTerminal(run.path("id").asText());
+        JsonNode events=json(http.perform(get("/api/v1/runs/{id}/events",run.path("id").asText()))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        assertThat(events.toString()).contains("knowledge.retrieval.started","knowledge.retrieval.completed");
+    }
 
     @Test
     void draftPublicationAndConversationUseImmutableVersion() throws Exception {
@@ -250,7 +292,7 @@ class AgentApiIntegrationTest {
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
 
         assertThat(page.path("data").size()).isGreaterThanOrEqualTo(3);
-        assertThat(statistics.getPrepareStatementCount()).isLessThanOrEqualTo(4);
+        assertThat(statistics.getPrepareStatementCount()).isLessThanOrEqualTo(7);
     }
 
     private String payload(String name, String instructions, double temperature, String... tools) {
@@ -269,6 +311,17 @@ class AgentApiIntegrationTest {
                  "providerId":"mock","modelId":"hify-mock","temperature":%s,"maxTokens":2048,
                  "maxTurns":6,"maxContextTurns":10,"enabled":true}
                 """.formatted(name, instructions, temperature);
+    }
+
+    private void awaitTerminal(String runId) throws Exception {
+        Instant deadline=Instant.now().plus(Duration.ofSeconds(5));
+        while(Instant.now().isBefore(deadline)){
+            JsonNode run=json(http.perform(get("/api/v1/runs/{id}",runId)).andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString());
+            if(!run.path("state").asText().equals("RUNNING"))return;
+            Thread.sleep(25);
+        }
+        throw new AssertionError("run did not finish");
     }
 
     private JsonNode json(String value) throws Exception { return objectMapper.readTree(value); }

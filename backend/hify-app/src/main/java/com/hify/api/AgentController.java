@@ -3,6 +3,8 @@ package com.hify.api;
 import com.hify.agent.api.AgentResponse;
 import com.hify.agent.api.AgentService;
 import com.hify.agent.api.AgentToolBindingRequest;
+import com.hify.agent.api.AgentKnowledgeBindingRequest;
+import com.hify.agent.api.AgentKnowledgeBindingSnapshot;
 import com.hify.agent.api.AgentUpdateRequest;
 import com.hify.agent.api.AgentUpsertRequest;
 import com.hify.agent.api.AgentVersionResponse;
@@ -53,6 +55,13 @@ public class AgentController {
     public Result<List<String>> replaceTools(@PathVariable String agentId,
                                              @Valid @RequestBody AgentToolBindingRequest request) {
         return Result.ok(agents.replaceTools(agentId, request));
+    }
+
+    @PutMapping("/{agentId}/knowledge-bindings")
+    public Result<List<AgentKnowledgeBindingSnapshot>> replaceKnowledge(
+            @PathVariable String agentId,
+            @Valid @RequestBody AgentKnowledgeBindingRequest request) {
+        return Result.ok(agents.replaceKnowledge(agentId, request));
     }
 
     @DeleteMapping("/{agentId}")

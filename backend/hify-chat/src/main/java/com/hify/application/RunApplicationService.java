@@ -14,6 +14,8 @@ import com.hify.infra.ChatMessageRepository;
 import com.hify.infra.ConversationRepository;
 import com.hify.provider.api.ProviderQueryService;
 import com.hify.provider.api.ProviderRuntimeConfig;
+import com.hify.knowledge.api.KnowledgeCitation;
+import com.hify.knowledge.api.KnowledgeRetrievalPort;
 import com.hify.infra.RunCheckpointRepository;
 import com.hify.runtime.ModelClient;
 import com.hify.runtime.ModelClientFactory;
@@ -69,6 +71,7 @@ public class RunApplicationService {
     private final RunEventBroker eventBroker;
     private final RunCheckpointRepository checkpoints;
     private final ChildAgentTaskService childTasks;
+    private final KnowledgeRetrievalPort knowledge;
     private final ObjectMapper objectMapper;
     private final TransactionTemplate transactions;
     private final Executor executor;
@@ -85,6 +88,7 @@ public class RunApplicationService {
                                  QueryLoop queryLoop, ToolRuntime toolRuntime,
                                  CommittedHistoryWriter historyWriter, RunEventBroker eventBroker,
                                  RunCheckpointRepository checkpoints, ChildAgentTaskService childTasks,
+                                 KnowledgeRetrievalPort knowledge,
                                  ObjectMapper objectMapper,
                                  TransactionTemplate transactions,
                                  @Qualifier("runExecutor") Executor executor,
@@ -104,6 +108,7 @@ public class RunApplicationService {
         this.eventBroker = eventBroker;
         this.checkpoints = checkpoints;
         this.childTasks = childTasks;
+        this.knowledge = knowledge;
         this.objectMapper = objectMapper;
         this.transactions = transactions;
         this.executor = executor;
@@ -263,6 +268,8 @@ public class RunApplicationService {
 
             List<RuntimeMessage> runtimeMessages = new ArrayList<>();
             runtimeMessages.add(RuntimeMessage.system(agent.instructions()));
+            String knowledgeContext=knowledgeContext(runId,run.getInputMessage(),agent);
+            if(!knowledgeContext.isBlank())runtimeMessages.add(RuntimeMessage.system(knowledgeContext));
             messages.findByConversationIdOrderByCreatedAtAsc(conversation.getId()).forEach(message ->
                     runtimeMessages.add(new RuntimeMessage(message.getRole(), message.getContent(), null, List.of())));
 
@@ -596,6 +603,46 @@ public class RunApplicationService {
 
     private Set<String> enabledTools(AgentRuntimeSnapshot agent) {
         return new LinkedHashSet<>(agent.enabledTools());
+    }
+
+    private String knowledgeContext(String runId,String query,AgentRuntimeSnapshot agent){
+        if(agent.knowledgeBindings()==null||agent.knowledgeBindings().isEmpty())return "";
+        eventBroker.publish(runId,"knowledge.retrieval.started",Map.of(
+                "version",1,"runId",runId,"bindingCount",agent.knowledgeBindings().size()));
+        List<KnowledgeCitation> citations=new ArrayList<>();
+        List<Map<String,Object>> failures=new ArrayList<>();
+        agent.knowledgeBindings().stream()
+                .sorted(java.util.Comparator.comparingInt(com.hify.agent.api.AgentKnowledgeBindingSnapshot::priority))
+                .forEach(binding->{
+                    try{
+                        citations.addAll(knowledge.searchRevision(binding.corpusVersionId(),query,binding.topK()));
+                    }catch(RuntimeException failure){
+                        failures.add(Map.of("knowledgeBaseId",binding.knowledgeBaseId(),
+                                "corpusVersionId",binding.corpusVersionId(),"reason",safeMessage(failure)));
+                    }
+                });
+        if(!failures.isEmpty())eventBroker.publish(runId,"knowledge.retrieval.failed",Map.of(
+                "version",1,"runId",runId,"recoverable",true,"failures",failures));
+        List<Map<String,Object>> refs=citations.stream().map(citation->Map.<String,Object>of(
+                "chunkId",citation.chunkId(),"documentId",citation.documentId(),
+                "documentVersion",citation.documentVersion(),"digest",citation.digest(),
+                "rank",citation.rank())).toList();
+        eventBroker.publish(runId,"knowledge.retrieval.completed",Map.of(
+                "version",1,"runId",runId,"citationCount",citations.size(),"citations",refs));
+        if(citations.isEmpty())return "";
+        StringBuilder context=new StringBuilder("KNOWLEDGE_CONTEXT\nUse only when relevant. Cite sources as [K1], [K2], ...; these references point to canonical immutable chunks.\n");
+        for(int index=0;index<citations.size();index++){
+            KnowledgeCitation citation=citations.get(index);
+            context.append("[K").append(index+1).append("] chunkId=").append(citation.chunkId())
+                    .append(" digest=").append(citation.digest()).append(" documentId=")
+                    .append(citation.documentId()).append("\n").append(citation.content()).append("\n");
+        }
+        return context.toString();
+    }
+
+    private String safeMessage(RuntimeException failure){
+        String message=failure.getMessage();
+        return message==null||message.isBlank()?failure.getClass().getSimpleName():message;
     }
 
     private boolean executionLeaseActive(String runId, String attemptId, String capabilityRevision) {

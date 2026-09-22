@@ -9,6 +9,7 @@ public interface AgentService {
     PageResult<AgentResponse> list(Integer page, Integer pageSize);
     void update(String id, AgentUpdateRequest request);
     List<String> replaceTools(String id, AgentToolBindingRequest request);
+    List<AgentKnowledgeBindingSnapshot> replaceKnowledge(String id, AgentKnowledgeBindingRequest request);
     void archive(String id);
     AgentVersionResponse publish(String id);
     List<AgentVersionResponse> versions(String id);

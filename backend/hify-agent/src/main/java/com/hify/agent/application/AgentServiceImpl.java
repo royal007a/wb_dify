@@ -5,6 +5,9 @@ import com.hify.agent.api.AgentResponse;
 import com.hify.agent.api.AgentRuntimeSnapshot;
 import com.hify.agent.api.AgentService;
 import com.hify.agent.api.AgentToolBindingRequest;
+import com.hify.agent.api.AgentKnowledgeBindingInput;
+import com.hify.agent.api.AgentKnowledgeBindingRequest;
+import com.hify.agent.api.AgentKnowledgeBindingSnapshot;
 import com.hify.agent.api.AgentUpdateRequest;
 import com.hify.agent.api.AgentUpsertRequest;
 import com.hify.agent.api.AgentVersionResponse;
@@ -15,10 +18,16 @@ import com.hify.domain.AgentDefinition;
 import com.hify.domain.AgentToolBinding;
 import com.hify.domain.AgentVersion;
 import com.hify.domain.AgentVersionToolBinding;
+import com.hify.domain.AgentKnowledgeBinding;
+import com.hify.domain.AgentVersionKnowledgeBinding;
 import com.hify.infra.AgentDefinitionRepository;
 import com.hify.infra.AgentToolBindingRepository;
 import com.hify.infra.AgentVersionRepository;
 import com.hify.infra.AgentVersionToolBindingRepository;
+import com.hify.infra.AgentKnowledgeBindingRepository;
+import com.hify.infra.AgentVersionKnowledgeBindingRepository;
+import com.hify.knowledge.api.KnowledgeCorpusSnapshot;
+import com.hify.knowledge.api.KnowledgeRetrievalPort;
 import com.hify.provider.api.ProviderQueryService;
 import com.hify.tool.api.ToolCatalog;
 import org.springframework.cache.annotation.CacheEvict;
@@ -47,19 +56,28 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     private final AgentVersionRepository versions;
     private final AgentToolBindingRepository draftToolBindings;
     private final AgentVersionToolBindingRepository versionToolBindings;
+    private final AgentKnowledgeBindingRepository draftKnowledgeBindings;
+    private final AgentVersionKnowledgeBindingRepository versionKnowledgeBindings;
     private final ProviderQueryService providers;
     private final ToolCatalog tools;
+    private final KnowledgeRetrievalPort knowledge;
 
     public AgentServiceImpl(AgentDefinitionRepository agents, AgentVersionRepository versions,
                             AgentToolBindingRepository draftToolBindings,
                             AgentVersionToolBindingRepository versionToolBindings,
-                            ProviderQueryService providers, ToolCatalog tools) {
+                            AgentKnowledgeBindingRepository draftKnowledgeBindings,
+                            AgentVersionKnowledgeBindingRepository versionKnowledgeBindings,
+                            ProviderQueryService providers, ToolCatalog tools,
+                            KnowledgeRetrievalPort knowledge) {
         this.agents = agents;
         this.versions = versions;
         this.draftToolBindings = draftToolBindings;
         this.versionToolBindings = versionToolBindings;
+        this.draftKnowledgeBindings = draftKnowledgeBindings;
+        this.versionKnowledgeBindings = versionKnowledgeBindings;
         this.providers = providers;
         this.tools = tools;
+        this.knowledge = knowledge;
     }
 
     @Override
@@ -91,7 +109,10 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
         AgentVersion published = publishedVersion(agent, publishedVersions(List.of(agent)));
         List<String> publishedTools = published == null ? List.of()
                 : versionTools(List.of(published.getId())).getOrDefault(published.getId(), List.of());
-        return response(agent, published, enabledTools, publishedTools);
+        List<AgentKnowledgeBindingSnapshot> draftKnowledge = draftKnowledge(List.of(id)).getOrDefault(id,List.of());
+        List<AgentKnowledgeBindingSnapshot> publishedKnowledge = published == null ? List.of()
+                : versionKnowledge(List.of(published.getId())).getOrDefault(published.getId(),List.of());
+        return response(agent, published, enabledTools, publishedTools, draftKnowledge, publishedKnowledge);
     }
 
     @Override
@@ -105,10 +126,15 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
         Map<String, List<String>> toolsByAgent = draftTools(content.stream().map(AgentDefinition::getId).toList());
         Map<String, AgentVersion> versionsById = publishedVersions(content);
         Map<String, List<String>> toolsByVersion = versionTools(versionsById.keySet());
+        Map<String, List<AgentKnowledgeBindingSnapshot>> knowledgeByAgent = draftKnowledge(
+                content.stream().map(AgentDefinition::getId).toList());
+        Map<String, List<AgentKnowledgeBindingSnapshot>> knowledgeByVersion = versionKnowledge(versionsById.keySet());
         List<AgentResponse> responses = content.stream()
                 .map(agent -> response(agent, publishedVersion(agent, versionsById),
                         toolsByAgent.getOrDefault(agent.getId(), List.of()),
-                        toolsByVersion.getOrDefault(agent.getPublishedVersionId(), List.of())))
+                        toolsByVersion.getOrDefault(agent.getPublishedVersionId(), List.of()),
+                        knowledgeByAgent.getOrDefault(agent.getId(),List.of()),
+                        knowledgeByVersion.getOrDefault(agent.getPublishedVersionId(),List.of())))
                 .toList();
         return PageResult.of(responses, result.getTotalElements(), requestedPage, requestedSize);
     }
@@ -145,10 +171,32 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
 
     @Override
     @Transactional
+    public List<AgentKnowledgeBindingSnapshot> replaceKnowledge(String id, AgentKnowledgeBindingRequest request) {
+        AgentDefinition agent=requireDraft(id);
+        TreeSet<String> seen=new TreeSet<>();
+        List<AgentKnowledgeBindingInput> bindings=request.bindings().stream()
+                .sorted(java.util.Comparator.comparingInt(AgentKnowledgeBindingInput::priority)
+                        .thenComparing(AgentKnowledgeBindingInput::knowledgeBaseId)).toList();
+        for(AgentKnowledgeBindingInput binding:bindings){
+            String baseId=binding.knowledgeBaseId().trim();
+            if(!seen.add(baseId))throw new BizException(ErrorCode.PARAM_ERROR,"知识库不能重复绑定: "+baseId);
+            knowledge.currentSnapshot(baseId);
+        }
+        draftKnowledgeBindings.deleteByAgentId(id);
+        Instant now=Instant.now();
+        draftKnowledgeBindings.saveAll(bindings.stream().map(binding->new AgentKnowledgeBinding(
+                id,binding.knowledgeBaseId().trim(),binding.topK(),binding.priority(),now)).toList());
+        agent.touchDraft(); agents.save(agent);
+        return draftKnowledge(List.of(id)).getOrDefault(id,List.of());
+    }
+
+    @Override
+    @Transactional
     @CacheEvict(cacheNames = "agent-cache", key = "'current:' + #id")
     public void archive(String id) {
         AgentDefinition agent = requireDraft(id);
         draftToolBindings.deleteByAgentId(id);
+        draftKnowledgeBindings.deleteByAgentId(id);
         agent.archive(Instant.now());
         agents.save(agent);
     }
@@ -162,14 +210,22 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
         if (!model.equals(draft.getModel())) throw new BizException(ErrorCode.CONFLICT, "Agent 草稿模型已失效");
         List<String> toolNames = draftTools(List.of(id)).getOrDefault(id, List.of());
         validateTools(toolNames);
+        List<AgentKnowledgeBindingSnapshot> draftKnowledge=draftKnowledge(List.of(id)).getOrDefault(id,List.of());
+        List<AgentKnowledgeBindingSnapshot> frozenKnowledge=draftKnowledge.stream().map(binding->{
+            KnowledgeCorpusSnapshot corpus=knowledge.freeze(binding.knowledgeBaseId());
+            return new AgentKnowledgeBindingSnapshot(binding.knowledgeBaseId(),binding.topK(),binding.priority(),corpus.id(),corpus.manifestDigest());
+        }).toList();
         int versionNo = Math.toIntExact(versions.countByAgentId(id) + 1);
         String versionId = UUID.randomUUID().toString();
         Instant now = Instant.now();
         AgentVersion version = new AgentVersion(versionId, id, versionNo, draft,
-                digest(draft, toolNames), now);
+                digest(draft, toolNames, frozenKnowledge), now);
         versions.save(version);
         versionToolBindings.saveAll(toolNames.stream()
                 .map(tool -> new AgentVersionToolBinding(versionId, tool, now)).toList());
+        versionKnowledgeBindings.saveAll(frozenKnowledge.stream().map(binding->new AgentVersionKnowledgeBinding(
+                versionId,binding.knowledgeBaseId(),binding.corpusVersionId(),binding.manifestDigest(),
+                binding.topK(),binding.priority(),now)).toList());
         draft.markPublished(versionId);
         agents.save(draft);
         return version(version);
@@ -213,13 +269,16 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     }
 
     private AgentResponse response(AgentDefinition agent, AgentVersion publishedVersion,
-                                   List<String> enabledTools, List<String> publishedTools) {
+                                   List<String> enabledTools, List<String> publishedTools,
+                                   List<AgentKnowledgeBindingSnapshot> draftKnowledge,
+                                   List<AgentKnowledgeBindingSnapshot> publishedKnowledge) {
         Integer publishedVersionNo = publishedVersion == null ? null : publishedVersion.getVersionNo();
         boolean hasUnpublishedChanges = publishedVersion == null
-                || !digest(agent, enabledTools).equals(digest(publishedVersion, publishedTools));
+                || !digest(agent, enabledTools, currentKnowledge(draftKnowledge))
+                .equals(digest(publishedVersion, publishedTools, publishedKnowledge));
         return new AgentResponse(agent.getId(), agent.getName(), agent.getDescription(), agent.getInstructions(),
                 agent.getProviderId(), agent.getModel(), agent.getTemperature(), agent.getMaxTokens(),
-                agent.getMaxTurns(), agent.getMaxContextTurns(), enabledTools,
+                agent.getMaxTurns(), agent.getMaxContextTurns(), enabledTools, draftKnowledge,
                 agent.isEnabled(), agent.getDraftRevision(), agent.getPublishedVersionId(), publishedVersionNo,
                 hasUnpublishedChanges,
                 agent.getCreatedAt(), agent.getUpdatedAt());
@@ -233,31 +292,42 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     private AgentRuntimeSnapshot snapshot(AgentVersion version) {
         List<String> enabledTools = versionToolBindings.findByVersionId(version.getId()).stream()
                 .map(AgentVersionToolBinding::getToolName).toList();
+        List<AgentKnowledgeBindingSnapshot> knowledgeBindings=versionKnowledgeBindings.findByVersionId(version.getId()).stream()
+                .map(this::snapshot).toList();
         return new AgentRuntimeSnapshot(version.getId(), version.getAgentId(), version.getVersionNo(),
                 version.getSnapshotDigest(), version.getName(), version.getInstructions(),
                 version.getProviderId(), version.getModel(), version.getTemperature(), version.getMaxTokens(),
-                version.getMaxTurns(), version.getMaxContextTurns(), enabledTools, version.isEnabled());
+                version.getMaxTurns(), version.getMaxContextTurns(), enabledTools, knowledgeBindings, version.isEnabled());
     }
 
-    private String digest(AgentDefinition draft, List<String> toolNames) {
+    private String digest(AgentDefinition draft, List<String> toolNames,
+                          List<AgentKnowledgeBindingSnapshot> knowledgeBindings) {
         return digest(draft.getId(), draft.getName(), draft.getInstructions(), draft.getProviderId(),
                 draft.getModel(), draft.getTemperature(), draft.getMaxTokens(), draft.getMaxTurns(),
-                draft.getMaxContextTurns(), toolNames, draft.isEnabled());
+                draft.getMaxContextTurns(), toolNames, knowledgeBindings, draft.isEnabled());
     }
 
-    private String digest(AgentVersion version, List<String> toolNames) {
+    private String digest(AgentVersion version, List<String> toolNames,
+                          List<AgentKnowledgeBindingSnapshot> knowledgeBindings) {
         return digest(version.getAgentId(), version.getName(), version.getInstructions(), version.getProviderId(),
                 version.getModel(), version.getTemperature(), version.getMaxTokens(), version.getMaxTurns(),
-                version.getMaxContextTurns(), toolNames, version.isEnabled());
+                version.getMaxContextTurns(), toolNames, knowledgeBindings, version.isEnabled());
     }
 
     private String digest(String agentId, String name, String instructions, String providerId,
                           String model, double temperature, int maxTokens, int maxTurns,
-                          int maxContextTurns, List<String> toolNames, boolean enabled) {
+                          int maxContextTurns, List<String> toolNames,
+                          List<AgentKnowledgeBindingSnapshot> knowledgeBindings, boolean enabled) {
+        String knowledgeCanonical=knowledgeBindings.stream()
+                .sorted(java.util.Comparator.comparingInt(AgentKnowledgeBindingSnapshot::priority)
+                        .thenComparing(AgentKnowledgeBindingSnapshot::knowledgeBaseId))
+                .map(binding->String.join(":",binding.knowledgeBaseId(),String.valueOf(binding.topK()),
+                        String.valueOf(binding.priority()),clean(binding.manifestDigest())))
+                .collect(Collectors.joining(","));
         String canonical = String.join("\u001f", agentId, name, instructions, providerId, model,
                 String.valueOf(temperature), String.valueOf(maxTokens), String.valueOf(maxTurns),
                 String.valueOf(maxContextTurns), String.join(",", new TreeSet<>(toolNames)),
-                String.valueOf(enabled));
+                knowledgeCanonical,String.valueOf(enabled));
         try {
             return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
                     .digest(canonical.getBytes(StandardCharsets.UTF_8)));
@@ -315,6 +385,43 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
                 .computeIfAbsent(binding.getAgentVersionId(), ignored -> new java.util.ArrayList<>())
                 .add(binding.getToolName()));
         return result;
+    }
+
+    private Map<String,List<AgentKnowledgeBindingSnapshot>> draftKnowledge(Collection<String> agentIds){
+        if(agentIds.isEmpty())return Map.of();
+        Map<String,List<AgentKnowledgeBindingSnapshot>> result=new HashMap<>();
+        draftKnowledgeBindings.findByAgentIds(agentIds).forEach(binding->result
+                .computeIfAbsent(binding.getAgentId(),ignored->new java.util.ArrayList<>())
+                .add(new AgentKnowledgeBindingSnapshot(binding.getKnowledgeBaseId(),binding.getTopK(),
+                        binding.getPriority(),null,null)));
+        return result;
+    }
+
+    private Map<String,List<AgentKnowledgeBindingSnapshot>> versionKnowledge(Collection<String> versionIds){
+        if(versionIds.isEmpty())return Map.of();
+        Map<String,List<AgentKnowledgeBindingSnapshot>> result=new HashMap<>();
+        versionKnowledgeBindings.findByVersionIds(versionIds).forEach(binding->result
+                .computeIfAbsent(binding.getAgentVersionId(),ignored->new java.util.ArrayList<>())
+                .add(snapshot(binding)));
+        return result;
+    }
+
+    private AgentKnowledgeBindingSnapshot snapshot(AgentVersionKnowledgeBinding binding){
+        return new AgentKnowledgeBindingSnapshot(binding.getKnowledgeBaseId(),binding.getTopK(),binding.getPriority(),
+                binding.getCorpusVersionId(),binding.getManifestDigest());
+    }
+
+    private List<AgentKnowledgeBindingSnapshot> currentKnowledge(List<AgentKnowledgeBindingSnapshot> bindings){
+        return bindings.stream().map(binding->{
+            try{
+                KnowledgeCorpusSnapshot corpus=knowledge.currentSnapshot(binding.knowledgeBaseId());
+                return new AgentKnowledgeBindingSnapshot(binding.knowledgeBaseId(),binding.topK(),binding.priority(),
+                        null,corpus.manifestDigest());
+            }catch(RuntimeException unavailable){
+                return new AgentKnowledgeBindingSnapshot(binding.knowledgeBaseId(),binding.topK(),binding.priority(),
+                        null,"UNAVAILABLE");
+            }
+        }).toList();
     }
 
     private AgentVersion publishedVersion(AgentDefinition definition, Map<String, AgentVersion> versionsById) {
