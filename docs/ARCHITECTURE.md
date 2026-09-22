@@ -241,9 +241,9 @@ heartbeat
 
 RAG 是 ContextManager 的检索输入，不进入 QueryLoop 控制流。入库顺序为 canonical document → recursive chunks → FTS/embedding 派生索引；召回由全文与向量候选经加权 RRF 融合。每条引用保存 chunk id、document version、digest、score、rank 和检索参数。摘要或索引命中只是导航，只有回读 digest 一致的 canonical chunk 才能成为 VERIFIED evidence。
 
-Workflow 是受限 DSL 执行器。草稿由 workflow/node/edge 编辑，发布时生成不可变 WorkflowVersion 和 digest，Run 保存 versionId/digest。执行时加载 nodeMap/edgeMap 和只增不改的 VariablePool；节点输出使用 `nodeKey.variable`。MVP 不支持任意循环；Condition 必须有默认分支；每个节点复用 Provider/Tool/Knowledge port 和统一预算、取消与事件。
+Workflow 是受限 DSL 执行器。草稿由 workflow/node/edge 编辑，发布时生成不可变 WorkflowVersion 和 digest；AgentVersion 再固定入口 `workflowVersionId/checksum`，Chat 不读取 Workflow 草稿。执行时加载 nodeMap/edgeMap 和只增不改的 VariablePool；节点输出使用 `nodeKey.variable`。MVP 不支持任意循环；Condition 必须有默认分支。画布与 Runtime 共用同一 DSL，不维护第二份前端语义。
 
-MCP transport 隔离在 `hify-mcp`。注册/刷新阶段调用 `tools/list` 并保存 schema 快照和 digest；Run 接纳后只使用固定快照，刷新不热替换执行中能力。调试与 Runtime 调用共享相同网络边界、timeout、风险判定和结果限长，区别只是调试调用没有模型参与。当前仅允许 read；write/external/execute 等待确认账本协议。
+MCP transport 隔离在 `hify-mcp`。注册/刷新阶段调用 `tools/list` 并保存 server revision（endpoint/credential reference/schema digest）与 tool schema；AgentVersion 固定具体 revision 和 READ tool definition，QueryLoop 将其与内置工具一起计算 capability digest。执行前二次校验 lease/cancel，刷新不会热替换历史版本。调试与 Runtime 调用共享网络边界、timeout、风险判定和结果限长；write/external/execute 等待确认账本协议。
 
 ## 7. 可观测性
 

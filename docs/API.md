@@ -59,6 +59,9 @@ POST   /api/v1/agents
 GET    /api/v1/agents/{agentId}
 PUT    /api/v1/agents/{agentId}
 PUT    /api/v1/agents/{agentId}/tools
+PUT    /api/v1/agents/{agentId}/knowledge-bindings
+PUT/DELETE /api/v1/agents/{agentId}/workflow-binding
+PUT    /api/v1/agents/{agentId}/mcp-bindings
 DELETE /api/v1/agents/{agentId}
 POST   /api/v1/agents/{agentId}/publications
 GET    /api/v1/agents/{agentId}/versions
@@ -66,7 +69,7 @@ GET    /api/v1/agents/{agentId}/versions
 
 `GET /api/v1/tools` 返回只读 Tool Catalog：稳定 `id`、展示名、描述、来源、风险等级和可用状态。Console 必须由该接口动态渲染可选工具，不得硬编码内置工具；MCP 接入后沿用同一契约扩展来源。
 
-PUT 只更新 draft 基本信息，不修改工具。`PUT /tools` 以 `{"toolIds":[...]}` 全量替换草稿工具绑定，重复或未知工具返回参数错误。发布时将 draft 固化为不可变 `AgentVersion`，同时复制版本工具绑定并把工具集合纳入 digest。Conversation 始终绑定版本，不追随草稿变化；Run 返回 `agentVersionId/agentSnapshotDigest`。完整 tool schema snapshot 在 MCP 阶段补齐。
+PUT 只更新 draft 基本信息，不修改能力绑定。`PUT /tools`、`PUT /knowledge-bindings`、`PUT /workflow-binding`、`PUT /mcp-bindings` 分别替换草稿能力。发布时将 draft 固化为不可变 `AgentVersion`：Workflow 固定 `workflowVersionId/checksum`，MCP 固定 `serverRevision/serverSchemaDigest/tool schema digest`，且一期只接受 READ。Conversation 始终绑定版本，不追随草稿变化；Run 返回 `agentVersionId/agentSnapshotDigest`。
 
 Agent 响应的 `hasUnpublishedChanges` 由当前运行配置 digest 与已发布 digest 比较得出：未发布或模型、指令、运行参数、工具等发生变化时为 `true`，再次发布同步后为 `false`。纯管理描述不影响运行快照。前端不得用 revision/version 数字猜测该状态。
 
@@ -215,6 +218,8 @@ GET      /api/v1/workflow-runs/{id}
 
 Workflow DSL 使用显式 `schemaVersion`。发布前验证入口/终点、节点 ID 唯一、边可达、Condition 默认分支、无循环和引用资源版本存在。
 
+Agent 一期最多绑定一个入口 Workflow。发布 Agent 时固定当前 published WorkflowVersion；Chat 创建 Run 后若该固定版本存在，进入确定性 Workflow executor 并发出 `workflow.started/workflow.completed`，否则进入 QueryLoop。Console 画布和 Runtime 读写同一 DSL，并提供节点、连线、属性、校验、试跑和发布版本 diff。
+
 ## 8. MCP Server 与调试
 
 ```text
@@ -226,6 +231,8 @@ POST     /api/v1/mcp-servers/{id}/debug-calls
 ```
 
 `tool-refreshes` 调 `tools/list`，以 server revision 保存完整 schema 和 digest；不会修改已固定的 AgentVersion/Run 快照。`debug-calls` 只能调用已发现且 risk=read 的工具，请求包含 toolName、arguments 和可选 timeout；响应包含 callId、result、isError、elapsedMs、schemaDigest。write/external/execute 返回 `TOOL_PERMISSION_DENIED`。
+
+Agent 发布时把 MCP 工具映射成稳定 runtime tool name 和 `ToolDefinition`；QueryLoop 只接收该 AgentVersion 冻结的 definitions。网络调用前重新校验 run/attempt lease、capabilityRevision 与 cancel；endpoint 和 credential reference 来自固定 server revision，不读取可变 Server 草稿。
 
 ## 9. 稳定错误码
 
