@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "PROVIDER-001-20260922T064758Z-30ffba0a",
-    "path": "harness/evidence/PROVIDER-001/PROVIDER-001-20260922T064758Z-30ffba0a",
+    "runId": "SECURITY-001-20260922T064910Z-a11902a5",
+    "path": "harness/evidence/SECURITY-001/SECURITY-001-20260922T064910Z-a11902a5",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "c08a7c5a91931ef7a883464151da6ab8293aef8b",
-    "headCommit": "c08a7c5a91931ef7a883464151da6ab8293aef8b",
-    "recordedAt": "2026-09-22T06:49:02Z"
+    "baselineCommit": "1021d37e00a06c7d3f25b5a258812abda09b0bc5",
+    "headCommit": "1021d37e00a06c7d3f25b5a258812abda09b0bc5",
+    "recordedAt": "2026-09-22T06:50:10Z"
   },
-  "lastCompletedTaskId": "PROVIDER-001",
-  "updatedAt": "2026-09-22T06:49:02Z"
+  "lastCompletedTaskId": "SECURITY-001",
+  "updatedAt": "2026-09-22T06:50:10Z"
 }

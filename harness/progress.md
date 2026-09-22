@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-09-22T06:49:02Z`
+- Generated from task state updated at: `2026-09-22T06:50:10Z`
 - Current task: `none`
-- Counts: pending 3 · running 0 · blocked 0 · completed 21
+- Counts: pending 2 · running 0 · blocked 0 · completed 22
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -27,7 +27,7 @@
 | `MCP-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付 MCP Server 目录与安全调试闭环 |
 | `PROVIDER-001` | P1 | completed | backend, runtime | reversible_write | 补原生流式故障注入矩阵 |
 | `RECALL-002` | P1 | completed | backend, migration, runtime, eval | reversible_write | 建立召回评测门禁并按证据演进检索 |
-| `SECURITY-001` | P1 | pending | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |
+| `SECURITY-001` | P1 | completed | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
 | `SUBAGENT-001` | P2 | completed | backend, migration, runtime | reversible_write | 建立子 Agent 任务与延迟消费确认 |

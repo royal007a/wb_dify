@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-22T06:49:02Z",
+  "updatedAt": "2026-09-22T06:50:10Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -120,7 +120,7 @@
       "title": "强化 Provider 出站网络边界",
       "description": "增加 DNS 解析后校验、redirect 再校验和允许列表策略。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "runtime"
@@ -139,12 +139,22 @@
         "内网、重绑定和 redirect 绕过均被测试拒绝",
         "现有合法 Provider 连接保持兼容"
       ],
-      "planPath": "exec-plans/active/SECURITY-001.md",
+      "planPath": "exec-plans/completed/SECURITY-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SECURITY-001-20260922T064910Z-a11902a5",
+          "path": "harness/evidence/SECURITY-001/SECURITY-001-20260922T064910Z-a11902a5",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "1021d37e00a06c7d3f25b5a258812abda09b0bc5",
+          "headCommit": "1021d37e00a06c7d3f25b5a258812abda09b0bc5",
+          "recordedAt": "2026-09-22T06:50:10Z"
+        }
+      ],
       "createdAt": "2026-09-19T07:45:00Z",
-      "updatedAt": "2026-09-19T07:45:00Z"
+      "updatedAt": "2026-09-22T06:50:10Z"
     },
     {
       "id": "WRITE-001",
