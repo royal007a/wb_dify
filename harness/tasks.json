@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-21T00:18:41Z",
+  "updatedAt": "2026-09-22T02:55:56Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -766,7 +766,7 @@
       "title": "绑定 Knowledge 到 Agent 发布版本与 Chat Runtime",
       "description": "建立不可变知识语料 revision，把 Agent 草稿知识绑定冻结进发布版本，并在 Chat Query Loop 之前检索固定 revision、注入带引用上下文。",
       "priority": "P0",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "frontend",
@@ -791,12 +791,22 @@
         "Chat 在 Query Loop 外检索固定 revision，注入带 canonical chunk 引用的知识上下文并发布事件",
         "Agent Console 能编辑知识绑定，迁移、后端测试、前端构建和运行时验证通过"
       ],
-      "planPath": "exec-plans/active/CAPABILITY-001.md",
+      "planPath": "exec-plans/completed/CAPABILITY-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "CAPABILITY-001-20260922T024229Z-cc108ebb",
+          "path": "harness/evidence/CAPABILITY-001/CAPABILITY-001-20260922T024229Z-cc108ebb",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "3fdcd728061f06f9b98cb04c5d0fc1ea6f548ac3",
+          "headCommit": "2114c6e91499f79ebc5a3962aa32b08e798f29a1",
+          "recordedAt": "2026-09-22T02:55:56Z"
+        }
+      ],
       "createdAt": "2026-09-22T03:10:00Z",
-      "updatedAt": "2026-09-22T03:10:00Z"
+      "updatedAt": "2026-09-22T02:55:56Z"
     }
   ]
 }

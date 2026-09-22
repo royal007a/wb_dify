@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "CAPABILITY-001-20260922T024229Z-cc108ebb",
+  "taskId": "CAPABILITY-001",
+  "status": "completed",
+  "baselineCommit": "3fdcd728061f06f9b98cb04c5d0fc1ea6f548ac3",
+  "approvalRef": null,
+  "startedAt": "2026-09-22T02:42:29Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "2114c6e91499f79ebc5a3962aa32b08e798f29a1",
+  "finishedAt": "2026-09-22T02:55:56Z"
+}
