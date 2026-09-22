@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "DEPLOY-004-20260922T043005Z-ad8875cd",
+  "taskId": "DEPLOY-004",
+  "status": "blocked",
+  "baselineCommit": "201930d4b66965febbc3e7ce2d0e181abbf24fc2",
+  "approvalRef": "lark:/goal-2026-09-22-workflow-mcp-runtime-console",
+  "startedAt": "2026-09-22T04:30:05Z",
+  "exitCode": 1,
+  "reason": "task command failed",
+  "headCommit": "201930d4b66965febbc3e7ce2d0e181abbf24fc2",
+  "finishedAt": "2026-09-22T04:32:10Z"
+}
