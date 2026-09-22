@@ -68,10 +68,17 @@ class KnowledgeApiIntegrationTest {
         assertThat(results).isNotEmpty();
         assertThat(results.get(0).path("content").asText()).contains("七天");
         assertThat(results.get(0).path("digest").asText()).isNotBlank();
+        String retrievedChunkId=results.get(0).path("chunkId").asText();
+
+        var frozen=retrieval.freeze(baseId);
+        assertThat(frozen.manifestDigest()).hasSize(64);
+        assertThat(frozen.chunkCount()).isPositive();
 
         http.perform(delete("/api/v1/documents/{id}",documentId)).andExpect(status().isOk());
         http.perform(get("/api/v1/documents/{id}",documentId)).andExpect(status().isNotFound());
         assertThatThrownBy(()->retrieval.requireCanonicalChunk(chunkId,digest)).isInstanceOf(BizException.class);
+        assertThat(retrieval.searchRevision(frozen.id(),"七天无理由退货",3))
+                .extracting(com.hify.knowledge.api.KnowledgeCitation::chunkId).contains(retrievedChunkId);
     }
 
     @Test
