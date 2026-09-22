@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-22T04:25:54Z",
+  "updatedAt": "2026-09-22T04:27:03Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -914,7 +914,7 @@
       "title": "交付 Workflow 可视化画布与 Agent 能力绑定控制台",
       "description": "在 Runtime 契约稳定后，以同一 Workflow DSL 实现节点面板、连线、属性编辑、服务端校验、试跑与版本 Diff，并在 Agent 表单中配置 Workflow/MCP READ 能力。",
       "priority": "P2",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "frontend"
       ],
@@ -934,12 +934,22 @@
         "Agent 控制台可绑定已发布 Workflow 与 MCP READ 工具",
         "前端类型检查、生产构建和浏览器管理台回归通过"
       ],
-      "planPath": "exec-plans/active/CONSOLE-003.md",
+      "planPath": "exec-plans/completed/CONSOLE-003.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "CONSOLE-003-20260922T042651Z-b6bb7740",
+          "path": "harness/evidence/CONSOLE-003/CONSOLE-003-20260922T042651Z-b6bb7740",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "bf0fdab611757be89716a80760d302aecfb556f5",
+          "headCommit": "bf0fdab611757be89716a80760d302aecfb556f5",
+          "recordedAt": "2026-09-22T04:27:03Z"
+        }
+      ],
       "createdAt": "2026-09-22T04:25:54Z",
-      "updatedAt": "2026-09-22T04:25:54Z"
+      "updatedAt": "2026-09-22T04:27:03Z"
     }
   ]
 }

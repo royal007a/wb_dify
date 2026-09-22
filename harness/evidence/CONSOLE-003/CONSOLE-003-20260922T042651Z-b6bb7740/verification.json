@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "frontend"
+  ],
+  "base": "working-tree",
+  "headCommit": "bf0fdab611757be89716a80760d302aecfb556f5",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "frontend-typecheck",
+      "exitCode": 0,
+      "log": "harness/evidence/CONSOLE-003/CONSOLE-003-20260922T042651Z-b6bb7740/frontend-typecheck.log"
+    },
+    {
+      "name": "frontend-build",
+      "exitCode": 0,
+      "log": "harness/evidence/CONSOLE-003/CONSOLE-003-20260922T042651Z-b6bb7740/frontend-build.log"
+    }
+  ],
+  "finishedAt": "2026-09-22T04:27:03Z"
+}

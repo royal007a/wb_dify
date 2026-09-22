@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-09-22T04:25:54Z`
+- Generated from task state updated at: `2026-09-22T04:27:03Z`
 - Current task: `none`
-- Counts: pending 5 · running 0 · blocked 0 · completed 17
+- Counts: pending 4 · running 0 · blocked 0 · completed 18
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -27,7 +27,7 @@
 | `RECALL-002` | P1 | completed | backend, migration, runtime, eval | reversible_write | 建立召回评测门禁并按证据演进检索 |
 | `SECURITY-001` | P1 | pending | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
-| `CONSOLE-003` | P2 | pending | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
+| `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
 | `SUBAGENT-001` | P2 | completed | backend, migration, runtime | reversible_write | 建立子 Agent 任务与延迟消费确认 |
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |
 
