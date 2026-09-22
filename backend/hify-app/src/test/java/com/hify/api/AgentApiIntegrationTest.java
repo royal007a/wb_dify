@@ -41,6 +41,41 @@ class AgentApiIntegrationTest {
     @Autowired EntityManagerFactory entityManagerFactory;
 
     @Test
+    void freezesWorkflowVersionAndRoutesChatThroughDeterministicExecutor() throws Exception {
+        String suffix=UUID.randomUUID().toString().substring(0,8);
+        String workflowPayload="""
+                {"name":"Bound Workflow %s","schemaVersion":1,
+                 "nodes":[{"nodeKey":"start","type":"START","name":"Start","config":{}},
+                          {"nodeKey":"end","type":"END","name":"End","config":{"output":"workflow-v1"}}],
+                 "edges":[{"edgeKey":"e1","sourceNodeKey":"start","targetNodeKey":"end","defaultBranch":false}]}
+                """.formatted(suffix);
+        String workflowId=json(http.perform(post("/api/v1/workflows").contentType(MediaType.APPLICATION_JSON).content(workflowPayload))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();
+        JsonNode workflowV1=json(http.perform(post("/api/v1/workflows/{id}/versions",workflowId))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");
+        String agentId=json(http.perform(post("/api/v1/agents").contentType(MediaType.APPLICATION_JSON)
+                .content(payload("Workflow Agent "+suffix,"Execute workflow",0.2)))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();
+        http.perform(put("/api/v1/agents/{id}/workflow-binding",agentId).contentType(MediaType.APPLICATION_JSON)
+                .content("{\"workflowId\":\""+workflowId+"\"}")).andExpect(status().isOk());
+        String agentVersion=json(http.perform(post("/api/v1/agents/{id}/publications",agentId))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data").path("id").asText();
+        assertThat(agents.requireVersion(agentVersion).workflowBinding().workflowVersionId()).isEqualTo(workflowV1.path("id").asText());
+        assertThat(agents.requireVersion(agentVersion).workflowBinding().checksum()).isEqualTo(workflowV1.path("checksum").asText());
+        String conversationId=json(http.perform(post("/api/v1/conversations").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"agentId\":\""+agentId+"\",\"title\":\"Workflow pinned\"}"))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("id").asText();
+        String runId=json(http.perform(post("/api/v1/conversations/{id}/runs",conversationId)
+                .header("Idempotency-Key","workflow-"+suffix).contentType(MediaType.APPLICATION_JSON)
+                .content("{\"message\":\"hello\"}")).andExpect(status().isAccepted()).andReturn().getResponse().getContentAsString()).path("id").asText();
+        awaitTerminal(runId);
+        JsonNode run=json(http.perform(get("/api/v1/runs/{id}",runId)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        assertThat(run.path("outputMessage").asText()).isEqualTo("workflow-v1");
+        JsonNode events=json(http.perform(get("/api/v1/runs/{id}/events",runId)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        assertThat(events.toString()).contains("workflow.started","workflow.completed","run.completed");
+    }
+
+    @Test
     void publishesKnowledgeRevisionAndPreparesItBeforeQueryLoop() throws Exception {
         String suffix=UUID.randomUUID().toString().substring(0,8);
         String baseId=json(http.perform(post("/api/v1/knowledge-bases")
@@ -292,7 +327,9 @@ class AgentApiIntegrationTest {
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
 
         assertThat(page.path("data").size()).isGreaterThanOrEqualTo(3);
-        assertThat(statistics.getPrepareStatementCount()).isLessThanOrEqualTo(7);
+        // One bounded query per capability family: tools, knowledge, workflow and MCP,
+        // for both draft and published snapshots. The count must not grow with row count.
+        assertThat(statistics.getPrepareStatementCount()).isLessThanOrEqualTo(13);
     }
 
     private String payload(String name, String instructions, double temperature, String... tools) {

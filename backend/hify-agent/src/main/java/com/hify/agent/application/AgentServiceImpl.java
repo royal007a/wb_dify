@@ -11,6 +11,10 @@ import com.hify.agent.api.AgentKnowledgeBindingSnapshot;
 import com.hify.agent.api.AgentUpdateRequest;
 import com.hify.agent.api.AgentUpsertRequest;
 import com.hify.agent.api.AgentVersionResponse;
+import com.hify.agent.api.AgentWorkflowBindingRequest;
+import com.hify.agent.api.AgentWorkflowBindingSnapshot;
+import com.hify.agent.api.AgentMcpBindingRequest;
+import com.hify.agent.api.AgentMcpToolSnapshot;
 import com.hify.common.BizException;
 import com.hify.common.ErrorCode;
 import com.hify.common.PageResult;
@@ -20,16 +24,30 @@ import com.hify.domain.AgentVersion;
 import com.hify.domain.AgentVersionToolBinding;
 import com.hify.domain.AgentKnowledgeBinding;
 import com.hify.domain.AgentVersionKnowledgeBinding;
+import com.hify.domain.AgentWorkflowBinding;
+import com.hify.domain.AgentVersionWorkflowBinding;
+import com.hify.domain.AgentMcpToolBinding;
+import com.hify.domain.AgentVersionMcpToolBinding;
 import com.hify.infra.AgentDefinitionRepository;
 import com.hify.infra.AgentToolBindingRepository;
 import com.hify.infra.AgentVersionRepository;
 import com.hify.infra.AgentVersionToolBindingRepository;
 import com.hify.infra.AgentKnowledgeBindingRepository;
 import com.hify.infra.AgentVersionKnowledgeBindingRepository;
+import com.hify.infra.AgentWorkflowBindingRepository;
+import com.hify.infra.AgentVersionWorkflowBindingRepository;
+import com.hify.infra.AgentMcpToolBindingRepository;
+import com.hify.infra.AgentVersionMcpToolBindingRepository;
 import com.hify.knowledge.api.KnowledgeCorpusSnapshot;
 import com.hify.knowledge.api.KnowledgeRetrievalPort;
 import com.hify.provider.api.ProviderQueryService;
 import com.hify.tool.api.ToolCatalog;
+import com.hify.workflow.api.WorkflowCapabilityPort;
+import com.hify.workflow.api.WorkflowCapabilitySnapshot;
+import com.hify.mcp.api.McpCapabilityPort;
+import com.hify.mcp.api.McpFrozenTool;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -42,6 +60,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HexFormat;
 import java.util.List;
@@ -58,26 +77,45 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     private final AgentVersionToolBindingRepository versionToolBindings;
     private final AgentKnowledgeBindingRepository draftKnowledgeBindings;
     private final AgentVersionKnowledgeBindingRepository versionKnowledgeBindings;
+    private final AgentWorkflowBindingRepository draftWorkflowBindings;
+    private final AgentVersionWorkflowBindingRepository versionWorkflowBindings;
+    private final AgentMcpToolBindingRepository draftMcpBindings;
+    private final AgentVersionMcpToolBindingRepository versionMcpBindings;
     private final ProviderQueryService providers;
     private final ToolCatalog tools;
     private final KnowledgeRetrievalPort knowledge;
+    private final WorkflowCapabilityPort workflows;
+    private final McpCapabilityPort mcp;
+    private final ObjectMapper json;
 
     public AgentServiceImpl(AgentDefinitionRepository agents, AgentVersionRepository versions,
                             AgentToolBindingRepository draftToolBindings,
                             AgentVersionToolBindingRepository versionToolBindings,
                             AgentKnowledgeBindingRepository draftKnowledgeBindings,
                             AgentVersionKnowledgeBindingRepository versionKnowledgeBindings,
+                            AgentWorkflowBindingRepository draftWorkflowBindings,
+                            AgentVersionWorkflowBindingRepository versionWorkflowBindings,
+                            AgentMcpToolBindingRepository draftMcpBindings,
+                            AgentVersionMcpToolBindingRepository versionMcpBindings,
                             ProviderQueryService providers, ToolCatalog tools,
-                            KnowledgeRetrievalPort knowledge) {
+                            KnowledgeRetrievalPort knowledge, WorkflowCapabilityPort workflows,
+                            McpCapabilityPort mcp, ObjectMapper json) {
         this.agents = agents;
         this.versions = versions;
         this.draftToolBindings = draftToolBindings;
         this.versionToolBindings = versionToolBindings;
         this.draftKnowledgeBindings = draftKnowledgeBindings;
         this.versionKnowledgeBindings = versionKnowledgeBindings;
+        this.draftWorkflowBindings = draftWorkflowBindings;
+        this.versionWorkflowBindings = versionWorkflowBindings;
+        this.draftMcpBindings = draftMcpBindings;
+        this.versionMcpBindings = versionMcpBindings;
         this.providers = providers;
         this.tools = tools;
         this.knowledge = knowledge;
+        this.workflows = workflows;
+        this.mcp = mcp;
+        this.json = json;
     }
 
     @Override
@@ -112,7 +150,12 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
         List<AgentKnowledgeBindingSnapshot> draftKnowledge = draftKnowledge(List.of(id)).getOrDefault(id,List.of());
         List<AgentKnowledgeBindingSnapshot> publishedKnowledge = published == null ? List.of()
                 : versionKnowledge(List.of(published.getId())).getOrDefault(published.getId(),List.of());
-        return response(agent, published, enabledTools, publishedTools, draftKnowledge, publishedKnowledge);
+        AgentWorkflowBindingSnapshot draftWorkflow = draftWorkflow(List.of(id)).get(id);
+        AgentWorkflowBindingSnapshot publishedWorkflow = published == null ? null : versionWorkflow(List.of(published.getId())).get(published.getId());
+        List<AgentMcpToolSnapshot> draftMcp = draftMcp(List.of(id)).getOrDefault(id,List.of());
+        List<AgentMcpToolSnapshot> publishedMcp = published == null ? List.of() : versionMcp(List.of(published.getId())).getOrDefault(published.getId(),List.of());
+        return response(agent, published, enabledTools, publishedTools, draftKnowledge, publishedKnowledge,
+                draftWorkflow, publishedWorkflow, draftMcp, publishedMcp);
     }
 
     @Override
@@ -129,12 +172,18 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
         Map<String, List<AgentKnowledgeBindingSnapshot>> knowledgeByAgent = draftKnowledge(
                 content.stream().map(AgentDefinition::getId).toList());
         Map<String, List<AgentKnowledgeBindingSnapshot>> knowledgeByVersion = versionKnowledge(versionsById.keySet());
+        Map<String, AgentWorkflowBindingSnapshot> workflowByAgent = draftWorkflow(content.stream().map(AgentDefinition::getId).toList());
+        Map<String, AgentWorkflowBindingSnapshot> workflowByVersion = versionWorkflow(versionsById.keySet());
+        Map<String,List<AgentMcpToolSnapshot>> mcpByAgent=draftMcp(content.stream().map(AgentDefinition::getId).toList());
+        Map<String,List<AgentMcpToolSnapshot>> mcpByVersion=versionMcp(versionsById.keySet());
         List<AgentResponse> responses = content.stream()
                 .map(agent -> response(agent, publishedVersion(agent, versionsById),
                         toolsByAgent.getOrDefault(agent.getId(), List.of()),
                         toolsByVersion.getOrDefault(agent.getPublishedVersionId(), List.of()),
                         knowledgeByAgent.getOrDefault(agent.getId(),List.of()),
-                        knowledgeByVersion.getOrDefault(agent.getPublishedVersionId(),List.of())))
+                        knowledgeByVersion.getOrDefault(agent.getPublishedVersionId(),List.of()),
+                        workflowByAgent.get(agent.getId()), workflowByVersion.get(agent.getPublishedVersionId()),
+                        mcpByAgent.getOrDefault(agent.getId(),List.of()),mcpByVersion.getOrDefault(agent.getPublishedVersionId(),List.of())))
                 .toList();
         return PageResult.of(responses, result.getTotalElements(), requestedPage, requestedSize);
     }
@@ -192,11 +241,49 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
 
     @Override
     @Transactional
+    public AgentWorkflowBindingSnapshot replaceWorkflow(String id, AgentWorkflowBindingRequest request) {
+        AgentDefinition agent = requireDraft(id);
+        WorkflowCapabilitySnapshot current = workflows.freeze(request.workflowId().trim());
+        draftWorkflowBindings.deleteByAgentId(id);
+        draftWorkflowBindings.save(new AgentWorkflowBinding(id, current.workflowId(), Instant.now()));
+        agent.touchDraft(); agents.save(agent);
+        return new AgentWorkflowBindingSnapshot(current.workflowId(), null, current.versionNo(), current.checksum());
+    }
+
+    @Override
+    @Transactional
+    public void clearWorkflow(String id) {
+        AgentDefinition agent = requireDraft(id);
+        draftWorkflowBindings.deleteByAgentId(id);
+        agent.touchDraft(); agents.save(agent);
+    }
+
+    @Override
+    @Transactional
+    public List<AgentMcpToolSnapshot> replaceMcpTools(String id, AgentMcpBindingRequest request) {
+        AgentDefinition agent=requireDraft(id);
+        TreeSet<String> seen=new TreeSet<>();
+        for(var binding:request.bindings())for(String tool:binding.toolNames()){
+            String key=binding.serverId().trim()+"\u001f"+tool.trim();
+            if(!seen.add(key))throw new BizException(ErrorCode.PARAM_ERROR,"MCP 工具不能重复绑定: "+tool);
+            mcp.freeze(binding.serverId().trim(),List.of(tool.trim()));
+        }
+        draftMcpBindings.deleteByAgentId(id);Instant now=Instant.now();
+        draftMcpBindings.saveAll(request.bindings().stream().flatMap(binding->binding.toolNames().stream()
+                .map(tool->new AgentMcpToolBinding(id,binding.serverId().trim(),tool.trim(),now))).toList());
+        agent.touchDraft();agents.save(agent);
+        return draftMcp(List.of(id)).getOrDefault(id,List.of());
+    }
+
+    @Override
+    @Transactional
     @CacheEvict(cacheNames = "agent-cache", key = "'current:' + #id")
     public void archive(String id) {
         AgentDefinition agent = requireDraft(id);
         draftToolBindings.deleteByAgentId(id);
         draftKnowledgeBindings.deleteByAgentId(id);
+        draftWorkflowBindings.deleteByAgentId(id);
+        draftMcpBindings.deleteByAgentId(id);
         agent.archive(Instant.now());
         agents.save(agent);
     }
@@ -215,17 +302,37 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
             KnowledgeCorpusSnapshot corpus=knowledge.freeze(binding.knowledgeBaseId());
             return new AgentKnowledgeBindingSnapshot(binding.knowledgeBaseId(),binding.topK(),binding.priority(),corpus.id(),corpus.manifestDigest());
         }).toList();
+        AgentWorkflowBindingSnapshot draftWorkflow = draftWorkflow(List.of(id)).get(id);
+        AgentWorkflowBindingSnapshot frozenWorkflow = null;
+        if (draftWorkflow != null) {
+            WorkflowCapabilitySnapshot workflow = workflows.freeze(draftWorkflow.workflowId());
+            frozenWorkflow = new AgentWorkflowBindingSnapshot(workflow.workflowId(), workflow.workflowVersionId(),
+                    workflow.versionNo(), workflow.checksum());
+        }
+        List<AgentMcpToolSnapshot> frozenMcp=new ArrayList<>();
+        Map<String,List<AgentMcpToolSnapshot>> groupedDraft=draftMcp(List.of(id));
+        Map<String,List<String>> toolsByServer=groupedDraft.getOrDefault(id,List.of()).stream()
+                .collect(Collectors.groupingBy(AgentMcpToolSnapshot::serverId,
+                        Collectors.mapping(AgentMcpToolSnapshot::toolName,Collectors.toList())));
+        toolsByServer.forEach((serverId,names)->mcp.freeze(serverId,names).forEach(tool->frozenMcp.add(snapshot(tool))));
         int versionNo = Math.toIntExact(versions.countByAgentId(id) + 1);
         String versionId = UUID.randomUUID().toString();
         Instant now = Instant.now();
         AgentVersion version = new AgentVersion(versionId, id, versionNo, draft,
-                digest(draft, toolNames, frozenKnowledge), now);
+                digest(draft, toolNames, frozenKnowledge, frozenWorkflow, frozenMcp), now);
         versions.save(version);
         versionToolBindings.saveAll(toolNames.stream()
                 .map(tool -> new AgentVersionToolBinding(versionId, tool, now)).toList());
         versionKnowledgeBindings.saveAll(frozenKnowledge.stream().map(binding->new AgentVersionKnowledgeBinding(
                 versionId,binding.knowledgeBaseId(),binding.corpusVersionId(),binding.manifestDigest(),
                 binding.topK(),binding.priority(),now)).toList());
+        if (frozenWorkflow != null) versionWorkflowBindings.save(new AgentVersionWorkflowBinding(
+                versionId, frozenWorkflow.workflowId(), frozenWorkflow.workflowVersionId(),
+                frozenWorkflow.checksum(), now));
+        versionMcpBindings.saveAll(frozenMcp.stream().map(binding->new AgentVersionMcpToolBinding(
+                versionId,binding.serverId(),binding.serverRevision(),binding.serverSchemaDigest(),
+                binding.toolName(),binding.runtimeToolName(),binding.description(),write(binding.inputSchema()),
+                binding.toolSchemaDigest(),binding.risk(),now)).toList());
         draft.markPublished(versionId);
         agents.save(draft);
         return version(version);
@@ -271,14 +378,18 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     private AgentResponse response(AgentDefinition agent, AgentVersion publishedVersion,
                                    List<String> enabledTools, List<String> publishedTools,
                                    List<AgentKnowledgeBindingSnapshot> draftKnowledge,
-                                   List<AgentKnowledgeBindingSnapshot> publishedKnowledge) {
+                                   List<AgentKnowledgeBindingSnapshot> publishedKnowledge,
+                                   AgentWorkflowBindingSnapshot draftWorkflow,
+                                   AgentWorkflowBindingSnapshot publishedWorkflow,
+                                   List<AgentMcpToolSnapshot> draftMcp,
+                                   List<AgentMcpToolSnapshot> publishedMcp) {
         Integer publishedVersionNo = publishedVersion == null ? null : publishedVersion.getVersionNo();
         boolean hasUnpublishedChanges = publishedVersion == null
-                || !digest(agent, enabledTools, currentKnowledge(draftKnowledge))
-                .equals(digest(publishedVersion, publishedTools, publishedKnowledge));
+                || !digest(agent, enabledTools, currentKnowledge(draftKnowledge), currentWorkflow(draftWorkflow), currentMcp(draftMcp))
+                .equals(digest(publishedVersion, publishedTools, publishedKnowledge, publishedWorkflow, publishedMcp));
         return new AgentResponse(agent.getId(), agent.getName(), agent.getDescription(), agent.getInstructions(),
                 agent.getProviderId(), agent.getModel(), agent.getTemperature(), agent.getMaxTokens(),
-                agent.getMaxTurns(), agent.getMaxContextTurns(), enabledTools, draftKnowledge,
+                agent.getMaxTurns(), agent.getMaxContextTurns(), enabledTools, draftKnowledge, draftWorkflow, draftMcp,
                 agent.isEnabled(), agent.getDraftRevision(), agent.getPublishedVersionId(), publishedVersionNo,
                 hasUnpublishedChanges,
                 agent.getCreatedAt(), agent.getUpdatedAt());
@@ -294,40 +405,55 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
                 .map(AgentVersionToolBinding::getToolName).toList();
         List<AgentKnowledgeBindingSnapshot> knowledgeBindings=versionKnowledgeBindings.findByVersionId(version.getId()).stream()
                 .map(this::snapshot).toList();
+        AgentWorkflowBindingSnapshot workflowBinding = versionWorkflowBindings.findById(version.getId())
+                .map(binding -> new AgentWorkflowBindingSnapshot(binding.getWorkflowId(), binding.getWorkflowVersionId(),
+                null, binding.getWorkflowChecksum())).orElse(null);
+        List<AgentMcpToolSnapshot> mcpTools=versionMcpBindings.findByVersionId(version.getId()).stream().map(this::snapshot).toList();
         return new AgentRuntimeSnapshot(version.getId(), version.getAgentId(), version.getVersionNo(),
                 version.getSnapshotDigest(), version.getName(), version.getInstructions(),
                 version.getProviderId(), version.getModel(), version.getTemperature(), version.getMaxTokens(),
-                version.getMaxTurns(), version.getMaxContextTurns(), enabledTools, knowledgeBindings, version.isEnabled());
+                version.getMaxTurns(), version.getMaxContextTurns(), enabledTools, knowledgeBindings,
+                workflowBinding, mcpTools, version.isEnabled());
     }
 
     private String digest(AgentDefinition draft, List<String> toolNames,
-                          List<AgentKnowledgeBindingSnapshot> knowledgeBindings) {
+                          List<AgentKnowledgeBindingSnapshot> knowledgeBindings,
+                          AgentWorkflowBindingSnapshot workflowBinding,
+                          List<AgentMcpToolSnapshot> mcpTools) {
         return digest(draft.getId(), draft.getName(), draft.getInstructions(), draft.getProviderId(),
                 draft.getModel(), draft.getTemperature(), draft.getMaxTokens(), draft.getMaxTurns(),
-                draft.getMaxContextTurns(), toolNames, knowledgeBindings, draft.isEnabled());
+                draft.getMaxContextTurns(), toolNames, knowledgeBindings, workflowBinding, mcpTools, draft.isEnabled());
     }
 
     private String digest(AgentVersion version, List<String> toolNames,
-                          List<AgentKnowledgeBindingSnapshot> knowledgeBindings) {
+                          List<AgentKnowledgeBindingSnapshot> knowledgeBindings,
+                          AgentWorkflowBindingSnapshot workflowBinding,
+                          List<AgentMcpToolSnapshot> mcpTools) {
         return digest(version.getAgentId(), version.getName(), version.getInstructions(), version.getProviderId(),
                 version.getModel(), version.getTemperature(), version.getMaxTokens(), version.getMaxTurns(),
-                version.getMaxContextTurns(), toolNames, knowledgeBindings, version.isEnabled());
+                version.getMaxContextTurns(), toolNames, knowledgeBindings, workflowBinding, mcpTools, version.isEnabled());
     }
 
     private String digest(String agentId, String name, String instructions, String providerId,
                           String model, double temperature, int maxTokens, int maxTurns,
                           int maxContextTurns, List<String> toolNames,
-                          List<AgentKnowledgeBindingSnapshot> knowledgeBindings, boolean enabled) {
+                          List<AgentKnowledgeBindingSnapshot> knowledgeBindings,
+                          AgentWorkflowBindingSnapshot workflowBinding,
+                          List<AgentMcpToolSnapshot> mcpTools, boolean enabled) {
         String knowledgeCanonical=knowledgeBindings.stream()
                 .sorted(java.util.Comparator.comparingInt(AgentKnowledgeBindingSnapshot::priority)
                         .thenComparing(AgentKnowledgeBindingSnapshot::knowledgeBaseId))
                 .map(binding->String.join(":",binding.knowledgeBaseId(),String.valueOf(binding.topK()),
                         String.valueOf(binding.priority()),clean(binding.manifestDigest())))
                 .collect(Collectors.joining(","));
+        String mcpCanonical=mcpTools.stream().sorted(java.util.Comparator.comparing(AgentMcpToolSnapshot::runtimeToolName,
+                        java.util.Comparator.nullsLast(String::compareTo)))
+                .map(binding->String.join(":",binding.serverId(),String.valueOf(binding.serverRevision()),
+                        binding.toolName(),clean(binding.toolSchemaDigest()))).collect(Collectors.joining(","));
         String canonical = String.join("\u001f", agentId, name, instructions, providerId, model,
                 String.valueOf(temperature), String.valueOf(maxTokens), String.valueOf(maxTurns),
                 String.valueOf(maxContextTurns), String.join(",", new TreeSet<>(toolNames)),
-                knowledgeCanonical,String.valueOf(enabled));
+                knowledgeCanonical, workflowBinding == null ? "" : clean(workflowBinding.checksum()),mcpCanonical,String.valueOf(enabled));
         try {
             return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
                     .digest(canonical.getBytes(StandardCharsets.UTF_8)));
@@ -423,6 +549,69 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
             }
         }).toList();
     }
+
+    private Map<String,AgentWorkflowBindingSnapshot> draftWorkflow(Collection<String> agentIds){
+        if(agentIds.isEmpty()) return Map.of();
+        Map<String,AgentWorkflowBindingSnapshot> result=new HashMap<>();
+        List<AgentWorkflowBinding> bindings=draftWorkflowBindings.findByAgentIdIn(agentIds);
+        Map<String,WorkflowCapabilitySnapshot> currentById=workflows.freezeAll(bindings.stream().map(AgentWorkflowBinding::getWorkflowId).collect(Collectors.toSet()));
+        bindings.forEach(binding->{
+            try {
+                WorkflowCapabilitySnapshot current=currentById.get(binding.getWorkflowId());
+                if(current==null)throw new IllegalStateException("unavailable");
+                result.put(binding.getAgentId(),new AgentWorkflowBindingSnapshot(binding.getWorkflowId(),null,
+                        current.versionNo(),current.checksum()));
+            } catch (RuntimeException unavailable) {
+                result.put(binding.getAgentId(),new AgentWorkflowBindingSnapshot(binding.getWorkflowId(),null,null,"UNAVAILABLE"));
+            }
+        });
+        return result;
+    }
+
+    private Map<String,AgentWorkflowBindingSnapshot> versionWorkflow(Collection<String> versionIds){
+        if(versionIds.isEmpty()) return Map.of();
+        return versionWorkflowBindings.findByAgentVersionIdIn(versionIds).stream().collect(Collectors.toMap(
+                AgentVersionWorkflowBinding::getAgentVersionId,
+                binding->new AgentWorkflowBindingSnapshot(binding.getWorkflowId(),binding.getWorkflowVersionId(),
+                        null,binding.getWorkflowChecksum())));
+    }
+
+    private AgentWorkflowBindingSnapshot currentWorkflow(AgentWorkflowBindingSnapshot binding){
+        return binding;
+    }
+
+    private Map<String,List<AgentMcpToolSnapshot>> draftMcp(Collection<String> agentIds){
+        if(agentIds.isEmpty())return Map.of();
+        Map<String,List<AgentMcpToolSnapshot>> result=new HashMap<>();
+        List<AgentMcpToolBinding> bindings=draftMcpBindings.findByAgentIds(agentIds);
+        Map<String,List<String>> requested=bindings.stream().collect(Collectors.groupingBy(AgentMcpToolBinding::getServerId,Collectors.mapping(AgentMcpToolBinding::getToolName,Collectors.toList())));
+        Map<String,McpFrozenTool> current;
+        try{current=mcp.freezeAll(requested).stream().collect(Collectors.toMap(tool->tool.serverId()+"\u001f"+tool.toolName(),tool->tool));}
+        catch(RuntimeException unavailable){current=Map.of();}
+        Map<String,McpFrozenTool> resolved=current;
+        bindings.forEach(binding->{
+            McpFrozenTool tool=resolved.get(binding.getServerId()+"\u001f"+binding.getToolName());
+            AgentMcpToolSnapshot value=tool==null?new AgentMcpToolSnapshot(binding.getServerId(),null,"UNAVAILABLE",binding.getToolName(),null,"",Map.of(),"UNAVAILABLE","READ"):snapshot(tool);
+            result.computeIfAbsent(binding.getAgentId(),ignored->new ArrayList<>()).add(value);
+        });
+        return result;
+    }
+
+    private Map<String,List<AgentMcpToolSnapshot>> versionMcp(Collection<String> versionIds){
+        if(versionIds.isEmpty())return Map.of();
+        Map<String,List<AgentMcpToolSnapshot>> result=new HashMap<>();
+        versionMcpBindings.findByVersionIds(versionIds).forEach(binding->result
+                .computeIfAbsent(binding.getAgentVersionId(),ignored->new ArrayList<>()).add(snapshot(binding)));
+        return result;
+    }
+
+    private List<AgentMcpToolSnapshot> currentMcp(List<AgentMcpToolSnapshot> bindings){
+        return bindings;
+    }
+
+    private AgentMcpToolSnapshot snapshot(McpFrozenTool tool){return new AgentMcpToolSnapshot(tool.serverId(),tool.serverRevision(),tool.serverSchemaDigest(),tool.toolName(),tool.runtimeToolName(),tool.description(),tool.inputSchema(),tool.toolSchemaDigest(),tool.risk());}
+    private AgentMcpToolSnapshot snapshot(AgentVersionMcpToolBinding binding){try{return new AgentMcpToolSnapshot(binding.getServerId(),binding.getServerRevision(),binding.getServerSchemaDigest(),binding.getToolName(),binding.getRuntimeToolName(),binding.getDescription(),json.readValue(binding.getInputSchemaJson(),new TypeReference<>(){}),binding.getToolSchemaDigest(),binding.getRisk());}catch(Exception e){throw new IllegalStateException("Stored Agent MCP schema is invalid",e);}}
+    private String write(Object value){try{return json.writeValueAsString(value);}catch(Exception e){throw new IllegalStateException("Could not serialize Agent capability",e);}}
 
     private AgentVersion publishedVersion(AgentDefinition definition, Map<String, AgentVersion> versionsById) {
         String versionId = definition.getPublishedVersionId();

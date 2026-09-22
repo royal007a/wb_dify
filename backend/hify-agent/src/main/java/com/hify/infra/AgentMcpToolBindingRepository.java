@@ -1,0 +1,3 @@
+package com.hify.infra;
+import com.hify.domain.AgentMcpToolBinding;import org.springframework.data.jpa.repository.*;import org.springframework.data.repository.query.Param;import java.util.*;
+public interface AgentMcpToolBindingRepository extends JpaRepository<AgentMcpToolBinding,AgentMcpToolBinding.Key>{@Query("select b from AgentMcpToolBinding b where b.agentId in :ids order by b.agentId,b.serverId,b.toolName")List<AgentMcpToolBinding> findByAgentIds(@Param("ids") Collection<String> ids);@Modifying @Query("delete from AgentMcpToolBinding b where b.agentId=:id")void deleteByAgentId(@Param("id") String id);}

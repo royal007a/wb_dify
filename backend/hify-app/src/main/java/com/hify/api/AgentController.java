@@ -8,6 +8,10 @@ import com.hify.agent.api.AgentKnowledgeBindingSnapshot;
 import com.hify.agent.api.AgentUpdateRequest;
 import com.hify.agent.api.AgentUpsertRequest;
 import com.hify.agent.api.AgentVersionResponse;
+import com.hify.agent.api.AgentWorkflowBindingRequest;
+import com.hify.agent.api.AgentWorkflowBindingSnapshot;
+import com.hify.agent.api.AgentMcpBindingRequest;
+import com.hify.agent.api.AgentMcpToolSnapshot;
 import com.hify.common.PageResult;
 import com.hify.common.Result;
 import jakarta.validation.Valid;
@@ -62,6 +66,25 @@ public class AgentController {
             @PathVariable String agentId,
             @Valid @RequestBody AgentKnowledgeBindingRequest request) {
         return Result.ok(agents.replaceKnowledge(agentId, request));
+    }
+
+    @PutMapping("/{agentId}/workflow-binding")
+    public Result<AgentWorkflowBindingSnapshot> replaceWorkflow(
+            @PathVariable String agentId,
+            @Valid @RequestBody AgentWorkflowBindingRequest request) {
+        return Result.ok(agents.replaceWorkflow(agentId, request));
+    }
+
+    @DeleteMapping("/{agentId}/workflow-binding")
+    public Result<Void> clearWorkflow(@PathVariable String agentId) {
+        agents.clearWorkflow(agentId);
+        return Result.ok();
+    }
+
+    @PutMapping("/{agentId}/mcp-bindings")
+    public Result<List<AgentMcpToolSnapshot>> replaceMcpTools(
+            @PathVariable String agentId, @Valid @RequestBody AgentMcpBindingRequest request) {
+        return Result.ok(agents.replaceMcpTools(agentId, request));
     }
 
     @DeleteMapping("/{agentId}")

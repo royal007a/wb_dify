@@ -1,0 +1,3 @@
+package com.hify.infra;
+import com.hify.domain.AgentVersionMcpToolBinding;import org.springframework.data.jpa.repository.*;import org.springframework.data.repository.query.Param;import java.util.*;
+public interface AgentVersionMcpToolBindingRepository extends JpaRepository<AgentVersionMcpToolBinding,AgentVersionMcpToolBinding.Key>{@Query("select b from AgentVersionMcpToolBinding b where b.agentVersionId=:id order by b.serverId,b.toolName")List<AgentVersionMcpToolBinding> findByVersionId(@Param("id") String id);@Query("select b from AgentVersionMcpToolBinding b where b.agentVersionId in :ids order by b.agentVersionId,b.serverId,b.toolName")List<AgentVersionMcpToolBinding> findByVersionIds(@Param("ids") Collection<String> ids);}

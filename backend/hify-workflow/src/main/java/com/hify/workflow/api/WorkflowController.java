@@ -13,6 +13,7 @@ public class WorkflowController {
  @PostMapping("/workflows/{id}/validations") public Result<Void> validate(@PathVariable String id){workflows.validate(id);return Result.ok();}
  @PostMapping("/workflows/{id}/versions") public Result<WorkflowVersionResponse> publish(@PathVariable String id){return Result.ok(workflows.publish(id));}
  @GetMapping("/workflows/{id}/versions") public Result<List<WorkflowVersionResponse>> versions(@PathVariable String id){return Result.ok(workflows.versions(id));}
+ @GetMapping("/workflow-versions/{id}") public Result<WorkflowVersionDetail> version(@PathVariable String id){return Result.ok(workflows.versionDetail(id));}
  @PostMapping("/workflow-versions/{id}/runs") public ResponseEntity<Result<WorkflowRunResponse>> run(@PathVariable String id,@Valid @RequestBody WorkflowRunRequest request){return ResponseEntity.status(HttpStatus.ACCEPTED).body(Result.ok(engine.execute(id,request.input())));}
  @GetMapping("/workflow-runs/{id}") public Result<WorkflowRunResponse> run(@PathVariable String id){return Result.ok(engine.get(id));}
 }

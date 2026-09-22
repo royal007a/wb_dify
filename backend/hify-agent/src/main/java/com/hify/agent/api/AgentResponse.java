@@ -7,7 +7,8 @@ public record AgentResponse(
         String id, String name, String description, String instructions,
         String providerId, String modelId, double temperature, int maxTokens,
         int maxTurns, int maxContextTurns, List<String> enabledTools,
-        List<AgentKnowledgeBindingSnapshot> knowledgeBindings, boolean enabled,
+        List<AgentKnowledgeBindingSnapshot> knowledgeBindings,
+        AgentWorkflowBindingSnapshot workflowBinding, List<AgentMcpToolSnapshot> mcpTools, boolean enabled,
         int draftRevision, String publishedVersionId, Integer publishedVersionNo,
         boolean hasUnpublishedChanges,
         Instant createdAt, Instant updatedAt

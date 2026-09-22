@@ -16,6 +16,8 @@ import com.hify.provider.api.ProviderQueryService;
 import com.hify.provider.api.ProviderRuntimeConfig;
 import com.hify.knowledge.api.KnowledgeCitation;
 import com.hify.knowledge.api.KnowledgeRetrievalPort;
+import com.hify.workflow.api.WorkflowCapabilityPort;
+import com.hify.workflow.api.WorkflowRunResponse;
 import com.hify.infra.RunCheckpointRepository;
 import com.hify.runtime.ModelClient;
 import com.hify.runtime.ModelClientFactory;
@@ -25,6 +27,7 @@ import com.hify.runtime.RunRuntimeIdentity;
 import com.hify.runtime.RuntimeMessage;
 import com.hify.runtime.TerminalReason;
 import com.hify.runtime.ToolRuntime;
+import com.hify.runtime.ToolDefinition;
 import com.hify.runtime.plan.ExecutionCheckpoint;
 import com.hify.runtime.plan.ExecutionPlan;
 import com.hify.runtime.plan.PlanEventType;
@@ -72,6 +75,7 @@ public class RunApplicationService {
     private final RunCheckpointRepository checkpoints;
     private final ChildAgentTaskService childTasks;
     private final KnowledgeRetrievalPort knowledge;
+    private final WorkflowCapabilityPort workflows;
     private final ObjectMapper objectMapper;
     private final TransactionTemplate transactions;
     private final Executor executor;
@@ -88,7 +92,7 @@ public class RunApplicationService {
                                  QueryLoop queryLoop, ToolRuntime toolRuntime,
                                  CommittedHistoryWriter historyWriter, RunEventBroker eventBroker,
                                  RunCheckpointRepository checkpoints, ChildAgentTaskService childTasks,
-                                 KnowledgeRetrievalPort knowledge,
+                                 KnowledgeRetrievalPort knowledge, WorkflowCapabilityPort workflows,
                                  ObjectMapper objectMapper,
                                  TransactionTemplate transactions,
                                  @Qualifier("runExecutor") Executor executor,
@@ -109,6 +113,7 @@ public class RunApplicationService {
         this.checkpoints = checkpoints;
         this.childTasks = childTasks;
         this.knowledge = knowledge;
+        this.workflows = workflows;
         this.objectMapper = objectMapper;
         this.transactions = transactions;
         this.executor = executor;
@@ -184,7 +189,7 @@ public class RunApplicationService {
                 resume == null ? null : resume.runId(),
                 resume == null ? null : String.join(",", resume.gapIds()), now);
         run.bindAgentSnapshot(agent.versionId(), agent.snapshotDigest());
-        CapabilitySnapshot capability = toolRuntime.snapshot(agent.versionId(), enabledTools(agent));
+        CapabilitySnapshot capability = capability(agent);
         run.bindCapabilitySnapshot(capability.revision(), capability.toolSchemaDigest());
         messages.save(new ChatMessage(conversationId, "user", message));
         conversation.touch();
@@ -256,8 +261,12 @@ public class RunApplicationService {
             AgentRuntimeSnapshot agent = run.getAgentVersionId() == null
                     ? agents.requirePublished(conversation.getAgentId())
                     : agents.requireVersion(run.getAgentVersionId());
+            if (agent.workflowBinding() != null) {
+                executeWorkflow(run, agent);
+                return;
+            }
             ProviderRuntimeConfig provider = providers.requireEnabled(agent.providerId());
-            CapabilitySnapshot capability = toolRuntime.snapshot(agent.versionId(), enabledTools(agent));
+            CapabilitySnapshot capability = capability(agent);
             if (run.getCapabilityRevision() == null || run.getToolSchemaDigest() == null) {
                 run.bindCapabilitySnapshot(capability.revision(), capability.toolSchemaDigest());
                 runs.saveAndFlush(run);
@@ -297,6 +306,34 @@ public class RunApplicationService {
             cancellations.remove(runId);
             activeAttempts.remove(runId);
         }
+    }
+
+    private void executeWorkflow(AgentRun run, AgentRuntimeSnapshot agent) {
+        var binding = agent.workflowBinding();
+        if (run.isCancelRequested() || cancellations.computeIfAbsent(run.getId(), ignored -> new AtomicBoolean()).get()) {
+            finishTerminal(run.getId(), RunState.CANCELLED, TerminalReason.CANCELLED.name(),
+                    "Run cancelled before Workflow execution.", 0, 0, false);
+            eventBroker.publish(run.getId(), "run.cancelled", Map.of("version",1,"runId",run.getId(),"state","CANCELLED"));
+            return;
+        }
+        eventBroker.publish(run.getId(), "workflow.started", Map.of(
+                "version",1,"runId",run.getId(),"workflowId",binding.workflowId(),
+                "workflowVersionId",binding.workflowVersionId(),"workflowChecksum",binding.checksum()));
+        WorkflowRunResponse result = workflows.execute(binding.workflowVersionId(), run.getInputMessage());
+        if (!"SUCCEEDED".equals(result.status())) {
+            throw new IllegalStateException("Workflow failed: " + result.errorMessage());
+        }
+        String output = result.output() == null ? "" : result.output();
+        boolean won = finishTerminal(run.getId(), RunState.COMPLETED, TerminalReason.COMPLETED.name(),
+                output, result.nodes().size(), 0, true);
+        if (!won) return;
+        childTasks.acknowledgeClaimedForCompletedParent(run.getId());
+        eventBroker.publish(run.getId(), "workflow.completed", Map.of(
+                "version",1,"runId",run.getId(),"workflowRunId",result.id(),
+                "workflowVersionId",binding.workflowVersionId(),"workflowChecksum",binding.checksum()));
+        eventBroker.publish(run.getId(), "run.completed", Map.of(
+                "version",1,"runId",run.getId(),"state","COMPLETED",
+                "terminalReason",TerminalReason.COMPLETED.name(),"turns",result.nodes().size(),"toolCalls",0));
     }
 
     private QueryLoop.RunObserver observer(String runId) {
@@ -602,7 +639,15 @@ public class RunApplicationService {
     }
 
     private Set<String> enabledTools(AgentRuntimeSnapshot agent) {
-        return new LinkedHashSet<>(agent.enabledTools());
+        LinkedHashSet<String> enabled=new LinkedHashSet<>(agent.enabledTools());
+        agent.mcpTools().forEach(tool->enabled.add(tool.runtimeToolName()));
+        return enabled;
+    }
+
+    private CapabilitySnapshot capability(AgentRuntimeSnapshot agent){
+        List<ToolDefinition> dynamic=agent.mcpTools().stream().map(tool->new ToolDefinition(
+                tool.runtimeToolName(),tool.description(),tool.inputSchema(),tool.risk().toLowerCase(java.util.Locale.ROOT))).toList();
+        return toolRuntime.snapshot(agent.versionId(),enabledTools(agent),dynamic);
     }
 
     private String knowledgeContext(String runId,String query,AgentRuntimeSnapshot agent){

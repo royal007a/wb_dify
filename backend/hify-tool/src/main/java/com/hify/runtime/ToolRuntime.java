@@ -28,13 +28,20 @@ public class ToolRuntime implements ToolCatalog {
 
     private final Map<String, ToolDefinition> definitions = new LinkedHashMap<>();
     private final Map<String, RuntimeToolExtension> extensions = new LinkedHashMap<>();
+    private final List<DynamicRuntimeToolExecutor> dynamicExecutors;
 
     public ToolRuntime() {
-        this(List.of());
+        this(List.of(), List.of());
+    }
+
+    public ToolRuntime(List<RuntimeToolExtension> toolExtensions) {
+        this(toolExtensions, List.of());
     }
 
     @Autowired
-    public ToolRuntime(List<RuntimeToolExtension> toolExtensions) {
+    public ToolRuntime(List<RuntimeToolExtension> toolExtensions,
+                       List<DynamicRuntimeToolExecutor> dynamicExecutors) {
+        this.dynamicExecutors = List.copyOf(dynamicExecutors);
         definitions.put("current_time", new ToolDefinition(
                 "current_time", "Get the current time in an ISO-8601 offset format",
                 Map.of("type", "object", "properties", Map.of()), "read"));
@@ -60,11 +67,25 @@ public class ToolRuntime implements ToolCatalog {
     }
 
     public CapabilitySnapshot snapshot(String ownerRevision, Set<String> enabledNames) {
+        return snapshot(ownerRevision, enabledNames, List.of());
+    }
+
+    public CapabilitySnapshot snapshot(String ownerRevision, Set<String> enabledNames,
+                                       List<ToolDefinition> dynamicDefinitions) {
         Set<String> enabled = Set.copyOf(enabledNames);
+        Map<String, ToolDefinition> available = new LinkedHashMap<>(definitions);
+        for (ToolDefinition definition : dynamicDefinitions) {
+            if (!"read".equalsIgnoreCase(definition.risk())) {
+                throw new IllegalArgumentException("Dynamic tool risk is not allowed: " + definition.risk());
+            }
+            if (available.putIfAbsent(definition.name(), definition) != null) {
+                throw new IllegalArgumentException("Duplicate tool definition: " + definition.name());
+            }
+        }
         Set<String> unknown = new java.util.TreeSet<>(enabled);
-        unknown.removeAll(definitions.keySet());
+        unknown.removeAll(available.keySet());
         if (!unknown.isEmpty()) throw new IllegalArgumentException("Unknown tools in capability snapshot: " + unknown);
-        List<ToolDefinition> selected = definitions(enabled).stream()
+        List<ToolDefinition> selected = available.values().stream().filter(tool -> enabled.contains(tool.name()))
                 .sorted(Comparator.comparing(ToolDefinition::name)).toList();
         String schemaDigest = sha256(canonical(selected));
         String revision = sha256(ownerRevision + "\u001f" + schemaDigest + "\u001f"
@@ -114,13 +135,15 @@ public class ToolRuntime implements ToolCatalog {
         if (!lease.capabilityRevision().equals(snapshot.revision())) {
             return ExecutionResult.staleLease("Capability revision changed before tool execution");
         }
-        if (!definitions.containsKey(call.name())) {
+        ToolDefinition definition = definitions.get(call.name());
+        if (definition == null) definition = snapshot.definitions().stream()
+                .filter(candidate -> candidate.name().equals(call.name())).findFirst().orElse(null);
+        if (definition == null) {
             return ExecutionResult.unavailable("Tool is not available: " + call.name());
         }
         if (!snapshot.enabledTools().contains(call.name())) {
             return ExecutionResult.permissionDenied("Tool is not enabled: " + call.name());
         }
-        ToolDefinition definition = definitions.get(call.name());
         if (!"read".equals(definition.risk())) {
             return ExecutionResult.permissionDenied("Tool risk is not allowed: " + definition.risk());
         }
@@ -132,7 +155,7 @@ public class ToolRuntime implements ToolCatalog {
             ExecutionResult result = switch (call.name()) {
                 case "current_time" -> ExecutionResult.success(OffsetDateTime.now().toString());
                 case "calculator" -> ExecutionResult.success(calculate(call.arguments()));
-                default -> extensions.get(call.name()).execute(call, lease, control);
+                default -> executeExtension(call, definition, lease, control);
             };
             control.throwIfCancelled();
             return result.limit(32 * 1024);
@@ -145,6 +168,15 @@ public class ToolRuntime implements ToolCatalog {
         } catch (RuntimeException exception) {
             return ExecutionResult.executionFailed("Tool execution failed", true);
         }
+    }
+
+    private ExecutionResult executeExtension(RuntimeMessage.ToolCall call, ToolDefinition definition,
+                                             ToolExecutionLease lease, ExecutionControl control) {
+        RuntimeToolExtension extension = extensions.get(call.name());
+        if (extension != null) return extension.execute(call, lease, control);
+        return dynamicExecutors.stream().filter(candidate -> candidate.supports(definition)).findFirst()
+                .map(candidate -> candidate.execute(call, definition, lease, control))
+                .orElseGet(() -> ExecutionResult.unavailable("No executor for tool: " + call.name()));
     }
 
     public java.util.Optional<String> findReadOnlyAlternative(String requestedName, Set<String> enabledNames) {
