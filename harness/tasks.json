@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-22T04:32:10Z",
+  "updatedAt": "2026-09-22T04:36:46Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -956,7 +956,7 @@
       "title": "部署 Workflow/MCP Runtime 与画布版本",
       "description": "推送已通过门禁的 Workflow/MCP capability 与 Workflow Canvas 版本，在本地及 118.196.123.132 执行 V19、健康检查、API 和浏览器 smoke。",
       "priority": "P0",
-      "status": "blocked",
+      "status": "completed",
       "scopes": [
         "backend",
         "frontend",
@@ -982,9 +982,9 @@
         "本地完整 Chat Playwright 与远端 Workflow/MCP 页面 smoke 通过",
         "部署版本、访问 URL、验证结果与回滚基线写入 evidence"
       ],
-      "planPath": "exec-plans/blocked/DEPLOY-004.md",
+      "planPath": "exec-plans/completed/DEPLOY-004.md",
       "checkpoint": null,
-      "blockedReason": "task command failed",
+      "blockedReason": null,
       "evidence": [
         {
           "runId": "DEPLOY-004-20260922T043005Z-ad8875cd",
@@ -994,10 +994,19 @@
           "baselineCommit": "201930d4b66965febbc3e7ce2d0e181abbf24fc2",
           "headCommit": "201930d4b66965febbc3e7ce2d0e181abbf24fc2",
           "recordedAt": "2026-09-22T04:32:10Z"
+        },
+        {
+          "runId": "DEPLOY-004-20260922T043445Z-e942e755",
+          "path": "harness/evidence/DEPLOY-004/DEPLOY-004-20260922T043445Z-e942e755",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "e7ab8049a0acd903b698e97da770fef8a034399f",
+          "headCommit": "e7ab8049a0acd903b698e97da770fef8a034399f",
+          "recordedAt": "2026-09-22T04:36:46Z"
         }
       ],
       "createdAt": "2026-09-22T04:27:48Z",
-      "updatedAt": "2026-09-22T04:32:10Z"
+      "updatedAt": "2026-09-22T04:36:46Z"
     }
   ]
 }

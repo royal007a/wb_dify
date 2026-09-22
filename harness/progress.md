@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-09-22T04:32:10Z`
+- Generated from task state updated at: `2026-09-22T04:36:46Z`
 - Current task: `none`
-- Counts: pending 4 · running 0 · blocked 1 · completed 18
+- Counts: pending 4 · running 0 · blocked 0 · completed 19
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -12,7 +12,7 @@
 | `CAPABILITY-002` | P0 | completed | backend, migration, runtime | reversible_write | 绑定 Workflow 与 MCP 到 AgentVersion 和 Chat Runtime |
 | `COURSE-018-025` | P0 | completed | harness | reversible_write | 吸收课程 18-25 并更新目标规格 |
 | `DEPLOY-003` | P0 | completed | backend, frontend, migration, runtime | high_risk | 部署 Agent Knowledge capability slice |
-| `DEPLOY-004` | P0 | blocked | backend, frontend, migration, runtime | high_risk | 部署 Workflow/MCP Runtime 与画布版本 |
+| `DEPLOY-004` | P0 | completed | backend, frontend, migration, runtime | high_risk | 部署 Workflow/MCP Runtime 与画布版本 |
 | `EVAL-001` | P0 | pending | eval, runtime | reversible_write | 将 Intent 评测升级为回归门禁 |
 | `HARNESS-001` | P0 | completed | harness | reversible_write | 建立机器状态工程 Harness |
 | `KNOWLEDGE-001` | P0 | completed | backend, migration, runtime, eval | reversible_write | 交付可引用的知识库纵向切片 |
@@ -31,8 +31,5 @@
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
 | `SUBAGENT-001` | P2 | completed | backend, migration, runtime | reversible_write | 建立子 Agent 任务与延迟消费确认 |
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |
-
-## Blocked
-- `DEPLOY-004`: task command failed
 
 Regenerate with `python3 harness/harness.py render-progress`; verify with `python3 harness/harness.py check-progress`.
