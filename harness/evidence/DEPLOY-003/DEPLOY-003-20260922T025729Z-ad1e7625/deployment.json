@@ -1,0 +1,33 @@
+{
+  "taskId": "DEPLOY-003",
+  "commit": "4765749",
+  "businessCommit": "2114c6e",
+  "rollbackBaseline": "033dcec",
+  "local": {
+    "url": "http://localhost:8088/",
+    "health": 200,
+    "agentsApi": 200,
+    "knowledgeApi": 200,
+    "flywayVersion": "18",
+    "capabilityTables": 3
+  },
+  "remote": {
+    "url": "https://118.196.123.132/hify/",
+    "commit": "4765749",
+    "health": 200,
+    "agentsApi": 200,
+    "knowledgeApi": 200,
+    "html": 200,
+    "flywayVersion": "18",
+    "capabilityTables": 3,
+    "systemdService": "hify"
+  },
+  "browser": {
+    "playwright": "2 passed",
+    "chat": "calculator SSE completed with 391",
+    "management": "Knowledge, Workflow and MCP routes rendered",
+    "agentKnowledgeBinding": "Agent edit dialog rendered Knowledge binding selector",
+    "screenshot": "remote-chat.png"
+  },
+  "rollback": "Deploy 033dcec application binaries; retain additive V18 tables."
+}
