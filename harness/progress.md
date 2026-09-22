@@ -4,12 +4,13 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-09-22T02:55:56Z`
 - Current task: `none`
-- Counts: pending 4 · running 0 · blocked 0 · completed 15
+- Counts: pending 5 · running 0 · blocked 0 · completed 15
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
 | `CAPABILITY-001` | P0 | completed | backend, frontend, migration, runtime | reversible_write | 绑定 Knowledge 到 Agent 发布版本与 Chat Runtime |
 | `COURSE-018-025` | P0 | completed | harness | reversible_write | 吸收课程 18-25 并更新目标规格 |
+| `DEPLOY-003` | P0 | pending | backend, frontend, migration, runtime | high_risk | 部署 Agent Knowledge capability slice |
 | `EVAL-001` | P0 | pending | eval, runtime | reversible_write | 将 Intent 评测升级为回归门禁 |
 | `HARNESS-001` | P0 | completed | harness | reversible_write | 建立机器状态工程 Harness |
 | `KNOWLEDGE-001` | P0 | completed | backend, migration, runtime, eval | reversible_write | 交付可引用的知识库纵向切片 |

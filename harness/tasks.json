@@ -807,6 +807,31 @@
       ],
       "createdAt": "2026-09-22T03:10:00Z",
       "updatedAt": "2026-09-22T02:55:56Z"
+    },
+    {
+      "id": "DEPLOY-003",
+      "title": "部署 Agent Knowledge capability slice",
+      "description": "推送已通过门禁的 Knowledge capability 版本，重新部署本地和 118.196.123.132，执行 V18、健康检查、API 与浏览器 smoke。",
+      "priority": "P0",
+      "status": "pending",
+      "scopes": ["backend", "frontend", "migration", "runtime"],
+      "verifyScopes": ["backend", "frontend", "migration", "runtime"],
+      "risk": "high_risk",
+      "operation": "deployment",
+      "approvalRef": "lark:/goal-2026-09-22-three-hour-development-deploy",
+      "dependsOn": ["CAPABILITY-001"],
+      "acceptance": [
+        "提交已推送 origin/main 且远端检出相同 commit",
+        "本地与远端 Flyway V18 生效且 health 返回 HTTP 200",
+        "Agent 和 Knowledge API 返回 HTTP 200，Console 页面浏览器 smoke 通过",
+        "部署版本、URL、验证结果和回滚基线写入 evidence"
+      ],
+      "planPath": "exec-plans/active/DEPLOY-003.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-09-22T02:57:00Z",
+      "updatedAt": "2026-09-22T02:57:00Z"
     }
   ]
 }
