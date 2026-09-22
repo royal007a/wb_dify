@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-22T03:44:54Z",
+  "updatedAt": "2026-09-22T04:24:58Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -860,7 +860,7 @@
       "title": "绑定 Workflow 与 MCP 到 AgentVersion 和 Chat Runtime",
       "description": "冻结 Workflow published version/checksum 与 MCP server revision/tool schema 到 AgentVersion；Chat 按固定版本执行确定性 Workflow，并把 READ MCP 工具适配为 QueryLoop ToolDefinition。",
       "priority": "P0",
-      "status": "blocked",
+      "status": "completed",
       "scopes": [
         "backend",
         "migration",
@@ -883,9 +883,9 @@
         "MCP READ 工具以冻结 schema 进入 QueryLoop，执行前校验 capability revision、lease 与 cancel",
         "迁移、后端测试和运行时纵向测试通过"
       ],
-      "planPath": "exec-plans/blocked/CAPABILITY-002.md",
+      "planPath": "exec-plans/completed/CAPABILITY-002.md",
       "checkpoint": null,
-      "blockedReason": "task interrupted",
+      "blockedReason": null,
       "evidence": [
         {
           "runId": "CAPABILITY-002-20260922T034435Z-aee6184e",
@@ -895,10 +895,19 @@
           "baselineCommit": "4c8e7a656e8d2000f04bcc305f78d22159f9e131",
           "headCommit": "4c8e7a656e8d2000f04bcc305f78d22159f9e131",
           "recordedAt": "2026-09-22T03:44:54Z"
+        },
+        {
+          "runId": "CAPABILITY-002-20260922T042400Z-bb43ae09",
+          "path": "harness/evidence/CAPABILITY-002/CAPABILITY-002-20260922T042400Z-bb43ae09",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "30fdb0ef7de4bbc215687bbb771e43091a3a110c",
+          "headCommit": "30fdb0ef7de4bbc215687bbb771e43091a3a110c",
+          "recordedAt": "2026-09-22T04:24:58Z"
         }
       ],
       "createdAt": "2026-09-22T03:20:00Z",
-      "updatedAt": "2026-09-22T03:44:54Z"
+      "updatedAt": "2026-09-22T04:24:58Z"
     }
   ]
 }
