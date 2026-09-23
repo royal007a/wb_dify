@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-22T06:50:10Z",
+  "updatedAt": "2026-09-23T15:01:21Z",
   "tasks": [
     {
       "id": "HARNESS-001",
@@ -1069,13 +1069,13 @@
       ],
       "createdAt": "2026-09-22T06:40:00Z",
       "updatedAt": "2026-09-22T06:47:42Z"
-    }
-    ,{
+    },
+    {
       "id": "COURSE-005-016",
       "title": "阅读并吸收课程 05-16，完成实现核验与本地部署",
       "description": "阅读 Claude Code 企业级全链路开发实战第 05-16 讲，形成逐讲总结、源码映射和差距清单；运行 Harness 验证矩阵并完成本地部署 smoke。",
       "priority": "P0",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "harness",
         "backend",
@@ -1105,12 +1105,22 @@
         "本地 PostgreSQL/Flyway、后端健康、前端生产构建和浏览器 smoke 有新证据",
         "完成一次独立 review，未把源码存在误报为运行验收"
       ],
-      "planPath": "exec-plans/active/COURSE-005-016.md",
+      "planPath": "exec-plans/completed/COURSE-005-016.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "COURSE-005-016-20260923T145953Z-f34493a1",
+          "path": "harness/evidence/COURSE-005-016/COURSE-005-016-20260923T145953Z-f34493a1",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "25b024bedfea7f94da8c649baa673e045cf4dbfc",
+          "headCommit": "25b024bedfea7f94da8c649baa673e045cf4dbfc",
+          "recordedAt": "2026-09-23T15:01:21Z"
+        }
+      ],
       "createdAt": "2026-09-23T00:00:00Z",
-      "updatedAt": "2026-09-23T00:00:00Z"
+      "updatedAt": "2026-09-23T15:01:21Z"
     }
   ]
 }

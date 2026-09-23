@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "kind": "local-deployment-smoke",
+  "commit": "1e5960f",
+  "database": {
+    "container": "hify-dev-postgres-pgvector",
+    "image": "pgvector/pgvector:pg16",
+    "flywayVersion": 19
+  },
+  "services": {
+    "backend": {
+      "url": "http://localhost:8080/api/v1/health",
+      "httpStatus": 200,
+      "body": "{\"code\":200,\"message\":\"success\",\"data\":\"Hify is running\"}"
+    },
+    "frontend": {
+      "url": "http://localhost:5173",
+      "httpStatus": 200
+    }
+  },
+  "browserSmoke": {
+    "command": "cd frontend && npm run test:e2e",
+    "tests": 2,
+    "passed": 2,
+    "failed": 0
+  },
+  "lifecycle": "start.sh -> smoke -> stop.sh",
+  "recordedAt": "2026-09-23T15:06:00Z"
+}

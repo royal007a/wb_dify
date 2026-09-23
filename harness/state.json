@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SECURITY-001-20260922T064910Z-a11902a5",
-    "path": "harness/evidence/SECURITY-001/SECURITY-001-20260922T064910Z-a11902a5",
+    "runId": "COURSE-005-016-20260923T145953Z-f34493a1",
+    "path": "harness/evidence/COURSE-005-016/COURSE-005-016-20260923T145953Z-f34493a1",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "1021d37e00a06c7d3f25b5a258812abda09b0bc5",
-    "headCommit": "1021d37e00a06c7d3f25b5a258812abda09b0bc5",
-    "recordedAt": "2026-09-22T06:50:10Z"
+    "baselineCommit": "25b024bedfea7f94da8c649baa673e045cf4dbfc",
+    "headCommit": "25b024bedfea7f94da8c649baa673e045cf4dbfc",
+    "recordedAt": "2026-09-23T15:01:21Z"
   },
-  "lastCompletedTaskId": "SECURITY-001",
-  "updatedAt": "2026-09-22T06:50:10Z"
+  "lastCompletedTaskId": "COURSE-005-016",
+  "updatedAt": "2026-09-23T15:01:21Z"
 }

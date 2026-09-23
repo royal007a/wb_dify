@@ -115,7 +115,7 @@
 2. 课程 08/13 的精确 token/cost、备份恢复、容量测试和流式故障矩阵仍是生产门槛，不能因 happy path 通过而关闭。
 3. 课程 16 的 write 工具安全契约（planDigest、side-effect ledger、幂等、compensation）尚未完成，当前只开放 READ。
 4. README 与部分早期历史文档仍保留“尚未完成 Provider/Agent/MCP/RAG/Workflow”的旧描述，应以后续 `CURRENT_STATE.md`、Harness 证据和本文件为准，并逐步清理陈旧表述。
-5. 本轮验收顺序：先 `harness`/`backend`/`frontend`/`migration`/`runtime`/`eval` 验证，再本地启动和浏览器 smoke；失败要记录为证据，不用“代码看起来完整”替代运行证据。
+5. 本轮验收顺序：先 `harness`/`backend`/`frontend`/`migration`/`runtime`/`eval` 验证，再本地启动和浏览器 smoke；本轮已用 `pgvector/pgvector:pg16` 启动本地数据库，Flyway 到 V19，健康接口和前端均返回 200，Playwright 2/2 通过，证据见 `harness/evidence/COURSE-005-016/local-deploy-20260923.json`。失败要记录为证据，不用“代码看起来完整”替代运行证据。
 
 ## 四、可复用交付模板
 

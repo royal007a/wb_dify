@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "backend",
+    "frontend",
+    "migration",
+    "runtime",
+    "eval"
+  ],
+  "base": "working-tree",
+  "headCommit": "25b024bedfea7f94da8c649baa673e045cf4dbfc",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/COURSE-005-016/COURSE-005-016-20260923T145953Z-f34493a1/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/COURSE-005-016/COURSE-005-016-20260923T145953Z-f34493a1/harness-progress.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/COURSE-005-016/COURSE-005-016-20260923T145953Z-f34493a1/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/COURSE-005-016/COURSE-005-016-20260923T145953Z-f34493a1/harness-shell-syntax.log"
+    },
+    {
+      "name": "backend-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/COURSE-005-016/COURSE-005-016-20260923T145953Z-f34493a1/backend-tests.log"
+    },
+    {
+      "name": "frontend-typecheck",
+      "exitCode": 0,
+      "log": "harness/evidence/COURSE-005-016/COURSE-005-016-20260923T145953Z-f34493a1/frontend-typecheck.log"
+    },
+    {
+      "name": "frontend-build",
+      "exitCode": 0,
+      "log": "harness/evidence/COURSE-005-016/COURSE-005-016-20260923T145953Z-f34493a1/frontend-build.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/COURSE-005-016/COURSE-005-016-20260923T145953Z-f34493a1/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/COURSE-005-016/COURSE-005-016-20260923T145953Z-f34493a1/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/COURSE-005-016/COURSE-005-016-20260923T145953Z-f34493a1/migration-not-skipped.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/COURSE-005-016/COURSE-005-016-20260923T145953Z-f34493a1/runtime-tests.log"
+    },
+    {
+      "name": "intent-context-recall-eval",
+      "exitCode": 0,
+      "log": "harness/evidence/COURSE-005-016/COURSE-005-016-20260923T145953Z-f34493a1/intent-context-recall-eval.log"
+    }
+  ],
+  "finishedAt": "2026-09-23T15:01:21Z"
+}
