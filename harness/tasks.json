@@ -1075,7 +1075,7 @@
       "title": "阅读并吸收课程 05-16，完成实现核验与本地部署",
       "description": "阅读 Claude Code 企业级全链路开发实战第 05-16 讲，形成逐讲总结、源码映射和差距清单；运行 Harness 验证矩阵并完成本地部署 smoke。",
       "priority": "P0",
-      "status": "running",
+      "status": "pending",
       "scopes": [
         "harness",
         "backend",
