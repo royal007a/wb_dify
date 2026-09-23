@@ -11,7 +11,7 @@ FRONTEND_LOG="$RUNTIME_DIR/frontend.log"
 BACKEND_PORT=${HIFY_PORT:-8080}
 FRONTEND_PORT=${HIFY_WEB_PORT:-5173}
 POSTGRES_PORT=${HIFY_POSTGRES_PORT:-54329}
-POSTGRES_CONTAINER=${HIFY_POSTGRES_CONTAINER:-hify-dev-postgres}
+POSTGRES_CONTAINER=${HIFY_POSTGRES_CONTAINER:-hify-dev-postgres-pgvector}
 BACKEND_STARTED=0
 FRONTEND_STARTED=0
 
@@ -94,7 +94,7 @@ if [ -z "${HIFY_DB_URL:-}" ]; then
       -e POSTGRES_PASSWORD=hify \
       -p "127.0.0.1:$POSTGRES_PORT:5432" \
       -v hify-dev-postgres-data:/var/lib/postgresql/data \
-      postgres:16-alpine >/dev/null
+      pgvector/pgvector:pg16 >/dev/null
   fi
   postgres_attempt=0
   until docker exec "$POSTGRES_CONTAINER" pg_isready -U hify -d hify >/dev/null 2>&1; do
