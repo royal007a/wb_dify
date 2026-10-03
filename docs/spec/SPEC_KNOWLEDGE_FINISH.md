@@ -23,6 +23,7 @@
 - 恢复/用户澄清只读原 Checkpoint 的 K 映射，不重新检索、不按新的排序重新编号。旧 Checkpoint 缺少映射不能凭 `[K1]` 通过。用户把 Gap 标为已回答，也不能绕过下一次最终引用校验。
 - 校验通过只标记本次实际引用的来源。canonical 读取通过公开 port，归档引用仍需要冻结成员与准确摘要。引用去重，不增加 LLM 调用。
 - 为避免未通过校验的答案先出现在页面，知识绑定路径不发模型正文 `message.delta`，完成后前端按终态回读 Run；检索、模型、工具进度事件照常可见。普通聊天仍流式。这是有意的首字体验取舍，不宣称知识回答仍逐 token 展示。
+- 内部 canonical history 不等于可交付记忆：知识绑定或 checkpoint 带知识门禁的 Run 不再生成原始 memory 索引；目录、摘要、search 和 detail 读取也检查来源 Run，已有索引不能绕过。RUNNING/NEEDS_INPUT/COMPLETED 都隔离原始 memory，避免最终通过后连带放出此前未核验文本。最终合格答案仍由 Run/chat_messages 正常交付，不删除内部历史，不影响 canonical 重放。详细取舍见 `SPEC_KNOWLEDGE_MEMORY.md`。
 - 失败追问保存带 Gap 的 checkpoint；正常完成不额外持久化“已推进下一 turn”的最终 checkpoint，以免提交前崩溃后重新生成下一轮。正常重启由已有 model:N canonical history 重放，再做来源校验。
 - canonical 校验前检查取消/预算，返回后再次检查；尚未完成来源校验的关闭中断仍视为未完工作，不宣称 JDBC 阻塞可精确中断。
 - 入场检索的异常分类也保留关闭语义：显式 ExecutionSuspendedException（含异常链），或 stopping 期间读取异常，仍走 run.interrupted、保留 RUNNING 等待重启；不能吞掉原因后永久记为 KNOWLEDGE_RETRIEVAL_FAILED。持久化用户取消仍由既有终态行锁优先处理。此项后续回归见 SPEC-KNOWLEDGE-FINISH-002。

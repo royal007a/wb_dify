@@ -172,7 +172,7 @@ POST /api/v1/runs/{runId}/memory/search
 GET  /api/v1/runs/{runId}/memory/details/{refId}
 ```
 
-`memory` 返回该 Run 的结构化摘要和 Detail Catalog。`search` 请求为
+普通聊天的 `memory` 返回该 Run 的结构化摘要和 Detail Catalog。知识门禁 Run 的原始 memory 不开放：目录/摘要为空，search 过滤这类来源 Run（含同会话旧索引），detail 返回 409/CONFLICT；已完成答案仍通过 Run 和聊天消息读取。该限制不删除内部恢复历史。`search` 请求为
 `query/kind/from/to/entity/limit`，返回带分数的 ref 候选；它只是导航结果，不是事实证据。
 `details` 必须与当前 Run 属于同一 Conversation，并从指定 canonical revision/message index 回读、校验 digest 后返回原文。运行时对应的模型工具名是 `history.search` 与 `history.detail`；前者打开未验证 Gap，后者成功后才形成 VERIFIED evidence。
 
