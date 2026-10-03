@@ -4,7 +4,7 @@
 
 - 原版 Hify，源码基线 `973257c`；计划登记 `269af92`，任务 `SPEC-AUDIT-001`。
 - 直接读取12个业务Controller、六个前端路由、Runtime/Knowledge/Workflow源码、相关测试和已有课程对齐文档；未把 hify-cc 的功能/测试结论搬进来。
-- 规格：`docs/spec/http-api.json`、生成的 `HTTP_API.md`、`FUNCTION_TESTS.md`（F01-F38）、`AUDIT_FINDINGS.md`（A01-A07）。库存67个显式 /api 方法路径，不包含框架端点。
+- 规格：`docs/spec/http-api.json`、生成的 `HTTP_API.md`、`FUNCTION_TESTS.md`（F01-F38）、`AUDIT_FINDINGS.md`（A01-A08）。库存67个显式 /api 方法路径，不包含框架端点。
 
 ## 新鲜执行（不是旧报告）
 
@@ -31,7 +31,7 @@ HistoryRecallEvaluationTest 的12题单轮 P95=74,157μs，超过50,000μs。词
 - 67是库存匹配数，不是67个接口行为测试全部通过；F01-F38也不是已全验收。
 - API测试引用是候选入口，部分只测组合happy path，未覆盖该组每个路由。
 - `management.spec.ts` mock响应，不能证明真实管理CRUD；真实Provider/MCP/PG/浏览器矩阵由下一原子任务逐项执行。
-- A01-A07为代码审查发现，尚需公开API/确定性故障回归来确认行为与修复；没有为通过门禁而删除这些要求。
+- A01-A08为审查发现；A05/A06 已由隔离诊断复现，代码和原始结果见 `spec-probes/README.md`，其余仍需故障回归；没有为通过门禁而删除这些要求。
 - 本任务不修改生产代码/迁移，不需要重新发布后端；前轮Token适配部署已在独立证据中记录，后续修复部署另有任务。
 
 ## 独立 review

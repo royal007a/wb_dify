@@ -25,10 +25,12 @@
 ### A05 HTTP 错误边界待补
 
 `GlobalExceptionHandler` 未专门覆盖缺 header/参数类型、405/415 等常见客户端错误，存在被兜底 Exception 转成500并记录异常的风险。需通过公开 MockMvc 请求复现（尤其 `Idempotency-Key` 缺失与敏感输入），不能只测直接 handler 调用。
+隔离 standalone MockMvc（真实 handler + 最小 Controller）已确认四项全返回500，见 `docs/evidence/spec-probes/README.md`；应用路由回归待补。
 
 ### A06 Provider 取消可能只退出等待，未停止后台任务
 
 `LlmHttpClient.post` 和 `CircuitBreakerService.execute` 在循环中调用 `control.throwIfCancelled()`，但只有 InterruptedException/超时分支执行 future.cancel(true)，没有 finally 取消未完成 Future。现有 blocking-post 测试只断言调用者一秒内抛异常，没有断言线程/底层调用停止。需用 latch 验证 worker 收到 interrupt、取消前不调网络、取消后不继续重试。
+隔离诊断已确认：预取消仍提交1个任务；调用者抛 ExecutionCancelledException 后，worker 在清理前500ms内没有收到中断。证据同上。
 
 ### A07 SSE 提交与订阅存在事务/终态窗口
 
