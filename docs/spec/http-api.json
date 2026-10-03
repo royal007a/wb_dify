@@ -257,7 +257,9 @@
       "success": 200,
       "response": "RunView (raw)",
       "checks": "按会话和key查已提交记录，无写入/调度；Provider停用不挡回读；未知/异会话404；缺/非法key400；no-store/Vary；404不证明在途POST不会到达",
-      "testCandidates": ["backend/hify-app/src/test/java/com/hify/api/RunSubmissionIdentityTest.java"]
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/RunSubmissionIdentityTest.java"
+      ]
     },
     {
       "method": "GET",
@@ -507,9 +509,10 @@
       "request": "multipart file (TXT/Markdown)",
       "success": 202,
       "response": "Result<String>",
-      "checks": "大小/类型/编码/内容；持久任务；失败有状态",
+      "checks": "大小/类型/编码/内容；持久任务；失败有状态；Servlet超限41300/413，畸形multipart40000/400，不回显输入",
       "testCandidates": [
-        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java"
       ]
     },
     {
@@ -755,10 +758,11 @@
       "request": "runId",
       "success": 200,
       "response": "RunView (raw)",
-      "checks": "终态唯一；version/digest/cancelRequestedAt 可审计",
+      "checks": "终态唯一；version/digest/cancelRequestedAt 可审计；未知Run为40400/HTTP404、安全JSON正文",
       "testCandidates": [
         "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",
-        "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java"
       ]
     },
     {
@@ -771,10 +775,11 @@
       "request": "runId",
       "success": 202,
       "response": "RunView (raw)",
-      "checks": "取消持久化且传阻塞调用；已终态不回退",
+      "checks": "取消持久化且传阻塞调用；已终态不回退；未知Run为40400/HTTP404、安全JSON正文",
       "testCandidates": [
         "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",
-        "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java"
       ]
     },
     {
@@ -787,10 +792,11 @@
       "request": "runId",
       "success": 200,
       "response": "List<EventView> (raw)",
-      "checks": "ID 有序；无秘密；未知 run 错误",
+      "checks": "ID 有序；无秘密；未知 run 错误；未知Run为40400/HTTP404、安全JSON正文",
       "testCandidates": [
         "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",
-        "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java"
       ]
     },
     {
@@ -803,10 +809,11 @@
       "request": "runId; Last-Event-ID?",
       "success": 200,
       "response": "text/event-stream",
-      "checks": "只 replay 游标之后；delta 追加；终态关闭；取消与断开语义区分",
+      "checks": "只 replay 游标之后；delta 追加；终态关闭；取消与断开语义区分；未知Run为40400/HTTP404、安全JSON正文",
       "testCandidates": [
         "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",
-        "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java"
       ]
     },
     {

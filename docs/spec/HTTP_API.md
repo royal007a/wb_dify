@@ -273,9 +273,9 @@
 - 功能：上传异步索引。
 - 输入：`multipart file (TXT/Markdown)`。
 - 成功：HTTP 202，`Result<String>`。
-- 必测断言/边界：大小/类型/编码/内容；持久任务；失败有状态。
+- 必测断言/边界：大小/类型/编码/内容；持久任务；失败有状态；Servlet超限41300/413，畸形multipart40000/400，不回显输入。
 - 实现：[KnowledgeController](../../backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java)。
-- 候选测试（非逐接口覆盖承诺）：[KnowledgeApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[KnowledgeApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java)；[HttpErrorSurfaceTest](../../backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java)。
 
 ### POST /api/v1/knowledge-bases/{id}/retrieval-tests
 
@@ -499,36 +499,36 @@
 - 功能：读取运行事实源。
 - 输入：`runId`。
 - 成功：HTTP 200，`RunView (raw)`。
-- 必测断言/边界：终态唯一；version/digest/cancelRequestedAt 可审计。
+- 必测断言/边界：终态唯一；version/digest/cancelRequestedAt 可审计；未知Run为40400/HTTP404、安全JSON正文。
 - 实现：[RunController](../../backend/hify-app/src/main/java/com/hify/api/RunController.java)。
-- 候选测试（非逐接口覆盖承诺）：[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)；[PostgresConcurrencyIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)；[PostgresConcurrencyIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java)；[HttpErrorSurfaceTest](../../backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java)。
 
 ### POST /api/v1/runs/{runId}/cancellations
 
 - 功能：请求取消。
 - 输入：`runId`。
 - 成功：HTTP 202，`RunView (raw)`。
-- 必测断言/边界：取消持久化且传阻塞调用；已终态不回退。
+- 必测断言/边界：取消持久化且传阻塞调用；已终态不回退；未知Run为40400/HTTP404、安全JSON正文。
 - 实现：[RunController](../../backend/hify-app/src/main/java/com/hify/api/RunController.java)。
-- 候选测试（非逐接口覆盖承诺）：[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)；[PostgresConcurrencyIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)；[PostgresConcurrencyIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java)；[HttpErrorSurfaceTest](../../backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java)。
 
 ### GET /api/v1/runs/{runId}/events
 
 - 功能：读全部持久事件。
 - 输入：`runId`。
 - 成功：HTTP 200，`List<EventView> (raw)`。
-- 必测断言/边界：ID 有序；无秘密；未知 run 错误。
+- 必测断言/边界：ID 有序；无秘密；未知 run 错误；未知Run为40400/HTTP404、安全JSON正文。
 - 实现：[RunController](../../backend/hify-app/src/main/java/com/hify/api/RunController.java)。
-- 候选测试（非逐接口覆盖承诺）：[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)；[PostgresConcurrencyIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)；[PostgresConcurrencyIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java)；[HttpErrorSurfaceTest](../../backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java)。
 
 ### GET /api/v1/runs/{runId}/events/stream
 
 - 功能：流式订阅及重放。
 - 输入：`runId; Last-Event-ID?`。
 - 成功：HTTP 200，`text/event-stream`。
-- 必测断言/边界：只 replay 游标之后；delta 追加；终态关闭；取消与断开语义区分。
+- 必测断言/边界：只 replay 游标之后；delta 追加；终态关闭；取消与断开语义区分；未知Run为40400/HTTP404、安全JSON正文。
 - 实现：[RunController](../../backend/hify-app/src/main/java/com/hify/api/RunController.java)。
-- 候选测试（非逐接口覆盖承诺）：[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)；[PostgresConcurrencyIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)；[PostgresConcurrencyIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java)；[HttpErrorSurfaceTest](../../backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java)。
 
 ## tool
 

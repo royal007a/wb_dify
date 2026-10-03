@@ -68,7 +68,7 @@ public class RunEventBroker {
     public SseEmitter subscribe(String runId,Long afterEventId) {return subscribe(runId,afterEventId,()->true);}
 
     public SseEmitter subscribe(String runId,Long afterEventId,BooleanSupplier responseCommitted) {
-        runs.findById(runId).orElseThrow(()->new IllegalArgumentException("Run not found"));
+        runs.findById(runId).orElseThrow(()->new BizException(ErrorCode.NOT_FOUND));
         if(afterEventId!=null && (afterEventId<0 || afterEventId>0 &&
                 events.findById(afterEventId).filter(e->runId.equals(e.getRunId())).isEmpty()))
             throw new BizException(ErrorCode.PARAM_ERROR,"Event cursor does not belong to this run");

@@ -16,6 +16,7 @@
     "com.hify.api.KnowledgeMemoryPostgresTest": 21
   },
   "backend-tests": {
+    "com.hify.api.HttpErrorSurfaceTest": 6,
     "com.hify.common.CommonContractsTest": 5,
     "com.hify.common.ProviderDeadlineTest": 6,
     "com.hify.common.ExecutionShutdownTest": 4,

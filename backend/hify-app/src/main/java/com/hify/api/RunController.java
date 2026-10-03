@@ -98,7 +98,7 @@ public class RunController {
 
     @GetMapping("/runs/{runId}/events")
     public List<EventView> events(@PathVariable String runId) {
-        if (!runs.existsById(runId)) throw new IllegalArgumentException("Run not found: " + runId);
+        if (!runs.existsById(runId)) throw new com.hify.common.BizException(com.hify.common.ErrorCode.NOT_FOUND);
         return events.findByRunIdOrderByIdAsc(runId).stream().map(EventView::from).toList();
     }
 

@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -25,6 +27,17 @@ public class GlobalExceptionHandler {
             MissingServletRequestPartException.class})
     public ResponseEntity<Result<Void>> requestBinding(Exception exception) {
         // Framework exception messages can contain the rejected value, including credentials.
+        return fail(ErrorCode.PARAM_ERROR, ErrorCode.PARAM_ERROR.message());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Result<Void>> uploadTooLarge(MaxUploadSizeExceededException exception) {
+        return fail(ErrorCode.PAYLOAD_TOO_LARGE, ErrorCode.PAYLOAD_TOO_LARGE.message());
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<Result<Void>> malformedMultipart(MultipartException exception) {
+        // Parser diagnostics can contain a submitted filename, boundary or body.
         return fail(ErrorCode.PARAM_ERROR, ErrorCode.PARAM_ERROR.message());
     }
 
@@ -79,7 +92,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<Result<Void>> notFound(NoResourceFoundException exception) {
-        return fail(ErrorCode.NOT_FOUND, exception.getMessage());
+        return fail(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.message());
     }
 
     @ExceptionHandler(Exception.class)

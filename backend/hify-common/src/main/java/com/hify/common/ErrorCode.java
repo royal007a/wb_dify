@@ -12,6 +12,7 @@ public enum ErrorCode {
     NOT_ACCEPTABLE(40600, "不支持此响应格式", HttpStatus.NOT_ACCEPTABLE),
     IDEMPOTENCY_KEY_REUSED(40901, "幂等键已被不同请求使用", HttpStatus.CONFLICT),
     CONFLICT(40900, "资源状态冲突", HttpStatus.CONFLICT),
+    PAYLOAD_TOO_LARGE(41300, "上传内容超过大小限制", HttpStatus.PAYLOAD_TOO_LARGE),
     UNSUPPORTED_MEDIA_TYPE(41500, "不支持此请求内容类型", HttpStatus.UNSUPPORTED_MEDIA_TYPE),
     INTERNAL_ERROR(50000, "系统内部错误", HttpStatus.INTERNAL_SERVER_ERROR),
     SERVICE_UNAVAILABLE(50300, "服务暂时不可用", HttpStatus.SERVICE_UNAVAILABLE);

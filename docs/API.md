@@ -302,7 +302,8 @@ Agent 发布时把 MCP 工具映射成稳定 runtime tool name 和 `ToolDefiniti
 | 参数/权限 | 40000 / HTTP400，40100 / HTTP401，40300 / HTTP403 |
 | 不存在/冲突 | 40400 / HTTP404，40900 / HTTP409 |
 | HTTP 协议错误 | 40500 / HTTP405（保留 Allow），40600 / HTTP406，41500 / HTTP415 |
+| Multipart 解析 | 41300 / HTTP413（容器上传上限），40000 / HTTP400（畸形请求）；不回显文件名、boundary、正文或异常堆栈 |
 | 幂等冲突 | 40901 / HTTP409 |
 | 系统 | 50000 / HTTP500 |
 
-以上为 `ErrorCode` 数字枚举。Provider 失败分类、Run terminalReason 和 Tool errorCode 属于结果/事件字段，不应与 HTTP 错误码混称。部分旧 Run/Memory 缺资源目前抛 IllegalArgumentException 映射400，并非已统一404，需回归对齐。
+以上为 `ErrorCode` 数字枚举。Provider 失败分类、Run terminalReason 和 Tool errorCode 属于结果/事件字段，不应与 HTTP 错误码混称。未知Run的详情、事件、SSE订阅和取消均返回40400/HTTP404（SSE尚未建立时为application/json），未知路由404不反射请求路径。Memory和部分旧会话入口仍有IllegalArgumentException映射400的历史边界，不能泛称全部资源已统一404。知识文档业务大小/类型/内容限制仍是400参数错误，与Servlet multipart解析上限的413区分。

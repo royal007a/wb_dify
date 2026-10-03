@@ -295,7 +295,7 @@ public class RunApplicationService {
 
     public AgentRun get(String runId) {
         return runs.findById(runId)
-                .orElseThrow(() -> new IllegalArgumentException("Run not found: " + runId));
+                .orElseThrow(() -> new com.hify.common.BizException(com.hify.common.ErrorCode.NOT_FOUND));
     }
 
     public AgentRun cancel(String runId) {
