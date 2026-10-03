@@ -32,7 +32,7 @@
 
 WorkflowKnowledgeIntegrationTest 和同组 PostgreSQL 用例覆盖：发布→归档→新增文档→新发布；旧/新会话分别保留七天/十五天政策；历史引用回读；草稿快照注入拒绝；旧 DSL 拒绝；发布半失败回滚；缺成员/错成员摘要/错 manifest/错 base/原文损坏；空库冻结。
 
-WorkflowKnowledgeReviewTest/WorkflowKnowledgeReviewPostgresTest 另覆盖：旧有效 checksum 加真实 corpus 但无服务端 envelope 仍拒绝；Agent 发布前拒绝；DSL/checksum 不一致拒绝；Agent/Workflow 相反业务优先级下并发发布，PG 观测真实锁等待；第二连接在清单读取后提交原文修改，本轮仍返回已校验旧原文，下一轮拒绝损坏内容；真实连接隔离级别为 REPEATABLE_READ；类型判断复用事务连接。测试不证明向量列被永久冻结。
+WorkflowKnowledgeReviewTest/WorkflowKnowledgeReviewPostgresTest 另覆盖：旧有效 checksum 加真实 corpus 但无服务端 envelope 仍拒绝；Agent 发布前拒绝；DSL/checksum 不一致拒绝；Agent/Workflow 相反业务优先级下并发发布，PG 观测真实锁等待；第二连接在清单读取后提交原文修改，本轮仍返回已校验旧原文，下一轮拒绝损坏内容；真实连接隔离级别为 REPEATABLE_READ；类型判断复用事务连接。H2 排序用内存候选，只证明隔离级别被设置；PG 排序再次查库，才证明了交错时的快照隔离效果。测试不证明向量列被永久冻结。
 
 空库合法冻结并返回零候选，这不代表可充分回答。无关命中、空命中、Claim/FinishGate 仍由 SPEC-KNOWLEDGE-FINISH-001 处理，不借本片宣称完成。
 

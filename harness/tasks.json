@@ -4,6 +4,18 @@
   "updatedAt": "2026-10-03T21:52:28Z",
   "tasks": [
     {
+      "id": "SPEC-KNOWLEDGE-INTEGRITY-003",
+      "title": "补齐索引数据库类型检测及Agent固定Workflow校验和",
+      "description": "知识复验新增P2：索引侧isPostgres额外借连接且失败降级，执行侧未比对Agent已固定checksum。",
+      "priority": "P2", "status": "pending",
+      "scopes": ["backend", "harness", "migration"], "verifyScopes": ["harness", "migration"],
+      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
+      "dependsOn": ["SPEC-WORKFLOW-KNOWLEDGE-002"],
+      "acceptance": ["索引产品类型检测复用事务连接且故障不伪装索引成功", "Agent固定checksum与实际执行版本匹配，不只验证行内DSL/checksum自洽"],
+      "planPath": null, "checkpoint": null, "blockedReason": null, "evidence": [],
+      "createdAt": "2026-10-03T22:00:00Z", "updatedAt": "2026-10-03T22:00:00Z"
+    },
+    {
       "id": "SPEC-WORKFLOW-KNOWLEDGE-002",
       "title": "补齐冻结Workflow发布边界、锁顺序与事务隔离证据",
       "description": "处理知识快照复核六项P2：旧版本Agent发布、客户端旧快照来源、checksum、多库死锁、隔离交错、额外借连接；明确向量排序边界。",
