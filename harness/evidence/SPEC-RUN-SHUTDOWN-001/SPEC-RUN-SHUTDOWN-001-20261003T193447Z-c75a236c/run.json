@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-RUN-SHUTDOWN-001-20261003T193447Z-c75a236c",
+  "taskId": "SPEC-RUN-SHUTDOWN-001",
+  "status": "completed",
+  "baselineCommit": "22e9d7780e2a8fb6c0b064a81aeb1fbb48be510d",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T19:34:47Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "5e37fff7a02d528277ec4f32edb29e5991da8e15",
+  "finishedAt": "2026-10-03T19:56:06Z"
+}

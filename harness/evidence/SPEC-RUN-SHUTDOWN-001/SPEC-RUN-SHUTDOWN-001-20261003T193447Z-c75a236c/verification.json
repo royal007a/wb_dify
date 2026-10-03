@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "migration"
+  ],
+  "base": "working-tree",
+  "headCommit": "5e37fff7a02d528277ec4f32edb29e5991da8e15",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-SHUTDOWN-001/SPEC-RUN-SHUTDOWN-001-20261003T193447Z-c75a236c/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-SHUTDOWN-001/SPEC-RUN-SHUTDOWN-001-20261003T193447Z-c75a236c/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-SHUTDOWN-001/SPEC-RUN-SHUTDOWN-001-20261003T193447Z-c75a236c/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-SHUTDOWN-001/SPEC-RUN-SHUTDOWN-001-20261003T193447Z-c75a236c/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-SHUTDOWN-001/SPEC-RUN-SHUTDOWN-001-20261003T193447Z-c75a236c/harness-shell-syntax.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-SHUTDOWN-001/SPEC-RUN-SHUTDOWN-001-20261003T193447Z-c75a236c/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-SHUTDOWN-001/SPEC-RUN-SHUTDOWN-001-20261003T193447Z-c75a236c/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-SHUTDOWN-001/SPEC-RUN-SHUTDOWN-001-20261003T193447Z-c75a236c/migration-not-skipped.log"
+    },
+    {
+      "name": "migration-mcp-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-SHUTDOWN-001/SPEC-RUN-SHUTDOWN-001-20261003T193447Z-c75a236c/migration-mcp-not-skipped.log"
+    },
+    {
+      "name": "migration-workflow-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-SHUTDOWN-001/SPEC-RUN-SHUTDOWN-001-20261003T193447Z-c75a236c/migration-workflow-not-skipped.log"
+    },
+    {
+      "name": "migration-shutdown-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-SHUTDOWN-001/SPEC-RUN-SHUTDOWN-001-20261003T193447Z-c75a236c/migration-shutdown-not-skipped.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T19:56:06Z"
+}

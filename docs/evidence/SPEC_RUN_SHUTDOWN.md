@@ -29,6 +29,8 @@ An isolated `git archive 22e9d77` at `/tmp/hify-e1-baseline-CUUadD` received onl
 
 Commands use ephemeral databases, test-owned ports and fake model/knowledge workers. No paid Provider, real MCP, browser or deployment verification is claimed here. No 132/hify-cc/shared services or secrets were touched. Explicit Harness and migration gate results are recorded after the code commit in verification.json.
 
+Atomic runner on **5e37fff** repeated **23 Run/application tests, zero skips**; explicit Harness + migration scopes passed at **2026-10-03T19:56:06Z**, including **18 migration/PostgreSQL matrix tests, zero skips** and separate non-skipped guards for PostgreSQL concurrency, credentials, Workflow migration and shutdown/restart. This is a scoped gate, not the outstanding all-feature/browser/deployment gate.
+
 ## Remaining boundaries
 
 Single instance, old process fully stopped before new startup. Neither dispatch owner nor lifecycle flag is a distributed lease. No arbitrary write-tool replay, external rollback or exactly-once side effect claim. A hard kill is represented by orphan-row fixtures, not an actual kill -9 test. Non-cooperative drivers can outlive the 5-second wait; DB unavailability can prevent interruption evidence. Run budget may expire before recovery succeeds. Workflow/AgentRun final-commit cancellation races are a separate pending slice; deployment and full product verification remain pending.
