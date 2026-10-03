@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T18:28:40Z",
+  "updatedAt": "2026-10-03T18:48:36Z",
   "tasks": [
     {
       "id": "SPEC-CREDENTIAL-BOUNDARY-002",
@@ -93,14 +93,15 @@
       "title": "SSE慢客户端隔离及游标归属验证",
       "description": "F：提交线程不得执行阻塞send；慢连接不能阻塞其他Run，未知或其他Run游标不能跳过终态。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "runtime",
         "harness"
       ],
       "verifyScopes": [
-        "harness"
+        "harness",
+        "migration"
       ],
       "risk": "reversible_write",
       "operation": "workspace_write",
@@ -112,12 +113,22 @@
         "跨Run及未知游标按契约拒绝或重置，不假关闭漏事件",
         "PG事务SSE及浏览器重连回归"
       ],
-      "planPath": "exec-plans/active/SPEC-SSE-BACKPRESSURE-001.md",
+      "planPath": "exec-plans/completed/SPEC-SSE-BACKPRESSURE-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8",
+          "path": "harness/evidence/SPEC-SSE-BACKPRESSURE-001/SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "0fd14e6ed9d9ba7b3ca6e9a9edf97daac4a54c6e",
+          "headCommit": "95e77f1ac082597f59db5cbb842dcc7f88e9f088",
+          "recordedAt": "2026-10-03T18:48:36Z"
+        }
+      ],
       "createdAt": "2026-10-03T18:13:15Z",
-      "updatedAt": "2026-10-03T18:13:15Z"
+      "updatedAt": "2026-10-03T18:48:36Z"
     },
     {
       "id": "SPEC-RUN-ADMISSION-001",

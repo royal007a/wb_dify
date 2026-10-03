@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8",
+  "taskId": "SPEC-SSE-BACKPRESSURE-001",
+  "status": "completed",
+  "baselineCommit": "0fd14e6ed9d9ba7b3ca6e9a9edf97daac4a54c6e",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T18:32:34Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "95e77f1ac082597f59db5cbb842dcc7f88e9f088",
+  "finishedAt": "2026-10-03T18:48:36Z"
+}

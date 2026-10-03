@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "migration"
+  ],
+  "base": "working-tree",
+  "headCommit": "95e77f1ac082597f59db5cbb842dcc7f88e9f088",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-BACKPRESSURE-001/SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-BACKPRESSURE-001/SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-BACKPRESSURE-001/SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-BACKPRESSURE-001/SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-BACKPRESSURE-001/SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8/harness-shell-syntax.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-BACKPRESSURE-001/SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-BACKPRESSURE-001/SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-BACKPRESSURE-001/SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8/migration-not-skipped.log"
+    },
+    {
+      "name": "migration-mcp-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-BACKPRESSURE-001/SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8/migration-mcp-not-skipped.log"
+    },
+    {
+      "name": "migration-workflow-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-BACKPRESSURE-001/SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8/migration-workflow-not-skipped.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T18:48:36Z"
+}
