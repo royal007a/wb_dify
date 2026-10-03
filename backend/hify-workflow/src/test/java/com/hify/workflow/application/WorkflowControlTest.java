@@ -172,7 +172,8 @@ class WorkflowControlTest {
                 node("end","END","output","should-not-run-after-cancel")),edge("start","lookup"),edge("lookup","end"));
         ((com.fasterxml.jackson.databind.node.ObjectNode)graph.nodes().get(1).config()).set("knowledgeSnapshot",
                 JSON.createObjectNode().put("corpusVersionId",SNAPSHOT.id()).put("manifestDigest",SNAPSHOT.manifestDigest()).put("revisionNo",1).put("chunkCount",0));
-        when(app.requireVersion("v1")).thenReturn(new WorkflowVersion("v1","w1",1,1,JSON.writeValueAsString(graph),"digest",Instant.now()));
+        String published=WorkflowPublishedGraph.write(graph,JSON);
+        when(app.requireVersion("v1")).thenReturn(new WorkflowVersion("v1","w1",1,1,published,WorkflowPublishedGraph.checksum(published),Instant.now()));
         when(nodes.save(any())).thenAnswer(invocation -> {
             WorkflowNodeRun node = invocation.getArgument(0);recorded.put(node.getSequenceNo(),node);return node;
         });

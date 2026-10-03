@@ -41,12 +41,13 @@ class WorkflowApiIntegrationTest {
   String id=body(http.perform(post("/api/v1/workflows").contentType("application/json").content(valid))
     .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();
   String legacy=mergedGraph("{{refund.answer}}"), versionId=UUID.randomUUID().toString();
-  versions.saveAndFlush(new WorkflowVersion(versionId,id,1,1,legacy,"legacy-digest",Instant.now()));
+  String checksum=java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(legacy.getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+  versions.saveAndFlush(new WorkflowVersion(versionId,id,1,1,legacy,checksum,Instant.now()));
   http.perform(post("/api/v1/workflow-versions/{id}/runs",versionId).contentType("application/json").content("{\"input\":\"你好\"}"))
     .andExpect(status().isBadRequest());
   var stored=versions.findById(versionId).orElseThrow();
   assertThat(stored.getDslJson()).isEqualTo(legacy);
-  assertThat(stored.getChecksum()).isEqualTo("legacy-digest");
+  assertThat(stored.getChecksum()).isEqualTo(checksum);
  }
 
  @Test void customStartKeyWorksThroughPublishedHttpExecution() throws Exception {

@@ -61,6 +61,7 @@ class WorkflowEngineTest {
         assertThat(engine.execute("v1", "refund contains refund").output()).isEqualTo("true");
     }
     private void stored(WorkflowDraftRequest graph) throws Exception {
-        when(app.requireVersion("v1")).thenReturn(new WorkflowVersion("v1","w1",1,1,JSON.writeValueAsString(graph),"digest", Instant.now()));
+        String published=WorkflowPublishedGraph.write(graph,JSON);
+        when(app.requireVersion("v1")).thenReturn(new WorkflowVersion("v1","w1",1,1,published,WorkflowPublishedGraph.checksum(published), Instant.now()));
     }
 }

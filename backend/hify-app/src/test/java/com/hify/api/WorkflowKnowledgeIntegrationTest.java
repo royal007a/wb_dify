@@ -139,10 +139,10 @@ class WorkflowKnowledgeIntegrationTest {
         assertThat(failed.path("errorMessage").asText()).containsAnyOf("摘要","清单");
     }
 
-    private String base() throws Exception {return body(http.perform(post("/api/v1/knowledge-bases").contentType("application/json")
+    protected String base() throws Exception {return body(http.perform(post("/api/v1/knowledge-bases").contentType("application/json")
             .content(json.writeValueAsString(Map.of("name","frozen-"+UUID.randomUUID(),"chunkSize",256,"chunkOverlap",16))))
             .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();}
-    private String upload(String base,String content) throws Exception {
+    protected String upload(String base,String content) throws Exception {
         var file=new MockMultipartFile("file","policy.txt","text/plain",content.getBytes(StandardCharsets.UTF_8));
         String id=body(http.perform(multipart("/api/v1/knowledge-bases/{id}/documents",base).file(file)).andExpect(status().isAccepted())
                 .andReturn().getResponse().getContentAsString()).path("data").asText();
@@ -153,24 +153,28 @@ class WorkflowKnowledgeIntegrationTest {
             assertThat(state).isNotEqualTo("FAILED");Thread.sleep(25);
         }throw new AssertionError("indexing timeout");
     }
-    private ObjectNode graph(String base) throws Exception {return (ObjectNode)json.readTree("""
+    protected ObjectNode graph(String base) throws Exception {return (ObjectNode)json.readTree("""
             {"name":"snapshot-%s","schemaVersion":1,"nodes":[
             {"nodeKey":"start","type":"START","name":"start","config":{}},
             {"nodeKey":"lookup","type":"KNOWLEDGE","name":"lookup","config":{"knowledgeBaseId":"%s","query":"{{start.userMessage}}"}},
             {"nodeKey":"end","type":"END","name":"end","config":{"output":"{{lookup.citations}}"}}],
             "edges":[{"edgeKey":"a","sourceNodeKey":"start","targetNodeKey":"lookup"},{"edgeKey":"b","sourceNodeKey":"lookup","targetNodeKey":"end"}]}
             """.formatted(UUID.randomUUID(),base));}
-    private String workflow(String base) throws Exception {return body(http.perform(post("/api/v1/workflows").contentType("application/json").content(json.writeValueAsString(graph(base))))
+    protected String workflow(String base) throws Exception {return body(http.perform(post("/api/v1/workflows").contentType("application/json").content(json.writeValueAsString(graph(base))))
             .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();}
-    private JsonNode publish(String id) throws Exception {return body(http.perform(post("/api/v1/workflows/{id}/versions",id)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");}
-    private JsonNode execute(String id) throws Exception {return body(http.perform(post("/api/v1/workflow-versions/{id}/runs",id).contentType("application/json").content("{\"input\":\"退货期限\"}"))
+    protected JsonNode publish(String id) throws Exception {return body(http.perform(post("/api/v1/workflows/{id}/versions",id)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");}
+    protected JsonNode execute(String id) throws Exception {return body(http.perform(post("/api/v1/workflow-versions/{id}/runs",id).contentType("application/json").content("{\"input\":\"退货期限\"}"))
             .andExpect(status().isAccepted()).andReturn().getResponse().getContentAsString()).path("data");}
-    private String agent(String wid) throws Exception {
+    protected String agent(String wid) throws Exception {
+        String aid=draftAgent(wid);
+        http.perform(post("/api/v1/agents/{id}/publications",aid)).andExpect(status().isOk());return aid;
+    }
+    protected String draftAgent(String wid) throws Exception {
         String aid=body(http.perform(post("/api/v1/agents").contentType("application/json").content("""
                 {"name":"frozen-agent-%s","instructions":"workflow","providerId":"mock","modelId":"hify-mock","temperature":0.2,"maxTokens":2048,"maxTurns":6,"maxContextTurns":10,"enabledTools":[],"enabled":true}
                 """.formatted(UUID.randomUUID()))).andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();
         http.perform(put("/api/v1/agents/{id}/workflow-binding",aid).contentType("application/json").content(json.writeValueAsString(Map.of("workflowId",wid)))).andExpect(status().isOk());
-        http.perform(post("/api/v1/agents/{id}/publications",aid)).andExpect(status().isOk());return aid;
+        return aid;
     }
     private String conversation(String aid) throws Exception {return body(http.perform(post("/api/v1/conversations").contentType("application/json").content(json.writeValueAsString(Map.of("agentId",aid,"title","frozen"))))
             .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("id").asText();}
@@ -182,5 +186,5 @@ class WorkflowKnowledgeIntegrationTest {
             if(!run.path("state").asText().equals("RUNNING")){assertThat(run.path("state").asText()).isEqualTo("COMPLETED");return run;}Thread.sleep(25);}
         throw new AssertionError("run timeout");
     }
-    private JsonNode body(String raw) throws Exception {return json.readTree(raw);}
+    protected JsonNode body(String raw) throws Exception {return json.readTree(raw);}
 }
