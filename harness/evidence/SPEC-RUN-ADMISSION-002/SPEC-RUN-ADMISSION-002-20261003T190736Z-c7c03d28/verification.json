@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness"
+  ],
+  "base": "working-tree",
+  "headCommit": "446688a47eae677c000640198dfaa06571a7648f",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-ADMISSION-002/SPEC-RUN-ADMISSION-002-20261003T190736Z-c7c03d28/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-ADMISSION-002/SPEC-RUN-ADMISSION-002-20261003T190736Z-c7c03d28/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-ADMISSION-002/SPEC-RUN-ADMISSION-002-20261003T190736Z-c7c03d28/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-ADMISSION-002/SPEC-RUN-ADMISSION-002-20261003T190736Z-c7c03d28/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RUN-ADMISSION-002/SPEC-RUN-ADMISSION-002-20261003T190736Z-c7c03d28/harness-shell-syntax.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T19:13:26Z"
+}

@@ -1,16 +1,22 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T19:05:23Z",
+  "updatedAt": "2026-10-03T19:13:26Z",
   "tasks": [
     {
       "id": "SPEC-RUN-ADMISSION-002",
       "title": "Run 执行器容量拒绝的终态与幂等回放",
       "description": "从B2/E大切片中独立出调度拒绝闭环，不混入关闭恢复及Workflow终态协调。",
       "priority": "P1",
-      "status": "pending",
-      "scopes": ["backend", "runtime", "harness"],
-      "verifyScopes": ["harness"],
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
@@ -21,12 +27,22 @@
         "恢复时单条拒绝不阻止其他Run收敛，清理本地取消标记且不会覆盖已置位标记",
         "保留红绿证据，应用层与HTTP/H2回归通过"
       ],
-      "planPath": "exec-plans/active/SPEC-RUN-ADMISSION-002.md",
+      "planPath": "exec-plans/completed/SPEC-RUN-ADMISSION-002.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-RUN-ADMISSION-002-20261003T190736Z-c7c03d28",
+          "path": "harness/evidence/SPEC-RUN-ADMISSION-002/SPEC-RUN-ADMISSION-002-20261003T190736Z-c7c03d28",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "7af010e47fb7f7a6f6511c124c06dd047d0aede6",
+          "headCommit": "446688a47eae677c000640198dfaa06571a7648f",
+          "recordedAt": "2026-10-03T19:13:26Z"
+        }
+      ],
       "createdAt": "2026-10-03T19:07:00Z",
-      "updatedAt": "2026-10-03T19:07:00Z"
+      "updatedAt": "2026-10-03T19:13:26Z"
     },
     {
       "id": "SPEC-SSE-BACKPRESSURE-002",
@@ -34,12 +50,20 @@
       "description": "F复核P2及测试缺口：全局64名额可被同Run占满，10s为写空闲期限而非总发送期限；先复现实测再设计收敛。",
       "priority": "P2",
       "status": "pending",
-      "scopes": ["backend", "runtime", "harness"],
-      "verifyScopes": ["harness"],
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-SSE-BACKPRESSURE-001"],
+      "dependsOn": [
+        "SPEC-SSE-BACKPRESSURE-001"
+      ],
       "acceptance": [
         "补drain与awaitSignal间发布不丢唤醒的latch用例",
         "验证到期/onError/初始化失败后订阅和worker均释放",
@@ -281,7 +305,9 @@
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-RUN-ADMISSION-002"],
+      "dependsOn": [
+        "SPEC-RUN-ADMISSION-002"
+      ],
       "acceptance": [
         "executor拒绝持久化明确安全终态且相同幂等键可重放",
         "没有cancelRequestedAt的应用关闭中断不伪造用户取消，重启恢复有证据",

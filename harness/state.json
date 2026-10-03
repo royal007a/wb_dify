@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-CREDENTIAL-BOUNDARY-003-20261003T190227Z-914e7df7",
-    "path": "harness/evidence/SPEC-CREDENTIAL-BOUNDARY-003/SPEC-CREDENTIAL-BOUNDARY-003-20261003T190227Z-914e7df7",
+    "runId": "SPEC-RUN-ADMISSION-002-20261003T190736Z-c7c03d28",
+    "path": "harness/evidence/SPEC-RUN-ADMISSION-002/SPEC-RUN-ADMISSION-002-20261003T190736Z-c7c03d28",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "ca56fd2042158fab502a16a1af6b0512eb90535b",
-    "headCommit": "95eab60d18d93e7f42d8b72056fd9a49ac03154b",
-    "recordedAt": "2026-10-03T19:05:23Z"
+    "baselineCommit": "7af010e47fb7f7a6f6511c124c06dd047d0aede6",
+    "headCommit": "446688a47eae677c000640198dfaa06571a7648f",
+    "recordedAt": "2026-10-03T19:13:26Z"
   },
-  "lastCompletedTaskId": "SPEC-CREDENTIAL-BOUNDARY-003",
-  "updatedAt": "2026-10-03T19:05:23Z"
+  "lastCompletedTaskId": "SPEC-RUN-ADMISSION-002",
+  "updatedAt": "2026-10-03T19:13:26Z"
 }
