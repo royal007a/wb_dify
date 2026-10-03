@@ -181,10 +181,9 @@ POST   /api/v1/tools/{toolName}/dry-runs
 
 GET    /api/v1/mcp-servers
 POST   /api/v1/mcp-servers
-PATCH  /api/v1/mcp-servers/{serverId}
+PUT    /api/v1/mcp-servers/{serverId}
 DELETE /api/v1/mcp-servers/{serverId}
-POST   /api/v1/mcp-servers/{serverId}/connection-tests
-POST   /api/v1/mcp-servers/{serverId}/tool-refreshes
+POST   /api/v1/mcp-servers/{serverId}/tools:refresh
 ```
 
 MCP Server 保存 URL、transport、credentialRef、allow policy 和最近一次工具 schema snapshot。Agent 绑定具体 tool identity + schema version。
@@ -225,12 +224,16 @@ Agent 一期最多绑定一个入口 Workflow。发布 Agent 时固定当前 pub
 ```text
 GET/POST /api/v1/mcp-servers
 GET/PUT/DELETE /api/v1/mcp-servers/{id}
-POST     /api/v1/mcp-servers/{id}/connection-tests
-POST     /api/v1/mcp-servers/{id}/tool-refreshes
-POST     /api/v1/mcp-servers/{id}/debug-calls
+POST     /api/v1/mcp-servers/{id}/tools:refresh
+GET      /api/v1/mcp-servers/{id}/tools
+POST     /api/v1/mcp-servers/{id}/tools/{toolName}:call
 ```
 
-`tool-refreshes` 调 `tools/list`，以 server revision 保存完整 schema 和 digest；不会修改已固定的 AgentVersion/Run 快照。`debug-calls` 只能调用已发现且 risk=read 的工具，请求包含 toolName、arguments 和可选 timeout；响应包含 callId、result、isError、elapsedMs、schemaDigest。write/external/execute 返回 `TOOL_PERMISSION_DENIED`。
+`tools:refresh` 调 `tools/list`，以 server revision 保存完整 schema 和 digest；不会修改已固定的 AgentVersion/Run 快照。`tools/{toolName}:call` 只能调用已发现且 risk=READ 的工具，请求包含 arguments；响应包含 callId、toolName、serverRevision、result、error、elapsedMs、schemaDigest。其他风险等级返回 FORBIDDEN。
+
+Console 的「编辑」回填 name、endpointUrl、credentialRef、enabled，用 PUT 更新原 id，不归档重建。POST/PUT 均校验凭证引用：允许空值、`env:变量名`、`system:属性名`；禁止直接填写 Token。引用保存仅校验语法，引用值必须另行配置在后端环境/系统属性中；不在响应错误里回显提交的凭证。
+
+改名或启停不改变已发现 schema。修改 endpointUrl/credentialRef 则将草稿置 NEW、清除当前 digest/错误，保留历史 revision；重新发现成功前不得调试或发布新绑定。旧 AgentVersion/Run 继续使用冻结的 endpoint/credentialRef/tool schema，这不是撤销旧版本权限的开关。
 
 Agent 发布时把 MCP 工具映射成稳定 runtime tool name 和 `ToolDefinition`；QueryLoop 只接收该 AgentVersion 冻结的 definitions。网络调用前重新校验 run/attempt lease、capabilityRevision 与 cancel；endpoint 和 credential reference 来自固定 server revision，不读取可变 Server 草稿。
 
