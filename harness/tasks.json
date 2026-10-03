@@ -1,31 +1,95 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T20:15:18Z",
+  "updatedAt": "2026-10-03T20:20:45Z",
   "tasks": [
+    {
+      "id": "SPEC-HISTORY-RECOVERY-001",
+      "title": "恢复时重放已提交模型响应而非重新生成",
+      "description": "E1复验新P1假设：model:N先于轮末checkpoint提交，恢复重新生成可能造成语义摘要冲突；先红灯复现，不放宽冲突保护。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["backend", "runtime", "harness"],
+      "verifyScopes": ["harness"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-RUN-SHUTDOWN-002"],
+      "acceptance": [
+        "不同响应模型在model:N提交后工具阶段挂起，重启恢复不因重新生成而HISTORY_COMMIT_FAILED",
+        "已提交响应和工具结果按canonical历史恢复，不重复模型调用或delta；冲突保护仍fail-closed",
+        "真实关闭恢复与运行时回归通过，明确外部副作用和损坏历史边界"
+      ],
+      "planPath": "exec-plans/active/SPEC-HISTORY-RECOVERY-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T20:35:00Z",
+      "updatedAt": "2026-10-03T20:35:00Z"
+    },
     {
       "id": "SPEC-RUN-BUDGET-001",
       "title": "统一聊天与Workflow跨重启的Run预算",
       "description": "E1复核P2：聊天恢复重置runTimeout而Workflow扣减createdAt；明确关闭与期限竞争和排队计时。",
-      "priority": "P2", "status": "pending",
-      "scopes": ["backend", "runtime", "harness"], "verifyScopes": ["harness"],
-      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
-      "dependsOn": ["SPEC-RUN-SHUTDOWN-002"],
-      "acceptance": ["重启不重新赠送聊天Run预算，已过期不调用模型或工具", "关闭、取消、期限同时出现的优先级有确定性交错测试", "保留同一幂等Run与checkpoint，文档准确披露时钟和排队边界"],
-      "planPath": "exec-plans/active/SPEC-RUN-BUDGET-001.md", "checkpoint": null, "blockedReason": null, "evidence": [],
-      "createdAt": "2026-10-03T20:15:00Z", "updatedAt": "2026-10-03T20:15:00Z"
+      "priority": "P2",
+      "status": "pending",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [
+        "SPEC-RUN-SHUTDOWN-002"
+      ],
+      "acceptance": [
+        "重启不重新赠送聊天Run预算，已过期不调用模型或工具",
+        "关闭、取消、期限同时出现的优先级有确定性交错测试",
+        "保留同一幂等Run与checkpoint，文档准确披露时钟和排队边界"
+      ],
+      "planPath": "exec-plans/active/SPEC-RUN-BUDGET-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T20:15:00Z",
+      "updatedAt": "2026-10-03T20:15:00Z"
     },
     {
       "id": "SPEC-CHILD-RECOVERY-001",
       "title": "核验子任务孤儿扫描与父Run恢复时序",
       "description": "E1复核待验证项：两个Ready监听没有顺序，旧任务LOST扫描可能碰到已恢复父Run的新认领。",
-      "priority": "P2", "status": "pending",
-      "scopes": ["backend", "runtime", "harness"], "verifyScopes": ["harness"],
-      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
-      "dependsOn": ["SPEC-RUN-SHUTDOWN-002"],
-      "acceptance": ["先以确定性交错验证可达性，不把静态猜测当成已证实缺陷", "若可达，新进程认领不被旧执行孤儿扫描误标LOST", "保留delivered/claimed/consumed提交语义，不新增子Agent执行器"],
-      "planPath": "exec-plans/active/SPEC-CHILD-RECOVERY-001.md", "checkpoint": null, "blockedReason": null, "evidence": [],
-      "createdAt": "2026-10-03T20:15:00Z", "updatedAt": "2026-10-03T20:15:00Z"
+      "priority": "P2",
+      "status": "pending",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [
+        "SPEC-RUN-SHUTDOWN-002"
+      ],
+      "acceptance": [
+        "先以确定性交错验证可达性，不把静态猜测当成已证实缺陷",
+        "若可达，新进程认领不被旧执行孤儿扫描误标LOST",
+        "保留delivered/claimed/consumed提交语义，不新增子Agent执行器"
+      ],
+      "planPath": "exec-plans/active/SPEC-CHILD-RECOVERY-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T20:15:00Z",
+      "updatedAt": "2026-10-03T20:15:00Z"
     },
     {
       "id": "SPEC-RUN-SHUTDOWN-002",
@@ -482,14 +546,15 @@
       "title": "Workflow与AgentRun最终提交竞争的投影一致性",
       "description": "原B2/E拆分后的剩余原子切片：容量拒绝、调度所有权和关闭恢复分别由关联任务验收；本任务聚焦最终状态及事件投影。",
       "priority": "P1",
-      "status": "pending",
+      "status": "running",
       "scopes": [
         "backend",
         "runtime",
         "harness"
       ],
       "verifyScopes": [
-        "harness", "migration"
+        "harness",
+        "migration"
       ],
       "risk": "reversible_write",
       "operation": "workspace_write",
@@ -506,11 +571,17 @@
         "保留红绿证据，既有取消、关闭恢复、拒绝与事务SSE回归通过"
       ],
       "planPath": "exec-plans/active/SPEC-RUN-ADMISSION-001.md",
-      "checkpoint": null,
+      "checkpoint": {
+        "summary": "task command started",
+        "headCommit": "830e0be62f2d2970dc8a7c5ce5a1755a8b4fab58",
+        "workingTreeHash": "893e6154a7ad3875b35d29fc53ef9084879c594c421a455fe9272af8e991c3e2",
+        "evidencePath": "harness/evidence/SPEC-RUN-ADMISSION-001/SPEC-RUN-ADMISSION-001-20261003T202045Z-26dafb80",
+        "updatedAt": "2026-10-03T20:20:45Z"
+      },
       "blockedReason": null,
       "evidence": [],
       "createdAt": "2026-10-03T18:13:15Z",
-      "updatedAt": "2026-10-03T18:13:15Z"
+      "updatedAt": "2026-10-03T20:20:45Z"
     },
     {
       "id": "SPEC-CHAT-LIFECYCLE-002",

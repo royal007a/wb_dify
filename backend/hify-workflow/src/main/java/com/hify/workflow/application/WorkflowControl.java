@@ -17,7 +17,9 @@ final class WorkflowControl {
         try {
             executor.execute(task);
             while (true) {
-                check(control);
+                // Read an already completed exceptional outcome before observing a later
+                // cancellation. Successful results still pass the normal control check below.
+                if (!task.isDone()) check(control);
                 try {
                     T result = task.get(Math.max(1, control.remaining(Duration.ofMillis(50)).toNanos()), TimeUnit.NANOSECONDS);
                     check(control);

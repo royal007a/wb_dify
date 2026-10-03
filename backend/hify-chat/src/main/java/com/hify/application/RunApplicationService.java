@@ -386,35 +386,48 @@ public class RunApplicationService {
                 "version",1,"runId",run.getId(),"workflowId",binding.workflowId(),
                 "workflowVersionId",binding.workflowVersionId(),"workflowChecksum",binding.checksum()));
         WorkflowRunResponse result = workflows.execute(binding.workflowVersionId(), run.getInputMessage(), control);
-        // A returned outcome is already computed. Shutdown closes admission, not its commit.
-        if ("INTERRUPTED".equals(result.status())) throw new ExecutionSuspendedException();
-        if ("CANCELLED".equals(result.status()) || control.isCancelled()) {
-            finishWorkflowStopped(run, result, RunState.CANCELLED, TerminalReason.CANCELLED, "Workflow cancelled.");
-            return;
-        }
-        if ("TIMED_OUT".equals(result.status()) || control.isExpired()) {
-            finishWorkflowStopped(run, result, RunState.TIMED_OUT, TerminalReason.TIMEOUT, "Workflow deadline exceeded.");
-            return;
-        }
-        if (!"SUCCEEDED".equals(result.status())) {
-            throw new IllegalStateException("Workflow failed: " + result.errorMessage());
-        }
-        String output = result.output() == null ? "" : result.output();
-        boolean won = finishTerminal(run.getId(), RunState.COMPLETED, TerminalReason.COMPLETED.name(),
-                output, result.nodes().size(), 0, true, Map.of(), List.of(new RunProjection("workflow.completed", Map.of(
-                        "version",1,"runId",run.getId(),"workflowRunId",result.id(),
-                        "workflowVersionId",binding.workflowVersionId(),"workflowChecksum",binding.checksum()))));
-        if (!won) return;
-        childTasks.acknowledgeClaimedForCompletedParent(run.getId());
+        // Execution facts are immutable once returned. Delivery cancellation is settled under
+        // the parent row lock below; a late signal must not rename the Workflow outcome.
+        RunState state = switch (result.status()) {
+            case "SUCCEEDED" -> RunState.COMPLETED;
+            case "FAILED", "INTERRUPTED" -> RunState.FAILED;
+            case "CANCELLED" -> RunState.CANCELLED;
+            case "TIMED_OUT" -> RunState.TIMED_OUT;
+            default -> throw new IllegalStateException("Invalid Workflow outcome");
+        };
+        String reason = switch (result.status()) {
+            case "SUCCEEDED" -> TerminalReason.COMPLETED.name();
+            case "FAILED" -> TerminalReason.WORKFLOW_ERROR.name();
+            case "INTERRUPTED" -> "APPLICATION_SHUTDOWN";
+            case "CANCELLED" -> TerminalReason.CANCELLED.name();
+            default -> TerminalReason.TIMEOUT.name();
+        };
+        String output = state == RunState.COMPLETED ? (result.output() == null ? "" : result.output())
+                : "Workflow execution ended: " + result.status();
+        boolean won = finishTerminal(run.getId(), state, reason, output, result.nodes().size(), 0,
+                state == RunState.COMPLETED, Map.of(), List.of(workflowProjection(run.getId(), result)));
+        if (won && state == RunState.COMPLETED) childTasks.acknowledgeClaimedForCompletedParent(run.getId());
     }
 
     private void finishWorkflowStopped(AgentRun run, WorkflowRunResponse result, RunState state,
                                        TerminalReason reason, String message) {
         int nodes = result == null ? 0 : result.nodes().size();
-        List<RunProjection> projections = result == null ? List.of() : List.of(new RunProjection(
-                state == RunState.CANCELLED ? "workflow.cancelled" : "workflow.timed_out",
-                Map.of("version",1,"runId",run.getId(),"workflowRunId",result.id(),"state",state.name())));
+        List<RunProjection> projections = result == null ? List.of() : List.of(workflowProjection(run.getId(),result));
         finishTerminal(run.getId(),state,reason.name(),message,nodes,0,false,Map.of(),projections);
+    }
+
+    private RunProjection workflowProjection(String runId, WorkflowRunResponse result) {
+        String type = switch (result.status()) {
+            case "SUCCEEDED" -> "workflow.completed";
+            case "FAILED" -> "workflow.failed";
+            case "CANCELLED" -> "workflow.cancelled";
+            case "TIMED_OUT" -> "workflow.timed_out";
+            case "INTERRUPTED" -> "workflow.interrupted";
+            default -> throw new IllegalStateException("Invalid Workflow outcome");
+        };
+        return new RunProjection(type,Map.of("version",2,"runId",runId,"workflowRunId",result.id(),
+                "workflowVersionId",result.workflowVersionId(),"workflowChecksum",result.workflowDigest(),
+                "state",result.status(),"executionState",result.status()));
     }
 
     private QueryLoop.RunObserver observer(String runId) {
@@ -638,6 +651,7 @@ public class RunApplicationService {
                     .orElseThrow(() -> new IllegalArgumentException("Run not found: " + runId));
             if (current.getState().terminal()) return null;
             if ("APPLICATION_SHUTDOWN".equals(terminalReason) && !current.isCancelRequested()) {
+                publishProjections(runId,projections,RunState.RUNNING,"",false);
                 eventBroker.publish(runId,"run.interrupted",Map.of("version",1,"runId",runId,
                         "reason","APPLICATION_SHUTDOWN","recoverable",true));
                 return null; // Only unfinished/suspended work: computed outcomes still commit.
@@ -654,8 +668,8 @@ public class RunApplicationService {
                 Map<String,Object> payload = new java.util.LinkedHashMap<>();
                 if (actual == state) {
                     payload.putAll(details);
-                    for (RunProjection projection : projections) eventBroker.publish(runId,projection.type(),projection.payload());
                 }
+                publishProjections(runId,projections,actual,reason,actual == RunState.COMPLETED && persistAssistantMessage);
                 payload.putAll(Map.of("version",1,"runId",runId,"state",actual.name(),
                         "terminalReason",reason,"turns",turns,"toolCalls",toolCalls));
                 String type = switch(actual) {
@@ -670,6 +684,15 @@ public class RunApplicationService {
             return updated == 1 ? actual : null;
         });
         return committed == state; // Do not acknowledge children for a stale success.
+    }
+
+    private void publishProjections(String runId,List<RunProjection> projections,RunState actual,String reason,boolean assistantCommitted) {
+        for (RunProjection projection : projections) {
+            Map<String,Object> payload=new java.util.LinkedHashMap<>(projection.payload());
+            payload.put("runState",actual.name());payload.put("runTerminalReason",reason);
+            payload.put("assistantCommitted",assistantCommitted);
+            eventBroker.publish(runId,projection.type(),payload);
+        }
     }
 
     private record RunProjection(String type,Map<String,Object> payload) {}

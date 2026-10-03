@@ -66,7 +66,8 @@ public class WorkflowEngine {
      if (stopped == null) nodeRun.fail(safe(failure), millis(nodeStarted));
      else nodeRun.stop(stopped, safe(failure), millis(nodeStarted));
      nodeRuns.save(nodeRun);
-     throw failure;
+     // Freeze the observed reason before node persistence or later signals can race it.
+     throw new NodeFailure(failure, stopped);
     }
     if (node.type().equalsIgnoreCase("END")) {
      WorkflowControl.check(control);
@@ -78,14 +79,13 @@ public class WorkflowEngine {
    }
    if (!reachedEnd) throw new BizException(ErrorCode.CONFLICT, "Workflow 未到达 END");
   } catch (Exception failure) {
-   String stopped = stopStatus(failure, control);
-   if (stopped == null) run.fail(safe(failure), write(context.snapshot()), millis(started));
-   else run.stop(stopped, safe(failure), write(context.snapshot()), millis(started));
+   String stopped = failure instanceof NodeFailure nodeFailure ? nodeFailure.stopped : stopStatus(failure, control);
+   Exception observed = failure instanceof NodeFailure nodeFailure ? nodeFailure.failure : failure;
+   if (stopped == null) run.fail(safe(observed), write(context.snapshot()), millis(started));
+   else run.stop(stopped, safe(observed), write(context.snapshot()), millis(started));
   }
-  // Suspension is classified where an operation is stopped. Do not discard an END
-  // result (or other computed outcome) merely because shutdown began before this save.
-  if (control.isCancelled()) run.stop("CANCELLED", "Workflow cancelled", write(context.snapshot()), millis(started));
-  else if (control.isExpired() && !"INTERRUPTED".equals(run.getStatus())) run.stop("TIMED_OUT", "Workflow deadline exceeded", write(context.snapshot()), millis(started));
+  // End/failure classification is the execution boundary. Parent delivery is separate;
+  // no late cancellation/deadline/shutdown flag may rewrite this computed fact.
   // Projection/read failure must not rewrite an already committed successful execution as FAILED.
   return response(runs.save(run));
  }
@@ -120,5 +120,9 @@ public class WorkflowEngine {
  private String required(JsonNode node,String field){String value=node.path(field).asText();if(value.isBlank())throw new BizException(ErrorCode.PARAM_ERROR,"节点缺少配置: "+field);return value;}private String text(JsonNode n,String f,String d){String v=n.path(f).asText();return v.isBlank()?d:v;}
  private long millis(Instant started){return Math.max(0,Duration.between(started,Instant.now()).toMillis());}private String safe(Exception e){String v=e.getMessage();if(v==null||v.isBlank())v=e.getClass().getSimpleName();return v.substring(0,Math.min(900,v.length()));}
  private record NodeOutcome(Boolean condition,String output){}
+ private static final class NodeFailure extends RuntimeException {
+  final Exception failure; final String stopped;
+  NodeFailure(Exception failure,String stopped){super(failure);this.failure=failure;this.stopped=stopped;}
+ }
  private String stopStatus(Exception failure,ExecutionControl control){if(control.isSuspended())return "INTERRUPTED";if(failure instanceof ExecutionCancelledException||control.isCancelled())return "CANCELLED";if(failure instanceof WorkflowControl.DeadlineExceeded||control.isExpired())return "TIMED_OUT";return null;}
 }

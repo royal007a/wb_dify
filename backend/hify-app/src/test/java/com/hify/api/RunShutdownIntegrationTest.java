@@ -146,7 +146,7 @@ class RunShutdownIntegrationTest {
         assertThat(db.queryForObject("select status from workflow_runs where workflow_version_id=?",String.class,version)).isEqualTo("INTERRUPTED");
         assertThat(db.queryForList("select status from workflow_node_runs where node_key='lookup'",String.class)).containsExactly("INTERRUPTED");
         assertThat(db.queryForObject("select count(*) from workflow_node_runs where node_key='end'",Integer.class)).isZero();
-        assertThat(db.queryForList("select event_type from run_events where run_id=?",String.class,run)).contains("run.interrupted").doesNotContain("run.cancelled","run.failed");
+        assertThat(db.queryForList("select event_type from run_events where run_id=?",String.class,run)).contains("workflow.interrupted","run.interrupted").doesNotContain("run.cancelled","run.failed");
         doReturn(List.of()).when(knowledge).search("fixture-kb","blocked",3);
         try(var second=start(url,request->new RuntimeMessage("assistant","unused",null,List.of()),knowledge)){
             var service=second.getBean(RunApplicationService.class);awaitTerminal(service,run);

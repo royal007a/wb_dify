@@ -240,7 +240,11 @@ Workflow/Node执行状态为RUNNING、SUCCEEDED、FAILED、CANCELLED、TIMED_OUT
 
 工作流停止投影为workflow.cancelled/workflow.timed_out；Run对应run.cancelled或run.failed（state=TIMED_OUT、terminalReason=TIMEOUT）。Run终态提交锁行读取持久cancelRequestedAt：先落库的取消优先，先提交的终态不能被后来的取消改写。CPU/SQL驱动不响应中断时，Future取消不等于底层工作已停止；真实数据库取消与SSE事务原子性需各自的验证证据。
 
-Agent 一期最多绑定一个入口 Workflow。发布 Agent 时固定当前 published WorkflowVersion；Chat 创建 Run 后若该固定版本存在，进入确定性 Workflow executor 并发出 `workflow.started/workflow.completed`，否则进入 QueryLoop。Console 画布和 Runtime 读写同一 DSL，并提供节点、连线、属性、校验、试跑和发布版本 diff。
+Agent 一期最多绑定一个入口 Workflow。发布 Agent 时固定当前 published WorkflowVersion；Chat 创建 Run 后若该固定版本存在，进入确定性 Workflow executor 并发出 `workflow.started` 及执行结果投影，否则进入 QueryLoop。Console 画布和 Runtime 读写同一 DSL，并提供节点、连线、属性、校验、试跑和发布版本 diff。
+
+Workflow 结果投影为 `workflow.completed/failed/cancelled/timed_out/interrupted`，新写入 payload 的 `version=2`，包含 `workflowRunId/workflowVersionId/workflowChecksum/state/executionState/runState/runTerminalReason/assistantCommitted`。`state` 与 `executionState` 均指 Workflow 执行事实，不是父 Run 交付状态。例如 `workflow.completed` 可以同时携带 `executionState=SUCCEEDED,runState=CANCELLED,assistantCommitted=false`：计算已完成但交付被取消。前端完成判断必须用 `run.*` 终态或回读 Run，不能仅见 `workflow.completed` 就显示回复成功。历史 v1 事件不改写。
+
+结果投影、父终态、助手消息（仅 COMPLETED）、父终态事件在同一事务提交。关闭挂起时投影 `workflow.interrupted` 与 `run.interrupted` 同事务，父 Run 仍为 RUNNING、`runTerminalReason` 为空；真正取消在父行锁下仍优先。Workflow 真实失败映射 `FAILED/WORKFLOW_ERROR`，执行前已经过期而没有 Workflow 执行记录时不伪造结果投影。详见 `docs/spec/SPEC_WORKFLOW_SETTLEMENT.md`。
 
 ## 8. MCP Server 与调试
 

@@ -43,6 +43,17 @@ class WorkflowEngineTest {
         var engine=new WorkflowEngine(app,runs,nodes,knowledge,JSON,new WorkflowGraphValidator(),Runnable::run,java.time.Duration.ofSeconds(60),lifecycle);
         assertThat(engine.execute("v1","input").status()).isEqualTo("SUCCEEDED");
     }
+    @org.junit.jupiter.params.ParameterizedTest @org.junit.jupiter.params.provider.ValueSource(booleans={false,true})
+    void signalAfterFinalCalculationCannotRewriteExecutionHistory(boolean deadline) throws Exception {
+        stored(draft(List.of(node("start","START"),node("end","END","output","done")),edge("start","end")));
+        var saved=new java.util.concurrent.atomic.AtomicReference<com.hify.workflow.domain.WorkflowRun>();
+        when(runs.save(any())).thenAnswer(invocation->{saved.set(invocation.getArgument(0));return saved.get();});
+        var control=mock(com.hify.common.ExecutionControl.class);
+        when(control.withShutdown(any())).thenReturn(control);
+        if(deadline)when(control.isExpired()).thenAnswer(invocation->saved.get()!=null&&"SUCCEEDED".equals(saved.get().getStatus()));
+        else when(control.isCancelled()).thenAnswer(invocation->saved.get()!=null&&"SUCCEEDED".equals(saved.get().getStatus()));
+        assertThat(engine.execute("v1","input",control).status()).isEqualTo("SUCCEEDED");
+    }
     @Test void conditionTreatsUserSuppliedOperatorsAsData() throws Exception {
         stored(draft(List.of(node("start","START"),
                 node("route","CONDITION","expression","{{start.userMessage}} contains refund"),

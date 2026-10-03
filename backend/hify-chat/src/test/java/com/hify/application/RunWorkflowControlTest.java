@@ -132,6 +132,9 @@ class RunWorkflowControlTest {
         verify(messages,never()).save(any());
         verify(events).publish(eq("run"),eq("run.cancelled"),anyMap());
         verify(events,never()).publish(eq("run"),eq("run.completed"),anyMap());
+        verify(events).publish(eq("run"),eq("workflow.completed"),argThat(payload->
+                "SUCCEEDED".equals(payload.get("executionState")) && "CANCELLED".equals(payload.get("runState"))
+                        && Boolean.FALSE.equals(payload.get("assistantCommitted"))));
     }
     private WorkflowRunResponse result(String state) {
         return new WorkflowRunResponse("wr1","wv1","checksum",state,"input","answer",Map.of(),"stopped",1L,List.of(),Instant.now(),Instant.now());

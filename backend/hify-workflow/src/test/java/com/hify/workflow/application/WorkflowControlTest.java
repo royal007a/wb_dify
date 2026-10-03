@@ -135,6 +135,34 @@ class WorkflowControlTest {
         } finally { pool.shutdownNow(); }
     }
 
+    @org.junit.jupiter.params.ParameterizedTest @org.junit.jupiter.params.provider.ValueSource(booleans={false,true})
+    void observedBusinessFailureIsNotRewrittenByLaterCancellationOrDeadline(boolean deadline) throws Exception {
+        var cancelled=new AtomicBoolean();var expired=new AtomicBoolean();
+        ExecutionControl control=mock(ExecutionControl.class);
+        when(control.withShutdown(any())).thenReturn(control);
+        when(control.isCancelled()).thenAnswer(invocation->cancelled.get());
+        when(control.isExpired()).thenAnswer(invocation->expired.get());
+        when(control.remaining(any())).thenReturn(Duration.ofMillis(50));
+        var engine=engine(Runnable::run);
+        when(knowledge.search("kb","input",3)).thenThrow(new IllegalStateException("real business failure"));
+        doAnswer(invocation->{
+            WorkflowNodeRun node=invocation.getArgument(0);recorded.put(node.getSequenceNo(),node);
+            if(node.getStatus().equals("FAILED")) {if(deadline)expired.set(true);else cancelled.set(true);}
+            return node;
+        }).when(nodes).save(any());
+        var result=engine.execute("v1","input",control);
+        assertThat(result.status()).isEqualTo("FAILED");
+        assertThat(result.errorMessage()).contains("real business failure");
+        assertThat(result.nodes().get(1).status()).isEqualTo("FAILED");
+    }
+
+    @Test void alreadyFailedFutureIsObservedBeforeALaterCancelSignal() {
+        var cancelled=new AtomicBoolean();var failure=new IllegalStateException("computed failure");
+        var control=ExecutionControl.withTimeout(Duration.ofSeconds(10),cancelled::get);
+        Executor completesThenCancels=task->{task.run();cancelled.set(true);};
+        assertThatThrownBy(()->WorkflowControl.call(control,completesThenCancels,()->{throw failure;})).isSameAs(failure);
+    }
+
     private WorkflowEngine engine(Executor executor) throws Exception {
         when(runs.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         var graph = draft(List.of(node("start","START"),

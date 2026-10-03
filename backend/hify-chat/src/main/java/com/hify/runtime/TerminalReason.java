@@ -16,5 +16,6 @@ public enum TerminalReason {
     HISTORY_COMMIT_FAILED,
     EXECUTOR_REJECTED,
     MODEL_ERROR,
+    WORKFLOW_ERROR,
     FATAL_TOOL_ERROR
 }
