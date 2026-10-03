@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "MCP-EDIT-DEPLOY-001-20261003T115430Z-0c7248c0",
+  "taskId": "MCP-EDIT-DEPLOY-001",
+  "status": "completed",
+  "baselineCommit": "82467f2b800c7e82429153bbfbf91cb81cd77b02",
+  "approvalRef": "lark:om_x100b633aded650a4b3f816bdbaae21d",
+  "startedAt": "2026-10-03T11:54:30Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "82467f2b800c7e82429153bbfbf91cb81cd77b02",
+  "finishedAt": "2026-10-03T11:57:48Z"
+}

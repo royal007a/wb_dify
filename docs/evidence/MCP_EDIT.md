@@ -17,3 +17,14 @@
 
 本次不改用户现有 teacher_mcp 配置，不迁移凭证，不绕过 Java TLS 校验，不修改远端工具 READ 声明。编辑能力就绪不等于该第三方 MCP 的认证、证书和工具授权已全部接通。
 凭证引用保存只验证格式；`env:MCP_TOKEN` 的实际值必须由运维配置到服务进程环境中。
+
+## 132 部署验收
+
+- 已部署代码：后端 `8c04e9c`、前端 `5965fbf`，发布基线 `82467f2`。
+- URL：`https://118.196.123.132/hify/mcp`。健康接口 `/hify/api/v1/health` 返回 HTTP 200、业务 code 200。
+- 仅替换原 Hify jar 与 `/hify/` 静态资源，未更改环境文件、TLS 设置、数据库结构或 hify-cc；后者 6 个容器仍 healthy。
+- 回滚备份：`/opt/hify/releases/mcp-edit-20261003-82467f2/previous.jar` 与 `previous-dist/`；旧 hashed assets 保留。
+- 本地/远端 jar SHA256 一致：`716ab4c7224d7b7e049c3b1c7c6c2509a8623eefde9cfd52d7b7d5c1211f15eb`。
+- `MCP_EDIT_LIVE=1 E2E_BASE_URL=https://118.196.123.132/hify/ E2E_IGNORE_HTTPS_ERRORS=true npx playwright test e2e/mcp-edit-live.spec.ts --workers=1`：1/1 通过（5.8s）。
+- 用新建且 disabled 的独立 smoke 记录实测 UI 编辑、PUT 保存、刷新、API 回读一致，以及明文凭证被 HTTP 400 拒绝；结束后只归档本次 smoke 记录。teacher_mcp 未修改，未调用任何真实业务工具。
+- HTTPS smoke 忽略自签名证书仅用于测试浏览器，不改应用的出站 TLS 安全策略。

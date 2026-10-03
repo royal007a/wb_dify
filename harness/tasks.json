@@ -1,20 +1,28 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T11:52:42Z",
+  "updatedAt": "2026-10-03T11:57:48Z",
   "tasks": [
     {
       "id": "MCP-EDIT-DEPLOY-001",
       "title": "部署 MCP 编辑切片并验收 132 页面",
       "description": "只更新原 Hify 的 jar 和 /hify/ 静态资源，备份旧产物，健康检查及独立测试记录浏览器验收；不修改 teacher_mcp、凭证或 hify-cc。",
       "priority": "P1",
-      "status": "pending",
-      "scopes": ["frontend", "backend"],
-      "verifyScopes": ["harness", "frontend"],
+      "status": "completed",
+      "scopes": [
+        "frontend",
+        "backend"
+      ],
+      "verifyScopes": [
+        "harness",
+        "frontend"
+      ],
       "risk": "high_risk",
       "operation": "deployment",
       "approvalRef": "lark:om_x100b633aded650a4b3f816bdbaae21d",
-      "dependsOn": ["MCP-EDIT-001"],
+      "dependsOn": [
+        "MCP-EDIT-001"
+      ],
       "acceptance": [
         "部署前留存旧 jar 和前端回滚备份，不改环境配置和数据库结构",
         "132 /hify/api/v1/health 返回 200",
@@ -23,9 +31,19 @@
       "planPath": null,
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "MCP-EDIT-DEPLOY-001-20261003T115430Z-0c7248c0",
+          "path": "harness/evidence/MCP-EDIT-DEPLOY-001/MCP-EDIT-DEPLOY-001-20261003T115430Z-0c7248c0",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "82467f2b800c7e82429153bbfbf91cb81cd77b02",
+          "headCommit": "82467f2b800c7e82429153bbfbf91cb81cd77b02",
+          "recordedAt": "2026-10-03T11:57:48Z"
+        }
+      ],
       "createdAt": "2026-10-03T11:55:00Z",
-      "updatedAt": "2026-10-03T11:55:00Z"
+      "updatedAt": "2026-10-03T11:57:48Z"
     },
     {
       "id": "MCP-EDIT-001",
