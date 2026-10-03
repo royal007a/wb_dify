@@ -9,10 +9,41 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler({ServletRequestBindingException.class, MethodArgumentTypeMismatchException.class,
+            MissingServletRequestPartException.class})
+    public ResponseEntity<Result<Void>> requestBinding(Exception exception) {
+        // Framework exception messages can contain the rejected value, including credentials.
+        return fail(ErrorCode.PARAM_ERROR, ErrorCode.PARAM_ERROR.message());
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Result<Void>> methodNotAllowed(HttpRequestMethodNotSupportedException exception) {
+        return ResponseEntity.status(ErrorCode.METHOD_NOT_ALLOWED.status()).headers(exception.getHeaders())
+                .contentType(MediaType.APPLICATION_JSON).body(Result.fail(ErrorCode.METHOD_NOT_ALLOWED));
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<Result<Void>> unsupportedMedia(HttpMediaTypeNotSupportedException exception) {
+        return ResponseEntity.status(ErrorCode.UNSUPPORTED_MEDIA_TYPE.status()).headers(exception.getHeaders())
+                .contentType(MediaType.APPLICATION_JSON).body(Result.fail(ErrorCode.UNSUPPORTED_MEDIA_TYPE));
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    public ResponseEntity<Result<Void>> notAcceptable(HttpMediaTypeNotAcceptableException exception) {
+        return fail(ErrorCode.NOT_ACCEPTABLE, ErrorCode.NOT_ACCEPTABLE.message());
+    }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Result<Void>> malformedJson(HttpMessageNotReadableException exception) {
@@ -58,6 +89,6 @@ public class GlobalExceptionHandler {
     }
 
     private ResponseEntity<Result<Void>> fail(ErrorCode code, String message) {
-        return ResponseEntity.status(code.status()).body(Result.fail(code, message));
+        return ResponseEntity.status(code.status()).contentType(MediaType.APPLICATION_JSON).body(Result.fail(code, message));
     }
 }

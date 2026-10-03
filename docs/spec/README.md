@@ -17,7 +17,7 @@
 1. 管理 API 使用 `Result<T>={code,message,data}`，成功 code=200。分页为 `PageResult<T>`，data 是列表，total/page/size 在顶层；请求为 page/pageSize，不是 cursor。
 2. Run、Conversation、Intent、Memory 与旧 `/api` 读接口返回原始资源，不强制解包 data。SSE 返回 `text/event-stream`。客户端必须按接口选用相应处理器。
 3. `Idempotency-Key` 仅创建 Run 时强制。其余 POST/PUT 不宣称幂等键支持。首次 Run 为 HTTP202；同 key 同语义重放200；不同语义409/40901。
-4. 业务错误 HTTP 状态与 Result.code 对应：40000、40100、40300、40400、40900、40901、50000。Provider/Tool 的分类错误是运行事件/检查结果语义，不是另一套 HTTP 数字枚举。
+4. 业务错误 HTTP 状态与 Result.code 对应：40000、40100、40300、40400、40500、40600、40900、40901、41500、50000。协议错误也返回 JSON Result；缺header/参数、类型错误不回显拒绝值。Provider/Tool 的分类错误是运行事件/检查结果语义，不是另一套 HTTP 数字枚举。
 5. Instant 时间按 UTC ISO 格式；DemoItem 的 LocalDateTime 为无时区 ISO 本地日期时间。ID 大多为 UUID 字符串；DemoItem 是 Long，不承诺 UUIDv7/ULID。
 6. 管理台无登录/RBAC/租户隔离。数据归属检查（例如 memory 同会话）不等于用户权限。只能在受信网络入口使用，不宣称公网安全产品。
 7. Provider 只存 env/system 引用。MCP 另有 write-only TOKEN：AES-GCM 加密、服务端独立主密钥；页面不回填。Token 保留/替换/清除和历史 snapshot 的影响见 ADR-0020。

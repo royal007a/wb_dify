@@ -260,6 +260,7 @@ Agent 发布时把 MCP 工具映射成稳定 runtime tool name 和 `ToolDefiniti
 | 成功 | 200 / HTTP200（创建时按接口使用201/202） |
 | 参数/权限 | 40000 / HTTP400，40100 / HTTP401，40300 / HTTP403 |
 | 不存在/冲突 | 40400 / HTTP404，40900 / HTTP409 |
+| HTTP 协议错误 | 40500 / HTTP405（保留 Allow），40600 / HTTP406，41500 / HTTP415 |
 | 幂等冲突 | 40901 / HTTP409 |
 | 系统 | 50000 / HTTP500 |
 
