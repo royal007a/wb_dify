@@ -84,7 +84,7 @@ public class LlmHttpClient {
                 }
             }
         } catch (RejectedExecutionException exception) {
-            throw new LlmApiException(LlmApiException.Type.REQUEST_FAILED, "LLM executor capacity exhausted");
+            throw new ExecutionRejectedException();
         } catch (InterruptedException exception) {
             future.cancel(true);
             Thread.currentThread().interrupt();

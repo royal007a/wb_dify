@@ -87,7 +87,7 @@ public class CircuitBreakerService {
                 }
             }
         } catch (RejectedExecutionException exception) {
-            throw new LlmApiException(LlmApiException.Type.REQUEST_FAILED, "LLM attempt executor capacity exhausted");
+            throw new ExecutionRejectedException();
         } catch (InterruptedException exception) {
             future.cancel(true);
             Thread.currentThread().interrupt();
@@ -119,7 +119,32 @@ public class CircuitBreakerService {
         Supplier<T> timeouts = Retry.decorateSupplier(Retry.of(name + "-timeout", activeTimeoutRetry), operation);
         Supplier<T> rateLimits = Retry.decorateSupplier(Retry.of(name + "-rate-limit", activeRateRetry), timeouts);
         CircuitBreaker breaker = circuitBreakers.circuitBreaker(name);
-        return CircuitBreaker.decorateSupplier(breaker, rateLimits).get();
+        // Queued work can expire before the worker starts: it never sampled this provider.
+        checkActive(control, localDeadline);
+        breaker.acquirePermission();
+        long started = breaker.getCurrentTimestamp();
+        T result;
+        try {
+            result = rateLimits.get();
+        } catch (RuntimeException failure) {
+            // Per-call control is essential: a cancelled HTTP call may surface as an ordinary
+            // timeout/IO error. A shared ignoreExceptions predicate cannot inspect this control.
+            if (control.isCancelled() || control.isExpired()
+                    || failure instanceof ExecutionCancelledException
+                    || failure instanceof ExecutionRejectedException
+                    || failure instanceof RejectedExecutionException) {
+                breaker.releasePermission(); // also restores a HALF_OPEN probe, without success credit
+            } else {
+                breaker.onError(breaker.getCurrentTimestamp() - started, breaker.getTimestampUnit(), failure);
+            }
+            if (failure instanceof RejectedExecutionException) throw new ExecutionRejectedException();
+            throw failure;
+        } catch (Error failure) {
+            breaker.releasePermission();
+            throw failure;
+        }
+        breaker.onResult(breaker.getCurrentTimestamp() - started, breaker.getTimestampUnit(), result);
+        return result;
     }
 
     private static boolean eligible(ExecutionControl control, long deadline) {

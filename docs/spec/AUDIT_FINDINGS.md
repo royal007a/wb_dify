@@ -54,7 +54,7 @@
 
 - A1：MCP任意env/system引用会读取进程主密钥；本地检查发现Provider有同源路径。已用4个失败反例确认，70a5f33实现默认拒绝的引用/精确目标绑定，TOKEN换地址禁止KEEP；模块/HTTP与真实PG门禁通过，尚未部署，见SPEC_CREDENTIAL_BOUNDARY.md。
 - A2/A3/A4/A5：对应既有A01/A03，另需修正Claim为空的FINISH语义、Workflow未走FinishGate、归档后canonical引用回读矛盾。
-- B1/B2：取消/本地拒绝计入供应商熔断；runExecutor提交拒绝未收敛RUNNING。待故障注入验证。
+- B1：取消/本地拒绝计入供应商熔断已由3个红灯复现；局部执行拒绝类型化、按调用控制释放breaker许可，63项common/provider回归通过，见SPEC_PROVIDER_LOCAL_FAILURE.md。B2：runExecutor提交拒绝未收敛RUNNING，待独立故障注入验证。
 - C1/C2/C3/C4：新Run创建期间取消旧Run、失效resume、网络结果不明时新幂等键重复创建、无gapIds的NEEDS_INPUT；另有重连计数和终态补读竞争。C4可达性尚未确认。
 - D1/D2：图校验与50步执行上限不一致、条件表达式解析未在发布校验，字面量含运算符歧义。
 - E1：线程池关闭中断可能误记用户取消而失去恢复；E-P2包括两张Run终态竞态、预取消重复事件、拒绝错误回显、取消标志被覆盖、跨实例取消非目标。事件相关先对照a1c2015复核。

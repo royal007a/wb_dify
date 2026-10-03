@@ -58,6 +58,10 @@ Chat Completions/generateContent 是一期跨供应商公共协议基线，不�
 
 ## API 与验收
 
+### 熔断统计边界
+
+用户取消、Run 预算结束和本地线程池拒绝不构成供应商失败，也不记成成功；HALF_OPEN 探测许可必须释放。执行器拒绝不重试、不回显执行器内部状态。仍在有效预算内的真实上游 TIMEOUT/PROVIDER_UNAVAILABLE 按既有次数重试，耗尽后计入该 Provider 的熔断统计，不影响其他 Provider。详见 `docs/evidence/SPEC_PROVIDER_LOCAL_FAILURE.md`；应用关闭与用户取消的 Run 状态区分另行验证。
+
 - `GET/POST /api/v1/providers`
 - `GET/PUT/DELETE /api/v1/providers/{publicId}`
 - `POST /api/v1/providers/{publicId}/connection-tests`

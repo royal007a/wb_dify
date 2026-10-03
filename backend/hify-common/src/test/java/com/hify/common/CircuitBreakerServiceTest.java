@@ -22,6 +22,48 @@ class CircuitBreakerServiceTest {
     private final CircuitBreakerService service = new CircuitBreakerService(
             registry, 3, Duration.ZERO, 3, Duration.ZERO);
 
+    @Test void fiveCancelledOperationsMustNotOpenTheProviderBreaker() {
+        for (int i = 0; i < 5; i++) {
+            AtomicBoolean cancelled = new AtomicBoolean();
+            try {
+                service.execute("user-cancel", ExecutionControl.withTimeout(Duration.ofSeconds(5), cancelled::get), () -> {
+                    cancelled.set(true);
+                    return "late result";
+                });
+            } catch (RuntimeException ignored) { /* inspect breaker, not only caller exception */ }
+        }
+        var breaker = registry.circuitBreaker("provider-user-cancel");
+        assertThat(breaker.getState()).isEqualTo(io.github.resilience4j.circuitbreaker.CircuitBreaker.State.CLOSED);
+        assertThat(breaker.getMetrics().getNumberOfFailedCalls()).isZero();
+        assertThat(breaker.getMetrics().getNumberOfSuccessfulCalls()).isZero();
+        assertThat(service.execute("user-cancel", () -> "next user works")).isEqualTo("next user works");
+    }
+
+    @Test void nestedHttpPoolRejectionMustNotCountAsProviderFailureOrRetry() {
+        AtomicInteger submissions = new AtomicInteger();
+        LlmHttpClient rejected = new LlmHttpClient(task -> {
+            submissions.incrementAndGet();
+            throw new java.util.concurrent.RejectedExecutionException("ThreadPoolExecutor@private-state");
+        });
+        for (int i = 0; i < 5; i++) {
+            try { service.execute("local-http-capacity", () -> rejected.post("http://127.0.0.1:1/unreached", java.util.Map.of(), "{}")); }
+            catch (RuntimeException e) { assertThat(e).hasMessageNotContaining("private-state"); }
+        }
+        var breaker = registry.circuitBreaker("provider-local-http-capacity");
+        assertThat(breaker.getState()).isEqualTo(io.github.resilience4j.circuitbreaker.CircuitBreaker.State.CLOSED);
+        assertThat(breaker.getMetrics().getNumberOfFailedCalls()).isZero();
+        assertThat(submissions).hasValue(5);
+    }
+
+    @Test void cancellationDuringTimeoutFailureAlsoDoesNotPoisonTheBreaker() {
+        AtomicBoolean cancelled = new AtomicBoolean();
+        assertThatThrownBy(() -> service.execute("cancel-race", ExecutionControl.withTimeout(Duration.ofSeconds(5), cancelled::get), () -> {
+            cancelled.set(true);
+            throw new LlmApiException(LlmApiException.Type.TIMEOUT, "late upstream error");
+        })).isInstanceOf(ExecutionCancelledException.class);
+        assertThat(registry.circuitBreaker("provider-cancel-race").getMetrics().getNumberOfFailedCalls()).isZero();
+    }
+
     @Test
     void retriesTimeoutButNeverRetriesAuthenticationFailure() {
         AtomicInteger timeoutCalls = new AtomicInteger();
@@ -40,6 +82,49 @@ class CircuitBreakerServiceTest {
             throw new LlmApiException(LlmApiException.Type.AUTH_FAILED, "bad key");
         })).isInstanceOf(LlmApiException.class);
         assertThat(authCalls).hasValue(1);
+    }
+
+    @Test void genuineUpstreamTimeoutAndUnavailableStillOpenOnlyTheirOwnBreaker() {
+        for (LlmApiException.Type type : java.util.List.of(LlmApiException.Type.TIMEOUT, LlmApiException.Type.PROVIDER_UNAVAILABLE)) {
+            AtomicInteger attempts = new AtomicInteger();
+            for (int i = 0; i < 2; i++) {
+                assertThatThrownBy(() -> service.execute(type.name(), () -> {
+                    attempts.incrementAndGet();
+                    throw new LlmApiException(type, "upstream failed");
+                })).isInstanceOf(LlmApiException.class);
+            }
+            assertThat(attempts).hasValue(6);
+            assertThat(registry.circuitBreaker("provider-" + type.name()).getState())
+                    .isEqualTo(io.github.resilience4j.circuitbreaker.CircuitBreaker.State.OPEN);
+        }
+        assertThat(service.execute("healthy", () -> "ok")).isEqualTo("ok");
+    }
+
+    @Test void cancelledHalfOpenProbesReleasePermissionWithoutSuccessCredit() {
+        var breaker = registry.circuitBreaker("provider-half-open");
+        breaker.transitionToOpenState();
+        breaker.transitionToHalfOpenState();
+        for (int i = 0; i < 20; i++) {
+            AtomicBoolean cancelled = new AtomicBoolean();
+            assertThatThrownBy(() -> service.execute("half-open", ExecutionControl.withTimeout(Duration.ofSeconds(5), cancelled::get), () -> {
+                cancelled.set(true);
+                return "discarded";
+            })).isInstanceOf(ExecutionCancelledException.class);
+        }
+        assertThat(breaker.getMetrics().getNumberOfSuccessfulCalls()).isZero();
+        assertThat(breaker.getMetrics().getNumberOfFailedCalls()).isZero();
+        assertThat(service.execute("half-open", () -> "real probe")).isEqualTo("real probe");
+    }
+
+    @Test void outerExecutorRejectionIsLocalAndSanitized() {
+        CircuitBreakerService rejected = new CircuitBreakerService(registry, task -> {
+            throw new java.util.concurrent.RejectedExecutionException("ThreadPoolExecutor@private-state");
+        }, Duration.ofSeconds(5), 3, Duration.ZERO, 3, Duration.ZERO);
+        AtomicInteger attempts = new AtomicInteger();
+        assertThatThrownBy(() -> rejected.execute("outer-capacity", attempts::incrementAndGet))
+                .isInstanceOf(ExecutionRejectedException.class).hasNoCause().hasMessageNotContaining("private-state");
+        assertThat(attempts).hasValue(0);
+        assertThat(registry.circuitBreaker("provider-outer-capacity").getMetrics().getNumberOfFailedCalls()).isZero();
     }
 
     @Test
