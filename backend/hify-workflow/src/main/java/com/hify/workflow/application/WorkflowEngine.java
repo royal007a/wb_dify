@@ -96,7 +96,7 @@ public class WorkflowEngine {
   case "START" -> new NodeOutcome(null,null);
   case "TEMPLATE" -> {String value=ctx.resolve(required(c,"template"));String variable=text(c,"outputVariable","result");ctx.set(node.nodeKey(),variable,value);yield new NodeOutcome(null,null);}
   case "CONDITION" -> {boolean result=evaluate(required(c,"expression"),ctx);ctx.set(node.nodeKey(),text(c,"outputVariable","result"),result);yield new NodeOutcome(result,null);}
-  case "KNOWLEDGE" -> {var snapshot=WorkflowKnowledgeSnapshots.require(node);String query=ctx.resolve(required(c,"query"));int topK=c.path("topK").asInt(3);var citations=WorkflowControl.call(control,ioExecutor,()->knowledge.searchSnapshot(snapshot,query,topK));ctx.set(node.nodeKey(),text(c,"outputVariable","citations"),citations);yield new NodeOutcome(null,null);}
+  case "KNOWLEDGE" -> {var snapshot=WorkflowKnowledgeSnapshots.require(node);String query=ctx.resolve(required(c,"query"));int topK=c.path("topK").asInt(3);var citations=WorkflowControl.call(control,ioExecutor,()->knowledge.searchSnapshot(snapshot,query,topK));if(citations.isEmpty())throw new BizException(ErrorCode.CONFLICT,"KNOWLEDGE_NO_EVIDENCE: 未检索到可用知识候选，工作流不能继续生成回答");ctx.set(node.nodeKey(),text(c,"outputVariable","citations"),citations);yield new NodeOutcome(null,null);}
   case "END" -> new NodeOutcome(null,ctx.resolve(required(c,"output")));
   default -> throw new BizException(ErrorCode.PARAM_ERROR,"不支持的节点类型: "+type);
  };}

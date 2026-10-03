@@ -24,7 +24,7 @@ public final class PlanStateMachine {
     private static Map<PlanPhase, Set<PlanPhase>> allowedTransitions() {
         Map<PlanPhase, Set<PlanPhase>> transitions = new EnumMap<>(PlanPhase.class);
         transitions.put(PlanPhase.PLANNED,
-                EnumSet.of(PlanPhase.TRYING, PlanPhase.COMPLETED, PlanPhase.CANCELLED, PlanPhase.FAILED));
+                EnumSet.of(PlanPhase.TRYING, PlanPhase.AWAITING_CONFIRMATION, PlanPhase.COMPLETED, PlanPhase.CANCELLED, PlanPhase.FAILED));
         transitions.put(PlanPhase.TRYING, EnumSet.of(PlanPhase.AWAITING_CONFIRMATION,
                 PlanPhase.EXECUTING, PlanPhase.CHECKPOINTED, PlanPhase.DIAGNOSING,
                 PlanPhase.CANCELLED, PlanPhase.FAILED));

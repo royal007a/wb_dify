@@ -116,7 +116,7 @@ class WorkflowControlTest {
     @Test void cancelAfterEndNodeStillPreventsWorkflowSuccessCommit() throws Exception {
         var cancelled = new AtomicBoolean();
         var engine = engine(worker);
-        when(knowledge.searchSnapshot(SNAPSHOT,"input",3)).thenReturn(List.of());
+        when(knowledge.searchSnapshot(SNAPSHOT,"input",3)).thenReturn(List.of(new com.hify.knowledge.api.KnowledgeCitation("c","d",1,0,"input","digest",1,1)));
         doAnswer(invocation -> {
             WorkflowNodeRun node = invocation.getArgument(0);recorded.put(node.getSequenceNo(),node);
             if(node.getNodeKey().equals("end") && node.getStatus().equals("SUCCEEDED")) cancelled.set(true);

@@ -51,6 +51,8 @@ hify:
   max-tool-calls: 12
   max-replans: 2
   max-retries: 1
+  knowledge:
+    min-vector-score: ${HIFY_KNOWLEDGE_MIN_VECTOR_SCORE:0.5}
   intent:
     confidence-threshold: ${HIFY_INTENT_CONFIDENCE_THRESHOLD:0.75}
     ambiguity-margin: ${HIFY_INTENT_AMBIGUITY_MARGIN:0.10}

@@ -69,7 +69,7 @@ public class QueryLoop {
                       RunPolicy policy, RunObserver observer, RunRuntimeIdentity identity) {
         ExecutionPlan plan = ExecutionPlan.initial(goal(initialMessages));
         return run(initialMessages, modelClient, model, temperature, capability,
-                policy, observer, identity, plan, ExecutionContextState.empty(), 0, 0, false);
+                policy, observer, identity, plan, identity.completionVerifier().initialState(), 0, 0, false);
     }
 
     public Result resume(ExecutionCheckpoint checkpoint, ModelClient modelClient,
@@ -142,7 +142,7 @@ public class QueryLoop {
                 response = modelClient.generateStream(new ModelRequest(
                         model, temperature, prepared.messages(),
                         capability.definitions(), control),
-                        delta -> observer.onModelDelta(currentTurn, delta));
+                        delta -> {if(!identity.completionVerifier().withholdUnverifiedOutput())observer.onModelDelta(currentTurn, delta);});
             } catch (ContextWindowExceededException exception) {
                 transitionIfPossible(state, PlanPhase.FAILED);
                 return terminal(TerminalReason.TOKEN_BUDGET_EXCEEDED,
@@ -190,6 +190,15 @@ public class QueryLoop {
             }
 
             if (response.toolCalls() == null || response.toolCalls().isEmpty()) {
+                ExecutionContextState beforeVerification=contextState;
+                contextState=identity.completionVerifier().verify(response.content(),contextState,plan.version(),control);
+                if(control.isCancelled()||control.isExpired())return terminal(control.isCancelled()?TerminalReason.CANCELLED:TerminalReason.TIMEOUT,
+                        "Run stopped during answer verification.",messages,turn,toolCalls,plan,replanDecisions,checkpoint);
+                if(contextState!=beforeVerification){
+                    observer.onContextStateChanged(contextState);
+                    // Return the verified state, but do not persist a final-success checkpoint that would re-run the next turn after a crash.
+                    checkpoint=ExecutionCheckpoint.capture(turn,toolCalls,plan,contextState,messages);
+                }
                 ContinuationDecision finish = new FinishGate().evaluate(response.content(), contextState, plan);
                 observer.onContinuationDecided(finish);
                 if (finish.action() == ContinuationAction.FINISH) {
@@ -198,6 +207,7 @@ public class QueryLoop {
                             turn, toolCalls, plan, replanDecisions, checkpoint, finish);
                 }
                 if (finish.action() == ContinuationAction.CLARIFY) {
+                    if(contextState!=beforeVerification)observer.onCheckpointCreated(checkpoint);
                     transitionIfPossible(state, PlanPhase.AWAITING_CONFIRMATION);
                     return terminal(TerminalReason.HUMAN_INPUT_REQUIRED,
                             "Human input is required: " + finish.reason(), messages,

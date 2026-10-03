@@ -30,7 +30,15 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     private final JdbcTemplate jdbc;
     private final KnowledgeApplicationService knowledge;
 
-    public KnowledgeRetrievalService(JdbcTemplate jdbc,KnowledgeApplicationService knowledge){this.jdbc=jdbc;this.knowledge=knowledge;}
+    private final double minVectorScore;
+
+    public KnowledgeRetrievalService(JdbcTemplate jdbc,KnowledgeApplicationService knowledge,
+            @org.springframework.beans.factory.annotation.Value("${hify.knowledge.min-vector-score:0.5}") double minVectorScore){
+        this.jdbc=jdbc;this.knowledge=knowledge;
+        if(!Double.isFinite(minVectorScore)||minVectorScore < -1 || minVectorScore > 1)
+            throw new IllegalArgumentException("Knowledge vector candidate threshold must be finite and within [-1,1]");
+        this.minVectorScore=minVectorScore;
+    }
 
     @Override
     @Transactional(readOnly=true)
@@ -121,7 +129,8 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
             lexical=lexical.stream().filter(r->lexicalScore(query,r.content())>0).limit(limit*4L).toList();
             vector=new ArrayList<>(all);
             vector.sort(Comparator.comparingDouble((Row r)->KnowledgeEmbedding.cosine(queryVector,KnowledgeEmbedding.parse(r.embedding()))).reversed());
-            vector=vector.stream().limit(limit*4L).toList();
+            vector=vector.stream().filter(r->KnowledgeEmbedding.cosine(queryVector,KnowledgeEmbedding.parse(r.embedding()))>=minVectorScore)
+                    .limit(limit*4L).toList();
         }
         Map<String,Double> scores=new HashMap<>(); Map<String,Row> rows=new LinkedHashMap<>();
         add(scores,rows,lexical,.45); add(scores,rows,vector,.55);
@@ -160,8 +169,9 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     private List<Row> postgresVector(String baseId,float[] query,int limit){String literal=KnowledgeEmbedding.literal(query);return jdbc.query("""
             SELECT id,document_id,document_version,ordinal,content,content_digest,token_count,embedding_text
             FROM document_chunks WHERE knowledge_base_id=? AND archived_at IS NULL
+              AND (embedding <=> CAST(? AS vector)) <= ?
             ORDER BY embedding <=> CAST(? AS vector) LIMIT ?
-            """,(rs,n)->new Row(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getString(8)),baseId,literal,limit);}
+            """,(rs,n)->new Row(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getString(8)),baseId,literal,1-minVectorScore,literal,limit);}
     private List<Row> postgresRevisionLexical(String versionId,String query,int limit){return jdbc.query("""
             SELECT c.id,c.document_id,c.document_version,c.ordinal,c.content,c.content_digest,c.token_count,c.embedding_text
             FROM knowledge_corpus_version_chunks vc JOIN document_chunks c ON c.id=vc.chunk_id
@@ -173,8 +183,9 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
             SELECT c.id,c.document_id,c.document_version,c.ordinal,c.content,c.content_digest,c.token_count,c.embedding_text
             FROM knowledge_corpus_version_chunks vc JOIN document_chunks c ON c.id=vc.chunk_id
             WHERE vc.corpus_version_id=? AND c.content_digest=vc.content_digest
+              AND (c.embedding <=> CAST(? AS vector)) <= ?
             ORDER BY c.embedding <=> CAST(? AS vector) LIMIT ?
-            """,(rs,n)->new Row(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getString(8)),versionId,literal,limit);}
+            """,(rs,n)->new Row(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getString(8)),versionId,literal,1-minVectorScore,literal,limit);}
     private String manifestDigest(List<Row> rows){StringBuilder canonical=new StringBuilder();for(Row row:rows)canonical.append(row.id()).append(':').append(row.digest()).append('\n');try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(canonical.toString().getBytes(StandardCharsets.UTF_8)));}catch(Exception e){throw new IllegalStateException("SHA-256 unavailable",e);}}
     private String sha256(String value){try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8)));}catch(Exception failure){throw new IllegalStateException("SHA-256 unavailable",failure);}}
     private boolean isPostgres(){return Boolean.TRUE.equals(jdbc.execute((org.springframework.jdbc.core.ConnectionCallback<Boolean>)
