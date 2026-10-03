@@ -1,16 +1,50 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T12:36:17Z",
+  "updatedAt": "2026-10-03T13:27:35Z",
   "tasks": [
+    {
+      "id": "MCP-TOKEN-DEPLOY-001",
+      "title": "部署 132 MCP 加密 Token 输入并验证",
+      "description": "备份原 Hify PostgreSQL 与产物，配置独立加密主密钥，执行 V20 并发布页面，使用独立停用测试记录验收，不操作 teacher_mcp 密钥。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["backend", "frontend", "migration"],
+      "verifyScopes": ["harness", "frontend"],
+      "risk": "high_risk",
+      "operation": "deployment",
+      "approvalRef": "lark:om_x100b633b91ae04a4b03c19af18594c7",
+      "dependsOn": ["MCP-TOKEN-001"],
+      "acceptance": [
+        "数据库和旧产物已备份，主密钥不打印/导出且持久化于独立 0600 文件",
+        "V20 迁移通过、健康 200、部署 sha 匹配",
+        "真实页面保存/保持/替换/清除已验证，不回显明文，历史 Demo 对话回归通过",
+        "无 teacher_mcp Token 变更，无 TLS/SSRF/READ 策略放宽，无 hify-cc 变更"
+      ],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T13:30:00Z",
+      "updatedAt": "2026-10-03T13:30:00Z"
+    },
     {
       "id": "MCP-TOKEN-001",
       "title": "MCP 直接 Token 输入与加密凭据版本",
       "description": "新增 write-only Token 更新协议与 AES-GCM 加密存储，保留环境引用；Console 保持/替换/清除分开并验证旧 revision 不变。",
       "priority": "P1",
-      "status": "pending",
-      "scopes": ["backend", "frontend", "migration"],
-      "verifyScopes": ["harness", "backend", "frontend", "migration"],
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "frontend",
+        "migration"
+      ],
+      "verifyScopes": [
+        "harness",
+        "backend",
+        "frontend",
+        "migration"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
@@ -21,12 +55,22 @@
         "历史 revision 固定旧凭据版本；响应、异常、日志和快照不包含明文",
         "H2/PostgreSQL 迁移与集成测试、浏览器表单回归通过"
       ],
-      "planPath": "exec-plans/active/MCP-TOKEN-001.md",
+      "planPath": "exec-plans/completed/MCP-TOKEN-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "MCP-TOKEN-001-20261003T130723Z-bab6d426",
+          "path": "harness/evidence/MCP-TOKEN-001/MCP-TOKEN-001-20261003T130723Z-bab6d426",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "051859f0fd1d9afa30477bd384d24593a3461dc0",
+          "headCommit": "0bd202b694aa0e6634767310bb454102eb849344",
+          "recordedAt": "2026-10-03T13:27:35Z"
+        }
+      ],
       "createdAt": "2026-10-03T13:00:00Z",
-      "updatedAt": "2026-10-03T13:00:00Z"
+      "updatedAt": "2026-10-03T13:27:35Z"
     },
     {
       "id": "CHAT-DEMO-DEPLOY-001",
