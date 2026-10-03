@@ -23,7 +23,8 @@ const running = ref(false)
 const status = ref('准备就绪')
 const activeRun = ref<Run>()
 const resumeState = ref<ResumeState>()
-const chat = ref<ChatItem[]>([{ role: 'assistant', content: '你好，我是 Hify Demo Agent。可以问我时间，或让我计算 12.5 * 4。' }])
+const welcome = '你好！请选择已发布的 Agent 开始对话。Demo Agent 是本地规则模拟，用于演示时间查询和计算；通用问答需要配置真实模型。'
+const chat = ref<ChatItem[]>([{ role: 'assistant', content: welcome }])
 const selectedAgent = computed(() => agents.value.find(agent => agent.id === selectedAgentId.value))
 
 onMounted(loadAgents)
@@ -126,7 +127,7 @@ function newConversation() {
   pinnedVersionId.value = undefined
   activeRun.value = undefined
   resumeState.value = undefined
-  chat.value = [{ role: 'assistant', content: '新会话已就绪。' }]
+  chat.value = [{ role: 'assistant', content: welcome }]
   status.value = '准备就绪'
 }
 
