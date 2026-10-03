@@ -1,16 +1,47 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T10:00:00Z",
+  "updatedAt": "2026-10-03T11:52:42Z",
   "tasks": [
+    {
+      "id": "MCP-EDIT-DEPLOY-001",
+      "title": "部署 MCP 编辑切片并验收 132 页面",
+      "description": "只更新原 Hify 的 jar 和 /hify/ 静态资源，备份旧产物，健康检查及独立测试记录浏览器验收；不修改 teacher_mcp、凭证或 hify-cc。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["frontend", "backend"],
+      "verifyScopes": ["harness", "frontend"],
+      "risk": "high_risk",
+      "operation": "deployment",
+      "approvalRef": "lark:om_x100b633aded650a4b3f816bdbaae21d",
+      "dependsOn": ["MCP-EDIT-001"],
+      "acceptance": [
+        "部署前留存旧 jar 和前端回滚备份，不改环境配置和数据库结构",
+        "132 /hify/api/v1/health 返回 200",
+        "浏览器新增独立测试记录，编辑保存并刷新后可见，验收后只归档测试记录"
+      ],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T11:55:00Z",
+      "updatedAt": "2026-10-03T11:55:00Z"
+    },
     {
       "id": "MCP-EDIT-001",
       "title": "MCP Server 编辑与凭证引用校验",
       "description": "为 MCP 管理台补编辑入口、回填、保存与错误反馈；连接配置变更需重新发现，旧发布快照保持不变。",
       "priority": "P1",
-      "status": "pending",
-      "scopes": ["backend", "frontend"],
-      "verifyScopes": ["harness", "backend", "frontend"],
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "frontend"
+      ],
+      "verifyScopes": [
+        "harness",
+        "backend",
+        "frontend"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
@@ -21,12 +52,22 @@
         "连接配置改动后 NEW；旧 revision/AgentVersion 不被改写",
         "后端回归、前端类型/构建及浏览器编辑测试通过"
       ],
-      "planPath": "exec-plans/active/MCP-EDIT-001.md",
+      "planPath": "exec-plans/completed/MCP-EDIT-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "MCP-EDIT-001-20261003T114237Z-41f1a26a",
+          "path": "harness/evidence/MCP-EDIT-001/MCP-EDIT-001-20261003T114237Z-41f1a26a",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "5ab364116b786d373848b05cad2f1e46f56c0c5f",
+          "headCommit": "5ab364116b786d373848b05cad2f1e46f56c0c5f",
+          "recordedAt": "2026-10-03T11:52:42Z"
+        }
+      ],
       "createdAt": "2026-10-03T10:00:00Z",
-      "updatedAt": "2026-10-03T10:00:00Z"
+      "updatedAt": "2026-10-03T11:52:42Z"
     },
     {
       "id": "HARNESS-001",

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "backend",
+    "frontend"
+  ],
+  "base": "working-tree",
+  "headCommit": "5ab364116b786d373848b05cad2f1e46f56c0c5f",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-EDIT-001/MCP-EDIT-001-20261003T114237Z-41f1a26a/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-EDIT-001/MCP-EDIT-001-20261003T114237Z-41f1a26a/harness-progress.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-EDIT-001/MCP-EDIT-001-20261003T114237Z-41f1a26a/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-EDIT-001/MCP-EDIT-001-20261003T114237Z-41f1a26a/harness-shell-syntax.log"
+    },
+    {
+      "name": "backend-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-EDIT-001/MCP-EDIT-001-20261003T114237Z-41f1a26a/backend-tests.log"
+    },
+    {
+      "name": "frontend-typecheck",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-EDIT-001/MCP-EDIT-001-20261003T114237Z-41f1a26a/frontend-typecheck.log"
+    },
+    {
+      "name": "frontend-build",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-EDIT-001/MCP-EDIT-001-20261003T114237Z-41f1a26a/frontend-build.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T11:52:42Z"
+}

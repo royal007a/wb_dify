@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "COURSE-005-016-20260923T145953Z-f34493a1",
-    "path": "harness/evidence/COURSE-005-016/COURSE-005-016-20260923T145953Z-f34493a1",
+    "runId": "MCP-EDIT-001-20261003T114237Z-41f1a26a",
+    "path": "harness/evidence/MCP-EDIT-001/MCP-EDIT-001-20261003T114237Z-41f1a26a",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "25b024bedfea7f94da8c649baa673e045cf4dbfc",
-    "headCommit": "25b024bedfea7f94da8c649baa673e045cf4dbfc",
-    "recordedAt": "2026-09-23T15:01:21Z"
+    "baselineCommit": "5ab364116b786d373848b05cad2f1e46f56c0c5f",
+    "headCommit": "5ab364116b786d373848b05cad2f1e46f56c0c5f",
+    "recordedAt": "2026-10-03T11:52:42Z"
   },
-  "lastCompletedTaskId": "COURSE-005-016",
-  "updatedAt": "2026-09-23T15:01:21Z"
+  "lastCompletedTaskId": "MCP-EDIT-001",
+  "updatedAt": "2026-10-03T11:52:42Z"
 }
