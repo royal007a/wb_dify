@@ -10,6 +10,8 @@
 - MCP Token 以 AES-256-GCM 密文保存到独立 `mcp_credentials` 表，server/revision 只持不透明引用；主密钥来自 `HIFY_MCP_MASTER_KEY`，不入数据库/镜像/仓库。缺密钥拒绝写入，错误密钥拒绝使用，不回退明文。
 - 数据库、Agent version、日志、Run event、tool result、前端缓存均不得包含原始 key/token。
 - MCP 前端只显示 `credentialConfigured/credentialMode`，不返回密钥、密文或内部引用；保持/替换/清除分开。env/system 引用可以回显变量名，引用存在不等于实际值可解析。
+- Provider/MCP 的 env/system 引用共用默认拒绝策略：`HIFY_CREDENTIAL_REFERENCE_BINDINGS` 是管理员控制的引用到精确目的地址列表，API不能更改它。保存及读取真实值前验证授权；数据库中的旧引用、已发布快照同样检查。主密钥和 SPRING_/DB_/DATABASE_ 基础设施配置不能授权为业务凭据。地址校验与此授权是两个独立门禁，关闭私网限制不关闭凭据门禁。
+- MCP 地址变化时禁止隐式 KEEP 已有凭据，必须重新提交或显式清除。白名单不是登录/权限体系；受信入口要求仍然有效，不能将本修复宣称为公开管理API已安全。
 - Token 更换追加新密文记录；清除或归档仅影响草稿，历史发布继续持有旧引用。撤销泄露 Token 必须在 MCP 服务端执行，不能把“清除草稿”误报为全局撤销。
 - 加密不替代认证：当前管理 API 仍限受信管理网/入口访问控制，不应直接开放给不受信用户。
 - Authorization/header/query 中的秘密统一脱敏；异常对象不得直接序列化。

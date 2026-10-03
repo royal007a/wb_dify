@@ -52,6 +52,8 @@ POST   /api/v1/providers/{providerId}/connection-tests
 
 JSON 鉴权只保存版本化元数据和 `credentialRef`，不保存/回传原始凭证；响应只暴露 `credentialConfigured`。PUT 的 `auth` 缺省表示保留原配置，但切换 type 时必须同时提交新鉴权。连通性测试发起一次最小真实请求，返回 `success`、`latencyMs`、`providerCode` 和脱敏错误，并只更新独立 `provider_health` 行。
 
+env/system 引用默认拒绝：管理员必须先配置 `HIFY_CREDENTIAL_REFERENCE_BINDINGS`，将引用绑定到精确 baseUrl。创建、更新（包括保留鉴权但修改 URL）和运行期均检查，旧数据不豁免；禁止把应用主密钥或数据库密码当供应商密钥引用。示例引用不代表默认已获批准。
+
 ## 3. Agent
 
 ```text
@@ -248,10 +250,12 @@ POST/PUT 新增 `credentialAction`：
 |---|---|---|
 | KEEP | 无 Token/ref | 保持当前凭据，新建时为无鉴权 |
 | TOKEN | credentialToken | 直接输入 Bearer Token 原文（最多 8192，无前缀/空白），后端加密并生成新引用 |
-| REFERENCE | credentialRef | `env:变量名` 或 `system:属性名`；变量值需配置在后端 |
+| REFERENCE | credentialRef | `env:变量名` 或 `system:属性名`；变量值与精确 endpoint 的授权绑定均需由管理员配置 |
 | CLEAR | 无 Token/ref | 清除草稿鉴权，不撤销历史版本 |
 
 禁止混合提交或客户端指定 stored 引用。旧请求省略 action 时：ref 缺省保持、空串清除、非空更新 env/system 引用。Token 必须显式 TOKEN，不可绕过动作选择。
+
+有凭据时修改 endpoint 禁止 KEEP（包括旧客户端省略 action/ref）；必须重新提交 TOKEN/REFERENCE 或显式 CLEAR，否则400且原配置不变。REFERENCE 默认拒绝，保存与每次网络调用前均验证管理员配置的“引用→精确endpoint”；端口和路径必须匹配，不允许任意环境变量/系统属性、不支持通配授权。历史发布也受当前安全策略约束，不改写历史快照。直接 TOKEN 和无鉴权模式不需要引用白名单。
 
 响应增加 `credentialMode=NONE/TOKEN/REFERENCE/UNAVAILABLE` 与 `credentialConfigured`。仅 REFERENCE 可回传合法变量引用；TOKEN 不返回原文、密文或存储 ID。configured 表示配置存在，不代表远端鉴权成功。畸形 JSON 和参数错误不回显密钥。
 

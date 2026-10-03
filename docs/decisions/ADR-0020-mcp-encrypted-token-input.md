@@ -4,7 +4,7 @@
 
 ## 决策
 
-1. 保留 env/system 引用，MCP 增加 write-only Token；不改变 Provider 的引用规则。
+1. 保留 env/system 引用，MCP 增加 write-only Token；后续 ADR-0021 收紧 MCP/Provider 引用为管理员批准的引用/目标绑定，不再允许任意进程变量读取。
 2. AES-256-GCM 使用独立 32-byte 主密钥、每次随机 12-byte nonce、128-bit tag；AAD 绑定格式版本/serverId/credentialId。错误主密钥、篡改、跨服务解密均失败。
 3. 新增 V20 `mcp_credentials`；只保存密文，配置与历史 revision 只持 `stored:UUID`。不接受用户传入 stored 引用，运行时按 serverId 再校验归属。
 4. 替换是追加，不覆盖。KEEP 不产生新版本；CLEAR 不删除历史凭据。防止新配置悄悄改变旧 AgentVersion。真正撤销需向上游吊销 Token。

@@ -65,6 +65,10 @@ include `deploy/nginx-path.conf`。该片段将静态资源隔离在 `/hify/`，
 
 MCP 直接 Token 配置：部署时生成独立随机 32-byte Base64 `HIFY_MCP_MASTER_KEY`，放在仅服务用户可读的环境文件中，启动时注入；Compose 也从同名变量读取。不设置时只支持 env/system 引用。不要把主密钥复制进数据库、镜像、日志或 Git。数据库恢复必须同时恢复匹配主密钥；已有密文时禁止重新生成覆盖主密钥。首次配置需重启，后续页面更换 Token 无需重启。细节与回滚限制见 ADR-0020。
 
+引用授权（安全升级）：env/system 默认拒绝，管理员另外配置 `HIFY_CREDENTIAL_REFERENCE_BINDINGS` JSON，例如 `{"env:TEAM_LLM_KEY":["https://api.example.com/v1"],"env:MCP_TOKEN":["https://tools.example.com/mcp"]}`。只包含变量/属性名与目标地址，不包含密钥值；地址精确匹配（scheme、host、port、path），无通配、不允许query/userinfo/fragment。配置错误启动失败，不回显输入。参考 ADR-0021。
+
+升级前仅盘点现有引用名/目标地址，逐项确认可信并建立授权，不能从全部数据库行自动生成不加审查的许可。没有授权的旧引用会在调用前被拒绝；加密 TOKEN 与无鉴权模式不受影响。不要读取或输出环境变量真实值、不要改写主密钥、不要复制授权中的凭据值。服务重启后配置生效；此变更无需数据库迁移。
+
 - P0：无法创建 Run、终态不收敛、凭证泄露、数据不可读、备份失败。
 - P1：Provider 失败率/429 激增、SSE 首 token 或断线超 SLO、orphan runs > 0、工具超时激增。
 - P2：成本偏离、索引积压、Redis 命中下降、数据库慢查询。

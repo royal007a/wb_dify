@@ -9,7 +9,7 @@
 |---|---|---|---|
 | F01 | health 响应 HTTP200 / code200 / 固定文案 | 数据库断开时不能把存活接口误解为就绪 | B: chat；O: Actuator/部署；缺专用 A |
 | F02 | Provider CRUD、四种类型、模型显示名/调用ID分离、独立健康 | MOCK 创建拒绝、重复默认模型、缺引用、禁用、重复名、并发 | A: ProviderApiIntegrationTest；P 并发引用需补 |
-| F03 | 凭据只传授权头、管理响应不返回值、失败脱敏 | auth 缺省/更换类型/缺 env；URL 私网/重定向/混合 DNS | U: ProviderUrlPolicyTest、LlmHttpClientTest；A: ProviderApiIntegrationTest；X 未覆盖 |
+| F03 | 凭据只传授权头、管理响应不返回值、失败脱敏；引用/精确目标由管理员批准 | 任意进程引用默认拒绝、主密钥引用永远拒绝、旧数据库记录不能绕过；auth 缺省/更换类型/缺 env；URL 私网/重定向/混合 DNS | U: CredentialReferencePolicyTest、ProviderCredentialBoundaryTest、ProviderUrlPolicyTest、LlmHttpClientTest；A: ProviderApiIntegrationTest；X 未覆盖 |
 | F04 | 三原生+兼容协议文本/tool_calls/result正确配对、流增量重组 | 401/429/5xx、首包前/后错误、断流、取消、超时、无重发 POST | U: NativeProviderModelClientTest、LlmHttpClientTest；不等于 X 四家验收 |
 | F05 | Agent 草稿 CRUD/参数校验/动态工具目录/批量查询 | 空名/过高温度/未知工具/禁用模型/重复名 | A: AgentApiIntegrationTest；P: PostgresConcurrencyIntegrationTest |
 | F06 | 四种能力独立绑定，发布快照/digest/未发布差异正确 | 草稿改动不改版本；删除只归档且不复用名 | A: AgentApiIntegrationTest、McpServerApiIntegrationTest |
@@ -45,7 +45,7 @@
 | F26 | Workflow 创建/修改/校验/发布/历史/归档/试跑/轨迹 | 无环可达不等于变量必经；死路/重复分支/END出边/未知变量 | U/A: SPEC_WORKFLOW_GRAPH 记录25项单测+5项HTTP通过；列表/归档等全覆盖仍需VERIFY，资源冻结/取消另验 |
 | F27 | Chat 固定已发布 Workflow 执行，图更新不变旧行为 | KNOWLEDGE节点语料变化；取消中执行；超时/空输出 gate | A: AgentApiIntegrationTest 只覆盖 TEMPLATE 版本；需扩展 |
 | F28 | MCP Server CRUD、发现新 revision、READ工具调试、绑定 QueryLoop | 假工具/非READ、schema漂移、不可用/超时/取消/SSE replay | A: McpServerApiIntegrationTest、McpProtocolClientReliabilityTest |
-| F29 | MCP Token KEEP/TOKEN/REFERENCE/CLEAR；GCM随机nonce/所有者绑定；旧快照旧凭据 | 缺/错主密钥、篡改、跨Server、畸形JSON、回显、清除不等于全局撤销 | U: McpCredentialCipherTest；A/P: AbstractMcpCredentialContract 两环境；B: mcp-token-live.spec.ts |
+| F29 | MCP Token KEEP/TOKEN/REFERENCE/CLEAR；GCM随机nonce/所有者绑定；旧快照旧凭据；引用/目标默认拒绝 | 缺/错主密钥、篡改、跨Server、畸形JSON、回显、清除不等于全局撤销；换地址不得KEEP、历史引用运行时复查 | U: McpCredentialCipherTest、CredentialReferencePolicyTest；A/P: AbstractMcpCredentialContract 两环境；A: McpProtocolClientReliabilityTest；B: mcp-token-live.spec.ts（引用新策略尚未部署验证） |
 | F30 | 出站 URL/risk/headers/大小的安全边界 | DNS rebinding、协议重定向/元数据/用户信息、工具描述不可信 | U/A: ProviderUrlPolicyTest、McpServerApiIntegrationTest；完整 MCP session/SSE conformance 未实现 |
 
 ## Console / 工程 / 部署 / 效果
