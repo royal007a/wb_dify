@@ -25,6 +25,9 @@ public class RunHistoryCommit {
     private String semanticDigest;
     @Column(columnDefinition = "TEXT")
     private String messagesJson;
+    @Column(columnDefinition = "TEXT")
+    private String recoveryJson;
+    private String recoveryDigest;
     private Instant committedAt;
     private Instant projectedAt;
 
@@ -48,5 +51,11 @@ public class RunHistoryCommit {
     public String getMessagesJson() { return messagesJson; }
     public Instant getCommittedAt() { return committedAt; }
     public Instant getProjectedAt() { return projectedAt; }
+    public String getRecoveryJson() { return recoveryJson; }
+    public String getRecoveryDigest() { return recoveryDigest; }
+    public void bindRecovery(String json,String digest) {
+        if(recoveryJson!=null)throw new IllegalStateException("Recovery state is immutable");
+        recoveryJson=json;recoveryDigest=digest;
+    }
     public void markProjected(Instant projectedAt) { this.projectedAt = projectedAt; }
 }
