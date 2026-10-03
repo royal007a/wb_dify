@@ -1,0 +1,28 @@
+{
+  "kind": "historical-log-summary",
+  "sourceCommitAsRecorded": "641fdcb",
+  "sourceEvidence": "docs/evidence/SPEC_AUDIT.md",
+  "command": [
+    "mvn",
+    "-B",
+    "-pl",
+    "hify-app",
+    "-am",
+    "-Dtest=ApiContractInventoryTest",
+    "-Dsurefire.failIfNoSpecifiedTests=false",
+    "test"
+  ],
+  "log": "harness/evidence/SPEC-AUDIT-001/SPEC-AUDIT-001-20261003T230750Z-14ee53bf/api-inventory.log",
+  "logSha256": "fd180f37e86c6c5e59ab74f60f3ecbeaf33ec3fa3b30b153bac7feb78cb49f2e",
+  "classes": [
+    {
+      "class": "com.hify.api.ApiContractInventoryTest",
+      "tests": 1,
+      "executed": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "meaning": "Recount of existing invocation, not a rerun; API inventory only."
+}

@@ -26,7 +26,7 @@
 | F12 | 事件有序持久、游标归属、终态关闭流；慢客户端不阻塞提交 | 回滚不外发、回调乱序/订阅交错、terminal写失败回滚；全局64连接配额/慢读期限仍有限制 | U: RunEventBrokerTest、RunEventBrokerBackpressureTest；P: PostgresConcurrencyIntegrationTest；真实socket见SPEC_SSE_BACKPRESSURE；B: chat-lifecycle受控事件，不替代代理断线 |
 | F13 | 六出口与 FinishGate：回答、required Claim VERIFIED、无 blocking Gap | 空回答/缺证据/未闭合工具调用/权限禁止 | U: ExecutionContextStateTest、QueryLoopTest、KnowledgeCompletionVerifierTest；Knowledge 候选未验证，canonical 回读仅验证来源，答案语义仍未验证 |
 | F14 | 参数错误 LOCAL_REPLAN；超时有限 RETRY；缺参数 CLARIFY；拒权 INTERRUPT | budget 不重置、失败点≠根因点、无替代 ASK_HUMAN/no-progress | U: PlanStateMachineTest、QueryLoopTest |
-| F15 | 已提交模型/工具结果重放而非重新执行；关闭/取消分开收敛 | 未提交READ可重做；旧/损坏history拒绝；新Run恢复Gap；replan计数/恢复预算缺口 | U/A/P: HistoryReplayTest、HistoryRecoveryIntegrationTest/HistoryRecoveryPostgresTest、RunShutdownIntegrationTest/RunShutdownPostgresTest；同JVM新上下文/反转键序，未实跑fork JVM |
+| F15 | 已提交模型/工具结果重放而非重新执行；关闭/取消分开收敛 | 未提交READ可重做；旧/损坏history拒绝；新Run恢复Gap；replan计数/恢复预算缺口 | U/A/P: HistoryReplayTest、HistoryRecoveryIntegrationTest/HistoryRecoveryPostgresTest、RunShutdownIntegrationTest/RunShutdownPostgresTest；同JVM新上下文/反转键序，未fork JVM。关闭时序由latch/ContextClosedEvent控制；审计001/Chat003本轮PG版跳过，不能引用成新鲜PG运行 |
 | F16 | 固定 capability/schema revision、lease 执行前二次校验 | 取消/attempt 变化/审批后漂移不得执行 | U: ToolRuntimeTest；A: MCP immutable snapshot tests |
 | F17 | canonical history operationId 语义幂等，持久化→回读→revision→投影 | 同 ID 异摘要冲突；失败 ack 不提前；原文摘要先校验再比JSON语义，对象键序不敏感/数组有序 | U: QueryLoopTest；A/P: HistoryReplayTest、HistoryRecoveryIntegrationTest/HistoryRecoveryPostgresTest、HistoryRecoveryMigrationTest |
 | F18 | Context 独立 input/output/reserve/safety 预算；先归档后压缩重测 | 即使压缩仍超限拒绝；原文不丢；引用完整 | U/E: ContextManagerTest、ContextManagementEvaluationTest |
@@ -52,14 +52,24 @@
 
 | ID | 场景与必须断言 | 失败/边界 | 已有入口及核验层 |
 |---|---|---|---|
-| F31 | 六个页面导航/表单/分页/空态；Chat代际/取消/同key/Gap/终态补读 | 窄屏/4xx恢复输入/未知提交退出/200即断重连；真实全CRUD未验收 | B: management.spec.ts是mock smoke；chat-lifecycle.spec.ts 21项受控HTTP/SSE，后端校验顺序P1不在其证明范围 |
+| F31 | 六个页面导航/表单/分页/空态；Chat代际/取消/同key/Gap/终态补读 | 窄屏/4xx恢复输入/未知提交退出/200即断重连；真实全CRUD未验收 | B: management.spec.ts是mock smoke；chat-lifecycle.spec.ts 28项受控HTTP/SSE。后端查重顺序另由F10真实HTTP/H2证明；人工SSE重连/resume放弃/建会话超时待补 |
 | F32 | Workflow 画布与 JSON 使用同一 DSL、校验/试跑/diff | 非法连线、编辑未保存、旧版本 diff | B: management.spec.ts 仅打开画布/diff；真实图编辑需补 |
 | F33 | MCP 编辑原ID、Token不回填、关闭清空、保存/替换/清除 | API失败保留本次输入；切换操作不误传 token | B: mcp-edit.spec.ts mock；mcp-edit-live/mcp-token-live opt-in 真实链路 |
 | F34 | Reactor依赖、统一Result/异常、线程池/分页/时间/Redis；饱和Run收敛 | 拒绝/关闭分开；breaker取消不计供应商失败、模型超时计失败；multipart仍需测 | U/A: CommonContractsTest、AgentCacheIntegrationTest、RunAdmissionIntegrationTest、RunDispatchIntegrationTest、CircuitBreakerServiceTest；SPEC_COMMON的7项为standalone MVC，不是全应用所有4xx |
 | F35 | Flyway V1-V23从空库/升级不丢版本，唯一约束/加密存储 | 不能将 Testcontainers skip 当通过；数据真实且隔离 | P: migration scope（具体类和计数见 harness/verify.sh）；不是全部业务的 PG 覆盖 |
 | F36 | 启停脚本、失败清理、PID归属、备份恢复、SSE代理、TLS、前缀 | 不杀其他进程；构建与已部署SHA一致；Token主密钥不可重置 | O: start/stop/deploy 脚本；本轮需重新验证授权范围 |
 | F37 | 版本化评测数据、成功率/召回/覆盖/重复调查/成本延迟 | 测试集与参数不能混用；mock token/延迟不能称真实P95 | E: IntentEvaluationDatasetTest、HistoryRecallEvaluationTest、ContextManagementEvaluationTest；真实供应商效果未验收 |
-| F38 | Harness单任务、权限、baseline/checkpoint/evidence、生成进度 | 不同高风险动作需approvalRef；失败不标完成；测试记录版本对齐 | harness/tests/test_harness.py；全接口门禁 ApiContractInventoryTest |
+| F38 | Harness单任务、权限、baseline/checkpoint/evidence、生成进度 | 不同高风险动作需approvalRef；失败不标完成；测试记录版本对齐；skip须partial且退出非0 | harness/tests/test_harness.py、test_verification_report.py；ApiContractInventoryTest只核对接口库存method/path/handler，不是接口行为门禁 |
+
+## 必补负路径与精确HTTP断言
+
+以下是验收要求，不是已通过列表；逐路由应用性与结果在SPEC-VERIFY报告中填写，不适用要说明原因：
+
+- HTTP全应用：400（缺header/类型/非法JSON）、404（未知资源）、405（方法）、409（状态/幂等冲突）、413（超大上传）、415（媒体类型）、503（SSE订阅满额）。每例同时检查HTTP码、Result.code、安全文案、无原始秘密/路径/执行器内部信息；不能拿standalone的7例覆盖全部路由。
+- F10：同key不同message或resume.runId/gapIds必须40901；by-key命中/未命中/跨会话/错误响应no-store、查询不创建Run/会话/消息/事件/任务。404不表示原POST不会晚到。
+- F11：重复取消须幂等；已终态Run再次取消的HTTP码按API.md当前契约断言，不覆盖既有终态、不重复终态事件、不新建取消内存状态。未知提交取消必须GET lookup，不重新POST创建Run。
+- F34：容量拒绝首次POST返回202且body为FAILED/EXECUTOR_REJECTED；同key重放200同Run、只一条user消息、无assistant；SSE重放能观察run.failed。关闭拒绝与容量拒绝分别测试；终态写库失败不得误称已收敛。
+- F12：满额503和释放后能重新订阅要从真实HTTP验证；正常/慢读客户端限额与硬期限另列未保证项，不用mock SseEmitter冒充Tomcat背压。
 
 ## 本轮覆盖报告要求
 

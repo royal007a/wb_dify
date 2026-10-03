@@ -52,14 +52,14 @@ SPEC-KNOWLEDGE-FINISH-001 后续实现来源完整性门禁：空/部分读取�
 要求：浏览器注入受控事件源，验证运行期间不能切新会话、离开后连接关闭且旧事件不写新页面、终态回读失败可恢复而非无限 loading、最终持久化文本能纠正重复/漏 delta。取消接口失败也必须显示明确错误并允许再次取消。
 前端修复 `73f8938`，测试隔离 `00a10dd`：8项受控浏览器回归、typecheck/build通过，见 `docs/evidence/SPEC_CHAT_UI.md`。不替代A07服务端事务修复或部署端真实Chat验收。
 
-## 独立静态复核增量（0975782，待逐项红灯验证）
+## 历史静态复核原始索引（0975782，不是当前状态）
 
 来源：mymacclaude 消息 `om_x100b63204ee2a8a0c2cced58d25ff1c`。对方明确本轮仅静态阅读；不能标成独立测试通过。后续提交需复查是否已消除相关路径。
 
 - A1：MCP任意env/system引用会读取进程主密钥；本地检查发现Provider有同源路径。已用4个失败反例确认，70a5f33实现默认拒绝的引用/精确目标绑定，TOKEN换地址禁止KEEP；模块/HTTP与真实PG门禁通过，尚未部署，见SPEC_CREDENTIAL_BOUNDARY.md。
 - A2/A3/A4/A5：对应既有A01/A03，另需修正Claim为空的FINISH语义、Workflow未走FinishGate、归档后canonical引用回读矛盾。
-- B1：取消/本地拒绝计入供应商熔断已由3个红灯复现；局部执行拒绝类型化、按调用控制释放breaker许可，63项common/provider回归通过，见SPEC_PROVIDER_LOCAL_FAILURE.md。B2：runExecutor提交拒绝未收敛RUNNING，待独立故障注入验证。
-- C1/C2/C3/C4：新Run创建期间取消旧Run、失效resume、网络结果不明时新幂等键重复创建、无gapIds的NEEDS_INPUT；另有重连计数和终态补读竞争。C4可达性尚未确认。
+- B1：取消/本地拒绝计入供应商熔断已由3个红灯复现；局部执行拒绝类型化、按调用控制释放breaker许可，63项common/provider回归通过，见SPEC_PROVIDER_LOCAL_FAILURE.md。B2当时未收敛RUNNING，后续446688a/656b61a已加真实拒绝执行器测试与单实例owner，见下方增量；数据库故障与关机边界另列，不再写成全项未修。
+- C1/C2/C3/C4：历史反例为新Run创建期间取消旧Run、失效resume、网络未知时新key重复创建、空gapIds的NEEDS_INPUT；另有重连和终态补读竞争。C4旧版本的正常生产可达性未证明，但后续已用受控响应验证防御性不可恢复提示；参见Chat专项，不表示健康后端应产生空Gap。
 - D1/D2：图校验与50步执行上限不一致、条件表达式解析未在发布校验，字面量含运算符歧义。
 - E1：线程池关闭中断可能误记用户取消而失去恢复；E-P2包括两张Run终态竞态、预取消重复事件、拒绝错误回显、取消标志被覆盖、跨实例取消非目标。事件相关先对照a1c2015复核。
 - 其余P2：multipart错误500、主密钥错误启动未检测、停用Server对历史能力语义、LLM与索引共池、IllegalArgumentException回显、standalone MockMvc表述、非法旧DSL分类、图测试缺项及模板字面量边界。
@@ -86,6 +86,29 @@ G切片独立复核：无P0/P1；P2-1指出受保护命名空间漏掉项目实�
 - A08/C：`18d2dee`、`496aae5`的21项受控浏览器回归修复创建中取消旧Run、过期resume、同key快照和终态补读竞争，见 `../evidence/SPEC_CHAT_LIFECYCLE_REVIEW.md`。对方随后指出**新P1**：后端先验证Provider/会话再查key，已提交但客户端未知时，Provider停用导致重试与取消都失败且页面无放弃出口。需真实后端红灯，不能用“500→403继续unknown”的浏览器测试当正确性证明。结果不明取消重POST可能创建任务、明确4xx丢输入、200即断无限补读为相关P2。
 
 这里的67项是接口集合，38项是行为验收场景；修复过某个场景不代表此组所有接口/负路径已经验收。SPEC-VERIFY-001须保留pass/fail/not-run以及证据版本。
+
+## 2026-10-04 复核补录（daec369后的证据边界）
+
+旧段的“待修”保留其时间基线，不代表当前任务状态。Chat新P1已由1ce9cfb..daec369修复：查重早于可变准入、GET lookup不创建、取消不POST、显式放弃与输入保留、有界短断线。3项真实HTTP/H2测试+28项受控浏览器证据见 `../evidence/SPEC_CHAT_SUBMISSION_RECOVERY.md`。独立review仅静态阅读；新增4条P2（人工重连、放弃resume上下文、取消文案、createConversation超时）交SPEC-CHAT-LIFECYCLE-004。库存现为68条，不回写历史67。
+
+下表补齐原review中未关闭的具体反例；仅是定位索引，状态仍由tasks.json维护：
+
+| 对应任务/说明 | 具体反例与验证缺口 |
+|---|---|
+| SPEC-KNOWLEDGE-FINISH-004 | 部分来源失败先发knowledge.retrieval.completed再失败；wrapped suspension未沿cause链判定；DataAccessException变成用户Gap；UI缺来源核验范围说明 |
+| SPEC-KNOWLEDGE-INTEGRITY-003 | DocumentIndexingService.isPostgres另借连接，元数据读取失败返回false导致PG漏写向量却成功；运行时未比Agent绑定的workflow checksum |
+| SPEC-MEMORY-FILTER-001 | PG前100候选先截断后按来源过滤，普通Run证据会被挤掉；缺同会话普通ref可见的正向端到端对照 |
+| SPEC-HISTORY-RECOVERY-003 | recallLatency/replanDecisions恢复归零；触发replan的末工具没有后续恢复记录时重建UUID；观察事件重放会重复 |
+| SPEC-RUN-BUDGET-001 | Chat重启重新分配完整runTimeout；Workflow按createdAt扣减，两条路径不一致 |
+| SPEC-WORKFLOW-RECOVERY-001 / 关闭与恢复边界 | 拒绝后get/finishTerminal数据库报错可留RUNNING；启动恢复超过104容量直接FAILED；WorkflowRecovery整体UPDATE失败会阻止启动，逐行catch不涵盖它 |
+| SPEC-CHILD-RECOVERY-001 | ChildAgentTask恢复与Run恢复监听器缺确定顺序；新认领任务可能被convergeLost误标，尚需交错测试 |
+| SPEC-WORKFLOW-RECOVERY-001 | requireVersion/DSL校验/建run失败、成功后response读取失败仍可MODEL_ERROR且缺workflow投影；workflow.started早于校验；END SUCCEEDED与父CANCELLED不一致；已成功workflow落库后崩溃可能重跑、旧结果无投影 |
+| SPEC-WORKFLOW-GRAPH-003 | U3000 trim不一致；旧quoted反斜杠改按JSON转义；裸help!/A&B/退款(急)现拒绝，迁移提示未覆盖；错误无nodeKey/发布顺序 |
+| SPEC-SSE-BACKPRESSURE-002 | 全局64独占线程可被空闲连接占满，无Run/IP配额；180秒只在send之间检查，慢读不等于硬总期限；缺丢唤醒/释放/慢读等确定性交错证据 |
+| SPEC-PROVIDER-SAMPLING-001 | Run期限先于model时只释放不计超时；beforeAttempt在本地排队前，故障样本可能错误归Provider；不宣称所有挂起都能熔断 |
+| OPERATIONS的凭据部署限制 | -D/JAVA_OPTS传密钥可能经sun.java.command等误授权外送；当前compose/env入口未用此方式，不能泛称所有JVM启动变量受保护 |
+
+历史审计backend495/406/89与Chat backend498/409/89的逐类可提交摘要见 `../evidence/SPEC_AUDIT_FOLLOWUP.md`；它们不是新跑PG的证据。受控关闭时序、mock管理浏览器、H2交错无效等限制须在F15/F31/F38就地说明，不藏在旧日志里。
 
 ## 已核对的文档漂移
 
