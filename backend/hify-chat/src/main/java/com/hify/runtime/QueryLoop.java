@@ -128,6 +128,11 @@ public class QueryLoop {
                         turn - 1, toolCalls, plan, replanDecisions, checkpoint);
             }
             RuntimeMessage response;
+            var modelReplay=identity.historyCommitter().replay("model:"+turn,List.copyOf(messages));
+            if(modelReplay.isPresent()) {
+                response=modelReplay.get().message();
+                if(!"assistant".equals(response.role())||response.toolCallId()!=null)throw new HistoryReplayException("Invalid canonical model response");
+            } else {
             try {
                 observer.onModelStarted(turn);
                 int currentTurn = turn;
@@ -165,12 +170,13 @@ public class QueryLoop {
                         "模型调用失败：" + exception.getMessage(), messages, turn, toolCalls,
                         plan, replanDecisions, checkpoint);
             }
+            }
             // A complete final response may still pass the normal finish/cancel/budget gates.
             // Tool-bearing responses need further work and remain subject to shutdown admission.
             if (response.toolCalls() != null && !response.toolCalls().isEmpty()) control.throwIfSuspended();
             messages.add(response);
             commitHistory(identity, "model:" + turn, messages, observer);
-            observer.onModelCompleted(turn, response);
+            if(modelReplay.isEmpty())observer.onModelCompleted(turn, response);
 
             if (control.isCancelled()) {
                 transitionIfPossible(state, PlanPhase.CANCELLED);
@@ -215,6 +221,13 @@ public class QueryLoop {
                 PlanStep step = plan.steps().get(0);
                 if (pendingContinuation != null && (pendingContinuation.action() == ContinuationAction.CLARIFY
                         || pendingContinuation.action() == ContinuationAction.INTERRUPT)) {
+                    var skippedReplay=identity.historyCommitter().replay("tool:"+call.id(),List.copyOf(messages));
+                    if(skippedReplay.isPresent()) {
+                        validateToolReplayMessage(call,skippedReplay.get().message());
+                        messages.add(skippedReplay.get().message());
+                        commitHistory(identity,"tool:"+call.id(),messages,observer);
+                        continue;
+                    }
                     StepAttempt skipped = StepAttempt.start(step, toolCalls + 1, call.id(), call.name());
                     ToolRuntime.ExecutionResult skippedResult = ToolRuntime.ExecutionResult.skipped(
                             "Skipped because an earlier action stopped this TAO turn");
@@ -248,6 +261,24 @@ public class QueryLoop {
 
                 ToolRuntime.ExecutionResult result;
                 StepAttempt completedAttempt;
+                var toolReplay=identity.historyCommitter().replay("tool:"+call.id(),List.copyOf(messages));
+                HistoryCommitter.ToolReplay recovery;
+                if(toolReplay.isPresent()) {
+                    validateToolReplayMessage(call,toolReplay.get().message());
+                    recovery=toolReplay.get().tool();
+                    if(recovery==null)throw new HistoryReplayException("Legacy committed tool result has no recovery state; automatic re-execution refused");
+                    if(!call.id().equals(recovery.attempt().toolCallId())||!call.name().equals(recovery.attempt().toolName())
+                            ||recovery.plan().version()!=plan.version()||!recovery.plan().goal().equals(plan.goal())
+                            ||!recovery.plan().steps().get(0).id().equals(recovery.attempt().stepId())||recovery.toolCalls()<toolCalls
+                            ||recovery.toolCalls()>policy.maxToolCalls())throw new HistoryReplayException("Tool recovery identity or budget mismatch");
+                    // A replayed local replan must keep the original plan/step IDs, not freshly generated UUIDs.
+                    plan=recovery.plan();step=plan.steps().get(0);
+                    result=recovery.result();completedAttempt=recovery.attempt();contextState=recovery.contextState();
+                    toolCalls=recovery.toolCalls();recallCalls=recovery.recallCalls();recallTokens=recovery.recallTokens();
+                    recallLatencyMs=recovery.recallLatencyMs();
+                    // The saved context preserves NAVIGATION vs VERIFIED and original attempt/claim IDs.
+                    transitionIfPossible(state,PlanPhase.TRYING);
+                } else {
                 int retries = 0;
                 while (true) {
                     transitionIfPossible(state, PlanPhase.TRYING);
@@ -287,10 +318,15 @@ public class QueryLoop {
                     }
                     break;
                 }
+                recovery=HistoryCommitter.ToolReplay.capture(result,completedAttempt,plan,contextState,
+                        toolCalls,recallCalls,recallTokens,recallLatencyMs);
+                }
 
-                RuntimeMessage toolResult = RuntimeMessage.toolResult(call.id(), result.value(), result.error());
+                RuntimeMessage toolResult = toolReplay.isPresent()?toolReplay.get().message()
+                        :RuntimeMessage.toolResult(call.id(), result.value(), result.error());
                 messages.add(toolResult);
-                commitHistory(identity, "tool:" + call.id(), messages, observer);
+                var receipt=identity.historyCommitter().commitTool("tool:"+call.id(),List.copyOf(messages),recovery);
+                observer.onHistoryCommitted("tool:"+call.id(),receipt);
 
                 if (isRecallTool(call.name()) && (recallTokens > policy.maxRecallTokens()
                         || recallLatencyMs > policy.maxRecallLatencyMs())) {
@@ -515,6 +551,10 @@ public class QueryLoop {
         HistoryCommitter.CommitReceipt receipt = identity.historyCommitter()
                 .commit(operationId, List.copyOf(messages));
         observer.onHistoryCommitted(operationId, receipt);
+    }
+
+    private void validateToolReplayMessage(RuntimeMessage.ToolCall call,RuntimeMessage message){
+        if(!"tool".equals(message.role())||!call.id().equals(message.toolCallId()))throw new HistoryReplayException("Invalid canonical tool result");
     }
 
     public record RunPolicy(int maxTurns, int maxToolCalls, int maxEstimatedTokens,

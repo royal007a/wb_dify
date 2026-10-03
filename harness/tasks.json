@@ -1,21 +1,43 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T20:37:57Z",
+  "updatedAt": "2026-10-03T20:40:23Z",
   "tasks": [
+    {
+      "id": "SPEC-WORKFLOW-RECOVERY-001",
+      "title": "关联Workflow执行事实与父Run恢复及异常边界",
+      "description": "结算复核P2：执行前/结果读取异常仍可能MODEL_ERROR；成功后父提交前崩溃重跑且旧结果无投影；END节点停止边界待明确。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["backend", "runtime", "harness"],
+      "verifyScopes": ["harness", "migration"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-RUN-ADMISSION-001"],
+      "acceptance": ["持久关联执行结果并明确崩溃恢复不盲目重执行", "异常归类与END节点停止语义可测", "停止与取消组合、失败事务及持锁取消有集成证据"],
+      "planPath": "exec-plans/active/SPEC-WORKFLOW-RECOVERY-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T20:55:00Z",
+      "updatedAt": "2026-10-03T20:55:00Z"
+    },
     {
       "id": "SPEC-HISTORY-RECOVERY-001",
       "title": "恢复时重放已提交模型响应而非重新生成",
       "description": "E1复验新P1假设：model:N先于轮末checkpoint提交，恢复重新生成可能造成语义摘要冲突；先红灯复现，不放宽冲突保护。",
       "priority": "P1",
-      "status": "pending",
+      "status": "running",
       "scopes": [
         "backend",
         "runtime",
+        "migration",
         "harness"
       ],
       "verifyScopes": [
-        "harness"
+        "harness",
+        "migration"
       ],
       "risk": "reversible_write",
       "operation": "workspace_write",
@@ -29,11 +51,17 @@
         "真实关闭恢复与运行时回归通过，明确外部副作用和损坏历史边界"
       ],
       "planPath": "exec-plans/active/SPEC-HISTORY-RECOVERY-001.md",
-      "checkpoint": null,
+      "checkpoint": {
+        "summary": "task command started",
+        "headCommit": "20e96670f937bd78f1fd0e413f753b00512841da",
+        "workingTreeHash": "f8bc5b211bbe31abf531a4b3a13b0e709f2a6e4fba7e3c81091e9d31ac0659ef",
+        "evidencePath": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0",
+        "updatedAt": "2026-10-03T20:40:23Z"
+      },
       "blockedReason": null,
       "evidence": [],
       "createdAt": "2026-10-03T20:35:00Z",
-      "updatedAt": "2026-10-03T20:35:00Z"
+      "updatedAt": "2026-10-03T20:40:23Z"
     },
     {
       "id": "SPEC-RUN-BUDGET-001",

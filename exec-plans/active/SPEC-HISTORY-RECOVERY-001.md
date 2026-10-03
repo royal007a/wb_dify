@@ -11,4 +11,6 @@
 3. checkpoint 与 history revision/operationId 的恢复关系必须有契约；损坏或语义不一致仍 fail-closed，不覆盖历史。
 4. 验证没有重复模型调用、重复 delta、重复历史提交；真实关闭/恢复及已有运行时回归，记录 red/green。
 
+实现决策：复用已存在 model:N；为新 tool:* 在 canonical 行内保存版本化类型/plan/attempt/context/counters，V23 只新增 recovery_json/recovery_digest，并限制两字段同时为空或非空。旧 tool:* 不补造状态，明确拒绝自动重执行。已提交范围之外的 READ 重试和部分 delta 仍可能重复；不扩张成写工具执行或通用 checkpoint 状态机。详见 docs/spec/SPEC_HISTORY_RECOVERY.md。
+
 只改 ~/hify，不改 hify-cc，不访问共享数据或真实凭据。代码与测试独立提交，交由 mymacclaude 只读复核；回滚只针对代码，不重写已提交历史。

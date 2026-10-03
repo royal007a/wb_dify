@@ -620,7 +620,7 @@ public class RunApplicationService {
         }
         TerminalReason reason = exception instanceof CapabilityMismatchException
                 ? TerminalReason.CAPABILITY_MISMATCH
-                : exception instanceof HistoryOperationConflictException
+                : exception instanceof HistoryOperationConflictException || exception instanceof com.hify.runtime.HistoryReplayException
                 ? TerminalReason.HISTORY_COMMIT_FAILED : TerminalReason.MODEL_ERROR;
         finishTerminal(runId, RunState.FAILED, reason.name(),
                 "Run failed: " + exception.getMessage(), 0, 0, false);
