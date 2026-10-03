@@ -4,6 +4,31 @@
   "updatedAt": "2026-10-03T19:25:36Z",
   "tasks": [
     {
+      "id": "SPEC-RUN-SHUTDOWN-001",
+      "title": "区分应用关闭与用户取消并验证重启恢复",
+      "description": "E1：应用关闭不得伪造取消或容量失败；Workflow中断单独留痕，恢复扫描隔离单条数据库故障。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["backend", "runtime", "migration", "harness"],
+      "verifyScopes": ["harness"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-RUN-DISPATCH-001"],
+      "acceptance": [
+        "关闭中断中的模型/Workflow Run 保留可恢复状态，无虚假用户取消、助手消息或成功事件",
+        "关闭造成的提交拒绝不写永久容量失败；真实用户取消仍优先",
+        "实际独立应用上下文关闭并重启后同一Run接续；不声称外部副作用恰好一次",
+        "恢复单条数据库故障不会阻断其余记录，Workflow INTERRUPTED迁移及回归通过"
+      ],
+      "planPath": "exec-plans/active/SPEC-RUN-SHUTDOWN-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T19:35:00Z",
+      "updatedAt": "2026-10-03T19:35:00Z"
+    },
+    {
       "id": "SPEC-RUN-DISPATCH-001",
       "title": "同实例create与恢复扫描的调度所有权",
       "description": "B2复核P1：同一Run可能执行两次且拒绝的副本误杀活跃执行；以单实例产品边界修复并披露跨实例非目标。",

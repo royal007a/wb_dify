@@ -4,7 +4,7 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-10-03T19:25:36Z`
 - Current task: `none`
-- Counts: pending 11 · running 0 · blocked 1 · completed 42
+- Counts: pending 12 · running 0 · blocked 1 · completed 42
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -52,6 +52,7 @@
 | `SPEC-RUN-ADMISSION-001` | P1 | pending | backend, runtime, harness | reversible_write | 执行拒绝和关机中断的Run收敛 |
 | `SPEC-RUN-ADMISSION-002` | P1 | completed | backend, runtime, harness | reversible_write | Run 执行器容量拒绝的终态与幂等回放 |
 | `SPEC-RUN-DISPATCH-001` | P1 | completed | backend, runtime, harness | reversible_write | 同实例create与恢复扫描的调度所有权 |
+| `SPEC-RUN-SHUTDOWN-001` | P1 | pending | backend, runtime, migration, harness | reversible_write | 区分应用关闭与用户取消并验证重启恢复 |
 | `SPEC-SSE-BACKPRESSURE-001` | P1 | completed | backend, runtime, harness | reversible_write | SSE慢客户端隔离及游标归属验证 |
 | `SPEC-WORKFLOW-GRAPH-002` | P1 | pending | backend, runtime, harness | reversible_write | 统一图步数限制与条件语法契约 |
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
