@@ -23,3 +23,7 @@
 ## 验证边界
 
 H2隔离测试、不调用付费模型；无新迁移。本片前端仅类型检查/生产构建，不宣称浏览器实测；尚未部署。最终runner的命令、源码HEAD、runtime/frontend/harness门禁以verification.json为准，完成后补记摘要。
+
+## 最终门禁（2026-10-04 06:59 CST）
+
+源码0358827，测试/契约39c9e52。runner定向命令50项，runtime34项，均0失败/错误/跳过；harness状态、规格、5项单测、Shell语法以及frontend typecheck/build全部退出0。构建仍提示既有主包大于500KB，非失败。本原子任务completed，独立复核待回，不代表67接口全验或生产部署完成。

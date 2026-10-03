@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-03T22:49:32Z`
+- Generated from task state updated at: `2026-10-03T22:59:42Z`
 - Current task: `none`
-- Counts: pending 15 · running 0 · blocked 1 · completed 52
+- Counts: pending 15 · running 0 · blocked 1 · completed 53
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -59,7 +59,7 @@
 | `SPEC-RUN-SHUTDOWN-001` | P1 | completed | backend, runtime, migration, harness | reversible_write | 区分应用关闭与用户取消并验证重启恢复 |
 | `SPEC-RUN-SHUTDOWN-002` | P1 | completed | backend, runtime, harness | reversible_write | 关闭期间保留已计算终态并验证生产销毁顺序 |
 | `SPEC-SSE-BACKPRESSURE-001` | P1 | completed | backend, runtime, harness | reversible_write | SSE慢客户端隔离及游标归属验证 |
-| `SPEC-WORKFLOW-GRAPH-002` | P1 | pending | backend, runtime, harness | reversible_write | 统一图步数限制与条件语法契约 |
+| `SPEC-WORKFLOW-GRAPH-002` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 统一图步数限制与条件语法契约 |
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
 | `SPEC-CHILD-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 核验子任务孤儿扫描与父Run恢复时序 |
@@ -69,6 +69,7 @@
 | `SPEC-KNOWLEDGE-FINISH-004` | P2 | pending | backend, frontend, runtime, harness | reversible_write | 对齐知识门禁故障分类、检索事件和核验范围展示 |
 | `SPEC-KNOWLEDGE-INTEGRITY-003` | P2 | pending | backend, harness, migration | reversible_write | 补齐索引数据库类型检测及Agent固定Workflow校验和 |
 | `SPEC-KNOWLEDGE-LEGACY-001` | P2 | pending | backend, runtime, harness | reversible_write | 旧未固定版本会话恢复不能移除知识门禁 |
+| `SPEC-MEMORY-FILTER-001` | P2 | pending | backend, runtime, harness | reversible_write | memory来源过滤召回与正向对照 |
 | `SPEC-PROVIDER-SAMPLING-001` | P2 | pending | backend, runtime, harness | reversible_write | 区分HTTP实际尝试与Run预算截断的健康采样 |
 | `SPEC-RUN-BUDGET-001` | P2 | pending | backend, runtime, harness | reversible_write | 统一聊天与Workflow跨重启的Run预算 |
 | `SPEC-SSE-BACKPRESSURE-002` | P2 | pending | backend, runtime, harness | reversible_write | SSE公平接入与慢读总时限的确定性验证 |

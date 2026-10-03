@@ -30,3 +30,7 @@ memory 测试通过 latch 卡住真实 canonical 校验时，确认 model:1 已�
 ## 最终门禁（2026-10-04 06:49 CST）
 
 源码 57b4ec5，测试/契约 8b6d503。verification.json 的 headCommit 为 8b6d503：定向 command.log 78 项、runtime 34 项、migration PG 矩阵 114 项，全部失败/错误/跳过为 0；harness 所有步骤退出 0。PG 矩阵包含两组新加入的 memory 21 / shutdown 22 项，不能把 H2/PG 或继承重复项计作独立新增场景。最终状态 completed 只代表本原子任务验收，不代表全仓库和部署完成；独立复核待回。
+
+## 独立复核收到（55423ca 后）
+
+mymacclaude 对 1606300..55423ca 做静态阅读，未复跑测试；确认两条 P1 可以关闭，无新 P0/P1。另记录 P2：包装的挂起异常在 lifecycle 未 stopping 时仍可能转 Gap；PG 候选截断后才过滤会挤掉普通 Run；memory 搜索缺同会话可见正向对照。前者纳入 SPEC-KNOWLEDGE-FINISH-004，其余纳入 SPEC-MEMORY-FILTER-001。知识 Run 不做 layered 压缩的功能收窄、版本为空且从无门禁 checkpoint 的历史数据边界维持原说明。静态复核通过不代表部署完成。

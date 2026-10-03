@@ -1,0 +1,16 @@
+{
+  "task": "SPEC-WORKFLOW-GRAPH-002",
+  "baseline": "55423ca",
+  "sourceCommit": "0358827",
+  "testAndContractCommit": "39c9e52",
+  "runs": [
+    {"log":"red-graph.log","classes":["WorkflowGraphValidatorTest","WorkflowEngineTest"],"tests":37,"failures":9,"errors":0,"skipped":0,"exitCode":1},
+    {"log":"green-graph.log","tests":37,"failures":0,"errors":0,"skipped":0,"exitCode":0},
+    {"log":"green-api.log","tests":50,"failures":0,"errors":0,"skipped":0,"exitCode":0},
+    {"log":"green-final.log","tests":50,"failures":0,"errors":0,"skipped":0,"exitCode":0},
+    {"log":"command.log","tests":50,"failures":0,"errors":0,"skipped":0,"exitCode":0},
+    {"log":"runtime-tests.log","tests":34,"failures":0,"errors":0,"skipped":0,"exitCode":0}
+  ],
+  "counterexamples":["51-step graph admitted but runtime guard fails", "quoted contains literal misparsed as operator", "invalid condition accepted until node execution", "decoded template reference bypass", "legacy invalid DSL must be WORKFLOW_ERROR in Chat"],
+  "notes":["Only initial 37-test matrix ran red against unchanged production code; added API/escape cases are green regressions, not mutation proof", "Wide 97-node graph with longest path 50 remains valid", "No new SQL migration; independent H2 fixtures", "Frontend typecheck/build passed; browser, PostgreSQL-specific interleaving, paid models and deployment not run", "Repeated matrix runs are not independent new scenario counts"]
+}
