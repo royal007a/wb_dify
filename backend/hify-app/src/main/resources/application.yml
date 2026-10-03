@@ -53,6 +53,8 @@ hify:
     allow-private: ${HIFY_MCP_ALLOW_PRIVATE:false}
     credentials:
       master-key: ${HIFY_MCP_MASTER_KEY:}
+  credentials:
+    reference-bindings: ${HIFY_CREDENTIAL_REFERENCE_BINDINGS:}
   provider:
     allow-private: ${HIFY_PROVIDER_ALLOW_PRIVATE:false}
     host-allowlist: ${HIFY_PROVIDER_HOST_ALLOWLIST:}

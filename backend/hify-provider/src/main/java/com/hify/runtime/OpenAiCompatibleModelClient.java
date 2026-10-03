@@ -31,7 +31,7 @@ public class OpenAiCompatibleModelClient implements ModelClient {
         this.httpClient = httpClient;
         this.resilience = resilience;
         this.auth = authCodec.decode(provider.authConfig());
-        this.credential = credentials.resolve(auth.credentialRef());
+        this.credential = credentials.resolve(auth.credentialRef(), provider.baseUrl());
     }
 
     @Override

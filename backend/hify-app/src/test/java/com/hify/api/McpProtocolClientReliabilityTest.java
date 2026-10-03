@@ -81,7 +81,33 @@ class McpProtocolClientReliabilityTest {
 
     private McpProtocolClient client() {
         return new McpProtocolClient(new ObjectMapper(), new McpEndpointGuard(true),
-                new McpCredentialResolver(null));
+                new McpCredentialResolver(null, new com.hify.common.CredentialReferencePolicy("", new ObjectMapper())));
+    }
+
+    @Test void explicitReferenceCanOnlyReachItsApprovedEndpoint() throws Exception {
+        var received = new java.util.concurrent.atomic.AtomicInteger();
+        var authorization = new java.util.concurrent.atomic.AtomicReference<String>();
+        String endpoint = serve(exchange -> {
+            received.incrementAndGet();
+            authorization.set(exchange.getRequestHeaders().getFirst("Authorization"));
+            protocol(exchange, 0);
+        });
+        var json = new ObjectMapper();
+        String ref = "system:hify.test.bound-mcp";
+        var policy = new com.hify.common.CredentialReferencePolicy(
+                json.writeValueAsString(Map.of(ref, java.util.List.of(endpoint))), json);
+        var client = new McpProtocolClient(json, new McpEndpointGuard(true), new McpCredentialResolver(null, policy));
+        System.setProperty("hify.test.bound-mcp", "fake-approved-credential");
+        try {
+            var allowed = new McpServer("test", "test", endpoint, ref, true, Instant.now());
+            assertThat(client.call(allowed, "lookup", json.createObjectNode()).error()).isFalse();
+            assertThat(authorization.get()).isEqualTo("Bearer fake-approved-credential");
+            int before = received.get();
+            var changed = new McpServer("test", "test", endpoint + "/other", ref, true, Instant.now());
+            assertThatThrownBy(() -> client.call(changed, "lookup", json.createObjectNode()))
+                    .isInstanceOf(BizException.class).hasMessageContaining("not approved");
+            assertThat(received.get()).isEqualTo(before);
+        } finally { System.clearProperty("hify.test.bound-mcp"); }
     }
 
     private McpServer server(String endpoint) {

@@ -162,4 +162,45 @@ abstract class AbstractMcpCredentialContract {
         assertThat(view.path("credentialMode").asText()).isEqualTo("UNAVAILABLE");
         assertThat(view.toString()).doesNotContain("legacy-fake-raw-token");
     }
+
+    @Test void rejectsProcessSecretReferencesAtSaveWithoutReadingTheirValues() throws Exception {
+        for (String ref : List.of("env:HIFY_MCP_MASTER_KEY", "env:SPRING_DATASOURCE_PASSWORD",
+                "env:DB_PASSWORD", "system:hify.mcp.credentials.master-key", "system:hify.review.unlisted")) {
+            http.perform(post("/api/v1/mcp-servers").contentType("application/json")
+                    .content(input().put("credentialAction", "REFERENCE").put("credentialRef", ref).toString()))
+                    .andExpect(status().isBadRequest());
+        }
+        assertThat(authorization.get()).isNull();
+    }
+
+    @Test void legacyUnlistedReferenceIsRejectedBeforeSendingAnyHttp() throws Exception {
+        String id = create(input());
+        // Fake property only. Do not resolve an actual process secret even on the red run.
+        System.setProperty("hify.review.unlisted", "fake-not-a-real-process-secret");
+        try {
+            jdbc.update("update mcp_servers set credential_ref=? where id=?", "system:hify.review.unlisted", id);
+            String result = http.perform(post("/api/v1/mcp-servers/{id}/tools:refresh", id))
+                    .andExpect(status().isBadRequest()).andReturn().getResponse().getContentAsString();
+            assertThat(result).doesNotContain("fake-not-a-real-process-secret");
+            assertThat(authorization.get()).isNull();
+        } finally { System.clearProperty("hify.review.unlisted"); }
+    }
+
+    @Test void endpointChangeCannotKeepStoredCredentialImplicitly() throws Exception {
+        var body = input().put("credentialAction", "TOKEN").put("credentialToken", "fake-bound-endpoint-token");
+        String id = create(body);
+        String originalRef = reference(id);
+        body.remove("credentialToken");
+        body.put("endpointUrl", endpoint + "/other").put("credentialAction", "KEEP");
+        http.perform(put("/api/v1/mcp-servers/{id}", id).contentType("application/json").content(body.toString()))
+                .andExpect(status().isBadRequest());
+        assertThat(getServer(id).path("endpointUrl").asText()).isEqualTo(endpoint);
+        assertThat(reference(id)).isEqualTo(originalRef);
+        body.remove("credentialAction");
+        http.perform(put("/api/v1/mcp-servers/{id}", id).contentType("application/json").content(body.toString()))
+                .andExpect(status().isBadRequest());
+        body.put("credentialAction", "CLEAR");
+        update(id, body);
+        assertThat(reference(id)).isNull();
+    }
 }

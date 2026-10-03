@@ -22,6 +22,7 @@ services:
       HIFY_DB_USERNAME: hify
       HIFY_DB_PASSWORD: hify_local_only
       HIFY_MCP_MASTER_KEY: ${HIFY_MCP_MASTER_KEY:-}
+      HIFY_CREDENTIAL_REFERENCE_BINDINGS: ${HIFY_CREDENTIAL_REFERENCE_BINDINGS:-}
     depends_on:
       postgres:
         condition: service_healthy

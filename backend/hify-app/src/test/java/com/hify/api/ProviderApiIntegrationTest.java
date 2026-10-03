@@ -38,6 +38,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "hify.resilience.rate-limit-max-attempts=1"
 })
 class ProviderApiIntegrationTest {
+    @org.springframework.test.context.DynamicPropertySource
+    static void referenceGrants(org.springframework.test.context.DynamicPropertyRegistry registry) {
+        registry.add("hify.credentials.reference-bindings", () -> "{\"system:HIFY_TEST_PROVIDER_KEY\":[\"" + providerBaseUrl + "\"]}");
+    }
     private static HttpServer providerServer;
     private static String providerBaseUrl;
     private static final AtomicReference<String> authorization = new AtomicReference<>();
@@ -183,6 +187,39 @@ class ProviderApiIntegrationTest {
         assertThat(authorization.get()).isEqualTo("Bearer secret-for-test");
         assertThat(anthropicKey.get()).isEqualTo("secret-for-test");
         assertThat(geminiKey.get()).isEqualTo("secret-for-test");
+    }
+
+    @Test void processSecretReferencesAndUnapprovedDestinationsAreRejected() throws Exception {
+        for (String ref : java.util.List.of("env:HIFY_MCP_MASTER_KEY", "system:SPRING_DATASOURCE_PASSWORD", "system:hify.review.provider-secret")) {
+            String body = """
+                    {"name":"Denied %s","type":"OPENAI_COMPATIBLE","baseUrl":"%s",
+                     "auth":{"credentialRef":"%s"},
+                     "models":[{"displayName":"Test","modelId":"test","enabled":true,"isDefault":true}]}
+                    """.formatted(java.util.UUID.randomUUID(), providerBaseUrl, ref);
+            http.perform(post("/api/v1/providers").contentType(MediaType.APPLICATION_JSON).content(body))
+                    .andExpect(status().isBadRequest());
+        }
+        String id = createNative("Destination bound " + java.util.UUID.randomUUID(), "OPENAI_COMPATIBLE", "test");
+        String update = """
+                {"name":"Changed destination","type":"OPENAI_COMPATIBLE","baseUrl":"%s/other","enabled":true,
+                 "models":[{"displayName":"Test","modelId":"test","enabled":true,"isDefault":true}]}
+                """.formatted(providerBaseUrl);
+        http.perform(put("/api/v1/providers/{id}", id).contentType(MediaType.APPLICATION_JSON).content(update))
+                .andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("select base_url from providers where public_id=?", String.class, id)).isEqualTo(providerBaseUrl);
+
+        // Legacy rows bypass save validation, but must not bypass runtime validation.
+        System.setProperty("hify.review.provider-secret", "fake-legacy-process-value");
+        authorization.set(null);
+        try {
+            jdbc.update("update providers set auth_config=? where public_id=?",
+                    "{\"version\":1,\"credentialRef\":\"system:hify.review.provider-secret\",\"headerName\":\"Authorization\",\"prefix\":\"Bearer \"}", id);
+            JsonNode result = json(http.perform(post("/api/v1/providers/{id}/connection-tests", id))
+                    .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+            assertThat(result.path("data").path("success").asBoolean()).isFalse();
+            assertThat(result.toString()).doesNotContain("fake-legacy-process-value");
+            assertThat(authorization.get()).isNull();
+        } finally { System.clearProperty("hify.review.provider-secret"); }
     }
 
     private String createNative(String name, String type, String modelId) throws Exception {

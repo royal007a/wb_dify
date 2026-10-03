@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.*; import com.hify.agent.api.*; import com
 @SpringBootTest @AutoConfigureMockMvc
 @TestPropertySource(properties={"spring.datasource.url=jdbc:h2:mem:hify-mcp-test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1","spring.datasource.username=sa","spring.datasource.password=","hify.mcp.allow-private=true"})
 class McpServerApiIntegrationTest {
+ @org.springframework.test.context.DynamicPropertySource static void referenceGrants(org.springframework.test.context.DynamicPropertyRegistry registry){
+  registry.add("hify.credentials.reference-bindings",()->"{\"env:MCP_EDIT_TEST_TOKEN\":[\"http://127.0.0.1:"+port+"/mcp\"],\"system:mcp.test-token\":[\"http://127.0.0.1:"+port+"/mcp\"],\"env:MCP_NEW_TOKEN\":[\"http://127.0.0.1:"+port+"/mcp\"]}");
+ }
  static final java.util.concurrent.atomic.AtomicReference<String> driftField=new java.util.concurrent.atomic.AtomicReference<>("orderId");
  static HttpServer remote; static int port; @Autowired MockMvc http; @Autowired ObjectMapper json; @Autowired AgentQueryService agents; @Autowired ToolRuntime toolRuntime;
  @BeforeAll static void server()throws Exception{remote=HttpServer.create(new InetSocketAddress("127.0.0.1",0),0);port=remote.getAddress().getPort();remote.createContext("/mcp",McpServerApiIntegrationTest::handle);remote.createContext("/mcp-drift",McpServerApiIntegrationTest::handle);remote.start();}

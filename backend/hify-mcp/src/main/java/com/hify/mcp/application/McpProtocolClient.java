@@ -106,7 +106,7 @@ public class McpProtocolClient {
                           ExecutionControl control) {
         try {
             URI uri = guard.validate(server.getEndpointUrl());
-            String secret = credentials.resolve(server.getId(), server.getCredentialRef());
+            String secret = credentials.resolve(server.getId(), server.getCredentialRef(), server.getEndpointUrl());
             ObjectNode rpc = json.createObjectNode();
             rpc.put("jsonrpc", "2.0");
             rpc.put("id", UUID.randomUUID().toString());
@@ -147,7 +147,7 @@ public class McpProtocolClient {
     private void notifyInitialized(McpServer server, Session session, ExecutionControl control) {
         try {
             URI uri = guard.validate(server.getEndpointUrl());
-            String secret = credentials.resolve(server.getId(), server.getCredentialRef());
+            String secret = credentials.resolve(server.getId(), server.getCredentialRef(), server.getEndpointUrl());
             ObjectNode rpc = json.createObjectNode();
             rpc.put("jsonrpc", "2.0");
             rpc.put("method", "notifications/initialized");

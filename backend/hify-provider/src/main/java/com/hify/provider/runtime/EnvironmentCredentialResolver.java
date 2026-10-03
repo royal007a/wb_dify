@@ -1,25 +1,14 @@
 package com.hify.provider.runtime;
 
 import org.springframework.stereotype.Component;
+import com.hify.common.CredentialReferencePolicy;
 
 @Component
 public class EnvironmentCredentialResolver implements CredentialResolver {
+    private final CredentialReferencePolicy policy;
+    public EnvironmentCredentialResolver(CredentialReferencePolicy policy) { this.policy = policy; }
     @Override
-    public String resolve(String credentialRef) {
-        if (credentialRef == null || credentialRef.isBlank()) {
-            throw new IllegalStateException("Provider credentialRef is missing");
-        }
-        String value;
-        if (credentialRef.startsWith("env:")) {
-            value = System.getenv(credentialRef.substring(4));
-        } else if (credentialRef.startsWith("system:")) {
-            value = System.getProperty(credentialRef.substring(7));
-        } else {
-            throw new IllegalStateException("Unsupported credentialRef scheme");
-        }
-        if (value == null || value.isBlank()) {
-            throw new IllegalStateException("Provider credential is unavailable");
-        }
-        return value;
+    public String resolve(String credentialRef, String endpoint) {
+        return policy.resolve(credentialRef, endpoint);
     }
 }

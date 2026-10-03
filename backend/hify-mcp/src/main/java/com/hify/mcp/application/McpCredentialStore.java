@@ -2,6 +2,7 @@ package com.hify.mcp.application;
 
 import com.hify.common.BizException;
 import com.hify.common.ErrorCode;
+import com.hify.common.CredentialReferencePolicy;
 import com.hify.mcp.api.McpServerRequest;
 import com.hify.mcp.domain.McpCredential;
 import com.hify.mcp.infrastructure.McpCredentialRepository;
@@ -16,9 +17,11 @@ public class McpCredentialStore {
     private static final Pattern REFERENCE = Pattern.compile("(?:env:[A-Za-z_][A-Za-z0-9_]*|system:[A-Za-z_][A-Za-z0-9_.-]*)");
     private final McpCredentialRepository repository;
     private final McpCredentialCipher cipher;
-    public McpCredentialStore(McpCredentialRepository repository, McpCredentialCipher cipher) {
+    private final CredentialReferencePolicy references;
+    public McpCredentialStore(McpCredentialRepository repository, McpCredentialCipher cipher, CredentialReferencePolicy references) {
         this.repository = repository;
         this.cipher = cipher;
+        this.references = references;
     }
     @Transactional
     public String apply(String serverId, String currentRef, McpServerRequest request) {
@@ -36,6 +39,7 @@ public class McpCredentialStore {
             case "CLEAR" -> null;
             case "REFERENCE" -> {
                 if (ref == null || !REFERENCE.matcher(ref.trim()).matches()) throw invalid("请输入 env:变量名 或 system:属性名");
+                references.requireAllowed(ref.trim(), request.endpointUrl());
                 yield ref.trim();
             }
             case "TOKEN" -> {

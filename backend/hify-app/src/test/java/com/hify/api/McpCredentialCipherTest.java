@@ -43,14 +43,19 @@ class McpCredentialCipherTest {
         assertThat(new ObjectMapper().writeValueAsString(dto)).doesNotContain("fake-test-token", "credentialToken");
     }
     @Test void systemReferenceStillWorksAndInvalidHeadersAreRejected() {
-        var resolver = new McpCredentialResolver(null);
+        String endpoint = "https://approved.example/mcp";
+        var policy = new com.hify.common.CredentialReferencePolicy("""
+                {"system:hify.test.mcp.token":["https://approved.example/mcp"],
+                 "env:HIFY_NONEXISTENT_TEST_ONLY_TOKEN":["https://approved.example/mcp"]}
+                """, new ObjectMapper());
+        var resolver = new McpCredentialResolver(null, policy);
         System.setProperty("hify.test.mcp.token", "fake-system-token");
         try {
-            assertThat(resolver.resolve("s", "system:hify.test.mcp.token")).isEqualTo("fake-system-token");
+            assertThat(resolver.resolve("s", "system:hify.test.mcp.token", endpoint)).isEqualTo("fake-system-token");
             System.setProperty("hify.test.mcp.token", "bad\r\nheader");
-            assertThatThrownBy(() -> resolver.resolve("s", "system:hify.test.mcp.token"))
+            assertThatThrownBy(() -> resolver.resolve("s", "system:hify.test.mcp.token", endpoint))
                     .isInstanceOf(BizException.class).hasMessageNotContaining("header");
-            assertThatThrownBy(() -> resolver.resolve("s", "env:HIFY_NONEXISTENT_TEST_ONLY_TOKEN"))
+            assertThatThrownBy(() -> resolver.resolve("s", "env:HIFY_NONEXISTENT_TEST_ONLY_TOKEN", endpoint))
                     .isInstanceOf(BizException.class).hasMessageContaining("unavailable");
         } finally { System.clearProperty("hify.test.mcp.token"); }
     }

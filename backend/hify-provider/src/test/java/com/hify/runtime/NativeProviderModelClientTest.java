@@ -202,7 +202,7 @@ class NativeProviderModelClientTest {
     }
 
     private ProviderAuthConfigCodec codec() { return new ProviderAuthConfigCodec(json); }
-    private CredentialResolver credential() { return ignored -> "test-key"; }
+    private CredentialResolver credential() { return (ignored, endpoint) -> "test-key"; }
     private LlmHttpClient http() { return new LlmHttpClient(Runnable::run); }
     private CircuitBreakerService resilience() {
         return new CircuitBreakerService(CircuitBreakerRegistry.ofDefaults(), Runnable::run,

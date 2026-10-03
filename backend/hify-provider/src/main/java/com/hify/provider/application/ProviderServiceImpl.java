@@ -45,16 +45,19 @@ public class ProviderServiceImpl implements ProviderService, ProviderQueryServic
     private final ProviderAuthConfigCodec authCodec;
     private final ProviderUrlPolicy urlPolicy;
     private final ProviderAdapterRegistry adapters;
+    private final com.hify.common.CredentialReferencePolicy credentialPolicy;
 
     public ProviderServiceImpl(ProviderMapper providers, ProviderModelMapper models,
                                ProviderHealthMapper health, ProviderAuthConfigCodec authCodec,
-                               ProviderUrlPolicy urlPolicy, ProviderAdapterRegistry adapters) {
+                               ProviderUrlPolicy urlPolicy, ProviderAdapterRegistry adapters,
+                               com.hify.common.CredentialReferencePolicy credentialPolicy) {
         this.providers = providers;
         this.models = models;
         this.health = health;
         this.authCodec = authCodec;
         this.urlPolicy = urlPolicy;
         this.adapters = adapters;
+        this.credentialPolicy = credentialPolicy;
     }
 
     @Override
@@ -69,6 +72,7 @@ public class ProviderServiceImpl implements ProviderService, ProviderQueryServic
         provider.setType(request.type().name());
         provider.setBaseUrl(resolveBaseUrl(request.type(), request.baseUrl()));
         provider.setAuthConfig(authCodec.encode(request.type(), request.auth()));
+        credentialPolicy.requireAllowed(authCodec.decode(provider.getAuthConfig()).credentialRef(), provider.getBaseUrl());
         provider.setDefaultModelId(validated.defaultModelId());
         provider.setEnabled(!Boolean.FALSE.equals(request.enabled()));
         providers.insert(provider);
@@ -121,6 +125,7 @@ public class ProviderServiceImpl implements ProviderService, ProviderQueryServic
         provider.setType(request.type().name());
         provider.setBaseUrl(resolveBaseUrl(request.type(), request.baseUrl()));
         if (request.auth() != null) provider.setAuthConfig(authCodec.encode(request.type(), request.auth()));
+        credentialPolicy.requireAllowed(authCodec.decode(provider.getAuthConfig()).credentialRef(), provider.getBaseUrl());
         provider.setDefaultModelId(validated.defaultModelId());
         provider.setEnabled(request.enabled());
         providers.updateById(provider);
