@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "runtime"
+  ],
+  "base": "working-tree",
+  "headCommit": "1c9ceabf80ff624b926551523f1aa7169d3e0101",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-002/SPEC-KNOWLEDGE-FINISH-002-20261003T222452Z-1c171576/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-002/SPEC-KNOWLEDGE-FINISH-002-20261003T222452Z-1c171576/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-002/SPEC-KNOWLEDGE-FINISH-002-20261003T222452Z-1c171576/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-002/SPEC-KNOWLEDGE-FINISH-002-20261003T222452Z-1c171576/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-002/SPEC-KNOWLEDGE-FINISH-002-20261003T222452Z-1c171576/harness-shell-syntax.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-002/SPEC-KNOWLEDGE-FINISH-002-20261003T222452Z-1c171576/runtime-tests.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T22:29:37Z"
+}

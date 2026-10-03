@@ -13,3 +13,5 @@ green-shutdown.log 和最终 command.log 覆盖新分类、继承知识门禁、
 green-shutdown.log 首次回归出现 1 个旧夹具失败：RunShutdownIntegrationTest 的 Workflow 重启恢复原先用空知识结果作为成功输入，现在按严格门禁应失败。将恢复后的 fixture 改为一条有效候选，保持“中断痕迹、重启新 attempt 成功、assistant 仅一次”的全部原断言；未放松零候选拒绝规则。前一轮门禁的 RunShutdownPostgresTest 不覆盖这个 H2 Workflow 夹具，故此前通过不能证明它兼容。
 
 green-shutdown-fixture.log 定向 54 项通过、0 skip（单位10，应用44：知识18、带关闭信号20、真实上下文关闭6）。其中继承的18项重复运行，不是20个全新场景。最终仍以 command.log 与 verification.json 为准。
+
+最终源码 1c9ceab，2026-10-04 06:29 CST：command.log 54 项通过、0 skip；runtime 34 项通过、0 skip；harness 全通过，verification.json 的 headCommit 为 1c9ceab。此补强未重跑 PG SQL（未改动），前片 40a9238 的 migration 71 项证据不能伪称在新 commit 重跑。尚未做全仓库回归、浏览器验证或部署；独立只读复核待反馈。

@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-03T22:22:36Z`
+- Generated from task state updated at: `2026-10-03T22:29:37Z`
 - Current task: `none`
-- Counts: pending 14 · running 0 · blocked 1 · completed 50
+- Counts: pending 13 · running 0 · blocked 1 · completed 51
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -49,7 +49,7 @@
 | `SPEC-HISTORY-RECOVERY-001` | P1 | completed | backend, runtime, migration, harness | reversible_write | 恢复时重放已提交模型响应而非重新生成 |
 | `SPEC-HISTORY-RECOVERY-002` | P1 | completed | backend, runtime, harness | reversible_write | 恢复元数据按JSON语义比较，兼容跨JVM键顺序 |
 | `SPEC-KNOWLEDGE-FINISH-001` | P1 | completed | backend, runtime, harness | reversible_write | 知识缺口与完成门禁契约对齐 |
-| `SPEC-KNOWLEDGE-FINISH-002` | P1 | pending | backend, runtime, harness | reversible_write | 保留知识入场失败中的应用关闭挂起信号 |
+| `SPEC-KNOWLEDGE-FINISH-002` | P1 | completed | backend, runtime, harness | reversible_write | 保留知识入场失败中的应用关闭挂起信号 |
 | `SPEC-PROVIDER-LOCAL-FAILURE-001` | P1 | completed | backend, runtime, harness | reversible_write | 取消与本地拒绝不得污染供应商熔断 |
 | `SPEC-PROVIDER-LOCAL-FAILURE-002` | P1 | completed | backend, runtime, harness | reversible_write | 区分用户取消与真实上游模型期限超时 |
 | `SPEC-RUN-ADMISSION-001` | P1 | completed | backend, runtime, harness | reversible_write | Workflow与AgentRun最终提交竞争的投影一致性 |

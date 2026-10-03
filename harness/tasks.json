@@ -1,19 +1,49 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T22:22:36Z",
+  "updatedAt": "2026-10-03T22:29:37Z",
   "tasks": [
     {
       "id": "SPEC-KNOWLEDGE-FINISH-002",
       "title": "保留知识入场失败中的应用关闭挂起信号",
       "description": "门禁自查：读取来源的catch不能把关闭挂起转成永久KNOWLEDGE_RETRIEVAL_FAILED。",
-      "priority": "P1", "status": "pending",
-      "scopes": ["backend", "runtime", "harness"], "verifyScopes": ["harness", "runtime"],
-      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
-      "dependsOn": ["SPEC-KNOWLEDGE-FINISH-001"],
-      "acceptance": ["显式挂起及关闭期间检索异常均保留RUNNING并记录run.interrupted，模型零调用", "正常来源故障仍严格拒答；普通聊天、来源门禁和既有关闭回归通过"],
-      "planPath": "exec-plans/active/SPEC-KNOWLEDGE-FINISH-002.md", "checkpoint": null, "blockedReason": null, "evidence": [],
-      "createdAt": "2026-10-03T22:25:00Z", "updatedAt": "2026-10-03T22:25:00Z"
+      "priority": "P1",
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "runtime"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [
+        "SPEC-KNOWLEDGE-FINISH-001"
+      ],
+      "acceptance": [
+        "显式挂起及关闭期间检索异常均保留RUNNING并记录run.interrupted，模型零调用",
+        "正常来源故障仍严格拒答；普通聊天、来源门禁和既有关闭回归通过"
+      ],
+      "planPath": "exec-plans/completed/SPEC-KNOWLEDGE-FINISH-002.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [
+        {
+          "runId": "SPEC-KNOWLEDGE-FINISH-002-20261003T222452Z-1c171576",
+          "path": "harness/evidence/SPEC-KNOWLEDGE-FINISH-002/SPEC-KNOWLEDGE-FINISH-002-20261003T222452Z-1c171576",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "95890e51fbee74931b2047372ef736b651c5aaf6",
+          "headCommit": "1c9ceabf80ff624b926551523f1aa7169d3e0101",
+          "recordedAt": "2026-10-03T22:29:37Z"
+        }
+      ],
+      "createdAt": "2026-10-03T22:25:00Z",
+      "updatedAt": "2026-10-03T22:29:37Z"
     },
     {
       "id": "SPEC-KNOWLEDGE-INTEGRITY-003",
