@@ -71,7 +71,7 @@ MCP 直接 Token 配置：部署时生成独立随机 32-byte Base64 `HIFY_MCP_M
 
 Provider 的授权地址必须使用**保存后的 Base URL（去掉所有尾部 `/`）**：页面填 `https://api.example.com/v1/`，授权表应写 `https://api.example.com/v1`；仅根地址则写 `https://api.example.com`，不要补 `/`。授权地址本身不替你去尾斜杠；误写会拒绝调用，不会放宽匹配。MCP 不做这项 Provider 归一化，授权路径应与保存的 endpoint 完全一致，`/mcp` 与 `/mcp/` 不等价。
 
-基础设施引用即使运维误授权也拒绝启动：MCP 主密钥、`SPRING_*`、`DB_*`、`DATABASE_*`、`HIFY_DB_*`、`HIFY_REDIS_*`、`javax.net.ssl.*`。名字比较忽略大小写并把 `.`/`-` 转成 `_`。因此 `env:HIFY_DB_PASSWORD`、`system:javax.net.ssl.keyStorePassword` 和 `system:javax.net.ssl.trustStorePassword` 不能作为外发凭据。该名单不是任意自定义秘密的自动分类器；其他应用凭据仍需运维逐项审查授权。
+基础设施引用即使运维误授权也拒绝启动：`HIFY_MCP_*`、`HIFY_CREDENTIAL_*`、`HIFY_CREDENTIALS_*`、`SPRING_*`、`DB_*`、`DATABASE_*`、`HIFY_DB_*`、`HIFY_REDIS_*`、`javax.net.ssl.*`。名字比较忽略大小写并把 `.`/`-` 转成 `_`。因此 `env:HIFY_DB_PASSWORD`、`system:javax.net.ssl.keyStorePassword` 和 `system:javax.net.ssl.trustStorePassword` 不能作为外发凭据；MCP 主密钥的 `masterKey`/`MASTERKEY` 宽松绑定别名及以后添加的同命名空间配置也受保护。升级前，原来放在这些保留命名空间的合法外部 Token 应由运维迁到专用非基础设施名称（例如 `TEAM_TOOL_TOKEN`），同步更新显式目的地授权及业务引用，不能通过扩大授权豁免基础设施配置。已有不可变版本若保留旧引用会 fail-closed，需新发布并使用新会话；旧版本不被静默改写。该名单不是任意自定义秘密的自动分类器；其他应用凭据仍需运维逐项审查授权。
 
 升级前仅盘点现有引用名/目标地址，逐项确认可信并建立授权，不能从全部数据库行自动生成不加审查的许可。没有授权的旧引用会在调用前被拒绝；加密 TOKEN 与无鉴权模式不受影响。不要读取或输出环境变量真实值、不要改写主密钥、不要复制授权中的凭据值。服务重启后配置生效；此变更无需数据库迁移。
 

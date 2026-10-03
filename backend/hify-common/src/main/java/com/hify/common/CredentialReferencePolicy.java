@@ -55,7 +55,10 @@ public class CredentialReferencePolicy {
         if (ref == null || !REF.matcher(ref).matches()) return false;
         String name = ref.substring(ref.indexOf(':') + 1).replace('.', '_').replace('-', '_').toUpperCase(Locale.ROOT);
         // These are infrastructure secrets, never provider/tool credentials even if mistakenly listed.
-        return !name.equals("HIFY_MCP_MASTER_KEY") && !name.equals("HIFY_MCP_CREDENTIALS_MASTER_KEY")
+        // Reserve whole namespaces: relaxed binding accepts masterKey/MASTERKEY as aliases,
+        // and future infrastructure keys must not silently become externally sendable.
+        return !name.startsWith("HIFY_MCP_") && !name.startsWith("HIFY_CREDENTIAL_")
+                && !name.startsWith("HIFY_CREDENTIALS_")
                 && !name.startsWith("SPRING_") && !name.startsWith("DB_") && !name.startsWith("DATABASE_")
                 && !name.startsWith("HIFY_DB_") && !name.startsWith("HIFY_REDIS_")
                 && !name.startsWith("JAVAX_NET_SSL_");

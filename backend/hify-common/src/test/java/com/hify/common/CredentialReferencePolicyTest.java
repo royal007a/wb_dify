@@ -43,6 +43,19 @@ class CredentialReferencePolicyTest {
         }
     }
 
+    @Test void relaxedMasterKeyAliasesAndCredentialConfigNamespaceCannotBeGranted() throws Exception {
+        // Parse-only: even the red test must not look up actual process credentials.
+        for (String ref : List.of("env:HIFY_MCP_CREDENTIALS_MASTERKEY", "system:hify.mcp.credentials.masterKey",
+                "env:HIFY_MCP_MASTER_KEY_BACKUP", "system:HiFy-McP-credentials-MASTERKEY",
+                "env:HIFY_CREDENTIAL_REFERENCE_BINDINGS", "system:hify.credential.masterKey",
+                "env:HIFY_CREDENTIALS_REFERENCE_BINDINGS", "system:hify.credentials.reference-bindings")) {
+            String config = json.writeValueAsString(java.util.Map.of(ref, List.of("https://approved.example/mcp")));
+            assertThatThrownBy(() -> new CredentialReferencePolicy(config, json))
+                    .as("protected configuration alias: %s", ref)
+                    .isInstanceOf(IllegalStateException.class).hasMessageNotContaining(ref).hasNoCause();
+        }
+    }
+
     @Test void malformedOrWildcardOperatorConfigFailsClosedWithoutEcho() {
         for (String config : List.of("not-json-fake-secret", "null", "{\"system:fake\":[\"https://*.example/mcp\"]}",
                 "{\"system:fake\":[\"https://u:fake-secret@example.com/mcp\"]}", "{\"system:fake\":null}"))
