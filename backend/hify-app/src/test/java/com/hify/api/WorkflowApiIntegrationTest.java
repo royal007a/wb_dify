@@ -2,6 +2,12 @@ package com.hify.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.hify.workflow.domain.WorkflowVersion;
+import com.hify.workflow.infrastructure.WorkflowVersionRepository;
+import java.time.Instant;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,6 +22,52 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties={"spring.datasource.url=jdbc:h2:mem:hify-workflow-test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1","spring.datasource.username=sa","spring.datasource.password="})
 class WorkflowApiIntegrationTest {
  @Autowired MockMvc http; @Autowired ObjectMapper json;
+ @Autowired WorkflowVersionRepository versions;
+
+ @Test void rejectsBranchLocalVariablesOnSaveAndUpdate() throws Exception {
+  String graph=mergedGraph("{{refund.answer}}");
+  http.perform(post("/api/v1/workflows").contentType("application/json").content(graph)).andExpect(status().isBadRequest());
+  String valid=mergedGraph("{{route.matched}}");
+  String id=body(http.perform(post("/api/v1/workflows").contentType("application/json").content(valid))
+    .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();
+  http.perform(put("/api/v1/workflows/{id}",id).contentType("application/json").content(graph)).andExpect(status().isBadRequest());
+  JsonNode version=body(http.perform(post("/api/v1/workflows/{id}/versions",id)).andExpect(status().isOk())
+    .andReturn().getResponse().getContentAsString()).path("data");
+  assertThat(run(version.path("id").asText(),"退货").path("output").asText()).isEqualTo("true");
+ }
+
+ @Test void rejectsOldInvalidPublishedGraphWithoutRewritingSnapshot() throws Exception {
+  String valid=mergedGraph("{{start.userMessage}}");
+  String id=body(http.perform(post("/api/v1/workflows").contentType("application/json").content(valid))
+    .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();
+  String legacy=mergedGraph("{{refund.answer}}"), versionId=UUID.randomUUID().toString();
+  versions.saveAndFlush(new WorkflowVersion(versionId,id,1,1,legacy,"legacy-digest",Instant.now()));
+  http.perform(post("/api/v1/workflow-versions/{id}/runs",versionId).contentType("application/json").content("{\"input\":\"你好\"}"))
+    .andExpect(status().isBadRequest());
+  var stored=versions.findById(versionId).orElseThrow();
+  assertThat(stored.getDslJson()).isEqualTo(legacy);
+  assertThat(stored.getChecksum()).isEqualTo("legacy-digest");
+ }
+
+ @Test void customStartKeyWorksThroughPublishedHttpExecution() throws Exception {
+  String graph=mergedGraph("{{ start.userMessage }}").replace("start", "entry");
+  String id=body(http.perform(post("/api/v1/workflows").contentType("application/json").content(graph))
+    .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();
+  String version=body(http.perform(post("/api/v1/workflows/{id}/versions",id)).andExpect(status().isOk())
+    .andReturn().getResponse().getContentAsString()).path("data").path("id").asText();
+  JsonNode result=run(version,"literal {{refund.answer}}");
+  assertThat(result.path("status").asText()).isEqualTo("SUCCEEDED");
+  assertThat(result.path("output").asText()).isEqualTo("literal {{refund.answer}}");
+ }
+
+ private String mergedGraph(String output) throws Exception {
+  ObjectNode graph=(ObjectNode)json.readTree(workflow("退款","普通"));
+  graph.put("name","merge-"+UUID.randomUUID());
+  ArrayNode nodes=(ArrayNode)graph.path("nodes");nodes.remove(5);
+  ((ObjectNode)nodes.get(4).path("config")).put("output",output);
+  ((ObjectNode)graph.path("edges").get(4)).put("targetNodeKey","endRefund");
+  return json.writeValueAsString(graph);
+ }
 
  @Test void publishesImmutableVersionAndExecutesBothBranchesWithTrace() throws Exception {
   String workflow=workflow("退款问题","普通问题");
