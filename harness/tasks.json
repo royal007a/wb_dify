@@ -990,7 +990,9 @@
         "harness"
       ],
       "verifyScopes": [
-        "harness"
+        "harness",
+        "frontend",
+        "runtime"
       ],
       "risk": "reversible_write",
       "operation": "workspace_write",
