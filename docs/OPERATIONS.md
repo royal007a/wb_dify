@@ -63,6 +63,8 @@ include `deploy/nginx-path.conf`。该片段将静态资源隔离在 `/hify/`，
 
 ## 7. 告警
 
+MCP 直接 Token 配置：部署时生成独立随机 32-byte Base64 `HIFY_MCP_MASTER_KEY`，放在仅服务用户可读的环境文件中，启动时注入；Compose 也从同名变量读取。不设置时只支持 env/system 引用。不要把主密钥复制进数据库、镜像、日志或 Git。数据库恢复必须同时恢复匹配主密钥；已有密文时禁止重新生成覆盖主密钥。首次配置需重启，后续页面更换 Token 无需重启。细节与回滚限制见 ADR-0020。
+
 - P0：无法创建 Run、终态不收敛、凭证泄露、数据不可读、备份失败。
 - P1：Provider 失败率/429 激增、SSE 首 token 或断线超 SLO、orphan runs > 0、工具超时激增。
 - P2：成本偏离、索引积压、Redis 命中下降、数据库慢查询。

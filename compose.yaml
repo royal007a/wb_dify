@@ -21,6 +21,7 @@ services:
       HIFY_DB_URL: jdbc:postgresql://postgres:5432/hify
       HIFY_DB_USERNAME: hify
       HIFY_DB_PASSWORD: hify_local_only
+      HIFY_MCP_MASTER_KEY: ${HIFY_MCP_MASTER_KEY:-}
     depends_on:
       postgres:
         condition: service_healthy

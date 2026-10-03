@@ -231,7 +231,22 @@ POST     /api/v1/mcp-servers/{id}/tools/{toolName}:call
 
 `tools:refresh` 调 `tools/list`，以 server revision 保存完整 schema 和 digest；不会修改已固定的 AgentVersion/Run 快照。`tools/{toolName}:call` 只能调用已发现且 risk=READ 的工具，请求包含 arguments；响应包含 callId、toolName、serverRevision、result、error、elapsedMs、schemaDigest。其他风险等级返回 FORBIDDEN。
 
-Console 的「编辑」回填 name、endpointUrl、credentialRef、enabled，用 PUT 更新原 id，不归档重建。POST/PUT 均校验凭证引用：允许空值、`env:变量名`、`system:属性名`；禁止直接填写 Token。引用保存仅校验语法，引用值必须另行配置在后端环境/系统属性中；不在响应错误里回显提交的凭证。
+Console 的「编辑」回填 name、endpointUrl、enabled，用 PUT 更新原 id，不归档重建。凭据默认 KEEP，不回填 Token。
+
+POST/PUT 新增 `credentialAction`：
+
+| 操作 | 输入 | 语义 |
+|---|---|---|
+| KEEP | 无 Token/ref | 保持当前凭据，新建时为无鉴权 |
+| TOKEN | credentialToken | 直接输入 Bearer Token 原文（最多 8192，无前缀/空白），后端加密并生成新引用 |
+| REFERENCE | credentialRef | `env:变量名` 或 `system:属性名`；变量值需配置在后端 |
+| CLEAR | 无 Token/ref | 清除草稿鉴权，不撤销历史版本 |
+
+禁止混合提交或客户端指定 stored 引用。旧请求省略 action 时：ref 缺省保持、空串清除、非空更新 env/system 引用。Token 必须显式 TOKEN，不可绕过动作选择。
+
+响应增加 `credentialMode=NONE/TOKEN/REFERENCE/UNAVAILABLE` 与 `credentialConfigured`。仅 REFERENCE 可回传合法变量引用；TOKEN 不返回原文、密文或存储 ID。configured 表示配置存在，不代表远端鉴权成功。畸形 JSON 和参数错误不回显密钥。
+
+直接 Token 存储需一次性配置 `HIFY_MCP_MASTER_KEY`（Base64 32 字节）；缺少配置返回 CONFLICT，env/system 模式不受影响。之后页面更换 Token 不需要重启。
 
 改名或启停不改变已发现 schema。修改 endpointUrl/credentialRef 则将草稿置 NEW、清除当前 digest/错误，保留历史 revision；重新发现成功前不得调试或发布新绑定。旧 AgentVersion/Run 继续使用冻结的 endpoint/credentialRef/tool schema，这不是撤销旧版本权限的开关。
 

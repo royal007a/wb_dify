@@ -6,9 +6,12 @@
 
 ## 2. 凭证
 
-- API 只接收 `credentialRef`；生产凭证来自环境变量、Docker secret 或 Vault-compatible provider。
+- Provider API 只接收 `credentialRef`；MCP 额外接受 write-only `credentialToken`（用户批准的直接输入模式，见 ADR-0020）。
+- MCP Token 以 AES-256-GCM 密文保存到独立 `mcp_credentials` 表，server/revision 只持不透明引用；主密钥来自 `HIFY_MCP_MASTER_KEY`，不入数据库/镜像/仓库。缺密钥拒绝写入，错误密钥拒绝使用，不回退明文。
 - 数据库、Agent version、日志、Run event、tool result、前端缓存均不得包含原始 key/token。
-- 前端只显示 `configured=true` 和末尾指纹；更新凭证使用 replace 语义。
+- MCP 前端只显示 `credentialConfigured/credentialMode`，不返回密钥、密文或内部引用；保持/替换/清除分开。env/system 引用可以回显变量名，引用存在不等于实际值可解析。
+- Token 更换追加新密文记录；清除或归档仅影响草稿，历史发布继续持有旧引用。撤销泄露 Token 必须在 MCP 服务端执行，不能把“清除草稿”误报为全局撤销。
+- 加密不替代认证：当前管理 API 仍限受信管理网/入口访问控制，不应直接开放给不受信用户。
 - Authorization/header/query 中的秘密统一脱敏；异常对象不得直接序列化。
 
 ## 3. 工具风险与授权
