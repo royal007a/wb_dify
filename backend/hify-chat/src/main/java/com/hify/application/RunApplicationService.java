@@ -623,7 +623,8 @@ public class RunApplicationService {
             finishTerminal(runId, RunState.FAILED, "APPLICATION_SHUTDOWN", null, 0, 0, false);
             return;
         }
-        TerminalReason reason = exception instanceof KnowledgeAdmissionFailure admission ? admission.reason
+        TerminalReason reason = exception instanceof com.hify.workflow.api.WorkflowDefinitionException ? TerminalReason.WORKFLOW_ERROR
+                : exception instanceof KnowledgeAdmissionFailure admission ? admission.reason
                 : exception instanceof CapabilityMismatchException
                 ? TerminalReason.CAPABILITY_MISMATCH
                 : exception instanceof HistoryOperationConflictException || exception instanceof com.hify.runtime.HistoryReplayException

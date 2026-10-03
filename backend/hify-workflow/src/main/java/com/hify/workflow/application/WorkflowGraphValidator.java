@@ -10,9 +10,14 @@ import java.util.*;
 /** Same DSL validation for storage, publication and execution. */
 @Component
 public class WorkflowGraphValidator {
+    public static final int MAX_EXECUTION_STEPS = 50;
     private static final Set<String> TYPES = Set.of("START", "TEMPLATE", "CONDITION", "KNOWLEDGE", "END");
 
     public void validate(WorkflowDraftRequest draft) {
+        try {validateGraph(draft);}
+        catch(BizException invalid){throw new WorkflowDefinitionException(invalid.getMessage());}
+    }
+    private void validateGraph(WorkflowDraftRequest draft) {
         if (draft == null || draft.nodes() == null || draft.nodes().isEmpty()) fail("工作流节点不能为空");
         Map<String, WorkflowNodeSpec> nodes = new LinkedHashMap<>();
         for (var node : draft.nodes()) {
@@ -66,8 +71,12 @@ public class WorkflowGraphValidator {
         if (order.size() != nodes.size()) fail("工作流包含循环或不可达节点");
         Map<String, Set<String>> dominators = new HashMap<>();
         Map<String, String> outputs = new HashMap<>();
+        Map<String, Integer> pathLengths = new HashMap<>();
         for (String key : order) {
             var node = nodes.get(key);
+            int length=1+predecessors.getOrDefault(key,Set.of()).stream().mapToInt(pathLengths::get).max().orElse(0);
+            if(length>MAX_EXECUTION_STEPS)fail("工作流最长路径超过 "+MAX_EXECUTION_STEPS+" 步（含 START/END）");
+            pathLengths.put(key,length);
             Set<String> strict = null;
             for (String predecessor : predecessors.getOrDefault(key, Set.of())) {
                 if (strict == null) strict = new HashSet<>(dominators.get(predecessor));
@@ -106,7 +115,7 @@ public class WorkflowGraphValidator {
     private List<String> templates(WorkflowNodeSpec node) {
         return switch (type(node)) {
             case "TEMPLATE" -> List.of(required(node, "template"));
-            case "CONDITION" -> List.of(required(node, "expression"));
+            case "CONDITION" -> WorkflowExpression.parse(required(node, "expression")).templates();
             case "KNOWLEDGE" -> {
                 required(node, "knowledgeBaseId");
                 JsonNode topK = node.config().get("topK");
