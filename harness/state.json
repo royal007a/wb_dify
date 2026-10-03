@@ -1,11 +1,17 @@
 {
   "schemaVersion": 1,
-  "currentTaskId": null,
-  "runId": null,
-  "baselineCommit": null,
-  "startedAt": null,
-  "evidencePath": null,
-  "lastCheckpoint": null,
+  "currentTaskId": "SPEC-WORKFLOW-CONTROL-001",
+  "runId": "SPEC-WORKFLOW-CONTROL-001-20261003T162913Z-631e20c2",
+  "baselineCommit": "3672150e28bd993a0704de8bf1b4ec9354650d49",
+  "startedAt": "2026-10-03T16:29:13Z",
+  "evidencePath": "harness/evidence/SPEC-WORKFLOW-CONTROL-001/SPEC-WORKFLOW-CONTROL-001-20261003T162913Z-631e20c2",
+  "lastCheckpoint": {
+    "summary": "task command started",
+    "headCommit": "3672150e28bd993a0704de8bf1b4ec9354650d49",
+    "workingTreeHash": "4eb6d714c5333a6cd39076f6bc7eb347c3d9e945ccf491a9823f94dfc0b810e3",
+    "evidencePath": "harness/evidence/SPEC-WORKFLOW-CONTROL-001/SPEC-WORKFLOW-CONTROL-001-20261003T162913Z-631e20c2",
+    "updatedAt": "2026-10-03T16:29:13Z"
+  },
   "lastVerification": {
     "runId": "SPEC-WORKFLOW-GRAPH-001-20261003T160632Z-a99d5e7b",
     "path": "harness/evidence/SPEC-WORKFLOW-GRAPH-001/SPEC-WORKFLOW-GRAPH-001-20261003T160632Z-a99d5e7b",
@@ -16,5 +22,5 @@
     "recordedAt": "2026-10-03T16:27:01Z"
   },
   "lastCompletedTaskId": "SPEC-WORKFLOW-GRAPH-001",
-  "updatedAt": "2026-10-03T16:27:01Z"
+  "updatedAt": "2026-10-03T16:29:13Z"
 }

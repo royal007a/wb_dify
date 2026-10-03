@@ -1,20 +1,22 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T16:27:01Z",
+  "updatedAt": "2026-10-03T16:29:13Z",
   "tasks": [
     {
       "id": "SPEC-WORKFLOW-CONTROL-001",
       "title": "传播 Workflow 取消和截止时间并阻止错误成功终态",
       "description": "针对A02：将Run控制传入Workflow和阻塞检索，有限线程池和Future清理；取消/超时必须持久化为非成功且停止后续节点。终态提交和取消的竞态先复现再修，不扩大节点能力。",
       "priority": "P0",
-      "status": "pending",
-      "scopes": ["backend", "runtime", "harness"],
-      "verifyScopes": ["harness"],
+      "status": "running",
+      "scopes": ["backend", "runtime", "migration", "harness"],
+      "verifyScopes": ["harness", "migration"],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-WORKFLOW-GRAPH-001"],
+      "dependsOn": [
+        "SPEC-WORKFLOW-GRAPH-001"
+      ],
       "acceptance": [
         "取消和同一截止时间传到阻塞知识节点，排队/节点前后复查资格",
         "取消/超时不执行下一节点、不存助手成功答案，持久Run/Workflow状态及事件一致",
@@ -22,11 +24,17 @@
         "图与历史版本回归通过，明确真实数据库驱动中断能力的验证边界"
       ],
       "planPath": "exec-plans/active/SPEC-WORKFLOW-CONTROL-001.md",
-      "checkpoint": null,
+      "checkpoint": {
+        "summary": "task command started",
+        "headCommit": "3672150e28bd993a0704de8bf1b4ec9354650d49",
+        "workingTreeHash": "4eb6d714c5333a6cd39076f6bc7eb347c3d9e945ccf491a9823f94dfc0b810e3",
+        "evidencePath": "harness/evidence/SPEC-WORKFLOW-CONTROL-001/SPEC-WORKFLOW-CONTROL-001-20261003T162913Z-631e20c2",
+        "updatedAt": "2026-10-03T16:29:13Z"
+      },
       "blockedReason": null,
       "evidence": [],
       "createdAt": "2026-10-03T16:28:00Z",
-      "updatedAt": "2026-10-03T16:28:00Z"
+      "updatedAt": "2026-10-03T16:29:13Z"
     },
     {
       "id": "SPEC-WORKFLOW-GRAPH-001",

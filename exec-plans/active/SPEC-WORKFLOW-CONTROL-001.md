@@ -7,3 +7,4 @@
 3. 不在等待外部/子线程工作时持有整条Workflow的数据库事务。节点状态分别持久化，取消/超时是可区分终态；这不是通用回滚。
 4. Chat映射Workflow CANCELLED/TIMED_OUT，不允许当作MODEL_ERROR或COMPLETED。成功提交时再次检查持久取消状态，覆盖取消与完成竞态。
 5. 定向模块、服务与HTTP回归；全量PG/真实Provider矩阵仍由SPEC-VERIFY负责，不提前部署。
+6. 执行状态CHECK约束需要兼容扩展：新增V21（不改旧迁移），H2和PostgreSQL验证V20历史保留，Harness migration scope拒绝跳过该升级测试。

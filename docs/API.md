@@ -222,6 +222,10 @@ Workflow DSL 使用显式 `schemaVersion`。保存、发布和执行前共用结
 
 试跑接口目前同步执行后返回 HTTP202，不能据此宣称后台异步队列。
 
+Workflow/Node执行状态为RUNNING、SUCCEEDED、FAILED、CANCELLED、TIMED_OUT（V21兼容迁移扩大CHECK约束）。Chat进入Workflow时传入从Run创建时间扣减后的同一预算与取消控制；独立试跑默认60秒（hify.workflow.timeout）。节点前后复查，排队时间计入预算；只读阻塞任务用有界workflowIoExecutor，停止等待时取消Future，协作worker接受中断。取消/超时不启动后续节点，不能保存为助手成功回答。工作流不再跨阻塞IO持有整体数据库事务，节点记录逐步提交，这不意味着外部副作用可回滚。
+
+工作流停止投影为workflow.cancelled/workflow.timed_out；Run对应run.cancelled或run.failed（state=TIMED_OUT、terminalReason=TIMEOUT）。Run终态提交锁行读取持久cancelRequestedAt：先落库的取消优先，先提交的终态不能被后来的取消改写。CPU/SQL驱动不响应中断时，Future取消不等于底层工作已停止；真实数据库取消与SSE事务原子性需各自的验证证据。
+
 Agent 一期最多绑定一个入口 Workflow。发布 Agent 时固定当前 published WorkflowVersion；Chat 创建 Run 后若该固定版本存在，进入确定性 Workflow executor 并发出 `workflow.started/workflow.completed`，否则进入 QueryLoop。Console 画布和 Runtime 读写同一 DSL，并提供节点、连线、属性、校验、试跑和发布版本 diff。
 
 ## 8. MCP Server 与调试
