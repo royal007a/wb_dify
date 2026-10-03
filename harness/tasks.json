@@ -1,14 +1,49 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T17:17:19Z",
+  "updatedAt": "2026-10-03T17:50:00Z",
   "tasks": [
+    {
+      "id": "SPEC-WORKFLOW-KNOWLEDGE-001",
+      "title": "固定 Workflow 知识语料快照并保留历史引用",
+      "description": "A03：发布时冻结KNOWLEDGE节点语料，运行仅使用冻结revision，归档不得破坏已发布引用；旧未冻结知识版本显式拒绝，不能改写历史DSL。",
+      "priority": "P0",
+      "status": "pending",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "migration"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [
+        "SPEC-SSE-COMMIT-001"
+      ],
+      "acceptance": [
+        "发布DSL/checksum包含每个知识节点的corpusVersionId/manifestDigest，客户端草稿不能指定任意快照",
+        "更新/归档文档不改变旧Workflow/AgentVersion结果；新发布反映新语料",
+        "旧未冻结知识DSL拒绝执行并提示重新发布；纯确定性旧图不受影响",
+        "引用只能从canonical内容读取且digest匹配；归档后历史发布引用仍可读",
+        "HTTP/H2与真实PostgreSQL端到端验收，新增测试先证明旧行为失败"
+      ],
+      "planPath": "exec-plans/active/SPEC-WORKFLOW-KNOWLEDGE-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T17:50:00Z",
+      "updatedAt": "2026-10-03T17:50:00Z"
+    },
     {
       "id": "SPEC-SSE-COMMIT-001",
       "title": "修复SSE提交时序与Run终态事件原子性",
       "description": "A07：回滚事件不外发、commit后游标追赶、Run终态和事件同事务，真实PG验证。",
       "priority": "P0",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "runtime",
@@ -30,12 +65,22 @@
         "Run终态、助手消息和terminal事件同事务；NEEDS_INPUT保留gapIds",
         "真实PostgreSQL及SSE replay回归通过，保留失败证据"
       ],
-      "planPath": "exec-plans/active/SPEC-SSE-COMMIT-001.md",
+      "planPath": "exec-plans/completed/SPEC-SSE-COMMIT-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-SSE-COMMIT-001-20261003T172003Z-1b8c2194",
+          "path": "harness/evidence/SPEC-SSE-COMMIT-001/SPEC-SSE-COMMIT-001-20261003T172003Z-1b8c2194",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "097578261e6ce324ba0679a55b5f24577b171d2d",
+          "headCommit": "7d01fab16a9065a78285a13d126f404446f10f1d",
+          "recordedAt": "2026-10-03T17:47:29Z"
+        }
+      ],
       "createdAt": "2026-10-03T17:18:00Z",
-      "updatedAt": "2026-10-03T17:18:00Z"
+      "updatedAt": "2026-10-03T17:47:29Z"
     },
     {
       "id": "SPEC-WORKFLOW-CONTROL-001",
@@ -65,7 +110,7 @@
         "阻塞latch、超时、预取消、取消完成竞态有确定性测试",
         "图与历史版本回归通过，明确真实数据库驱动中断能力的验证边界"
       ],
-      "planPath": "exec-plans/blocked/SPEC-WORKFLOW-CONTROL-001.md",
+      "planPath": "exec-plans/completed/SPEC-WORKFLOW-CONTROL-001.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [

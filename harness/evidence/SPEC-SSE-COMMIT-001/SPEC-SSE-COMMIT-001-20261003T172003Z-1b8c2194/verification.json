@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "migration"
+  ],
+  "base": "working-tree",
+  "headCommit": "7d01fab16a9065a78285a13d126f404446f10f1d",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-COMMIT-001/SPEC-SSE-COMMIT-001-20261003T172003Z-1b8c2194/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-COMMIT-001/SPEC-SSE-COMMIT-001-20261003T172003Z-1b8c2194/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-COMMIT-001/SPEC-SSE-COMMIT-001-20261003T172003Z-1b8c2194/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-COMMIT-001/SPEC-SSE-COMMIT-001-20261003T172003Z-1b8c2194/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-COMMIT-001/SPEC-SSE-COMMIT-001-20261003T172003Z-1b8c2194/harness-shell-syntax.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-COMMIT-001/SPEC-SSE-COMMIT-001-20261003T172003Z-1b8c2194/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-COMMIT-001/SPEC-SSE-COMMIT-001-20261003T172003Z-1b8c2194/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-COMMIT-001/SPEC-SSE-COMMIT-001-20261003T172003Z-1b8c2194/migration-not-skipped.log"
+    },
+    {
+      "name": "migration-mcp-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-COMMIT-001/SPEC-SSE-COMMIT-001-20261003T172003Z-1b8c2194/migration-mcp-not-skipped.log"
+    },
+    {
+      "name": "migration-workflow-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-SSE-COMMIT-001/SPEC-SSE-COMMIT-001-20261003T172003Z-1b8c2194/migration-workflow-not-skipped.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T17:47:29Z"
+}

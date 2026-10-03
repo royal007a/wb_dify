@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad",
-    "path": "harness/evidence/SPEC-WORKFLOW-CONTROL-001/SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad",
+    "runId": "SPEC-SSE-COMMIT-001-20261003T172003Z-1b8c2194",
+    "path": "harness/evidence/SPEC-SSE-COMMIT-001/SPEC-SSE-COMMIT-001-20261003T172003Z-1b8c2194",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "95ce1fba181b32838adc71958e291cae1ab91626",
-    "headCommit": "95ce1fba181b32838adc71958e291cae1ab91626",
-    "recordedAt": "2026-10-03T17:17:19Z"
+    "baselineCommit": "097578261e6ce324ba0679a55b5f24577b171d2d",
+    "headCommit": "7d01fab16a9065a78285a13d126f404446f10f1d",
+    "recordedAt": "2026-10-03T17:47:29Z"
   },
-  "lastCompletedTaskId": "SPEC-WORKFLOW-CONTROL-001",
-  "updatedAt": "2026-10-03T17:17:19Z"
+  "lastCompletedTaskId": "SPEC-SSE-COMMIT-001",
+  "updatedAt": "2026-10-03T17:47:29Z"
 }

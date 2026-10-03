@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-03T17:17:19Z`
+- Generated from task state updated at: `2026-10-03T17:50:00Z`
 - Current task: `none`
-- Counts: pending 5 · running 0 · blocked 1 · completed 33
+- Counts: pending 5 · running 0 · blocked 1 · completed 34
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -25,10 +25,11 @@
 | `SPEC-CHAT-UI-001` | P0 | completed | frontend, harness | reversible_write | 修复流式会话生命周期与终态回读恢复 |
 | `SPEC-COMMON-001` | P0 | completed | backend, harness | reversible_write | 修复 HTTP 客户端错误映射与阻塞调用取消 |
 | `SPEC-DEPLOY-001` | P0 | pending | harness, backend, frontend, migration | high_risk | 发布验收修复并验证 132 与本地 |
-| `SPEC-SSE-COMMIT-001` | P0 | pending | backend, runtime, harness | reversible_write | 修复SSE提交时序与Run终态事件原子性 |
+| `SPEC-SSE-COMMIT-001` | P0 | completed | backend, runtime, harness | reversible_write | 修复SSE提交时序与Run终态事件原子性 |
 | `SPEC-VERIFY-001` | P0 | pending | harness, backend, frontend, migration, runtime, eval | reversible_write | 执行全功能矩阵并修复发现的问题 |
 | `SPEC-WORKFLOW-CONTROL-001` | P0 | completed | backend, runtime, migration, harness | reversible_write | 传播 Workflow 取消和截止时间并阻止错误成功终态 |
 | `SPEC-WORKFLOW-GRAPH-001` | P0 | completed | backend, harness | reversible_write | 验证 Workflow 路径终止与模板必经变量 |
+| `SPEC-WORKFLOW-KNOWLEDGE-001` | P0 | pending | backend, runtime, harness | reversible_write | 固定 Workflow 知识语料快照并保留历史引用 |
 | `CHAT-DEMO-001` | P1 | completed | backend, frontend, runtime | reversible_write | 修复 Demo 时间问句回显而不调用工具 |
 | `CHAT-DEMO-DEPLOY-001` | P1 | completed | backend, frontend | high_risk | 部署并验证 132 Demo 会话时间修复 |
 | `CONSOLE-002` | P1 | completed | frontend, runtime | reversible_write | 交付知识库工作流 MCP 管理台 |
