@@ -2,6 +2,7 @@ package com.hify.runtime;
 
 import com.hify.common.ExecutionCancelledException;
 import com.hify.common.ExecutionControl;
+import com.hify.common.ExecutionLifecycle;
 import com.hify.runtime.plan.DeterministicReplanPolicy;
 import com.hify.runtime.plan.ExecutionCheckpoint;
 import com.hify.runtime.plan.ExecutionPlan;
@@ -33,13 +34,19 @@ import java.util.function.BooleanSupplier;
 public class QueryLoop {
     private final ToolRuntime toolRuntime;
     private final ContextManager contextManager;
+    private final ExecutionLifecycle lifecycle;
 
     public QueryLoop(ToolRuntime toolRuntime) { this(toolRuntime, new ContextManager()); }
 
-    @Autowired
     public QueryLoop(ToolRuntime toolRuntime, ContextManager contextManager) {
+        this(toolRuntime, contextManager, new ExecutionLifecycle());
+    }
+
+    @Autowired
+    public QueryLoop(ToolRuntime toolRuntime, ContextManager contextManager, ExecutionLifecycle lifecycle) {
         this.toolRuntime = toolRuntime;
         this.contextManager = contextManager;
+        this.lifecycle = lifecycle;
     }
 
     public Result run(List<RuntimeMessage> initialMessages, ModelClient modelClient,
@@ -91,7 +98,8 @@ public class QueryLoop {
                        int completedTurns, int completedToolCalls, boolean resumed) {
         List<RuntimeMessage> messages = new ArrayList<>(initialMessages);
         Set<String> seenToolCallIds = existingToolCallIds(initialMessages);
-        ExecutionControl control = ExecutionControl.withTimeout(policy.timeout(), policy.cancelled());
+        ExecutionControl control = ExecutionControl.withTimeout(policy.timeout(), policy.cancelled()).withShutdown(lifecycle::isStopping);
+        control.throwIfSuspended();
         int toolCalls = completedToolCalls;
         int recallCalls = existingRecallCalls(initialMessages);
         int recallTokens = existingRecallTokens(initialMessages);
@@ -108,6 +116,7 @@ public class QueryLoop {
         }
 
         for (int turn = completedTurns + 1; turn <= policy.maxTurns(); turn++) {
+            control.throwIfSuspended();
             if (control.isCancelled()) {
                 transitionIfPossible(state, PlanPhase.CANCELLED);
                 return terminal(TerminalReason.CANCELLED, "Run cancelled.", messages,
@@ -135,10 +144,12 @@ public class QueryLoop {
                         exception.getMessage(), messages, turn - 1, toolCalls,
                         plan, replanDecisions, checkpoint);
             } catch (ExecutionCancelledException exception) {
+                control.throwIfSuspended();
                 transitionIfPossible(state, PlanPhase.CANCELLED);
                 return terminal(TerminalReason.CANCELLED, "Run cancelled.", messages,
                         turn - 1, toolCalls, plan, replanDecisions, checkpoint);
             } catch (RuntimeException exception) {
+                control.throwIfSuspended();
                 if (control.isCancelled()) {
                     transitionIfPossible(state, PlanPhase.CANCELLED);
                     return terminal(TerminalReason.CANCELLED, "Run cancelled.", messages,
@@ -154,6 +165,7 @@ public class QueryLoop {
                         "模型调用失败：" + exception.getMessage(), messages, turn, toolCalls,
                         plan, replanDecisions, checkpoint);
             }
+            control.throwIfSuspended();
             messages.add(response);
             commitHistory(identity, "model:" + turn, messages, observer);
             observer.onModelCompleted(turn, response);
@@ -225,6 +237,7 @@ public class QueryLoop {
                             "History recall budget exceeded.", messages, turn, toolCalls,
                             plan, replanDecisions, checkpoint);
                 }
+                control.throwIfSuspended();
                 if (control.isCancelled()) {
                     transitionIfPossible(state, PlanPhase.CANCELLED);
                     return terminal(TerminalReason.CANCELLED, "Run cancelled.", messages,
@@ -251,8 +264,10 @@ public class QueryLoop {
                             recallTokens += estimatedTokens(result.value());
                         }
                     } catch (ExecutionCancelledException exception) {
+                        control.throwIfSuspended();
                         result = ToolRuntime.ExecutionResult.cancelled();
                     }
+                    control.throwIfSuspended();
                     completedAttempt = attempt.finish(result.error(), result.failureType().name());
                     observer.onTryCompleted(turn, plan, step, completedAttempt, call, result);
                     contextState = contextState.recordToolResult(plan, completedAttempt, result);

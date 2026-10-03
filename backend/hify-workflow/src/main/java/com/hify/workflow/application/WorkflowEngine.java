@@ -6,6 +6,7 @@ import com.hify.common.BizException;
 import com.hify.common.ErrorCode;
 import com.hify.common.ExecutionCancelledException;
 import com.hify.common.ExecutionControl;
+import com.hify.common.ExecutionLifecycle;
 import com.hify.knowledge.api.KnowledgeRetrievalPort;
 import com.hify.workflow.api.*;
 import com.hify.workflow.domain.*;
@@ -22,7 +23,10 @@ public class WorkflowEngine {
  private final WorkflowGraphValidator validator;
  private final java.util.concurrent.Executor ioExecutor;
  private final Duration timeout;
- public WorkflowEngine(WorkflowApplicationService application,WorkflowRunRepository runs,WorkflowNodeRunRepository nodeRuns,KnowledgeRetrievalPort knowledge,ObjectMapper json,WorkflowGraphValidator validator,@Qualifier("workflowIoExecutor") java.util.concurrent.Executor ioExecutor,@Value("${hify.workflow.timeout:60s}") Duration timeout){this.application=application;this.runs=runs;this.nodeRuns=nodeRuns;this.knowledge=knowledge;this.json=json;this.validator=validator;this.ioExecutor=ioExecutor;this.timeout=timeout;}
+ private final ExecutionLifecycle lifecycle;
+ public WorkflowEngine(WorkflowApplicationService application,WorkflowRunRepository runs,WorkflowNodeRunRepository nodeRuns,KnowledgeRetrievalPort knowledge,ObjectMapper json,WorkflowGraphValidator validator,java.util.concurrent.Executor ioExecutor,Duration timeout){this(application,runs,nodeRuns,knowledge,json,validator,ioExecutor,timeout,new ExecutionLifecycle());}
+ @org.springframework.beans.factory.annotation.Autowired
+ public WorkflowEngine(WorkflowApplicationService application,WorkflowRunRepository runs,WorkflowNodeRunRepository nodeRuns,KnowledgeRetrievalPort knowledge,ObjectMapper json,WorkflowGraphValidator validator,@Qualifier("workflowIoExecutor") java.util.concurrent.Executor ioExecutor,@Value("${hify.workflow.timeout:60s}") Duration timeout,ExecutionLifecycle lifecycle){this.application=application;this.runs=runs;this.nodeRuns=nodeRuns;this.knowledge=knowledge;this.json=json;this.validator=validator;this.ioExecutor=ioExecutor;this.timeout=timeout;this.lifecycle=lifecycle;}
 
  public WorkflowRunResponse execute(String versionId,String input){
   return execute(versionId,input,ExecutionControl.withTimeout(timeout,()->false));
@@ -30,6 +34,8 @@ public class WorkflowEngine {
 
  // Each repository call commits a small state change. Do not hold a DB connection while waiting on IO.
  public WorkflowRunResponse execute(String versionId,String input,ExecutionControl control){
+  control=control.withShutdown(lifecycle::isStopping);
+  control.throwIfSuspended();
   WorkflowVersion version=application.requireVersion(versionId); WorkflowDraftRequest draft=read(version.getDslJson());
   validator.validate(draft);
   Map<String,WorkflowNodeSpec> nodeMap=new LinkedHashMap<>();draft.nodes().forEach(n->nodeMap.put(n.nodeKey(),n));Map<String,List<WorkflowEdgeSpec>> edgeMap=new HashMap<>();for(var e:draft.edges())edgeMap.computeIfAbsent(e.sourceNodeKey(),k->new ArrayList<>()).add(e);
@@ -76,7 +82,8 @@ public class WorkflowEngine {
    if (stopped == null) run.fail(safe(failure), write(context.snapshot()), millis(started));
    else run.stop(stopped, safe(failure), write(context.snapshot()), millis(started));
   }
-  if (control.isCancelled()) run.stop("CANCELLED", "Workflow cancelled", write(context.snapshot()), millis(started));
+  if (control.isSuspended()) run.stop("INTERRUPTED", "Application shutdown; execution can be retried", write(context.snapshot()), millis(started));
+  else if (control.isCancelled()) run.stop("CANCELLED", "Workflow cancelled", write(context.snapshot()), millis(started));
   else if (control.isExpired()) run.stop("TIMED_OUT", "Workflow deadline exceeded", write(context.snapshot()), millis(started));
   // Projection/read failure must not rewrite an already committed successful execution as FAILED.
   return response(runs.save(run));
@@ -112,5 +119,5 @@ public class WorkflowEngine {
  private String required(JsonNode node,String field){String value=node.path(field).asText();if(value.isBlank())throw new BizException(ErrorCode.PARAM_ERROR,"节点缺少配置: "+field);return value;}private String text(JsonNode n,String f,String d){String v=n.path(f).asText();return v.isBlank()?d:v;}
  private long millis(Instant started){return Math.max(0,Duration.between(started,Instant.now()).toMillis());}private String safe(Exception e){String v=e.getMessage();if(v==null||v.isBlank())v=e.getClass().getSimpleName();return v.substring(0,Math.min(900,v.length()));}
  private record NodeOutcome(Boolean condition,String output){}
- private String stopStatus(Exception failure,ExecutionControl control){if(failure instanceof ExecutionCancelledException||control.isCancelled())return "CANCELLED";if(failure instanceof WorkflowControl.DeadlineExceeded||control.isExpired())return "TIMED_OUT";return null;}
+ private String stopStatus(Exception failure,ExecutionControl control){if(control.isSuspended())return "INTERRUPTED";if(failure instanceof ExecutionCancelledException||control.isCancelled())return "CANCELLED";if(failure instanceof WorkflowControl.DeadlineExceeded||control.isExpired())return "TIMED_OUT";return null;}
 }

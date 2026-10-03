@@ -8,10 +8,16 @@ public final class ExecutionControl {
 
     private final long deadlineNanos;
     private final BooleanSupplier cancelled;
+    private final BooleanSupplier stopping;
 
     private ExecutionControl(long deadlineNanos, BooleanSupplier cancelled) {
+        this(deadlineNanos, cancelled, () -> false);
+    }
+
+    private ExecutionControl(long deadlineNanos, BooleanSupplier cancelled, BooleanSupplier stopping) {
         this.deadlineNanos = deadlineNanos;
         this.cancelled = cancelled;
+        this.stopping = stopping;
     }
 
     public static ExecutionControl withTimeout(Duration timeout, BooleanSupplier cancelled) {
@@ -29,8 +35,16 @@ public final class ExecutionControl {
     }
 
     public boolean isCancelled() {
-        return Thread.currentThread().isInterrupted() || cancelled.getAsBoolean();
+        return cancelled.getAsBoolean() || (!stopping.getAsBoolean() && Thread.currentThread().isInterrupted());
     }
+
+    public ExecutionControl withShutdown(BooleanSupplier stopping) {
+        return new ExecutionControl(deadlineNanos, cancelled, () -> this.stopping.getAsBoolean() || stopping.getAsBoolean());
+    }
+
+    public boolean isSuspended() { return stopping.getAsBoolean() && !cancelled.getAsBoolean(); }
+
+    public void throwIfSuspended() { if (isSuspended()) throw new ExecutionSuspendedException(); }
 
     public boolean isExpired() {
         return deadlineNanos != Long.MAX_VALUE && System.nanoTime() >= deadlineNanos;
@@ -44,6 +58,7 @@ public final class ExecutionControl {
     }
 
     public void throwIfCancelled() {
+        throwIfSuspended();
         if (isCancelled()) throw new ExecutionCancelledException("Execution cancelled");
     }
 }

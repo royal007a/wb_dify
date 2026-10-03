@@ -26,13 +26,16 @@ class RunWorkflowControlTest {
     private final RunEventBroker events = mock(RunEventBroker.class);
     private final TransactionTemplate tx = mock(TransactionTemplate.class);
     private final AgentRun run = new AgentRun("run", "conversation", "key", "hash", "input", Instant.now());
+    private final com.hify.common.ExecutionLifecycle lifecycle=mock(com.hify.common.ExecutionLifecycle.class);
+    private final java.util.concurrent.Executor executor=mock(java.util.concurrent.Executor.class);
     private final RunApplicationService service = new RunApplicationService(agents, mock(ProviderQueryService.class),
             conversations, messages, runs, mock(ModelClientFactory.class), mock(QueryLoop.class), mock(ToolRuntime.class),
             mock(CommittedHistoryWriter.class), events, mock(RunCheckpointRepository.class), mock(ChildAgentTaskService.class),
-            mock(KnowledgeRetrievalPort.class), workflows, new ObjectMapper(), tx, Runnable::run, Duration.ofMinutes(1), 12, 2, 1);
+            mock(KnowledgeRetrievalPort.class), workflows, new ObjectMapper(), tx, executor, Duration.ofMinutes(1), 12, 2, 1, lifecycle);
 
     @SuppressWarnings("unchecked")
     private void prepare(AgentRun selected) {
+        doAnswer(invocation->{((Runnable)invocation.getArgument(0)).run();return null;}).when(executor).execute(any());
         selected.bindAgentSnapshot("av1", "digest");
         when(runs.findByStateIn(any())).thenReturn(List.of(selected));
         when(runs.findById("run")).thenReturn(Optional.of(selected));
@@ -43,6 +46,34 @@ class RunWorkflowControlTest {
         when(tx.execute(any())).thenAnswer(invocation -> ((TransactionCallback<Object>) invocation.getArgument(0)).doInTransaction(new SimpleTransactionStatus()));
         when(runs.finishTerminal(anyString(),any(),anyLong(),any(),anyString(),nullable(String.class),anyInt(),anyInt(),any()))
                 .thenAnswer(invocation -> { selected.finish(invocation.getArgument(3),invocation.getArgument(4),invocation.getArgument(5),invocation.getArgument(6),invocation.getArgument(7));return 1; });
+    }
+    @Test void rejectionRacingWithShutdownLeavesRunRecoverable() {
+        prepare(run);
+        doAnswer(invocation->{when(lifecycle.isStopping()).thenReturn(true);throw new java.util.concurrent.RejectedExecutionException("closed");})
+                .when(executor).execute(any());
+        service.convergeInterruptedRuns();
+        assertThat(run.getState()).isEqualTo(RunState.RUNNING);
+        verify(runs,never()).finishTerminal(anyString(),any(),anyLong(),any(),anyString(),nullable(String.class),anyInt(),anyInt(),any());
+        verify(events,never()).publish(anyString(),eq("run.failed"),anyMap());
+        assertThat((Map<?,?>)org.springframework.test.util.ReflectionTestUtils.getField(service,"dispatchOwners")).isEmpty();
+    }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(booleans={false,true})
+    void recoveryDatabaseFailureForOneRunDoesNotPreventTheNextOne(boolean rejectionSettlementFails) {
+        prepare(run);
+        AgentRun broken=new AgentRun("broken","conversation","key2","hash","input",Instant.now());
+        when(runs.findByStateIn(any())).thenReturn(List.of(broken,run));
+        if(rejectionSettlementFails){
+            when(runs.findById("broken")).thenReturn(Optional.of(broken));
+            when(runs.findByIdForUpdate("broken")).thenThrow(new org.springframework.dao.DataAccessResourceFailureException("fixture"));
+            var first=new java.util.concurrent.atomic.AtomicBoolean(true);
+            doAnswer(invocation->{if(first.getAndSet(false))throw new java.util.concurrent.RejectedExecutionException("capacity");
+                ((Runnable)invocation.getArgument(0)).run();return null;}).when(executor).execute(any());
+        }else when(runs.findById("broken")).thenThrow(new org.springframework.dao.DataAccessResourceFailureException("fixture"));
+        when(workflows.execute(eq("wv1"),eq("input"),any())).thenReturn(result("SUCCEEDED"));
+        assertThatCode(service::convergeInterruptedRuns).doesNotThrowAnyException();
+        assertThat(run.getState()).isEqualTo(RunState.COMPLETED);
+        assertThat((Map<?,?>)org.springframework.test.util.ReflectionTestUtils.getField(service,"dispatchOwners")).isEmpty();
     }
     @Test void cancelledWorkflowIsNotMisreportedAsModelFailure() {
         prepare(run); when(workflows.execute(eq("wv1"),eq("input"),any())).thenReturn(result("CANCELLED"));

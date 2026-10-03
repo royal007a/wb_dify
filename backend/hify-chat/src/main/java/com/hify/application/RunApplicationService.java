@@ -19,6 +19,7 @@ import com.hify.knowledge.api.KnowledgeRetrievalPort;
 import com.hify.workflow.api.WorkflowCapabilityPort;
 import com.hify.workflow.api.WorkflowRunResponse;
 import com.hify.common.ExecutionControl;
+import com.hify.common.ExecutionLifecycle;
 import com.hify.infra.RunCheckpointRepository;
 import com.hify.runtime.ModelClient;
 import com.hify.runtime.ModelClientFactory;
@@ -64,6 +65,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class RunApplicationService {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RunApplicationService.class);
     private final AgentQueryService agents;
     private final ProviderQueryService providers;
     private final ConversationRepository conversations;
@@ -81,6 +83,7 @@ public class RunApplicationService {
     private final ObjectMapper objectMapper;
     private final TransactionTemplate transactions;
     private final Executor executor;
+    private final ExecutionLifecycle lifecycle;
     private final Duration runTimeout;
     private final int maxToolCalls;
     private final int maxReplans;
@@ -103,7 +106,8 @@ public class RunApplicationService {
                                  @Value("${hify.run-timeout:60s}") Duration runTimeout,
                                  @Value("${hify.max-tool-calls:12}") int maxToolCalls,
                                  @Value("${hify.max-replans:2}") int maxReplans,
-                                 @Value("${hify.max-retries:1}") int maxRetries) {
+                                 @Value("${hify.max-retries:1}") int maxRetries,
+                                 ExecutionLifecycle lifecycle) {
         this.agents = agents;
         this.providers = providers;
         this.conversations = conversations;
@@ -125,6 +129,7 @@ public class RunApplicationService {
         this.maxToolCalls = maxToolCalls;
         this.maxReplans = maxReplans;
         this.maxRetries = maxRetries;
+        this.lifecycle = lifecycle;
     }
 
     public CreateResult create(String conversationId, String idempotencyKey, String message) {
@@ -176,6 +181,7 @@ public class RunApplicationService {
 
     /** A Run is durable before submission. Refusal must settle it, not leave a replayable zombie. */
     private void dispatch(String runId) {
+        if (lifecycle.isStopping()) return; // Durable row is recovered on the next startup.
         Object owner = new Object();
         if (dispatchOwners.putIfAbsent(runId, owner) != null) return;
         boolean submitted = false;
@@ -192,6 +198,7 @@ public class RunApplicationService {
             });
             submitted = true;
         } catch (RejectedExecutionException rejected) {
+            if (lifecycle.isStopping()) return; // Shutdown is not capacity exhaustion.
             AgentRun current = get(runId);
             finishTerminal(runId, RunState.FAILED, TerminalReason.EXECUTOR_REJECTED.name(),
                     "Run execution capacity exhausted; retry with a new idempotency key.",
@@ -305,6 +312,10 @@ public class RunApplicationService {
                         "Run cancelled before execution.", run.getTurns(), run.getToolCalls(), false);
                 return;
             }
+            if (lifecycle.isStopping()) {
+                finishTerminal(runId, RunState.FAILED, "APPLICATION_SHUTDOWN", null, run.getTurns(), run.getToolCalls(), false);
+                return;
+            }
             Conversation conversation = conversations.findById(run.getConversationId())
                     .orElseThrow(() -> new IllegalArgumentException("Conversation not found"));
             AgentRuntimeSnapshot agent = run.getAgentVersionId() == null
@@ -369,11 +380,12 @@ public class RunApplicationService {
         }
         AtomicBoolean cancelled = cancellations.computeIfAbsent(run.getId(), ignored -> new AtomicBoolean());
         ExecutionControl control = ExecutionControl.withTimeout(remaining.compareTo(runTimeout) > 0 ? runTimeout : remaining,
-                () -> cancelled.get() || run.isCancelRequested());
+                () -> cancelled.get() || run.isCancelRequested()).withShutdown(lifecycle::isStopping);
         eventBroker.publish(run.getId(), "workflow.started", Map.of(
                 "version",1,"runId",run.getId(),"workflowId",binding.workflowId(),
                 "workflowVersionId",binding.workflowVersionId(),"workflowChecksum",binding.checksum()));
         WorkflowRunResponse result = workflows.execute(binding.workflowVersionId(), run.getInputMessage(), control);
+        control.throwIfSuspended();
         if ("CANCELLED".equals(result.status()) || control.isCancelled()) {
             finishWorkflowStopped(run, result, RunState.CANCELLED, TerminalReason.CANCELLED, "Workflow cancelled.");
             return;
@@ -609,6 +621,11 @@ public class RunApplicationService {
             AgentRun current = runs.findByIdForUpdate(runId)
                     .orElseThrow(() -> new IllegalArgumentException("Run not found: " + runId));
             if (current.getState().terminal()) return null;
+            if (lifecycle.isStopping() && !current.isCancelRequested()) {
+                eventBroker.publish(runId,"run.interrupted",Map.of("version",1,"runId",runId,
+                        "reason","APPLICATION_SHUTDOWN","recoverable",true));
+                return null; // No fabricated terminal, assistant message or child acknowledgement.
+            }
             RunState actual = current.isCancelRequested() ? RunState.CANCELLED : state;
             String reason = actual != state ? TerminalReason.CANCELLED.name() : terminalReason;
             String output = actual != state ? "Run cancelled before final commit." : outputMessage;
@@ -644,6 +661,7 @@ public class RunApplicationService {
     @EventListener(ApplicationReadyEvent.class)
     public void convergeInterruptedRuns() {
         runs.findByStateIn(List.of(RunState.RUNNING)).forEach(run -> {
+          try {
             if (run.isCancelRequested()) {
                 finishTerminal(run.getId(), RunState.CANCELLED, "CANCELLED_DURING_RESTART",
                         "Run was cancelled before restart recovery.",
@@ -651,6 +669,10 @@ public class RunApplicationService {
                 return;
             }
             dispatch(run.getId());
+          } catch (RuntimeException failure) {
+            // Keep the durable RUNNING row for a later startup. Do not expose JDBC messages/SQL.
+            log.warn("Run recovery deferred runId={} failureType={}", run.getId(), failure.getClass().getSimpleName());
+          }
         });
     }
 
@@ -774,6 +796,7 @@ public class RunApplicationService {
     }
 
     private boolean executionLeaseActive(String runId, String attemptId, String capabilityRevision) {
+        if (lifecycle.isStopping()) return false;
         if (!attemptId.equals(activeAttempts.get(runId))) return false;
         return runs.findById(runId).map(run -> run.getState() == RunState.RUNNING
                 && run.getCancelRequestedAt() == null

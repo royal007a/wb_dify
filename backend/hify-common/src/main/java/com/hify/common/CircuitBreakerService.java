@@ -101,7 +101,7 @@ public class CircuitBreakerService {
         } finally {
             // Settle before interrupting: HTTP cancellation may otherwise hide an upstream SLA
             // timeout. A driver that ignores interruption must not keep a HALF_OPEN permit.
-            if (control.isCancelled() || control.isExpired()) probe.ignore();
+            if (control.isSuspended() || control.isCancelled() || control.isExpired()) probe.ignore();
             else if (System.nanoTime() >= localDeadline) probe.modelTimeout();
             if (!future.isDone()) future.cancel(true);
         }
@@ -133,7 +133,7 @@ public class CircuitBreakerService {
         } catch (RuntimeException failure) {
             // Per-call control is essential: a cancelled HTTP call may surface as an ordinary
             // timeout/IO error. A shared ignoreExceptions predicate cannot inspect this control.
-            if (control.isCancelled() || control.isExpired() || isLocalFailure(failure)) probe.ignore();
+            if (control.isSuspended() || control.isCancelled() || control.isExpired() || isLocalFailure(failure)) probe.ignore();
             else probe.failure(failure);
             if (failure instanceof RejectedExecutionException) throw new ExecutionRejectedException();
             throw failure;
@@ -141,7 +141,7 @@ public class CircuitBreakerService {
             probe.ignore();
             throw failure;
         }
-        if (control.isCancelled() || control.isExpired()) probe.ignore();
+        if (control.isSuspended() || control.isCancelled() || control.isExpired()) probe.ignore();
         else probe.success(result);
         return result;
     }
@@ -200,14 +200,14 @@ public class CircuitBreakerService {
         // and is genuine upstream failure. Typed cancellation or per-call control is required.
         var seen = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<Throwable, Boolean>());
         for (Throwable cause = failure; cause != null && seen.add(cause); cause = cause.getCause()) {
-            if (cause instanceof ExecutionCancelledException || cause instanceof ExecutionRejectedException
+            if (cause instanceof ExecutionCancelledException || cause instanceof ExecutionSuspendedException || cause instanceof ExecutionRejectedException
                     || cause instanceof RejectedExecutionException || cause instanceof InterruptedException) return true;
         }
         return false;
     }
 
     private static boolean eligible(ExecutionControl control, long deadline) {
-        return !control.isCancelled() && !control.isExpired() && System.nanoTime() < deadline;
+        return !control.isSuspended() && !control.isCancelled() && !control.isExpired() && System.nanoTime() < deadline;
     }
 
     private static boolean retryTimeoutOrUnavailable(Throwable failure) {

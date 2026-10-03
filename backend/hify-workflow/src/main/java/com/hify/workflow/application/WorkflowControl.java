@@ -28,6 +28,7 @@ final class WorkflowControl {
             }
         } catch (InterruptedException interrupted) {
             Thread.currentThread().interrupt();
+            control.throwIfSuspended();
             throw new ExecutionCancelledException("Workflow execution interrupted");
         } catch (ExecutionException failure) {
             if (failure.getCause() instanceof RuntimeException cause) throw cause;

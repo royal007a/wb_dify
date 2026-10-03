@@ -55,6 +55,7 @@ class WorkflowControlTest {
         var entered = new CountDownLatch(1); var interrupted = new CountDownLatch(1);
         var expired = new AtomicBoolean();
         ExecutionControl control = mock(ExecutionControl.class);
+        when(control.withShutdown(any())).thenReturn(control); // Preserve the deterministic virtual deadline in this fixture.
         when(control.isExpired()).thenAnswer(invocation -> expired.get());
         when(control.remaining(any())).thenReturn(Duration.ofMillis(50));
         when(knowledge.search("kb","input",3)).thenAnswer(invocation -> {

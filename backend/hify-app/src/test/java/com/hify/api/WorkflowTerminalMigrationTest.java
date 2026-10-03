@@ -44,7 +44,7 @@ class WorkflowTerminalMigrationTest {
             try (ResultSet row=sql.executeQuery("SELECT dsl_json FROM workflow_versions WHERE id='version'")) {
                 assertThat(row.next()).isTrue();assertThat(row.getString(1)).isEqualTo("{\"legacy\":true}");
             }
-            for (String state : new String[]{"CANCELLED","TIMED_OUT","FAILED","RUNNING","SUCCEEDED"}) {
+            for (String state : new String[]{"CANCELLED","TIMED_OUT","FAILED","RUNNING","SUCCEEDED","INTERRUPTED"}) {
                 assertThat(sql.executeUpdate("UPDATE workflow_runs SET status='"+state+"' WHERE id='run'")).isEqualTo(1);
                 assertThat(sql.executeUpdate("UPDATE workflow_node_runs SET status='"+state+"' WHERE id='node'")).isEqualTo(1);
             }
