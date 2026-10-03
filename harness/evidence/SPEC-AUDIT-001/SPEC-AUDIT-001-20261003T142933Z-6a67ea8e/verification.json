@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "backend"
+  ],
+  "base": "working-tree",
+  "headCommit": "f7e155c05ed0a5df6bd300a4d60de80097143467",
+  "result": "failed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-AUDIT-001/SPEC-AUDIT-001-20261003T142933Z-6a67ea8e/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-AUDIT-001/SPEC-AUDIT-001-20261003T142933Z-6a67ea8e/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-AUDIT-001/SPEC-AUDIT-001-20261003T142933Z-6a67ea8e/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-AUDIT-001/SPEC-AUDIT-001-20261003T142933Z-6a67ea8e/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-AUDIT-001/SPEC-AUDIT-001-20261003T142933Z-6a67ea8e/harness-shell-syntax.log"
+    },
+    {
+      "name": "backend-tests",
+      "exitCode": 1,
+      "log": "harness/evidence/SPEC-AUDIT-001/SPEC-AUDIT-001-20261003T142933Z-6a67ea8e/backend-tests.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T14:47:26Z"
+}

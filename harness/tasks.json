@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T13:38:20Z",
+  "updatedAt": "2026-10-03T14:47:28Z",
   "tasks": [
     {
       "id": "SPEC-AUDIT-001",
       "title": "建立全接口与功能测试规格及覆盖门禁",
       "description": "按已注册 HTTP 路由、前端页面、领域状态机盘点功能；形成可机器核对的接口清单、测试证据和未验证项，不把旧 green 记录当作本轮验收。",
       "priority": "P0",
-      "status": "pending",
+      "status": "blocked",
       "scopes": [
         "harness",
         "backend"
@@ -28,10 +28,20 @@
       ],
       "planPath": "exec-plans/active/SPEC-AUDIT-001.md",
       "checkpoint": null,
-      "blockedReason": null,
-      "evidence": [],
+      "blockedReason": "verification failed",
+      "evidence": [
+        {
+          "runId": "SPEC-AUDIT-001-20261003T142933Z-6a67ea8e",
+          "path": "harness/evidence/SPEC-AUDIT-001/SPEC-AUDIT-001-20261003T142933Z-6a67ea8e",
+          "result": "blocked",
+          "exitCode": 1,
+          "baselineCommit": "269af92e2dfd182a94415f627c260f8b0dedccea",
+          "headCommit": "f7e155c05ed0a5df6bd300a4d60de80097143467",
+          "recordedAt": "2026-10-03T14:47:28Z"
+        }
+      ],
       "createdAt": "2026-10-03T14:35:00Z",
-      "updatedAt": "2026-10-03T14:35:00Z"
+      "updatedAt": "2026-10-03T14:47:28Z"
     },
     {
       "id": "SPEC-VERIFY-001",
