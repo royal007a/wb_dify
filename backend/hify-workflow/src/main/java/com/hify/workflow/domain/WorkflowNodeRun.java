@@ -6,5 +6,6 @@ public class WorkflowNodeRun {
  protected WorkflowNodeRun(){} public WorkflowNodeRun(String id,String runId,int sequence,String key,String type,Instant now){this.id=id;this.workflowRunId=runId;this.sequenceNo=sequence;this.nodeKey=key;this.nodeType=type;this.status="RUNNING";this.createdAt=now;}
  public void succeed(String output,long elapsed){this.status="SUCCEEDED";this.outputJson=output;this.elapsedMs=elapsed;this.finishedAt=Instant.now();}
  public void fail(String error,long elapsed){this.status="FAILED";this.errorMessage=error;this.elapsedMs=elapsed;this.finishedAt=Instant.now();}
+ public void stop(String status,String error,long elapsed){if(!java.util.Set.of("CANCELLED","TIMED_OUT").contains(status))throw new IllegalArgumentException("Invalid stop status");fail(error,elapsed);this.status=status;}
  public int getSequenceNo(){return sequenceNo;} public String getNodeKey(){return nodeKey;} public String getNodeType(){return nodeType;} public String getStatus(){return status;} public String getOutputJson(){return outputJson;} public String getErrorMessage(){return errorMessage;} public Long getElapsedMs(){return elapsedMs;}
 }
