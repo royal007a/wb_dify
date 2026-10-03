@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "CHAT-DEMO-001-20261003T122751Z-e8cc6970",
+  "taskId": "CHAT-DEMO-001",
+  "status": "completed",
+  "baselineCommit": "8cc29fad66acfd1a8cc7a6d4914a1c725098da06",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T12:27:51Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "8cc29fad66acfd1a8cc7a6d4914a1c725098da06",
+  "finishedAt": "2026-10-03T12:30:36Z"
+}

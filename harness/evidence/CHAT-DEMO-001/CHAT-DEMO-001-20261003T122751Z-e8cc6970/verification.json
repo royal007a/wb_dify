@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "backend",
+    "frontend"
+  ],
+  "base": "working-tree",
+  "headCommit": "8cc29fad66acfd1a8cc7a6d4914a1c725098da06",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/CHAT-DEMO-001/CHAT-DEMO-001-20261003T122751Z-e8cc6970/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/CHAT-DEMO-001/CHAT-DEMO-001-20261003T122751Z-e8cc6970/harness-progress.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/CHAT-DEMO-001/CHAT-DEMO-001-20261003T122751Z-e8cc6970/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/CHAT-DEMO-001/CHAT-DEMO-001-20261003T122751Z-e8cc6970/harness-shell-syntax.log"
+    },
+    {
+      "name": "backend-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/CHAT-DEMO-001/CHAT-DEMO-001-20261003T122751Z-e8cc6970/backend-tests.log"
+    },
+    {
+      "name": "frontend-typecheck",
+      "exitCode": 0,
+      "log": "harness/evidence/CHAT-DEMO-001/CHAT-DEMO-001-20261003T122751Z-e8cc6970/frontend-typecheck.log"
+    },
+    {
+      "name": "frontend-build",
+      "exitCode": 0,
+      "log": "harness/evidence/CHAT-DEMO-001/CHAT-DEMO-001-20261003T122751Z-e8cc6970/frontend-build.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T12:30:36Z"
+}

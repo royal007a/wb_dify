@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "MCP-EDIT-DEPLOY-001-20261003T115430Z-0c7248c0",
-    "path": "harness/evidence/MCP-EDIT-DEPLOY-001/MCP-EDIT-DEPLOY-001-20261003T115430Z-0c7248c0",
+    "runId": "CHAT-DEMO-001-20261003T122751Z-e8cc6970",
+    "path": "harness/evidence/CHAT-DEMO-001/CHAT-DEMO-001-20261003T122751Z-e8cc6970",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "82467f2b800c7e82429153bbfbf91cb81cd77b02",
-    "headCommit": "82467f2b800c7e82429153bbfbf91cb81cd77b02",
-    "recordedAt": "2026-10-03T11:57:48Z"
+    "baselineCommit": "8cc29fad66acfd1a8cc7a6d4914a1c725098da06",
+    "headCommit": "8cc29fad66acfd1a8cc7a6d4914a1c725098da06",
+    "recordedAt": "2026-10-03T12:30:36Z"
   },
-  "lastCompletedTaskId": "MCP-EDIT-DEPLOY-001",
-  "updatedAt": "2026-10-03T11:57:48Z"
+  "lastCompletedTaskId": "CHAT-DEMO-001",
+  "updatedAt": "2026-10-03T12:30:36Z"
 }
