@@ -4,6 +4,31 @@
   "updatedAt": "2026-10-03T18:22:51Z",
   "tasks": [
     {
+      "id": "SPEC-CREDENTIAL-BOUNDARY-002",
+      "title": "补齐受保护配置命名空间与冻结凭据负向验收",
+      "description": "G复核：HIFY_DB与JVM TLS凭据不得被运维误授权；规范Provider授权路径；冻结MCP快照未授权引用零外发。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["backend", "runtime", "harness"],
+      "verifyScopes": ["harness", "migration"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-CREDENTIAL-BOUNDARY-001"],
+      "acceptance": [
+        "HIFY_DB_*及javax.net.ssl凭据的误授权配置在启动解析时拒绝，错误不回显",
+        "Provider授权必须使用去尾斜杠后的baseUrl，MCP仍精确路径匹配并有测试及文档",
+        "冻结MCP revision中的未授权旧引用在H2和PostgreSQL上执行时HTTP请求数为0",
+        "合法应用凭据引用和已发布TOKEN快照行为不退化，不读取真实密钥"
+      ],
+      "planPath": "exec-plans/active/SPEC-CREDENTIAL-BOUNDARY-002.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T18:24:00Z",
+      "updatedAt": "2026-10-03T18:24:00Z"
+    },
+    {
       "id": "SPEC-PROVIDER-LOCAL-FAILURE-001",
       "title": "取消与本地拒绝不得污染供应商熔断",
       "description": "B1：区分请求取消/本地执行容量与上游失败，保留真实上游失败熔断和重试。",
