@@ -257,7 +257,11 @@ class PostgresConcurrencyIntegrationTest {
         Instant deadline = Instant.now().plus(Duration.ofSeconds(5));
         while (Instant.now().isBefore(deadline)) {
             AgentRun run = runs.findById(runId).orElseThrow();
-            if (run.getState().terminal()) return run;
+            // The terminal row and its event projection commit separately. Wait for both,
+            // rather than racing the completion event assertion below.
+            if (run.getState().terminal() && (run.getState() != RunState.COMPLETED
+                    || events.findByRunIdOrderByIdAsc(runId).stream()
+                    .anyMatch(event -> "run.completed".equals(event.getEventType())))) return run;
             Thread.sleep(25);
         }
         throw new AssertionError("Run did not reach a terminal state");
