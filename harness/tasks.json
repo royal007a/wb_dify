@@ -4,6 +4,30 @@
   "updatedAt": "2026-10-03T22:29:37Z",
   "tasks": [
     {
+      "id": "SPEC-KNOWLEDGE-FINISH-003",
+      "title": "隔离知识门禁内部历史与可交付记忆并补回读关闭验证",
+      "description": "复核P1：memory预览/详情旁路及canonical回读关闭测试；保留重放历史但不向知识Run开放原始memory投影。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["backend", "runtime", "migration", "harness"],
+      "verifyScopes": ["harness", "runtime", "migration"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-KNOWLEDGE-FINISH-002"],
+      "acceptance": [
+        "知识Run在RUNNING/NEEDS_INPUT/完成后均不泄露原始memory投影，旧索引和同会话搜索无旁路；普通聊天兼容",
+        "canonical历史保持可重放，合格最终回答仍正常交付",
+        "canonical回读期间关闭保留RUNNING并有run.interrupted；PG门禁无跳过"
+      ],
+      "planPath": "exec-plans/active/SPEC-KNOWLEDGE-FINISH-003.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T22:41:00Z",
+      "updatedAt": "2026-10-03T22:41:00Z"
+    },
+    {
       "id": "SPEC-KNOWLEDGE-FINISH-002",
       "title": "保留知识入场失败中的应用关闭挂起信号",
       "description": "门禁自查：读取来源的catch不能把关闭挂起转成永久KNOWLEDGE_RETRIEVAL_FAILED。",
