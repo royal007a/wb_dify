@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T20:40:23Z",
+  "updatedAt": "2026-10-03T21:00:33Z",
   "tasks": [
     {
       "id": "SPEC-WORKFLOW-RECOVERY-001",
@@ -9,13 +9,26 @@
       "description": "结算复核P2：执行前/结果读取异常仍可能MODEL_ERROR；成功后父提交前崩溃重跑且旧结果无投影；END节点停止边界待明确。",
       "priority": "P2",
       "status": "pending",
-      "scopes": ["backend", "runtime", "harness"],
-      "verifyScopes": ["harness", "migration"],
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "migration"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-RUN-ADMISSION-001"],
-      "acceptance": ["持久关联执行结果并明确崩溃恢复不盲目重执行", "异常归类与END节点停止语义可测", "停止与取消组合、失败事务及持锁取消有集成证据"],
+      "dependsOn": [
+        "SPEC-RUN-ADMISSION-001"
+      ],
+      "acceptance": [
+        "持久关联执行结果并明确崩溃恢复不盲目重执行",
+        "异常归类与END节点停止语义可测",
+        "停止与取消组合、失败事务及持锁取消有集成证据"
+      ],
       "planPath": "exec-plans/active/SPEC-WORKFLOW-RECOVERY-001.md",
       "checkpoint": null,
       "blockedReason": null,
@@ -28,7 +41,7 @@
       "title": "恢复时重放已提交模型响应而非重新生成",
       "description": "E1复验新P1假设：model:N先于轮末checkpoint提交，恢复重新生成可能造成语义摘要冲突；先红灯复现，不放宽冲突保护。",
       "priority": "P1",
-      "status": "running",
+      "status": "completed",
       "scopes": [
         "backend",
         "runtime",
@@ -50,18 +63,22 @@
         "已提交响应和工具结果按canonical历史恢复，不重复模型调用或delta；冲突保护仍fail-closed",
         "真实关闭恢复与运行时回归通过，明确外部副作用和损坏历史边界"
       ],
-      "planPath": "exec-plans/active/SPEC-HISTORY-RECOVERY-001.md",
-      "checkpoint": {
-        "summary": "task command started",
-        "headCommit": "20e96670f937bd78f1fd0e413f753b00512841da",
-        "workingTreeHash": "f8bc5b211bbe31abf531a4b3a13b0e709f2a6e4fba7e3c81091e9d31ac0659ef",
-        "evidencePath": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0",
-        "updatedAt": "2026-10-03T20:40:23Z"
-      },
+      "planPath": "exec-plans/completed/SPEC-HISTORY-RECOVERY-001.md",
+      "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0",
+          "path": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "20e96670f937bd78f1fd0e413f753b00512841da",
+          "headCommit": "927e5dfb07934d518483c9963d21e7a0300bdd51",
+          "recordedAt": "2026-10-03T21:00:33Z"
+        }
+      ],
       "createdAt": "2026-10-03T20:35:00Z",
-      "updatedAt": "2026-10-03T20:40:23Z"
+      "updatedAt": "2026-10-03T21:00:33Z"
     },
     {
       "id": "SPEC-RUN-BUDGET-001",

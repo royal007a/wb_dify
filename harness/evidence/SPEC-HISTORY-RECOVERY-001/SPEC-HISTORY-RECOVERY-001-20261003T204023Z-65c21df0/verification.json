@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "migration"
+  ],
+  "base": "working-tree",
+  "headCommit": "927e5dfb07934d518483c9963d21e7a0300bdd51",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0/harness-shell-syntax.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0/migration-not-skipped.log"
+    },
+    {
+      "name": "migration-mcp-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0/migration-mcp-not-skipped.log"
+    },
+    {
+      "name": "migration-workflow-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0/migration-workflow-not-skipped.log"
+    },
+    {
+      "name": "migration-shutdown-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0/migration-shutdown-not-skipped.log"
+    },
+    {
+      "name": "migration-settlement-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0/migration-settlement-not-skipped.log"
+    },
+    {
+      "name": "migration-history-recovery-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0/migration-history-recovery-not-skipped.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T21:00:33Z"
+}

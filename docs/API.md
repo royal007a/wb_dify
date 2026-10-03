@@ -160,6 +160,8 @@ data: {"version":1,"runId":"run_...","terminalReason":"PERMISSION_DENIED","error
 
 `history.committed` 表示某个 `operationId` 的 canonical history 已经持久化、回读并取得 revision；其 `semanticDigest` 用于识别合法重放和身份冲突。它不是外部工具副作用已提交的证明。
 
+checkpoint 落后时，恢复先按 `model:N/tool:callId` 查已提交操作并验证摘要和完整前缀；不重新调用模型生成已提交响应，也不重复发送其 delta。V23 为新工具结果同行保存类型、计划、Evidence/Gap 与计数；重放这些工具结果不再次执行工具。旧工具记录缺少该恢复状态时 fail-closed 为 `HISTORY_COMMIT_FAILED`，不能自动重执行或虚构证据。未提交 READ、部分流式响应和跨重启总预算仍有限制，见 `docs/spec/SPEC_HISTORY_RECOVERY.md`。
+
 `context.prepared` 只在发生归档或压缩时发送，包含 `originalTokens/preparedTokens/archivedToolResults/compacted`。它描述模型输入投影，不表示 canonical history 被删除。
 
 历史记忆提供只读审计/诊断 API：

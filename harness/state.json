@@ -1,26 +1,20 @@
 {
   "schemaVersion": 1,
-  "currentTaskId": "SPEC-HISTORY-RECOVERY-001",
-  "runId": "SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0",
-  "baselineCommit": "20e96670f937bd78f1fd0e413f753b00512841da",
-  "startedAt": "2026-10-03T20:40:23Z",
-  "evidencePath": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0",
-  "lastCheckpoint": {
-    "summary": "task command started",
-    "headCommit": "20e96670f937bd78f1fd0e413f753b00512841da",
-    "workingTreeHash": "f8bc5b211bbe31abf531a4b3a13b0e709f2a6e4fba7e3c81091e9d31ac0659ef",
-    "evidencePath": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0",
-    "updatedAt": "2026-10-03T20:40:23Z"
-  },
+  "currentTaskId": null,
+  "runId": null,
+  "baselineCommit": null,
+  "startedAt": null,
+  "evidencePath": null,
+  "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-RUN-ADMISSION-001-20261003T202045Z-26dafb80",
-    "path": "harness/evidence/SPEC-RUN-ADMISSION-001/SPEC-RUN-ADMISSION-001-20261003T202045Z-26dafb80",
+    "runId": "SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0",
+    "path": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "830e0be62f2d2970dc8a7c5ce5a1755a8b4fab58",
-    "headCommit": "1d79393adcb494c9c622a247f562f30d7c780687",
-    "recordedAt": "2026-10-03T20:37:57Z"
+    "baselineCommit": "20e96670f937bd78f1fd0e413f753b00512841da",
+    "headCommit": "927e5dfb07934d518483c9963d21e7a0300bdd51",
+    "recordedAt": "2026-10-03T21:00:33Z"
   },
-  "lastCompletedTaskId": "SPEC-RUN-ADMISSION-001",
-  "updatedAt": "2026-10-03T20:40:23Z"
+  "lastCompletedTaskId": "SPEC-HISTORY-RECOVERY-001",
+  "updatedAt": "2026-10-03T21:00:33Z"
 }

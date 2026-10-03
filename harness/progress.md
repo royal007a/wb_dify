@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-03T20:40:23Z`
-- Current task: `SPEC-HISTORY-RECOVERY-001`
-- Counts: pending 13 · running 1 · blocked 1 · completed 45
+- Generated from task state updated at: `2026-10-03T21:00:33Z`
+- Current task: `none`
+- Counts: pending 13 · running 0 · blocked 1 · completed 46
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -46,7 +46,7 @@
 | `RECALL-002` | P1 | completed | backend, migration, runtime, eval | reversible_write | 建立召回评测门禁并按证据演进检索 |
 | `SECURITY-001` | P1 | completed | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |
 | `SPEC-CHAT-LIFECYCLE-002` | P1 | pending | frontend, runtime, harness | reversible_write | 复核前端Run创建与恢复输入边界 |
-| `SPEC-HISTORY-RECOVERY-001` | P1 | running | backend, runtime, migration, harness | reversible_write | 恢复时重放已提交模型响应而非重新生成 |
+| `SPEC-HISTORY-RECOVERY-001` | P1 | completed | backend, runtime, migration, harness | reversible_write | 恢复时重放已提交模型响应而非重新生成 |
 | `SPEC-KNOWLEDGE-FINISH-001` | P1 | pending | backend, runtime, harness | reversible_write | 知识缺口与完成门禁契约对齐 |
 | `SPEC-PROVIDER-LOCAL-FAILURE-001` | P1 | completed | backend, runtime, harness | reversible_write | 取消与本地拒绝不得污染供应商熔断 |
 | `SPEC-PROVIDER-LOCAL-FAILURE-002` | P1 | completed | backend, runtime, harness | reversible_write | 区分用户取消与真实上游模型期限超时 |
