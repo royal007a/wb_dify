@@ -9,6 +9,7 @@ export interface HifyColumn<T> {
   slot?: string
   className?: string
   align?: 'left' | 'center' | 'right'
+  fixed?: 'left' | 'right'
 }
 
 export interface HifyPageResult<T> {
@@ -74,6 +75,7 @@ defineExpose({ refresh })
         :class-name="column.className"
         :label-class-name="column.className"
         :align="column.align ?? 'left'"
+        :fixed="column.fixed"
       >
         <template v-if="column.slot" #default="scope">
           <slot :name="column.slot" :row="scope.row as T" :index="scope.$index" />
