@@ -36,8 +36,12 @@ export function runtimeUrl(path: string) {
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(runtimeUrl(path), init)
-  if (!response.ok) throw new Error(await errorMessage(response))
+  if (!response.ok) throw new ChatHttpError(response.status, await errorMessage(response))
   return response.json() as Promise<T>
+}
+
+export class ChatHttpError extends Error {
+  constructor(readonly status: number, message: string) { super(message) }
 }
 
 export async function listRunnableAgents(): Promise<Agent[]> {
@@ -51,10 +55,11 @@ export const createConversation = (agentId: string) => requestJson<Conversation>
   body: JSON.stringify({ agentId, title: 'Hify Playground' }),
 })
 
-export const createRun = (conversationId: string, message: string, resume?: ResumeState) =>
+export const createRun = (conversationId: string, message: string, resume: ResumeState | undefined, idempotencyKey: string) =>
   requestJson<Run>(`/v1/conversations/${conversationId}/runs`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Idempotency-Key': crypto.randomUUID() },
+    signal: AbortSignal.timeout(10_000),
+    headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey },
     body: JSON.stringify({ message, ...(resume ? { resume } : {}) }),
   })
 
@@ -67,6 +72,7 @@ export const getRunEvents = (runId: string) => requestJson<RunEvent[]>(`/v1/runs
 
 export const cancelRun = (runId: string) => requestJson<Run>(`/v1/runs/${runId}/cancellations`, {
   method: 'POST',
+  signal: AbortSignal.timeout(10_000),
 })
 
 async function errorMessage(response: Response) {

@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { Agent } from '@/api/agents'
 import {
   cancelRun,
+  ChatHttpError,
   createConversation,
   createRun,
   getRun,
@@ -26,6 +27,10 @@ const activeRun = ref<Run>()
 const resumeState = ref<ResumeState>()
 const syncIssue = ref(false)
 const syncingRun = ref(false)
+type Submission = { key: string; text: string; resume?: ResumeState; conversation?: string; cancelRequested: boolean; unknown: boolean }
+const pendingSubmission = ref<Submission>()
+const submitting = ref(false)
+const resumeUnavailable = ref(false)
 let stream: EventSource | undefined
 let syncTimer: ReturnType<typeof setTimeout> | undefined
 let retryRead: (() => Promise<void>) | undefined
@@ -65,37 +70,74 @@ async function loadAgents() {
   }
 }
 
-async function ensureConversation() {
+async function ensureConversation(token: number) {
   if (conversationId.value) return conversationId.value
   if (!selectedAgentId.value) throw new Error('请先选择已发布 Agent')
   const conversation = await createConversation(selectedAgentId.value)
-  conversationId.value = conversation.id
-  pinnedVersionId.value = conversation.agentVersionId
+  if (isCurrent(token)) {
+    conversationId.value = conversation.id
+    pinnedVersionId.value = conversation.agentVersionId
+  }
   return conversation.id as string
 }
 
 async function send() {
   const text = message.value.trim()
-  if (!text || running.value || syncIssue.value) return
+  if (!text || running.value || submitting.value || syncIssue.value || pendingSubmission.value || resumeUnavailable.value) return
   const token = ++generation
+  closeStream()
+  retryRead = undefined
+  activeRun.value = undefined
+  pendingSubmission.value = { key: crypto.randomUUID(), text,
+    resume: resumeState.value ? { runId: resumeState.value.runId, gapIds: [...resumeState.value.gapIds] } : undefined,
+    conversation: conversationId.value, cancelRequested: false, unknown: false }
   running.value = true
   status.value = '创建 Run…'
   chat.value.push({ role: 'user', content: text })
   message.value = ''
+  await submitPending(token)
+}
+
+async function submitPending(token = generation) {
+  const pending = pendingSubmission.value
+  if (!pending || submitting.value || !isCurrent(token)) return
+  submitting.value = true
+  running.value = true
   try {
-    const conversation = await ensureConversation()
+    const conversation = pending.conversation ?? await ensureConversation(token)
     if (!isCurrent(token)) return
-    const created = await createRun(conversation, text, resumeState.value)
+    pending.conversation = conversation
+    // No request was sent yet. After an ambiguous failure we must resolve the same key first.
+    if (pending.cancelRequested && !pending.unknown) {
+      pendingSubmission.value = undefined
+      running.value = false
+      status.value = '尚未提交，已取消'
+      return
+    }
+    const created = await createRun(conversation, pending.text, pending.resume, pending.key)
     if (!isCurrent(token)) return
+    if (typeof created.id !== 'string' || !created.id || created.conversationId !== conversation
+        || typeof created.streamUrl !== 'string' || !created.streamUrl || typeof created.state !== 'string') throw new Error('创建结果不匹配')
     activeRun.value = created
+    pendingSubmission.value = undefined
     resumeState.value = undefined
-    status.value = `Run ${activeRun.value!.id.slice(0, 8)} 执行中`
-    listen(activeRun.value!, token)
+    status.value = `Run ${created.id.slice(0, 8)} 执行中`
+    listen(created, token)
+    if (pending.cancelRequested && !terminalStates.has(created.state)) await cancel()
   } catch (error) {
     if (!isCurrent(token)) return
     chat.value.push({ role: 'event', content: error instanceof Error ? error.message : '请求失败' })
     running.value = false
-    status.value = '请求失败'
+    const definiteRejection = error instanceof ChatHttpError && [400, 401, 403, 404, 405, 406, 409, 415, 422].includes(error.status)
+    if (definiteRejection && !pending.unknown) {
+      pendingSubmission.value = undefined
+      status.value = '提交被拒绝'
+    } else {
+      pending.unknown = true
+      status.value = '提交结果不明，请重试提交结果（沿用原请求，不重复创建）'
+    }
+  } finally {
+    if (isCurrent(token)) submitting.value = false
   }
 }
 
@@ -106,7 +148,9 @@ function listen(run: Run, token: number) {
   let answerIndex = -1
   let settled = false
   let reading = false
+  let rereadRequested = false
   let terminalObserved = false
+  let connected = false
   let polls = 0
   const seen = new Set<string>()
   const current = () => isCurrent(token) && !settled
@@ -126,7 +170,7 @@ function listen(run: Run, token: number) {
   function clarification(payload: Record<string, unknown>) {
     if (payload.action !== 'CLARIFY' || !Array.isArray(payload.gapIds)) return
     const gapIds = payload.gapIds.filter((id): id is string => typeof id === 'string' && id.length > 0)
-    if (gapIds.length) resumeState.value = { runId: run.id, gapIds }
+    resumeState.value = gapIds.length ? { runId: run.id, gapIds } : undefined
   }
 
   on('message.delta', payload => {
@@ -153,7 +197,8 @@ function listen(run: Run, token: number) {
   }
 
   async function reconcile() {
-    if (!current() || reading) return
+    if (!current()) return
+    if (reading) { rereadRequested = true; return }
     reading = true
     syncingRun.value = true
     try {
@@ -162,19 +207,21 @@ function listen(run: Run, token: number) {
       if (latest.id !== run.id || latest.conversationId !== run.conversationId) throw new Error('Run 状态不匹配')
       activeRun.value = latest
       if (!terminalStates.has(latest.state)) {
-        status.value = terminalObserved ? '终态尚未保存，正在同步…' : '事件流重连中，Run 仍在执行…'
-        syncIssue.value = terminalObserved || polls >= 3
-        scheduleRead()
+        status.value = terminalObserved ? '终态尚未保存，正在同步…' : connected ? `Run ${run.id.slice(0, 8)} 执行中` : '事件流重连中，Run 仍在执行…'
+        syncIssue.value = terminalObserved || (!connected && polls >= 3)
+        if (terminalObserved || !connected) scheduleRead()
         return
       }
       terminalObserved = true
       // A lost continuation event must not turn clarification into a brand-new task.
-      if (latest.state === 'NEEDS_INPUT' && !resumeState.value) {
+      resumeState.value = undefined
+      resumeUnavailable.value = false
+      if (latest.state === 'NEEDS_INPUT') {
         const events = await getRunEvents(run.id)
         if (!current()) return
         const last = [...events].reverse().find(event => event.type === 'continuation.decided')
         if (last) clarification(parsePayload(last.payload))
-        if (!resumeState.value) throw new Error('缺少恢复所需的 Gap 信息')
+        if (!resumeState.value) resumeUnavailable.value = true
       }
       settled = true
       closeStream()
@@ -184,7 +231,9 @@ function listen(run: Run, token: number) {
       }
       status.value = `${latest.state} · ${latest.turns} turns · ${latest.toolCalls} tools`
       if (latest.state === 'NEEDS_INPUT') {
-        chat.value.push({ role: 'event', content: '需要补充信息；下一条消息会恢复当前计划。' })
+        chat.value.push({ role: 'event', content: resumeUnavailable.value
+          ? '缺少恢复所需的 Gap 标识，不能继续此计划；请新建会话，不会自动当作新任务重发。'
+          : '需要补充信息；下一条消息会恢复当前计划。' })
       }
       running.value = false
       syncIssue.value = false
@@ -199,6 +248,12 @@ function listen(run: Run, token: number) {
     } finally {
       reading = false
       if (isCurrent(token)) syncingRun.value = false
+      if (current() && rereadRequested) {
+        rereadRequested = false
+        if (syncTimer) clearTimeout(syncTimer)
+        syncTimer = undefined
+        void reconcile()
+      }
     }
   }
 
@@ -210,20 +265,39 @@ function listen(run: Run, token: number) {
   }
   const finish = () => {
     terminalObserved = true
+    polls = 0
     source.close()
     void reconcile()
   }
   for (const type of ['run.completed', 'run.failed', 'run.cancelled', 'run.needs_input']) on(type, finish)
   source.onerror = () => {
     if (!current()) return
+    connected = false
     status.value = '事件流重连中…'
     scheduleRead()
   }
+  source.onopen = () => {
+    if (!current() || terminalObserved) return
+    connected = true
+    polls = 0
+    syncIssue.value = false
+    if (syncTimer) clearTimeout(syncTimer)
+    syncTimer = undefined
+    status.value = `Run ${run.id.slice(0, 8)} 执行中`
+  }
+  // Idempotent replay may already return a terminal row, without any future live event.
+  if (terminalStates.has(run.state)) finish()
 }
 
 async function retrySync() { await retryRead?.() }
 
 async function cancel() {
+  if (pendingSubmission.value) {
+    pendingSubmission.value.cancelRequested = true
+    status.value = '已记录取消，等待本次创建结果…'
+    if (!submitting.value) await submitPending()
+    return
+  }
   if (!activeRun.value || !running.value) return
   const token = generation
   try {
@@ -235,7 +309,7 @@ async function cancel() {
 }
 
 function newConversation() {
-  if (running.value) return
+  if (running.value || submitting.value || pendingSubmission.value) return
   generation++
   closeStream()
   retryRead = undefined
@@ -245,6 +319,7 @@ function newConversation() {
   pinnedVersionId.value = undefined
   activeRun.value = undefined
   resumeState.value = undefined
+  resumeUnavailable.value = false
   chat.value = [{ role: 'assistant', content: welcome }]
   status.value = '准备就绪'
 }
@@ -264,10 +339,10 @@ function parsePayload(raw: string): Record<string, unknown> {
     <div class="chat-toolbar">
       <div><span class="eyebrow">CONVERSATION</span><h1>对话</h1><p>{{ status }}</p></div>
       <div class="toolbar-actions">
-        <el-select v-model="selectedAgentId" :disabled="running || !agents.length" placeholder="选择已发布 Agent" @change="newConversation">
+        <el-select v-model="selectedAgentId" :disabled="running || submitting || !!pendingSubmission || !agents.length" placeholder="选择已发布 Agent" @change="newConversation">
           <el-option v-for="agent in agents" :key="agent.id" :label="`${agent.name} · v${agent.publishedVersionNo}`" :value="agent.id" />
         </el-select>
-        <el-button :disabled="running" @click="newConversation">新会话</el-button>
+        <el-button :disabled="running || submitting || !!pendingSubmission" @click="newConversation">新会话</el-button>
       </div>
     </div>
     <div class="chat-panel">
@@ -282,8 +357,9 @@ function parsePayload(raw: string): Record<string, unknown> {
         <div class="composer-actions">
           <span>{{ selectedAgent?.name ?? '未选择 Agent' }}<small v-if="pinnedVersionId"> · 固定版本 {{ pinnedVersionId.slice(0, 8) }}</small></span>
           <el-button v-if="syncIssue" :loading="syncingRun" @click="retrySync">重试同步</el-button>
-          <el-button v-if="running" type="danger" @click="cancel">取消</el-button>
-          <el-button v-else type="primary" class="primary-gradient" native-type="submit" :disabled="syncIssue || !message.trim() || !selectedAgentId">运行</el-button>
+          <el-button v-if="pendingSubmission?.unknown" :loading="submitting" @click="submitPending()">重试提交结果</el-button>
+          <el-button v-if="running || pendingSubmission" type="danger" @click="cancel">取消</el-button>
+          <el-button v-else type="primary" class="primary-gradient" native-type="submit" :disabled="submitting || syncIssue || resumeUnavailable || !message.trim() || !selectedAgentId">运行</el-button>
         </div>
       </form>
     </div>
