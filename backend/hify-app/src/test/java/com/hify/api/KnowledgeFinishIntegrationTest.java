@@ -102,12 +102,14 @@ class KnowledgeFinishIntegrationTest extends WorkflowKnowledgeIntegrationTest {
         verify(source).requireCanonicalChunk(eq(context.evidence().get(0).sourceRef().split(":",3)[2]),eq(context.evidence().get(0).valueDigest()));
     }
     private AgentRun chatWith(List<String> bases,String input) throws Exception {
+        return await(startWith(bases,input));
+    }
+    protected String startWith(List<String> bases,String input) throws Exception {
         String aid=agentService.create(new AgentUpsertRequest("evidence-"+UUID.randomUUID(),"","answer with sources","mock","hify-mock",0.2,2048,6,10,List.of(),true));
         if(!bases.isEmpty())agentService.replaceKnowledge(aid,new AgentKnowledgeBindingRequest(bases.stream().map(b->new AgentKnowledgeBindingInput(b,3,0)).toList()));
         agentService.publish(aid);String cid=UUID.randomUUID().toString();
         conversations.saveAndFlush(new Conversation(cid,aid,queries.requirePublished(aid).versionId(),"knowledge",Instant.now()));
-        String id=runs.create(cid,UUID.randomUUID().toString(),input).run().getId();
-        return await(id);
+        return runs.create(cid,UUID.randomUUID().toString(),input).run().getId();
     }
     private AgentRun await(String id) throws Exception {
         long deadline=System.nanoTime()+java.util.concurrent.TimeUnit.SECONDS.toNanos(10);

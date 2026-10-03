@@ -117,7 +117,7 @@ class RunShutdownIntegrationTest {
         String url=database(), run, version;
         var entered=new CountDownLatch(1); var interrupted=new CountDownLatch(1);
         var knowledge=mock(KnowledgeRetrievalPort.class);
-        var corpus=new com.hify.knowledge.api.KnowledgeCorpusSnapshot("fixture-corpus","fixture-kb",1,"a".repeat(64),0);
+        var corpus=new com.hify.knowledge.api.KnowledgeCorpusSnapshot("fixture-corpus","fixture-kb",1,"a".repeat(64),1);
         when(knowledge.freeze("fixture-kb")).thenReturn(corpus);
         when(knowledge.searchSnapshot(corpus,"blocked",3)).thenAnswer(invocation -> {
             entered.countDown();
@@ -149,7 +149,8 @@ class RunShutdownIntegrationTest {
         assertThat(db.queryForList("select status from workflow_node_runs where node_key='lookup'",String.class)).containsExactly("INTERRUPTED");
         assertThat(db.queryForObject("select count(*) from workflow_node_runs where node_key='end'",Integer.class)).isZero();
         assertThat(db.queryForList("select event_type from run_events where run_id=?",String.class,run)).contains("workflow.interrupted","run.interrupted").doesNotContain("run.cancelled","run.failed");
-        doReturn(List.of()).when(knowledge).searchSnapshot(corpus,"blocked",3);
+        doReturn(List.of(new com.hify.knowledge.api.KnowledgeCitation("fixture-chunk","fixture-document",1,0,
+                "workflow recovered","b".repeat(64),1,1))).when(knowledge).searchSnapshot(corpus,"blocked",3);
         try(var second=start(url,request->new RuntimeMessage("assistant","unused",null,List.of()),knowledge)){
             var service=second.getBean(RunApplicationService.class);awaitTerminal(service,run);
             assertThat(service.get(run).getState()).isEqualTo(RunState.COMPLETED);

@@ -812,6 +812,8 @@ public class RunApplicationService {
                     try{
                         citations.addAll(knowledge.searchRevision(binding.corpusVersionId(),query,binding.topK()));
                     }catch(RuntimeException failure){
+                        // Admission must not turn interrupted shutdown work into a permanent source failure.
+                        if(shutdownInterruption(failure)||lifecycle.isStopping())throw new ExecutionSuspendedException();
                         failures.add(Map.of("knowledgeBaseId",binding.knowledgeBaseId(),
                                 "corpusVersionId",binding.corpusVersionId(),"reason","knowledge_source_unavailable"));
                     }

@@ -25,6 +25,7 @@
 - 为避免未通过校验的答案先出现在页面，知识绑定路径不发模型正文 `message.delta`，完成后前端按终态回读 Run；检索、模型、工具进度事件照常可见。普通聊天仍流式。这是有意的首字体验取舍，不宣称知识回答仍逐 token 展示。
 - 失败追问保存带 Gap 的 checkpoint；正常完成不额外持久化“已推进下一 turn”的最终 checkpoint，以免提交前崩溃后重新生成下一轮。正常重启由已有 model:N canonical history 重放，再做来源校验。
 - canonical 校验前检查取消/预算，返回后再次检查；尚未完成来源校验的关闭中断仍视为未完工作，不宣称 JDBC 阻塞可精确中断。
+- 入场检索的异常分类也保留关闭语义：显式 ExecutionSuspendedException（含异常链），或 stopping 期间读取异常，仍走 run.interrupted、保留 RUNNING 等待重启；不能吞掉原因后永久记为 KNOWLEDGE_RETRIEVAL_FAILED。持久化用户取消仍由既有终态行锁优先处理。此项后续回归见 SPEC-KNOWLEDGE-FINISH-002。
 
 ## 候选过滤及明确未保证
 
