@@ -102,7 +102,8 @@ run_step() {
   "$@" >"$log" 2>&1
   status=$?
   cat "$log"
-  printf '%s\t%s\t%s\n' "$name" "$status" "${log#$ROOT_DIR/}" >>"$RECORDS"
+  command_json=$(python3 -c 'import json,sys; print(json.dumps(sys.argv[1:]))' "$@")
+  printf '%s\t%s\t%s\t%s\n' "$name" "$status" "${log#$ROOT_DIR/}" "$command_json" >>"$RECORDS"
   if [ "$status" -ne 0 ]; then OVERALL=1; fi
   return 0
 }
@@ -138,7 +139,8 @@ for scope in $SCOPES; do
       run_step harness-shell-syntax sh -n "$ROOT_DIR/harness/init.sh" "$ROOT_DIR/harness/verify.sh" "$ROOT_DIR/harness/run-task.sh"
       ;;
     backend)
-      run_step backend-tests sh -c "cd '$ROOT_DIR/backend' && mvn -pl hify-app -am test"
+      configure_testcontainers
+      run_step backend-tests sh -c "cd '$ROOT_DIR/backend' && mvn -Dapi.version='${HIFY_DOCKER_API_VERSION:-1.44}' -pl hify-app -am test"
       ;;
     migration)
       configure_testcontainers
@@ -185,19 +187,24 @@ export HIFY_VERIFY_BASE=${BASE:-working-tree}
 export HIFY_VERIFY_HEAD=$HEAD_COMMIT
 export HIFY_VERIFY_STATUS=$OVERALL
 export HIFY_VERIFY_RECORDS=$RECORDS
+export HIFY_VERIFY_ROOT=$ROOT_DIR
 python3 - "$EVIDENCE_DIR/verification.json" <<'PY'
 import json
 import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+sys.path.insert(0, str(Path(os.environ["HIFY_VERIFY_ROOT"]) / "harness"))
+from verification_report import enrich
 
 steps = []
 for line in Path(os.environ["HIFY_VERIFY_RECORDS"]).read_text(encoding="utf-8").splitlines():
     if not line:
         continue
-    name, status, log = line.split("\t", 2)
-    steps.append({"name": name, "exitCode": int(status), "log": log})
+    parts = line.split("\t", 3)
+    name, status, log = parts[:3]
+    steps.append({"name": name, "exitCode": int(status), "log": log,
+                  "command": json.loads(parts[3]) if len(parts) == 4 else ["docker", "info"]})
 manifest = {
     "schemaVersion": 1,
     "kind": "verification",
@@ -208,9 +215,14 @@ manifest = {
     "steps": steps,
     "finishedAt": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
 }
+manifest = enrich(manifest, Path(os.environ["HIFY_VERIFY_ROOT"]))
 Path(sys.argv[1]).write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+sys.exit(0 if manifest["result"] == "passed" else 1)
 PY
+report_status=$?
+if [ "$report_status" -ne 0 ]; then OVERALL=1; fi
 
 rm -f "$RECORDS"
-printf '\n[VERIFY] result=%s evidence=%s\n' "$( [ "$OVERALL" -eq 0 ] && printf passed || printf failed )" "${EVIDENCE_DIR#$ROOT_DIR/}"
+report_result=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["result"])' "$EVIDENCE_DIR/verification.json" 2>/dev/null || printf failed)
+printf '\n[VERIFY] result=%s evidence=%s\n' "$report_result" "${EVIDENCE_DIR#$ROOT_DIR/}"
 exit "$OVERALL"
