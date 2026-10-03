@@ -36,6 +36,7 @@ mkdir -p "$EVIDENCE_DIR"
 RECORDS="$EVIDENCE_DIR/steps.tsv"
 : >"$RECORDS"
 OVERALL=0
+INVOCATION_ID=$(python3 -c 'import uuid; print(uuid.uuid4())')
 
 add_scope() {
   case " $SCOPES " in
@@ -108,6 +109,10 @@ run_step() {
   return 0
 }
 
+run_maven() {
+  run_step "$1" python3 "$ROOT_DIR/harness/maven_step.py" --root "$ROOT_DIR" --evidence-dir "$EVIDENCE_DIR" --step "$1" --invocation-id "$INVOCATION_ID"
+}
+
 configure_testcontainers() {
   command -v docker >/dev/null 2>&1 || return 0
   if [ -z "${DOCKER_HOST:-}" ]; then
@@ -140,7 +145,7 @@ for scope in $SCOPES; do
       ;;
     backend)
       configure_testcontainers
-      run_step backend-tests sh -c "cd '$ROOT_DIR/backend' && mvn -Dapi.version='${HIFY_DOCKER_API_VERSION:-1.44}' -pl hify-app -am test"
+      run_maven backend-tests
       ;;
     migration)
       configure_testcontainers
@@ -151,25 +156,14 @@ for scope in $SCOPES; do
       if [ "$docker_status" -ne 0 ]; then
         OVERALL=1
       else
-        run_step migration-postgres sh -c "cd '$ROOT_DIR/backend' && mvn -Dapi.version='${HIFY_DOCKER_API_VERSION:-1.44}' -pl hify-app -am -Dtest=AgentToolBindingMigrationTest,PostgresConcurrencyIntegrationTest,McpCredentialPostgresTest,WorkflowTerminalMigrationTest,WorkflowTerminalPostgresTest,RunShutdownPostgresTest,WorkflowSettlementPostgresTest,HistoryRecoveryMigrationTest,HistoryRecoveryPostgresTest,WorkflowKnowledgePostgresTest,WorkflowKnowledgeReviewPostgresTest,KnowledgeFinishPostgresTest,KnowledgeMemoryPostgresTest,KnowledgeShutdownPostgresTest -Dsurefire.failIfNoSpecifiedTests=false test"
-        run_step migration-not-skipped sh -c "grep -Eq 'Tests run: [1-9][0-9]*, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.PostgresConcurrencyIntegrationTest.txt'"
-        run_step migration-mcp-not-skipped sh -c "grep -Eq 'Tests run: [1-9][0-9]*, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.McpCredentialPostgresTest.txt'"
-        run_step migration-workflow-not-skipped sh -c "grep -Eq 'Tests run: [1-9][0-9]*, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.WorkflowTerminalPostgresTest.txt'"
-        run_step migration-shutdown-not-skipped sh -c "grep -Eq 'Tests run: [1-9][0-9]*, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.RunShutdownPostgresTest.txt'"
-        run_step migration-settlement-not-skipped sh -c "grep -Eq 'Tests run: 4, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.WorkflowSettlementPostgresTest.txt'"
-        run_step migration-history-recovery-not-skipped sh -c "grep -Eq 'Tests run: 3, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.HistoryRecoveryPostgresTest.txt'"
-        run_step migration-workflow-knowledge-not-skipped sh -c "grep -Eq 'Tests run: 10, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.WorkflowKnowledgePostgresTest.txt'"
-        run_step migration-workflow-review-not-skipped sh -c "grep -Eq 'Tests run: 16, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.WorkflowKnowledgeReviewPostgresTest.txt'"
-        run_step migration-knowledge-finish-not-skipped sh -c "grep -Eq 'Tests run: 18, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.KnowledgeFinishPostgresTest.txt'"
-        run_step migration-knowledge-memory-not-skipped sh -c "grep -Eq 'Tests run: 21, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.KnowledgeMemoryPostgresTest.txt'"
-        run_step migration-knowledge-shutdown-not-skipped sh -c "grep -Eq 'Tests run: 22, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.KnowledgeShutdownPostgresTest.txt'"
+        run_maven migration-postgres
       fi
       ;;
     runtime)
-      run_step runtime-tests sh -c "cd '$ROOT_DIR/backend' && mvn -pl hify-app -am -Dtest=QueryLoopTest,PlanStateMachineTest,ExecutionContextStateTest,ChildAgentTaskTest,RunFlowIntegrationTest,ChildAgentTaskIntegrationTest,ContextMemoryIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test"
+      run_maven runtime-tests
       ;;
     eval)
-      run_step intent-context-recall-eval sh -c "cd '$ROOT_DIR/backend' && mvn -pl hify-chat -am -Dtest=IntentDecisionTest,DeterministicIntentRouterTest,LayeredIntentRouterTest,StructuredModelIntentClassifierTest,IntentEvaluationDatasetTest,ContextManagementEvaluationTest,HistoryRecallEvaluationTest -Dsurefire.failIfNoSpecifiedTests=false test"
+      run_maven intent-context-recall-eval
       ;;
     frontend)
       if [ ! -d "$ROOT_DIR/frontend/node_modules" ]; then
@@ -188,6 +182,7 @@ export HIFY_VERIFY_HEAD=$HEAD_COMMIT
 export HIFY_VERIFY_STATUS=$OVERALL
 export HIFY_VERIFY_RECORDS=$RECORDS
 export HIFY_VERIFY_ROOT=$ROOT_DIR
+export HIFY_VERIFY_INVOCATION=$INVOCATION_ID
 python3 - "$EVIDENCE_DIR/verification.json" <<'PY'
 import json
 import os
@@ -205,8 +200,13 @@ for line in Path(os.environ["HIFY_VERIFY_RECORDS"]).read_text(encoding="utf-8").
     name, status, log = parts[:3]
     steps.append({"name": name, "exitCode": int(status), "log": log,
                   "command": json.loads(parts[3]) if len(parts) == 4 else ["docker", "info"]})
+run_path = Path(sys.argv[1]).parent / "run.json"
+run_id = json.loads(run_path.read_text()).get("runId") if run_path.exists() else None
 manifest = {
-    "schemaVersion": 1,
+    "schemaVersion": 3,
+    "strictEvidence": True,
+    "invocationId": os.environ["HIFY_VERIFY_INVOCATION"],
+    "runId": run_id,
     "kind": "verification",
     "scopes": os.environ["HIFY_VERIFY_SCOPES"].split(","),
     "base": os.environ["HIFY_VERIFY_BASE"],

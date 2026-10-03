@@ -24,4 +24,14 @@
     <build><pluginManagement><plugins><plugin>
         <groupId>org.springframework.boot</groupId><artifactId>spring-boot-maven-plugin</artifactId>
     </plugin></plugins></pluginManagement></build>
+    <profiles>
+        <profile>
+            <id>harness-fresh-reports</id>
+            <activation><property><name>hify.test.reportsDirectory</name></property></activation>
+            <build><plugins><plugin>
+                <groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId>
+                <configuration><reportsDirectory>${hify.test.reportsDirectory}</reportsDirectory></configuration>
+            </plugin></plugins></build>
+        </profile>
+    </profiles>
 </project>

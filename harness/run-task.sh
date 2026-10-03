@@ -91,12 +91,13 @@ VERIFY_SCOPES=$(python3 "$ROOT_DIR/harness/harness.py" verify-scopes "$TASK_ID")
 "$ROOT_DIR/harness/verify.sh" --scope "$VERIFY_SCOPES" --evidence-dir "$EVIDENCE_REL"
 VERIFY_STATUS=$?
 if [ "$VERIFY_STATUS" -ne 0 ]; then
-  python3 "$ROOT_DIR/harness/harness.py" checkpoint "$TASK_ID" "verification failed with exit $VERIFY_STATUS" >/dev/null
-  python3 "$ROOT_DIR/harness/harness.py" finish "$TASK_ID" blocked --exit-code "$VERIFY_STATUS" --reason "verification failed"
+  VERIFY_RESULT=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("result", "failed"))' "$EVIDENCE_DIR/verification.json" 2>/dev/null || printf failed)
+  python3 "$ROOT_DIR/harness/harness.py" checkpoint "$TASK_ID" "verification $VERIFY_RESULT with exit $VERIFY_STATUS" >/dev/null
+  python3 "$ROOT_DIR/harness/harness.py" finish "$TASK_ID" blocked --exit-code "$VERIFY_STATUS" --reason "verification $VERIFY_RESULT"
   FINISHED=1
   exit "$VERIFY_STATUS"
 fi
 
-python3 "$ROOT_DIR/harness/harness.py" finish "$TASK_ID" completed --exit-code 0
+python3 "$ROOT_DIR/harness/harness.py" finish "$TASK_ID" completed --exit-code 0 || exit $?
 FINISHED=1
 printf '[TASK] %s completed\n' "$TASK_ID"

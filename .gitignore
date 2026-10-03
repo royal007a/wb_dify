@@ -16,5 +16,6 @@ __pycache__/
 harness/.run-lock/
 harness/evidence/**/*.log
 harness/evidence/**/*.tmp
+harness/evidence/**/reports/
 harness/evidence/**/changed-files.txt
 harness/evidence/manual/

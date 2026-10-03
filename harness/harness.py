@@ -172,6 +172,15 @@ class HarnessStore:
                     errors.append(f"{task.get('id')}: unknown dependency {dependency}")
                 if dependency == task.get("id"):
                     errors.append(f"{task.get('id')}: task cannot depend on itself")
+            if task.get("status") == "completed" and task.get("evidence"):
+                record = task["evidence"][-1]
+                if record.get("verificationSchemaVersion", 0) >= 3:
+                    try:
+                        raw = self.check_verification(task, record["path"], record["runId"], record["headCommit"])
+                        if hashlib.sha256(raw).hexdigest() != record.get("verificationSha256"):
+                            raise ValueError("verification digest changed")
+                    except (ValueError, OSError, KeyError, TypeError) as exc:
+                        errors.append(f"{task['id']}: invalid completed verification ({exc})")
 
         graph = {task["id"]: task.get("dependsOn", []) for task in tasks if task.get("id")}
         visiting: set[str] = set()
@@ -366,6 +375,11 @@ class HarnessStore:
         now = utc_now()
         evidence_path = state["evidencePath"]
         head = git_value(self.root, "rev-parse", "HEAD")
+        verification = None
+        if outcome == "completed":
+            if exit_code != 0:
+                raise ValueError("completed requires a zero exit code and passed verification")
+            verification = self.check_verification(task, evidence_path, state["runId"], head)
         record = {
             "runId": state["runId"],
             "path": evidence_path,
@@ -375,6 +389,9 @@ class HarnessStore:
             "headCommit": head,
             "recordedAt": now,
         }
+        if verification is not None:
+            record.update({"verificationSchemaVersion": 3,
+                           "verificationSha256": hashlib.sha256(verification).hexdigest()})
         task.setdefault("evidence", []).append(record)
         task["status"] = outcome
         task["blockedReason"] = reason if outcome == "blocked" else None
@@ -400,6 +417,42 @@ class HarnessStore:
         run.update({"status": outcome, "exitCode": exit_code, "reason": reason, "headCommit": head, "finishedAt": now})
         atomic_json(run_path, run)
         self.write_progress()
+
+    def check_verification(self, task, evidence_path, run_id, head):
+        path = self.root / evidence_path / "verification.json"
+        try:
+            raw = path.read_bytes()
+            report = json.loads(raw)
+        except (OSError, ValueError) as exc:
+            raise ValueError("current verification is missing or invalid") from exc
+        if (report.get("schemaVersion", 0) < 3 or not report.get("strictEvidence")
+                or report.get("runId") != run_id or report.get("headCommit") != head
+                or set(report.get("scopes", [])) != set(task["verifyScopes"])
+                or report.get("result") != "passed" or report.get("commandResult") != "passed"
+                or report.get("testCoverage") not in {"passed", "not-assessed"}
+                or not report.get("steps") or not report.get("invocationId")):
+            raise ValueError("verification must pass for this run, HEAD and all required scopes")
+        required_steps = {
+            "harness": {"harness-state", "harness-progress", "harness-api-spec", "harness-python-tests", "harness-shell-syntax"},
+            "backend": {"backend-tests"}, "migration": {"migration-docker", "migration-postgres"},
+            "runtime": {"runtime-tests"}, "eval": {"intent-context-recall-eval"},
+            "frontend": {"frontend-typecheck", "frontend-build"},
+        }
+        names = [step.get("name") for step in report["steps"]]
+        required = set().union(*(required_steps[scope] for scope in task["verifyScopes"]))
+        if not required <= set(names) or len(names) != len(set(names)):
+            raise ValueError("verification is missing required scope steps or has duplicates")
+        for step in report["steps"]:
+            if step.get("exitCode") != 0 or step.get("summaryError") or not step.get("logSha256"):
+                raise ValueError("verification contains a failed or unverified step")
+            tests = step.get("mavenTests", {})
+            totals = tests.get("totals", {})
+            if step.get("name") in {"backend-tests", "migration-postgres", "runtime-tests", "intent-context-recall-eval"}:
+                if not tests.get("classes") or not step.get("testSummarySha256"):
+                    raise ValueError("verification is missing fresh Maven evidence")
+            if any(totals.get(key, 0) for key in ("failures", "errors", "skipped", "flakyAttempts")) or tests.get("underfilledSuites"):
+                raise ValueError("verification contains failed, skipped or missing tests")
+        return raw
 
     def move_plan(self, task: dict[str, Any], outcome: str) -> None:
         plan_path = task.get("planPath")

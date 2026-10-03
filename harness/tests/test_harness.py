@@ -87,6 +87,7 @@ class HarnessStoreTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "already running"):
             self.store.start("TEST-001", None)
         self.store.checkpoint("TEST-001", "halfway")
+        self.write_verification(evidence)
         self.store.finish("TEST-001", "completed", 0, None)
         self.assertTrue((self.root / "exec-plans/completed/TEST-001.md").exists())
         self.assertTrue(self.store.check_progress())
@@ -96,6 +97,38 @@ class HarnessStoreTest(unittest.TestCase):
         self.store.write_progress()
         self.store.progress_path.write_text("manual\n", encoding="utf-8")
         self.assertFalse(self.store.check_progress())
+
+    def test_completion_without_current_verification_is_rejected(self):
+        self.store.start("TEST-001", None)
+        with self.assertRaisesRegex(ValueError, "verification"):
+            self.store.finish("TEST-001", "completed", 0, None)
+
+    def write_verification(self, evidence, **overrides):
+        from harness import git_value
+        report = {"schemaVersion": 3, "strictEvidence": True, "invocationId": "test-invocation",
+                  "runId": self.store.state()["runId"], "headCommit": git_value(self.root, "rev-parse", "HEAD"),
+                  "scopes": ["harness"], "result": "passed", "commandResult": "passed", "testCoverage": "not-assessed",
+                  "steps": [{"name": name, "exitCode": 0, "logSha256": "a" * 64} for name in
+                    ("harness-state", "harness-progress", "harness-api-spec", "harness-python-tests", "harness-shell-syntax")]}
+        report.update(overrides)
+        self.write(str(evidence) + "/verification.json", report)
+
+    def test_partial_failed_wrong_run_head_or_scopes_cannot_finish(self):
+        evidence = self.store.start("TEST-001", None)
+        for override in ({"result": "partial"}, {"result": "failed"}, {"runId": "another"},
+                         {"headCommit": "another"}, {"scopes": ["backend"]}, {"steps": []}):
+            with self.subTest(override=override):
+                self.write_verification(evidence, **override)
+                with self.assertRaisesRegex(ValueError, "verification"):
+                    self.store.finish("TEST-001", "completed", 0, None)
+                self.assertEqual("running", self.store.tasks()["tasks"][0]["status"])
+
+    def test_validate_detects_changed_completed_verification(self):
+        evidence = self.store.start("TEST-001", None)
+        self.write_verification(evidence)
+        self.store.finish("TEST-001", "completed", 0, None)
+        self.write_verification(evidence, result="partial")
+        self.assertTrue(any("invalid completed verification" in error for error in self.store.validate()))
 
     def test_high_risk_requires_approval_reference(self):
         tasks = self.store.tasks()
@@ -116,6 +149,12 @@ class HarnessStoreTest(unittest.TestCase):
         self.assertTrue(any("typoField" in error for error in errors))
 
     def test_run_task_shell_completes_and_records_evidence(self):
+        self.assert_run_task_shell("passed", 0, "completed")
+
+    def test_run_task_partial_is_blocked_and_reason_preserves_partial(self):
+        self.assert_run_task_shell("partial", 1, "blocked")
+
+    def assert_run_task_shell(self, verification_result, verification_exit, outcome):
         source_harness = Path(__file__).resolve().parents[1]
         shutil.copy2(source_harness / "harness.py", self.root / "harness/harness.py")
         shutil.copy2(source_harness / "run-task.sh", self.root / "harness/run-task.sh")
@@ -130,7 +169,16 @@ class HarnessStoreTest(unittest.TestCase):
             "  esac\n"
             "done\n"
             "mkdir -p \"$evidence\"\n"
-            "printf '{\"result\":\"passed\"}\\n' >\"$evidence/verification.json\"\n",
+            "python3 - \"$evidence\" <<'PY'\n"
+            "import json,sys,subprocess\nfrom pathlib import Path\n"
+            "p=Path(sys.argv[1]); run=json.loads((p/'run.json').read_text())\n"
+            "report={'schemaVersion':3,'strictEvidence':True,'invocationId':'test', 'runId':run['runId'],"
+            "'headCommit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),"
+            "'scopes':['harness'],'result':'passed','commandResult':'passed','testCoverage':'not-assessed',"
+            "'steps':[{'name':n,'exitCode':0,'logSha256':'a'*64} for n in "
+            "['harness-state','harness-progress','harness-api-spec','harness-python-tests','harness-shell-syntax']]}\n"
+            "report['result']=" + repr(verification_result) + "\n"
+            "(p/'verification.json').write_text(json.dumps(report))\nPY\nexit " + str(verification_exit) + "\n",
             encoding="utf-8",
         )
         verify.chmod(0o755)
@@ -147,9 +195,11 @@ class HarnessStoreTest(unittest.TestCase):
             capture_output=True,
             check=False,
         )
-        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertEqual(verification_exit, result.returncode, result.stderr)
         task = self.store.tasks()["tasks"][0]
-        self.assertEqual("completed", task["status"])
+        self.assertEqual(outcome, task["status"])
+        if verification_result == "partial":
+            self.assertEqual("verification partial", task["blockedReason"])
         self.assertEqual(1, len(task["evidence"]))
         evidence = self.root / task["evidence"][0]["path"]
         self.assertTrue((evidence / "run.json").exists())
