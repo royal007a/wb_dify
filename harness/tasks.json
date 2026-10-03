@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T23:23:33Z",
+  "updatedAt": "2026-10-03T23:30:01Z",
   "tasks": [
     {
       "id": "SPEC-CHAT-LIFECYCLE-004",
@@ -9,12 +9,21 @@
       "description": "1ce9cfb..daec369静态复验新增四条P2与测试缺口，保持未知取消只查询、不误建Run。",
       "priority": "P2",
       "status": "pending",
-      "scopes": ["backend", "frontend", "harness"],
-      "verifyScopes": ["harness", "frontend"],
+      "scopes": [
+        "backend",
+        "frontend",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "frontend"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-CHAT-LIFECYCLE-003"],
+      "dependsOn": [
+        "SPEC-CHAT-LIFECYCLE-003"
+      ],
       "acceptance": [
         "暂停后人工同步能有界重连SSE而不重发提交，受控浏览器覆盖",
         "放弃resume时不把失去澄清上下文的原文默默作为新任务；取消待确认文案准确",
@@ -33,7 +42,7 @@
       "title": "规格复核补证据等级与可提交测试摘要",
       "description": "a8f5023..a2f05a0复核P2：逐处标证据等级、运行与跳过机器摘要、开放边界索引和遗漏负路径；区分scope命令成功与业务验收。",
       "priority": "P2",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "harness",
         "backend"
@@ -53,12 +62,22 @@
         "开放项按原review反例补全定位，旧基线与增量时间区分，不以文档创建第二份状态板",
         "规格补逐路由错误码、终态/重复取消、拒绝后202/重放200及只读lookup/no-store验收要求"
       ],
-      "planPath": "exec-plans/active/SPEC-AUDIT-002.md",
+      "planPath": "exec-plans/completed/SPEC-AUDIT-002.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-AUDIT-002-20261003T232617Z-bdeff028",
+          "path": "harness/evidence/SPEC-AUDIT-002/SPEC-AUDIT-002-20261003T232617Z-bdeff028",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "e43369be63427d34ab9cebf9b954ac5200b5ba14",
+          "headCommit": "1802587677acf740ded3d1d576e4bdbb3b4086d5",
+          "recordedAt": "2026-10-03T23:30:01Z"
+        }
+      ],
       "createdAt": "2026-10-03T23:21:00Z",
-      "updatedAt": "2026-10-03T23:21:00Z"
+      "updatedAt": "2026-10-03T23:30:01Z"
     },
     {
       "id": "SPEC-CHAT-LIFECYCLE-003",

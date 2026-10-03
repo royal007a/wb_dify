@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-03T23:23:33Z`
+- Generated from task state updated at: `2026-10-03T23:30:01Z`
 - Current task: `none`
-- Counts: pending 17 · running 0 · blocked 0 · completed 56
+- Counts: pending 16 · running 0 · blocked 0 · completed 57
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -63,7 +63,7 @@
 | `SPEC-WORKFLOW-GRAPH-002` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 统一图步数限制与条件语法契约 |
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
-| `SPEC-AUDIT-002` | P2 | pending | harness, backend | reversible_write | 规格复核补证据等级与可提交测试摘要 |
+| `SPEC-AUDIT-002` | P2 | completed | harness, backend | reversible_write | 规格复核补证据等级与可提交测试摘要 |
 | `SPEC-CHAT-LIFECYCLE-004` | P2 | pending | backend, frontend, harness | reversible_write | 补人工重连、澄清放弃与建会话超时边界 |
 | `SPEC-CHILD-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 核验子任务孤儿扫描与父Run恢复时序 |
 | `SPEC-CREDENTIAL-BOUNDARY-002` | P2 | completed | backend, runtime, harness | reversible_write | 补齐受保护配置命名空间与冻结凭据负向验收 |

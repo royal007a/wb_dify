@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49",
-    "path": "harness/evidence/SPEC-CHAT-LIFECYCLE-003/SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49",
+    "runId": "SPEC-AUDIT-002-20261003T232617Z-bdeff028",
+    "path": "harness/evidence/SPEC-AUDIT-002/SPEC-AUDIT-002-20261003T232617Z-bdeff028",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "a2f05a034238baf359215a7f5dc9db964d3a18d4",
-    "headCommit": "daec369cfe1a3fd95c92f983cbdbc6488bba2fbe",
-    "recordedAt": "2026-10-03T23:23:33Z"
+    "baselineCommit": "e43369be63427d34ab9cebf9b954ac5200b5ba14",
+    "headCommit": "1802587677acf740ded3d1d576e4bdbb3b4086d5",
+    "recordedAt": "2026-10-03T23:30:01Z"
   },
-  "lastCompletedTaskId": "SPEC-CHAT-LIFECYCLE-003",
-  "updatedAt": "2026-10-03T23:23:33Z"
+  "lastCompletedTaskId": "SPEC-AUDIT-002",
+  "updatedAt": "2026-10-03T23:30:01Z"
 }

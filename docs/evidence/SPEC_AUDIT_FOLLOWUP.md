@@ -34,3 +34,5 @@ schema v2记录commandResult与result分开；任一跳过为partial并退出非
 红灯：在隔离临时目录用e43369b的旧verify.sh，合成Maven退出0、2项中1项跳过；`test_shell_gate_rejects_successful_maven_with_skips`预期非0，实际0/passed而失败。无业务服务/真实库参与。修复后该用例和零skip正向用例通过；报告解析覆盖ANSI、重复reactor汇总不重算、空日志、测试失败、命令非0、缺日志、非Maven不编造计数；13项Harness Python测试通过。最初新增测试入口尚未实现时的5失败1错误仅属开发状态，不作为旧行为的红灯证据。
 
 本任务只做文档、计数器和制度门禁；PG及完整F01-F38必须由SPEC-VERIFY-001重新执行，当前不宣称真实Provider、管理全CRUD、上线或全功能通过。
+
+收尾：门禁实现3dccac0，文档/历史摘要1802587；本任务 `harness/evidence/SPEC-AUDIT-002/SPEC-AUDIT-002-20261003T232617Z-bdeff028/verification.json` 的5个Harness步骤全部退出0，Python13项通过。此scope不含Maven，testCoverage=not-assessed，不能称后端已重跑；门禁脚本对合成Maven结果的红/绿是隔离制度测试。
