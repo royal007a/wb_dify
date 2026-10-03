@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "red": {
+    "baseline": "fa5f48f",
+    "command": "mvn -B -pl hify-app -am -Dtest=HttpErrorSurfaceTest -Dsurefire.failIfNoSpecifiedTests=false test",
+    "exitCode": 1,
+    "tests": 5,
+    "failures": 4,
+    "errors": 0,
+    "skipped": 0,
+    "logSha256": "0d6d902b31b28a9fa965142f3100087d2460f75c6dcd8bedaf4f68ef16b13616"
+  },
+  "green": {
+    "codeCommit": "9aac4e7",
+    "command": "mvn -B -pl hify-app -am -Dtest=HttpErrorSurfaceTest,HttpErrorContractTest -Dsurefire.failIfNoSpecifiedTests=false test",
+    "exitCode": 0,
+    "realTomcatTests": 6,
+    "standaloneMvcTests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "logSha256": "e4bd76e21d9b76dc8d053c7a9dcb8199d5b7297c209969cd6976fee13fdda07d"
+  },
+  "limits": "Raw logs remain local. Full gate counts and fresh XML hashes are in verification.json and backend-tests.tests.json. No deployment or load-test claim."
+}

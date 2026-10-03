@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-03T23:47:43Z`
+- Generated from task state updated at: `2026-10-03T23:53:52Z`
 - Current task: `none`
-- Counts: pending 17 · running 0 · blocked 1 · completed 58
+- Counts: pending 16 · running 0 · blocked 1 · completed 59
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -49,7 +49,7 @@
 | `SPEC-CHAT-LIFECYCLE-003` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 结果不明提交的身份恢复与安全退出 |
 | `SPEC-HISTORY-RECOVERY-001` | P1 | completed | backend, runtime, migration, harness | reversible_write | 恢复时重放已提交模型响应而非重新生成 |
 | `SPEC-HISTORY-RECOVERY-002` | P1 | completed | backend, runtime, harness | reversible_write | 恢复元数据按JSON语义比较，兼容跨JVM键顺序 |
-| `SPEC-HTTP-ERROR-001` | P1 | pending | backend, harness | reversible_write | 修复真实HTTP负路径的状态码与安全正文 |
+| `SPEC-HTTP-ERROR-001` | P1 | completed | backend, harness | reversible_write | 修复真实HTTP负路径的状态码与安全正文 |
 | `SPEC-KNOWLEDGE-FINISH-001` | P1 | completed | backend, runtime, harness | reversible_write | 知识缺口与完成门禁契约对齐 |
 | `SPEC-KNOWLEDGE-FINISH-002` | P1 | completed | backend, runtime, harness | reversible_write | 保留知识入场失败中的应用关闭挂起信号 |
 | `SPEC-KNOWLEDGE-FINISH-003` | P1 | completed | backend, runtime, migration, harness | reversible_write | 隔离知识门禁内部历史与可交付记忆并补回读关闭验证 |

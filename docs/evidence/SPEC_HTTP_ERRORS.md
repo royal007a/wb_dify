@@ -21,4 +21,10 @@
 - 新增SSE-only Accept的未知Run订阅和取消负例。`mvn -B -pl hify-app -am -Dtest=HttpErrorSurfaceTest,HttpErrorContractTest -Dsurefire.failIfNoSpecifiedTests=false test`退出0：真实Tomcat/H2的6项、standalone MVC的7项均通过，0跳过。不得将standalone七项当作另七条真实网络测试。
 - 测试中容器file上限1KiB、request上限4KiB，提交2KiB合成正文；证明解析异常协议映射，不是生产超大/弱网上传压力测试。知识模块自身10MB业务校验仍400；Memory及部分旧会话缺资源的400边界未在本切片改动。
 
-更新API错误码、5条受影响路由的检查要求和候选测试、F34说明以及Harness预期类清单（新增6项，没有降低旧分母）。完整harness/backend结果待本任务verification.json，不因窄绿灯宣称已部署或全产品验收。
+更新API错误码、5条受影响路由的检查要求和候选测试、F34说明以及Harness预期类清单（新增6项，没有降低旧分母）。
+
+## 完整门禁
+
+2026-10-04 07:53（Asia/Shanghai），代码提交`9aac4e7`，本任务`verification.json`为schema 3 / strictEvidence / passed，绑定本次runId、HEAD和harness/backend范围。后端新鲜Surefire XML报告79个类、526项执行，failures/errors/skipped/flakyAttempts均为0；Harness Python 31项通过。PG集成类本轮实际执行，没有以H2或跳过代替。原始XML不提交（含进程属性），逐类计数和SHA保存在`backend-tests.tests.json`，日志SHA在verification中。
+
+这是本切片本地测试证据；未做132部署，也不代表全部接口、全部故障排列已经验收。

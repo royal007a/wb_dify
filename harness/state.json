@@ -7,16 +7,16 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-AUDIT-003-20261003T233839Z-7c2f0035",
-    "path": "harness/evidence/SPEC-AUDIT-003/SPEC-AUDIT-003-20261003T233839Z-7c2f0035",
+    "runId": "SPEC-HTTP-ERROR-001-20261003T234851Z-03837d9f",
+    "path": "harness/evidence/SPEC-HTTP-ERROR-001/SPEC-HTTP-ERROR-001-20261003T234851Z-03837d9f",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "38afd9a92536300043713a4b34b1e247f94961c5",
-    "headCommit": "885019969e091f16412a57384c09454c3536128c",
-    "recordedAt": "2026-10-03T23:47:43Z",
+    "baselineCommit": "fa5f48fba2fe4bf58462b96cd934e2028cc4d95f",
+    "headCommit": "9aac4e73befb38ca11c8eac4a569faa6d1917080",
+    "recordedAt": "2026-10-03T23:53:52Z",
     "verificationSchemaVersion": 3,
-    "verificationSha256": "7f53fb5e03a5677f5416084559e83942d73edca8d09e368c73c8e78f9bcf240b"
+    "verificationSha256": "0eca887a0969715db9b895ae97f875c4f037e7a1e70191bde948cb4249626a0d"
   },
-  "lastCompletedTaskId": "SPEC-AUDIT-003",
-  "updatedAt": "2026-10-03T23:47:43Z"
+  "lastCompletedTaskId": "SPEC-HTTP-ERROR-001",
+  "updatedAt": "2026-10-03T23:53:52Z"
 }

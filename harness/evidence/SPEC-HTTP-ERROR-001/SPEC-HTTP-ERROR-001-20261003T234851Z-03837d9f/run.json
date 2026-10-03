@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-HTTP-ERROR-001-20261003T234851Z-03837d9f",
+  "taskId": "SPEC-HTTP-ERROR-001",
+  "status": "completed",
+  "baselineCommit": "fa5f48fba2fe4bf58462b96cd934e2028cc4d95f",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T23:48:51Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "9aac4e73befb38ca11c8eac4a569faa6d1917080",
+  "finishedAt": "2026-10-03T23:53:52Z"
+}

@@ -1,25 +1,52 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T23:47:43Z",
+  "updatedAt": "2026-10-03T23:53:52Z",
   "tasks": [
     {
       "id": "SPEC-HTTP-ERROR-001",
       "title": "修复真实HTTP负路径的状态码与安全正文",
       "description": "恢复SPEC-VERIFY-001的四条HTTP红灯，统一未知Run/路由与multipart解析错误的安全Result，不将客户端错误泛化500。",
-      "priority": "P1", "status": "pending",
-      "scopes": ["backend", "harness"], "verifyScopes": ["harness", "backend"],
-      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
-      "dependsOn": ["SPEC-AUDIT-003"],
+      "priority": "P1",
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "backend"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [
+        "SPEC-AUDIT-003"
+      ],
       "acceptance": [
         "真实Tomcat未知Run详情/事件/流/取消返回404且不反射请求路径",
         "真实上传超限为413，畸形multipart为400，均为安全JSON Result且不返回原异常",
         "400/405/415和已有成功协议不退化，原四条红灯转绿且保留反例",
         "更新路由错误契约和测试清单，新鲜backend零跳过通过后交只读复验"
       ],
-      "planPath": "exec-plans/active/SPEC-HTTP-ERROR-001.md", "checkpoint": null,
-      "blockedReason": null, "evidence": [],
-      "createdAt": "2026-10-03T23:48:20Z", "updatedAt": "2026-10-03T23:48:20Z"
+      "planPath": "exec-plans/completed/SPEC-HTTP-ERROR-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [
+        {
+          "runId": "SPEC-HTTP-ERROR-001-20261003T234851Z-03837d9f",
+          "path": "harness/evidence/SPEC-HTTP-ERROR-001/SPEC-HTTP-ERROR-001-20261003T234851Z-03837d9f",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "fa5f48fba2fe4bf58462b96cd934e2028cc4d95f",
+          "headCommit": "9aac4e73befb38ca11c8eac4a569faa6d1917080",
+          "recordedAt": "2026-10-03T23:53:52Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "0eca887a0969715db9b895ae97f875c4f037e7a1e70191bde948cb4249626a0d"
+        }
+      ],
+      "createdAt": "2026-10-03T23:48:20Z",
+      "updatedAt": "2026-10-03T23:53:52Z"
     },
     {
       "id": "SPEC-RECOVERY-ADMISSION-001",
