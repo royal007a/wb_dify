@@ -4,6 +4,31 @@
   "updatedAt": "2026-10-03T19:56:06Z",
   "tasks": [
     {
+      "id": "SPEC-RUN-SHUTDOWN-002",
+      "title": "关闭期间保留已计算终态并验证生产销毁顺序",
+      "description": "E1复验：只挂起未完成的执行，不吞掉已计算结果；补没有手工关闭线程池的真实销毁顺序测试。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["backend", "runtime", "harness"],
+      "verifyScopes": ["harness", "migration"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-RUN-SHUTDOWN-001"],
+      "acceptance": [
+        "模型完成后提交前进入stopping，仍提交唯一终态和助手消息，重启不再调用模型",
+        "已返回Workflow结果不被关闭标志改写，取消优先和未完成执行挂起仍通过",
+        "生产context.close顺序下阻塞执行写入run.interrupted，显式取消当场写CANCELLED而非恢复补写",
+        "红绿测试、隔离PostgreSQL回归、预算及恢复失败边界的文档校正"
+      ],
+      "planPath": "exec-plans/active/SPEC-RUN-SHUTDOWN-002.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T20:00:00Z",
+      "updatedAt": "2026-10-03T20:00:00Z"
+    },
+    {
       "id": "SPEC-RUN-SHUTDOWN-001",
       "title": "区分应用关闭与用户取消并验证重启恢复",
       "description": "E1：应用关闭不得伪造取消或容量失败；Workflow中断单独留痕，恢复扫描隔离单条数据库故障。",
