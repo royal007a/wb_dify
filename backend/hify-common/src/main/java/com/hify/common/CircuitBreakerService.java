@@ -66,9 +66,11 @@ public class CircuitBreakerService {
     public <T> T execute(String providerName, ExecutionControl control, Supplier<T> operation) {
         long localDeadline = System.nanoTime() + overallTimeout.toNanos();
         checkActive(control, localDeadline);
-        FutureTask<T> future = new FutureTask<>(() -> executeProtected(providerName, control, localDeadline, () -> {
+        CallProbe probe = new CallProbe(circuitBreakers.circuitBreaker(normalize(providerName)));
+        FutureTask<T> future = new FutureTask<>(() -> executeProtected(providerName, control, localDeadline, probe, () -> {
             // Recheck for every retry as well as for queued work; never reset the original deadline.
             checkActive(control, localDeadline);
+            probe.beforeAttempt();
             T result = operation.get();
             checkActive(control, localDeadline);
             return result;
@@ -89,7 +91,6 @@ public class CircuitBreakerService {
         } catch (RejectedExecutionException exception) {
             throw new ExecutionRejectedException();
         } catch (InterruptedException exception) {
-            future.cancel(true);
             Thread.currentThread().interrupt();
             throw new ExecutionCancelledException("LLM provider execution interrupted");
         } catch (ExecutionException exception) {
@@ -98,6 +99,10 @@ public class CircuitBreakerService {
             throw new LlmApiException(LlmApiException.Type.REQUEST_FAILED,
                     "LLM provider execution failed", exception.getCause());
         } finally {
+            // Settle before interrupting: HTTP cancellation may otherwise hide an upstream SLA
+            // timeout. A driver that ignores interruption must not keep a HALF_OPEN permit.
+            if (control.isCancelled() || control.isExpired()) probe.ignore();
+            else if (System.nanoTime() >= localDeadline) probe.modelTimeout();
             if (!future.isDone()) future.cancel(true);
         }
     }
@@ -110,7 +115,8 @@ public class CircuitBreakerService {
         }
     }
 
-    private <T> T executeProtected(String providerName, ExecutionControl control, long localDeadline, Supplier<T> operation) {
+    private <T> T executeProtected(String providerName, ExecutionControl control, long localDeadline,
+                                   CallProbe probe, Supplier<T> operation) {
         String name = normalize(providerName);
         RetryConfig activeTimeoutRetry = RetryConfig.from(timeoutRetry).retryOnException(failure ->
                 eligible(control, localDeadline) && retryTimeoutOrUnavailable(failure)).build();
@@ -118,33 +124,86 @@ public class CircuitBreakerService {
                 eligible(control, localDeadline) && retryRateLimit(failure)).build();
         Supplier<T> timeouts = Retry.decorateSupplier(Retry.of(name + "-timeout", activeTimeoutRetry), operation);
         Supplier<T> rateLimits = Retry.decorateSupplier(Retry.of(name + "-rate-limit", activeRateRetry), timeouts);
-        CircuitBreaker breaker = circuitBreakers.circuitBreaker(name);
         // Queued work can expire before the worker starts: it never sampled this provider.
         checkActive(control, localDeadline);
-        breaker.acquirePermission();
-        long started = breaker.getCurrentTimestamp();
+        probe.acquire();
         T result;
         try {
             result = rateLimits.get();
         } catch (RuntimeException failure) {
             // Per-call control is essential: a cancelled HTTP call may surface as an ordinary
             // timeout/IO error. A shared ignoreExceptions predicate cannot inspect this control.
-            if (control.isCancelled() || control.isExpired()
-                    || failure instanceof ExecutionCancelledException
-                    || failure instanceof ExecutionRejectedException
-                    || failure instanceof RejectedExecutionException) {
-                breaker.releasePermission(); // also restores a HALF_OPEN probe, without success credit
-            } else {
-                breaker.onError(breaker.getCurrentTimestamp() - started, breaker.getTimestampUnit(), failure);
-            }
+            if (control.isCancelled() || control.isExpired() || isLocalFailure(failure)) probe.ignore();
+            else probe.failure(failure);
             if (failure instanceof RejectedExecutionException) throw new ExecutionRejectedException();
             throw failure;
         } catch (Error failure) {
-            breaker.releasePermission();
+            probe.ignore();
             throw failure;
         }
-        breaker.onResult(breaker.getCurrentTimestamp() - started, breaker.getTimestampUnit(), result);
+        if (control.isCancelled() || control.isExpired()) probe.ignore();
+        else probe.success(result);
         return result;
+    }
+
+    /** Only bookkeeping is synchronized; never execute user code or blocking IO under this lock. */
+    private static final class CallProbe {
+        private final CircuitBreaker breaker;
+        private boolean acquired, attempted, settled;
+        private long started;
+
+        CallProbe(CircuitBreaker breaker) { this.breaker = breaker; }
+
+        synchronized void acquire() {
+            requireActive();
+            breaker.acquirePermission();
+            acquired = true;
+            started = breaker.getCurrentTimestamp();
+        }
+
+        synchronized void beforeAttempt() {
+            requireActive();
+            attempted = true;
+        }
+
+        private void requireActive() {
+            if (settled) throw new ExecutionCancelledException("LLM provider attempt already stopped");
+        }
+
+        synchronized void ignore() {
+            if (settled) return;
+            settled = true;
+            if (acquired) breaker.releasePermission();
+        }
+
+        synchronized void modelTimeout() {
+            failure(new LlmApiException(LlmApiException.Type.TIMEOUT, "LLM provider attempt exceeded model deadline"));
+        }
+
+        synchronized void failure(Throwable failure) {
+            if (settled) return;
+            settled = true;
+            if (!acquired) return;
+            if (!attempted) breaker.releasePermission();
+            else breaker.onError(breaker.getCurrentTimestamp() - started, breaker.getTimestampUnit(), failure);
+        }
+
+        synchronized void success(Object result) {
+            if (settled) return;
+            settled = true;
+            breaker.onResult(breaker.getCurrentTimestamp() - started, breaker.getTimestampUnit(), result);
+        }
+    }
+
+    private static boolean isLocalFailure(Throwable failure) {
+        // Do not ignore InterruptedIOException generally: SocketTimeoutException is its subtype
+        // and is genuine upstream failure. Typed cancellation or per-call control is required.
+        var seen = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<Throwable, Boolean>());
+        for (Throwable cause = failure; cause != null && seen.add(cause); cause = cause.getCause()) {
+            if (cause instanceof ExecutionCancelledException || cause instanceof ExecutionRejectedException
+                    || cause instanceof RejectedExecutionException || cause instanceof InterruptedException) return true;
+        }
+        return false;
     }
 
     private static boolean eligible(ExecutionControl control, long deadline) {
@@ -152,13 +211,13 @@ public class CircuitBreakerService {
     }
 
     private static boolean retryTimeoutOrUnavailable(Throwable failure) {
-        return failure instanceof LlmApiException exception
+        return !isLocalFailure(failure) && failure instanceof LlmApiException exception
                 && (exception.type() == LlmApiException.Type.TIMEOUT
                 || exception.type() == LlmApiException.Type.PROVIDER_UNAVAILABLE);
     }
 
     private static boolean retryRateLimit(Throwable failure) {
-        return failure instanceof LlmApiException exception
+        return !isLocalFailure(failure) && failure instanceof LlmApiException exception
                 && exception.type() == LlmApiException.Type.RATE_LIMITED;
     }
 
