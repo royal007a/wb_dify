@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-CREDENTIAL-BOUNDARY-003-20261003T190227Z-914e7df7",
+  "taskId": "SPEC-CREDENTIAL-BOUNDARY-003",
+  "status": "completed",
+  "baselineCommit": "ca56fd2042158fab502a16a1af6b0512eb90535b",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T19:02:27Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "95eab60d18d93e7f42d8b72056fd9a49ac03154b",
+  "finishedAt": "2026-10-03T19:05:23Z"
+}

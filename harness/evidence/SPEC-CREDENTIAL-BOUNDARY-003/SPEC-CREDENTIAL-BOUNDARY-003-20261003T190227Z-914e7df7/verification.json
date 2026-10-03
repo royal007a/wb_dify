@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness"
+  ],
+  "base": "working-tree",
+  "headCommit": "95eab60d18d93e7f42d8b72056fd9a49ac03154b",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CREDENTIAL-BOUNDARY-003/SPEC-CREDENTIAL-BOUNDARY-003-20261003T190227Z-914e7df7/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CREDENTIAL-BOUNDARY-003/SPEC-CREDENTIAL-BOUNDARY-003-20261003T190227Z-914e7df7/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CREDENTIAL-BOUNDARY-003/SPEC-CREDENTIAL-BOUNDARY-003-20261003T190227Z-914e7df7/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CREDENTIAL-BOUNDARY-003/SPEC-CREDENTIAL-BOUNDARY-003-20261003T190227Z-914e7df7/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CREDENTIAL-BOUNDARY-003/SPEC-CREDENTIAL-BOUNDARY-003-20261003T190227Z-914e7df7/harness-shell-syntax.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T19:05:23Z"
+}

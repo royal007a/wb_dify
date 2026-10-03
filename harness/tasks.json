@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T19:01:55Z",
+  "updatedAt": "2026-10-03T19:05:23Z",
   "tasks": [
     {
       "id": "SPEC-PROVIDER-LOCAL-FAILURE-002",
@@ -51,7 +51,7 @@
       "title": "主密钥宽松配置绑定别名不得被误授权",
       "description": "G复验P2：masterKey/MASTERKEY等别名不应绕过基础设施引用保护。",
       "priority": "P2",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "harness"
@@ -70,12 +70,22 @@
         "完整HIFY_MCP_/HIFY_CREDENTIAL_基础配置命名空间禁止外发，合法应用引用仍通过",
         "不读取真实配置值，迁移文档明确保留命名空间"
       ],
-      "planPath": "exec-plans/active/SPEC-CREDENTIAL-BOUNDARY-003.md",
+      "planPath": "exec-plans/completed/SPEC-CREDENTIAL-BOUNDARY-003.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-CREDENTIAL-BOUNDARY-003-20261003T190227Z-914e7df7",
+          "path": "harness/evidence/SPEC-CREDENTIAL-BOUNDARY-003/SPEC-CREDENTIAL-BOUNDARY-003-20261003T190227Z-914e7df7",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "ca56fd2042158fab502a16a1af6b0512eb90535b",
+          "headCommit": "95eab60d18d93e7f42d8b72056fd9a49ac03154b",
+          "recordedAt": "2026-10-03T19:05:23Z"
+        }
+      ],
       "createdAt": "2026-10-03T18:50:00Z",
-      "updatedAt": "2026-10-03T18:50:00Z"
+      "updatedAt": "2026-10-03T19:05:23Z"
     },
     {
       "id": "SPEC-CREDENTIAL-BOUNDARY-002",
