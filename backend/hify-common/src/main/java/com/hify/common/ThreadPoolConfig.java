@@ -14,7 +14,8 @@ public class ThreadPoolConfig {
     Executor llmExecutor() {
         return new ThreadPoolExecutor(10, 50, 60, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(100), new NamedThreadFactory("llm-"),
-                new ThreadPoolExecutor.CallerRunsPolicy());
+                // Running blocking HTTP on the waiting caller disables cancellation/deadline polling.
+                new ThreadPoolExecutor.AbortPolicy());
     }
 
     @Bean(name = "asyncExecutor", destroyMethod = "shutdown")
@@ -24,4 +25,3 @@ public class ThreadPoolConfig {
                 new ThreadPoolExecutor.AbortPolicy());
     }
 }
-

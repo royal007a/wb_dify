@@ -29,6 +29,7 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Component
@@ -53,6 +54,7 @@ public class LlmHttpClient {
                 .callTimeout(Duration.ofSeconds(125))
                 .followRedirects(false)
                 .followSslRedirects(false)
+                .retryOnConnectionFailure(false)
                 .build();
     }
 
@@ -61,31 +63,38 @@ public class LlmHttpClient {
     }
 
     public String post(String url, Map<String, String> headers, String body, ExecutionControl control) {
-        FutureTask<String> future = new FutureTask<>(() -> executePost(url, headers, body));
-        llmExecutor.execute(future);
         long localDeadline = System.nanoTime() + OVERALL_TIMEOUT.toNanos();
+        checkActive(control, localDeadline);
+        FutureTask<String> future = new FutureTask<>(() -> {
+            // Eligibility may have changed while waiting in the executor queue.
+            checkActive(control, localDeadline);
+            return executePost(url, headers, body);
+        });
         try {
+            llmExecutor.execute(future);
             while (true) {
-                control.throwIfCancelled();
-                if (control.isExpired() || System.nanoTime() >= localDeadline) {
-                    future.cancel(true);
-                    throw new LlmApiException(LlmApiException.Type.TIMEOUT,
-                            "LLM request exceeded remaining run deadline");
-                }
+                checkActive(control, localDeadline);
                 long waitNanos = Math.max(1, control.remaining(Duration.ofMillis(100)).toNanos());
                 try {
-                    return future.get(waitNanos, TimeUnit.NANOSECONDS);
+                    String result = future.get(waitNanos, TimeUnit.NANOSECONDS);
+                    checkActive(control, localDeadline);
+                    return result;
                 } catch (TimeoutException ignored) {
                     // Poll the shared cancellation/deadline token instead of blocking for the full read timeout.
                 }
             }
+        } catch (RejectedExecutionException exception) {
+            throw new LlmApiException(LlmApiException.Type.REQUEST_FAILED, "LLM executor capacity exhausted");
         } catch (InterruptedException exception) {
             future.cancel(true);
             Thread.currentThread().interrupt();
             throw new ExecutionCancelledException("LLM request interrupted");
         } catch (ExecutionException exception) {
+            checkActive(control, localDeadline);
             if (exception.getCause() instanceof RuntimeException runtime) throw runtime;
             throw new LlmApiException(LlmApiException.Type.REQUEST_FAILED, "LLM request failed", exception.getCause());
+        } finally {
+            if (!future.isDone()) future.cancel(true);
         }
     }
 
@@ -128,37 +137,46 @@ public class LlmHttpClient {
 
     public void streamAndAwait(String url, Map<String, String> headers, String body,
                                ExecutionControl control, StreamCallback callback) {
+        long localDeadline = System.nanoTime() + Duration.ofSeconds(125).toNanos();
+        checkActive(control, localDeadline);
         CountDownLatch completed = new CountDownLatch(1);
         AtomicReference<LlmApiException> failure = new AtomicReference<>();
         EventSource source = stream(url, headers, body, new StreamCallback() {
             @Override public void onEvent(String id, String type, String data) {
+                checkActive(control, localDeadline);
                 callback.onEvent(id, type, data);
             }
             @Override public void onClosed() {
-                callback.onClosed();
-                completed.countDown();
+                try { callback.onClosed(); }
+                finally { completed.countDown(); }
             }
             @Override public void onFailure(LlmApiException exception) {
                 failure.compareAndSet(null, exception);
-                callback.onFailure(exception);
-                completed.countDown();
+                try { callback.onFailure(exception); }
+                finally { completed.countDown(); }
             }
         });
         try {
-            while (!completed.await(100, TimeUnit.MILLISECONDS)) {
-                if (control.isCancelled() || control.isExpired()) {
-                    source.cancel();
-                    control.throwIfCancelled();
-                    throw new LlmApiException(LlmApiException.Type.TIMEOUT,
-                            "Streaming request exceeded remaining run deadline");
-                }
+            while (true) {
+                checkActive(control, localDeadline);
+                if (completed.await(100, TimeUnit.MILLISECONDS)) break;
             }
+            checkActive(control, localDeadline);
+            if (failure.get() != null) throw failure.get();
         } catch (InterruptedException exception) {
             source.cancel();
             Thread.currentThread().interrupt();
             throw new ExecutionCancelledException("Streaming request interrupted");
+        } finally {
+            source.cancel();
         }
-        if (failure.get() != null) throw failure.get();
+    }
+
+    private static void checkActive(ExecutionControl control, long localDeadline) {
+        control.throwIfCancelled();
+        if (control.isExpired() || System.nanoTime() >= localDeadline) {
+            throw new LlmApiException(LlmApiException.Type.TIMEOUT, "LLM request exceeded remaining run deadline");
+        }
     }
 
     private String executePost(String url, Map<String, String> headers, String body) {

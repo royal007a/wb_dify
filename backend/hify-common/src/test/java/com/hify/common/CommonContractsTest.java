@@ -4,10 +4,36 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CommonContractsTest {
+    @Test
+    void saturatedLlmPoolNeverRunsBlockingWorkOnCaller() throws Exception {
+        var pool = (ThreadPoolExecutor) new ThreadPoolConfig().llmExecutor();
+        var started = new CountDownLatch(1);
+        var release = new CountDownLatch(1);
+        var inline = new AtomicBoolean();
+        // Keep the configured queue/rejection policy, use one worker to exercise saturation cheaply.
+        pool.setCorePoolSize(1);
+        pool.setMaximumPoolSize(1);
+        try {
+            pool.execute(() -> {
+                started.countDown();
+                try { release.await(); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+            });
+            assertThat(started.await(5, TimeUnit.SECONDS)).isTrue();
+            while (pool.getQueue().remainingCapacity() > 0) pool.execute(() -> {});
+            assertThatThrownBy(() -> pool.execute(() -> inline.set(true))).isInstanceOf(RejectedExecutionException.class);
+            assertThat(inline).isFalse();
+        } finally { release.countDown(); pool.shutdownNow(); }
+    }
+
     @Test
     void resultAndPageResultUseOneErrorCodeContract() {
         Result<String> success = Result.ok("value");

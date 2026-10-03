@@ -15,6 +15,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.function.Supplier;
 
 @Component
@@ -63,41 +64,66 @@ public class CircuitBreakerService {
     }
 
     public <T> T execute(String providerName, ExecutionControl control, Supplier<T> operation) {
-        FutureTask<T> future = new FutureTask<>(() -> executeProtected(providerName, operation));
-        executor.execute(future);
         long localDeadline = System.nanoTime() + overallTimeout.toNanos();
+        checkActive(control, localDeadline);
+        FutureTask<T> future = new FutureTask<>(() -> executeProtected(providerName, control, localDeadline, () -> {
+            // Recheck for every retry as well as for queued work; never reset the original deadline.
+            checkActive(control, localDeadline);
+            T result = operation.get();
+            checkActive(control, localDeadline);
+            return result;
+        }));
         try {
+            executor.execute(future);
             while (true) {
-                control.throwIfCancelled();
-                if (control.isExpired() || System.nanoTime() >= localDeadline) {
-                    future.cancel(true);
-                    throw new LlmApiException(LlmApiException.Type.TIMEOUT,
-                            "LLM provider attempts exceeded remaining run deadline");
-                }
+                checkActive(control, localDeadline);
                 long waitNanos = Math.max(1, control.remaining(Duration.ofMillis(100)).toNanos());
                 try {
-                    return future.get(waitNanos, TimeUnit.NANOSECONDS);
+                    T result = future.get(waitNanos, TimeUnit.NANOSECONDS);
+                    checkActive(control, localDeadline);
+                    return result;
                 } catch (TimeoutException ignored) {
                     // Poll cancellation/deadline between retry attempts.
                 }
             }
+        } catch (RejectedExecutionException exception) {
+            throw new LlmApiException(LlmApiException.Type.REQUEST_FAILED, "LLM attempt executor capacity exhausted");
         } catch (InterruptedException exception) {
             future.cancel(true);
             Thread.currentThread().interrupt();
             throw new ExecutionCancelledException("LLM provider execution interrupted");
         } catch (ExecutionException exception) {
+            checkActive(control, localDeadline);
             if (exception.getCause() instanceof RuntimeException runtime) throw runtime;
             throw new LlmApiException(LlmApiException.Type.REQUEST_FAILED,
                     "LLM provider execution failed", exception.getCause());
+        } finally {
+            if (!future.isDone()) future.cancel(true);
         }
     }
 
-    private <T> T executeProtected(String providerName, Supplier<T> operation) {
+    private static void checkActive(ExecutionControl control, long localDeadline) {
+        control.throwIfCancelled();
+        if (control.isExpired() || System.nanoTime() >= localDeadline) {
+            throw new LlmApiException(LlmApiException.Type.TIMEOUT,
+                    "LLM provider attempts exceeded remaining run deadline");
+        }
+    }
+
+    private <T> T executeProtected(String providerName, ExecutionControl control, long localDeadline, Supplier<T> operation) {
         String name = normalize(providerName);
-        Supplier<T> timeouts = Retry.decorateSupplier(Retry.of(name + "-timeout", timeoutRetry), operation);
-        Supplier<T> rateLimits = Retry.decorateSupplier(Retry.of(name + "-rate-limit", rateLimitRetry), timeouts);
+        RetryConfig activeTimeoutRetry = RetryConfig.from(timeoutRetry).retryOnException(failure ->
+                eligible(control, localDeadline) && retryTimeoutOrUnavailable(failure)).build();
+        RetryConfig activeRateRetry = RetryConfig.from(rateLimitRetry).retryOnException(failure ->
+                eligible(control, localDeadline) && retryRateLimit(failure)).build();
+        Supplier<T> timeouts = Retry.decorateSupplier(Retry.of(name + "-timeout", activeTimeoutRetry), operation);
+        Supplier<T> rateLimits = Retry.decorateSupplier(Retry.of(name + "-rate-limit", activeRateRetry), timeouts);
         CircuitBreaker breaker = circuitBreakers.circuitBreaker(name);
         return CircuitBreaker.decorateSupplier(breaker, rateLimits).get();
+    }
+
+    private static boolean eligible(ExecutionControl control, long deadline) {
+        return !control.isCancelled() && !control.isExpired() && System.nanoTime() < deadline;
     }
 
     private static boolean retryTimeoutOrUnavailable(Throwable failure) {
