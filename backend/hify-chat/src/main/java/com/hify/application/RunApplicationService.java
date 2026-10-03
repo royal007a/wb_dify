@@ -139,12 +139,7 @@ public class RunApplicationService {
 
     public CreateResult create(String conversationId, String idempotencyKey, String message,
                                ResumeRequest resume) {
-        if (idempotencyKey == null || idempotencyKey.isBlank()) {
-            throw new IllegalArgumentException("Idempotency-Key is required");
-        }
-        if (idempotencyKey.length() > 128) {
-            throw new IllegalArgumentException("Idempotency-Key must be at most 128 characters");
-        }
+        validateIdempotencyKey(idempotencyKey);
         String resumeKey = resume == null ? "" : "\n" + resume.runId() + "\n"
                 + resume.gapIds().stream().sorted().toList();
         String hash = sha256(message + resumeKey);
@@ -178,6 +173,19 @@ public class RunApplicationService {
             return new CreateResult(get(runId), false);
         }
         return created;
+    }
+
+    /** Read only: a miss does not prove that an earlier POST cannot still arrive. */
+    public AgentRun findSubmission(String conversationId, String idempotencyKey) {
+        validateIdempotencyKey(idempotencyKey);
+        return runs.findByConversationIdAndIdempotencyKey(conversationId, idempotencyKey)
+                .orElseThrow(() -> new com.hify.common.BizException(com.hify.common.ErrorCode.NOT_FOUND,
+                        "Submission not found; the original request may still be in flight"));
+    }
+
+    private static void validateIdempotencyKey(String key) {
+        if (key == null || key.isBlank()) throw new IllegalArgumentException("Idempotency-Key is required");
+        if (key.length() > 128) throw new IllegalArgumentException("Idempotency-Key must be at most 128 characters");
     }
 
     /** A Run is durable before submission. Refusal must settle it, not leave a replayable zombie. */
@@ -220,16 +228,18 @@ public class RunApplicationService {
 
     private CreateResult createInTransaction(String conversationId, String idempotencyKey,
                                              String message, String hash, ResumeRequest resume) {
+        // This is recovery of a durable identity, not admission of new work. Provider or
+        // Agent changes must not hide a previously committed response. Digest still gates
+        // replay. Future user ACLs must guard both lookup/replay and new admission.
+        AgentRun existing = runs.findByConversationIdAndIdempotencyKey(conversationId, idempotencyKey)
+                .orElse(null);
+        if (existing != null) return replay(existing, hash);
         Conversation conversation = conversations.findById(conversationId)
                 .orElseThrow(() -> new IllegalArgumentException("Conversation not found: " + conversationId));
         AgentRuntimeSnapshot agent = conversation.getAgentVersionId() == null
                 ? agents.requirePublished(conversation.getAgentId())
                 : agents.requireVersion(conversation.getAgentVersionId());
         providers.requireEnabled(agent.providerId());
-
-        AgentRun existing = runs.findByConversationIdAndIdempotencyKey(conversationId, idempotencyKey)
-                .orElse(null);
-        if (existing != null) return replay(existing, hash);
 
         Instant now = Instant.now();
         AgentRun run = new AgentRun(UUID.randomUUID().toString(), conversationId,

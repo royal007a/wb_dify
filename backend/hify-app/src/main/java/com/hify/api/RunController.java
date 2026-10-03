@@ -78,6 +78,17 @@ public class RunController {
         return RunView.from(runService.get(runId));
     }
 
+    @GetMapping("/conversations/{conversationId}/runs/by-key")
+    public RunView findSubmission(@PathVariable String conversationId,
+                                  @RequestHeader("Idempotency-Key") String idempotencyKey,
+                                  jakarta.servlet.http.HttpServletResponse response) {
+        // Same URL serves different header identities; neither positive nor negative
+        // lookup results should be cached by browsers or shared proxies.
+        response.setHeader("Cache-Control", "no-store");
+        response.setHeader("Vary", "Idempotency-Key");
+        return RunView.from(runService.findSubmission(conversationId, idempotencyKey));
+    }
+
     @PostMapping("/runs/{runId}/cancellations")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public RunView cancel(@PathVariable String runId) {

@@ -239,11 +239,25 @@
       "request": "Idempotency-Key + CreateRun(message,resume?)",
       "success": 202,
       "response": "RunView (raw; replay HTTP 200)",
-      "checks": "同 key 同体200；异体409；resume 验证归属和 Gap；不重复消息",
+      "checks": "同 key 同体200，命中先于可变Provider准入；异体409；resume 验证归属和 Gap；不重复消息",
       "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/RunSubmissionIdentityTest.java",
         "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",
         "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java"
       ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/conversations/{conversationId}/runs/by-key",
+      "feature": "run",
+      "handler": "RunController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/RunController.java",
+      "purpose": "只读找回结果不明的提交身份",
+      "request": "conversationId + Idempotency-Key header（1-128字符，非空白）",
+      "success": 200,
+      "response": "RunView (raw)",
+      "checks": "按会话和key查已提交记录，无写入/调度；Provider停用不挡回读；未知/异会话404；缺/非法key400；no-store/Vary；404不证明在途POST不会到达",
+      "testCandidates": ["backend/hify-app/src/test/java/com/hify/api/RunSubmissionIdentityTest.java"]
     },
     {
       "method": "GET",
