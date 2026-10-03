@@ -4,7 +4,7 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-10-03T21:00:33Z`
 - Current task: `none`
-- Counts: pending 13 · running 0 · blocked 1 · completed 46
+- Counts: pending 15 · running 0 · blocked 1 · completed 46
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -47,6 +47,7 @@
 | `SECURITY-001` | P1 | completed | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |
 | `SPEC-CHAT-LIFECYCLE-002` | P1 | pending | frontend, runtime, harness | reversible_write | 复核前端Run创建与恢复输入边界 |
 | `SPEC-HISTORY-RECOVERY-001` | P1 | completed | backend, runtime, migration, harness | reversible_write | 恢复时重放已提交模型响应而非重新生成 |
+| `SPEC-HISTORY-RECOVERY-002` | P1 | pending | backend, runtime, harness | reversible_write | 恢复元数据按JSON语义比较，兼容跨JVM键顺序 |
 | `SPEC-KNOWLEDGE-FINISH-001` | P1 | pending | backend, runtime, harness | reversible_write | 知识缺口与完成门禁契约对齐 |
 | `SPEC-PROVIDER-LOCAL-FAILURE-001` | P1 | completed | backend, runtime, harness | reversible_write | 取消与本地拒绝不得污染供应商熔断 |
 | `SPEC-PROVIDER-LOCAL-FAILURE-002` | P1 | completed | backend, runtime, harness | reversible_write | 区分用户取消与真实上游模型期限超时 |
@@ -62,6 +63,7 @@
 | `SPEC-CHILD-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 核验子任务孤儿扫描与父Run恢复时序 |
 | `SPEC-CREDENTIAL-BOUNDARY-002` | P2 | completed | backend, runtime, harness | reversible_write | 补齐受保护配置命名空间与冻结凭据负向验收 |
 | `SPEC-CREDENTIAL-BOUNDARY-003` | P2 | completed | backend, harness | reversible_write | 主密钥宽松配置绑定别名不得被误授权 |
+| `SPEC-HISTORY-RECOVERY-003` | P2 | pending | backend, runtime, harness | reversible_write | 补齐恢复后的计划投影和预算边界 |
 | `SPEC-PROVIDER-SAMPLING-001` | P2 | pending | backend, runtime, harness | reversible_write | 区分HTTP实际尝试与Run预算截断的健康采样 |
 | `SPEC-RUN-BUDGET-001` | P2 | pending | backend, runtime, harness | reversible_write | 统一聊天与Workflow跨重启的Run预算 |
 | `SPEC-SSE-BACKPRESSURE-002` | P2 | pending | backend, runtime, harness | reversible_write | SSE公平接入与慢读总时限的确定性验证 |
