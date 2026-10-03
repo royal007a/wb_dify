@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad",
+  "taskId": "SPEC-WORKFLOW-CONTROL-001",
+  "status": "completed",
+  "baselineCommit": "95ce1fba181b32838adc71958e291cae1ab91626",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T17:16:28Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "95ce1fba181b32838adc71958e291cae1ab91626",
+  "finishedAt": "2026-10-03T17:17:19Z"
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "migration"
+  ],
+  "base": "working-tree",
+  "headCommit": "95ce1fba181b32838adc71958e291cae1ab91626",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-CONTROL-001/SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-CONTROL-001/SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-CONTROL-001/SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-CONTROL-001/SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-CONTROL-001/SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad/harness-shell-syntax.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-CONTROL-001/SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-CONTROL-001/SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-CONTROL-001/SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad/migration-not-skipped.log"
+    },
+    {
+      "name": "migration-mcp-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-CONTROL-001/SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad/migration-mcp-not-skipped.log"
+    },
+    {
+      "name": "migration-workflow-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-CONTROL-001/SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad/migration-workflow-not-skipped.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T17:17:19Z"
+}

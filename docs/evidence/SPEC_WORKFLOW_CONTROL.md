@@ -28,4 +28,8 @@
 
 首次独立HTTP取消与H2升级运行也2/2通过，日志`/tmp/hify-workflow-control-http.log`。Spring启动270.7秒属于当时宿主机资源压力，不是线上HTTP性能指标。
 
-最终验收待重跑，更未部署。
+## 相同代码重跑：通过
+
+`SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad`，基线`95ce1fb`，未改代码/测试/存储介质。模块33+5项、HTTP/H2 7项通过；migration scope共10项、0失败/错误/跳过，其中真实PG为Workflow升级1、Run并发3、MCP凭据4，另含H2升级2。Harness全部门禁退出0，机器任务completed。第一轮失败记录保留；环境恢复后的结果不能用于抹掉此前磁盘不足。
+
+尚未部署；A01/A03/A07仍为独立未完成验收。

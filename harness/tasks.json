@@ -1,14 +1,48 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T17:14:43Z",
+  "updatedAt": "2026-10-03T17:17:19Z",
   "tasks": [
+    {
+      "id": "SPEC-SSE-COMMIT-001",
+      "title": "修复SSE提交时序与Run终态事件原子性",
+      "description": "A07：回滚事件不外发、commit后游标追赶、Run终态和事件同事务，真实PG验证。",
+      "priority": "P0",
+      "status": "pending",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "migration"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [
+        "SPEC-WORKFLOW-CONTROL-001"
+      ],
+      "acceptance": [
+        "事务回滚时没有SSE可见事件；只推送已提交记录",
+        "并发发布序号唯一有序，订阅与提交交错不会丢终态",
+        "Run终态、助手消息和terminal事件同事务；NEEDS_INPUT保留gapIds",
+        "真实PostgreSQL及SSE replay回归通过，保留失败证据"
+      ],
+      "planPath": "exec-plans/active/SPEC-SSE-COMMIT-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T17:18:00Z",
+      "updatedAt": "2026-10-03T17:18:00Z"
+    },
     {
       "id": "SPEC-WORKFLOW-CONTROL-001",
       "title": "传播 Workflow 取消和截止时间并阻止错误成功终态",
       "description": "针对A02：将Run控制传入Workflow和阻塞检索，有限线程池和Future清理；取消/超时必须持久化为非成功且停止后续节点。终态提交和取消的竞态先复现再修，不扩大节点能力。",
       "priority": "P0",
-      "status": "blocked",
+      "status": "completed",
       "scopes": [
         "backend",
         "runtime",
@@ -33,7 +67,7 @@
       ],
       "planPath": "exec-plans/blocked/SPEC-WORKFLOW-CONTROL-001.md",
       "checkpoint": null,
-      "blockedReason": "verification failed",
+      "blockedReason": null,
       "evidence": [
         {
           "runId": "SPEC-WORKFLOW-CONTROL-001-20261003T162913Z-631e20c2",
@@ -43,10 +77,19 @@
           "baselineCommit": "3672150e28bd993a0704de8bf1b4ec9354650d49",
           "headCommit": "69e2227f080c98fb6198a9e679ddefba462ac1c0",
           "recordedAt": "2026-10-03T17:14:43Z"
+        },
+        {
+          "runId": "SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad",
+          "path": "harness/evidence/SPEC-WORKFLOW-CONTROL-001/SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "95ce1fba181b32838adc71958e291cae1ab91626",
+          "headCommit": "95ce1fba181b32838adc71958e291cae1ab91626",
+          "recordedAt": "2026-10-03T17:17:19Z"
         }
       ],
       "createdAt": "2026-10-03T16:28:00Z",
-      "updatedAt": "2026-10-03T17:14:43Z"
+      "updatedAt": "2026-10-03T17:17:19Z"
     },
     {
       "id": "SPEC-WORKFLOW-GRAPH-001",

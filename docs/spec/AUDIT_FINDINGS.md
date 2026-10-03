@@ -13,6 +13,7 @@
 
 `RunApplicationService.executeWorkflow` 只在执行前检查取消；`WorkflowEngine.execute(versionId,input)` 没有 cancellation/deadline 参数，只有50步上限。调用返回后可直接提交 COMPLETED，不经 QueryLoop FinishGate。TEMPLATE 快速通过的测试不能证明阻塞 KNOWLEDGE 节点取消可靠。
 要求：阻塞检索节点的确定性测试；取消后不得启动下一节点/提交成功；截止时间包括检索且不因路径切换重置。记录失败/取消节点，不引入通用回滚。
+控制链路修复`0ed58fe`/`40f90d2`/`3d867e7`：模块38项、HTTP/H2 7项通过，V21真实PG升级及既有PG回归零跳过通过。证据见`docs/evidence/SPEC_WORKFLOW_CONTROL.md`，保留首轮Docker磁盘不足失败。尚不证明实际JDBC阻塞中断；Workflow成功标准与知识证据门禁仍需A01/A03后续验收。
 
 ### A03 已发布 Workflow 的 KNOWLEDGE 节点读取可变知识库
 
