@@ -1,8 +1,33 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-09-23T15:01:21Z",
+  "updatedAt": "2026-10-03T10:00:00Z",
   "tasks": [
+    {
+      "id": "MCP-EDIT-001",
+      "title": "MCP Server 编辑与凭证引用校验",
+      "description": "为 MCP 管理台补编辑入口、回填、保存与错误反馈；连接配置变更需重新发现，旧发布快照保持不变。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["backend", "frontend"],
+      "verifyScopes": ["harness", "backend", "frontend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "编辑回填并 PUT 原 id，新增仍 POST；取消不保存，失败保留表单",
+        "前后端拒绝明文 credentialRef，支持空值/env:/system: 引用",
+        "连接配置改动后 NEW；旧 revision/AgentVersion 不被改写",
+        "后端回归、前端类型/构建及浏览器编辑测试通过"
+      ],
+      "planPath": "exec-plans/active/MCP-EDIT-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T10:00:00Z",
+      "updatedAt": "2026-10-03T10:00:00Z"
+    },
     {
       "id": "HARNESS-001",
       "title": "建立机器状态工程 Harness",
