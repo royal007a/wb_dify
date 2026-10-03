@@ -26,4 +26,6 @@
 
 ## 最终门禁
 
-扩展用例（晚到原POST、跨会话错误响应、稳定连接、重复事件）及完整backend/runtime/frontend/harness结果以本目录manifest和后续收尾记录为准；不能用本次3/4项窄测试代替全后端门禁。
+`daec369` 最终门禁：backend 78个测试类、498项，其中409实际运行通过、89跳过，失败/错误0；runtime另跑34项、零跳过。Harness各步骤、前端typecheck/build退出0（构建仍有大于500KiB的chunk警告）。原verification.json的passed仅表达所选命令退出0，不能当作PG或全行为通过；migration scope本片未跑。扩展浏览器28项通过（34.4秒），包含晚到原POST、跨会话错误响应、稳定连接、重复事件，仍是受控HTTP/SSE。
+
+2026-10-04独立静态复验关闭原P1和三个P2；reviewer未跑测试。新增P2：暂停后人工同步不重连SSE、放弃resume会恢复失去上下文的文本、取消意图在未知错误文案中丢失、createConversation没有超时。另缺不同resume同key的后端断言，缺header的400未带no-store。这些登记为SPEC-CHAT-LIFECYCLE-004，不把本片关闭外推成全部Chat边界完成。未部署132。

@@ -1,7 +1,7 @@
 {
-  "summary": "task command started",
-  "headCommit": "a2f05a034238baf359215a7f5dc9db964d3a18d4",
-  "workingTreeHash": "b6b9bb8d446b06581baa63352965476cb89ee9a053e1aabdda8fb5d0e752385d",
+  "summary": "task command completed; verification starting",
+  "headCommit": "daec369cfe1a3fd95c92f983cbdbc6488bba2fbe",
+  "workingTreeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "evidencePath": "harness/evidence/SPEC-CHAT-LIFECYCLE-003/SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49",
-  "updatedAt": "2026-10-03T23:15:05Z"
+  "updatedAt": "2026-10-03T23:21:33Z"
 }

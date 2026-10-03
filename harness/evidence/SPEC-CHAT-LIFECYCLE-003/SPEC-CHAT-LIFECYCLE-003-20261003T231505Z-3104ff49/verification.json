@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "backend",
+    "runtime",
+    "frontend"
+  ],
+  "base": "working-tree",
+  "headCommit": "daec369cfe1a3fd95c92f983cbdbc6488bba2fbe",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-003/SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-003/SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-003/SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-003/SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-003/SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49/harness-shell-syntax.log"
+    },
+    {
+      "name": "backend-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-003/SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49/backend-tests.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-003/SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49/runtime-tests.log"
+    },
+    {
+      "name": "frontend-typecheck",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-003/SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49/frontend-typecheck.log"
+    },
+    {
+      "name": "frontend-build",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-003/SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49/frontend-build.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T23:23:33Z"
+}
