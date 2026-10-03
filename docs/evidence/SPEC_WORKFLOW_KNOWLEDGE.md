@@ -19,3 +19,9 @@
 现有取消与关闭测试只把 mock 检索入口更新为 searchSnapshot，并提供合法发布快照，原中断/不推进 END/重启恢复断言没有放宽。详细兼容边界见 `docs/spec/SPEC_WORKFLOW_KNOWLEDGE.md`。
 
 最终原子命令和 migration/harness 门禁以本目录 command.log、verification.json 为准；中间绿灯不代替最终验收。无新迁移，PG 矩阵新增的 WorkflowKnowledgePostgresTest 必须 10 项且 0 skip 才放行。
+
+## 第一次最终门禁失败
+
+60e74c8 的定向命令 41 项通过；migration 组合 37 项中 2 errors，均为 WorkflowSettlementPostgresTest 的失败路径夹具。该夹具原来通过发布一个不存在的知识库，在运行时制造 FAILED；新契约已在发布时拒绝，因此夹具停在发布，而不是检验原有结算竞争。新 WorkflowKnowledgePostgresTest 的 10 项全部通过。原子任务保持 blocked，修正夹具后重新执行完整门禁；不能把这次组合写为通过。
+
+独立 reviewer 对 6c06f0d..60e74c8 仅做静态阅读，未发现 P0/P1；提出旧 Workflow 在 Agent 发布时的拒绝/提示、旧客户端快照来源与 checksum、向量重建排序边界、多库加锁顺序、事务交错测试、数据库产品判断额外借连接六项 P2。静态复核不替代门禁，后续按反例处理。

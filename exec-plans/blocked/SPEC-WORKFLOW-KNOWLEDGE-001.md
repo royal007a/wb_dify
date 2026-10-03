@@ -7,3 +7,5 @@
 3. 执行只读取冻结版本并验证引用/manifest。已发布但未冻结的KNOWLEDGE图拒绝并要求重新发布，不原地重写历史；旧纯TEMPLATE/CONDITION图照常运行。
 4. 已归档的canonical chunk只在历史发布语料引用存在且摘要相符时可读取；归档不是硬删除/数据擦除，契约明示。
 5. 通过HTTP/H2和真实PostgreSQL回归后关闭原子任务；知识失败/空命中与FinishGate的A01仍单独交付。
+
+本次真实 PostgreSQL 回归暴露既有阻碍：索引、归档、语料冻结把 java.time.Instant 直接交给 JdbcTemplate，PG 驱动无法推断 SQL 类型。red-pg-timestamp.log 捕获原始 PSQLException；改成显式 JDBC Timestamp，属于打通本片真实入库/冻结/归档验收必需的修复，不改表。

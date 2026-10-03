@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T21:13:21Z",
+  "updatedAt": "2026-10-03T21:33:35Z",
   "tasks": [
     {
       "id": "SPEC-HISTORY-RECOVERY-002",
@@ -857,7 +857,7 @@
       "title": "固定 Workflow 知识语料快照并保留历史引用",
       "description": "A03：发布时冻结KNOWLEDGE节点语料，运行仅使用冻结revision，归档不得破坏已发布引用；旧未冻结知识版本显式拒绝，不能改写历史DSL。",
       "priority": "P0",
-      "status": "pending",
+      "status": "blocked",
       "scopes": [
         "backend",
         "runtime",
@@ -880,12 +880,22 @@
         "引用只能从canonical内容读取且digest匹配；归档后历史发布引用仍可读",
         "HTTP/H2与真实PostgreSQL端到端验收，新增测试先证明旧行为失败"
       ],
-      "planPath": "exec-plans/active/SPEC-WORKFLOW-KNOWLEDGE-001.md",
+      "planPath": "exec-plans/blocked/SPEC-WORKFLOW-KNOWLEDGE-001.md",
       "checkpoint": null,
-      "blockedReason": null,
-      "evidence": [],
+      "blockedReason": "verification failed",
+      "evidence": [
+        {
+          "runId": "SPEC-WORKFLOW-KNOWLEDGE-001-20261003T211653Z-11fb17fe",
+          "path": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-001/SPEC-WORKFLOW-KNOWLEDGE-001-20261003T211653Z-11fb17fe",
+          "result": "blocked",
+          "exitCode": 1,
+          "baselineCommit": "6c06f0dfda5f0fd8c1078f531217275004be381e",
+          "headCommit": "60e74c8e7c844e253410b6a226632cf81f2f63b9",
+          "recordedAt": "2026-10-03T21:33:35Z"
+        }
+      ],
       "createdAt": "2026-10-03T17:50:00Z",
-      "updatedAt": "2026-10-03T17:50:00Z"
+      "updatedAt": "2026-10-03T21:33:35Z"
     },
     {
       "id": "SPEC-SSE-COMMIT-001",
