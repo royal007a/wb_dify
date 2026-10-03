@@ -1,11 +1,17 @@
 {
   "schemaVersion": 1,
-  "currentTaskId": null,
-  "runId": null,
-  "baselineCommit": null,
-  "startedAt": null,
-  "evidencePath": null,
-  "lastCheckpoint": null,
+  "currentTaskId": "SPEC-CHAT-LIFECYCLE-003",
+  "runId": "SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49",
+  "baselineCommit": "a2f05a034238baf359215a7f5dc9db964d3a18d4",
+  "startedAt": "2026-10-03T23:15:05Z",
+  "evidencePath": "harness/evidence/SPEC-CHAT-LIFECYCLE-003/SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49",
+  "lastCheckpoint": {
+    "summary": "task command started",
+    "headCommit": "a2f05a034238baf359215a7f5dc9db964d3a18d4",
+    "workingTreeHash": "b6b9bb8d446b06581baa63352965476cb89ee9a053e1aabdda8fb5d0e752385d",
+    "evidencePath": "harness/evidence/SPEC-CHAT-LIFECYCLE-003/SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49",
+    "updatedAt": "2026-10-03T23:15:05Z"
+  },
   "lastVerification": {
     "runId": "SPEC-AUDIT-001-20261003T230750Z-14ee53bf",
     "path": "harness/evidence/SPEC-AUDIT-001/SPEC-AUDIT-001-20261003T230750Z-14ee53bf",
@@ -16,5 +22,5 @@
     "recordedAt": "2026-10-03T23:14:17Z"
   },
   "lastCompletedTaskId": "SPEC-AUDIT-001",
-  "updatedAt": "2026-10-03T23:14:17Z"
+  "updatedAt": "2026-10-03T23:15:05Z"
 }

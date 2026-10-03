@@ -1,14 +1,39 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T23:14:17Z",
+  "updatedAt": "2026-10-03T23:15:05Z",
   "tasks": [
+    {
+      "id": "SPEC-AUDIT-002",
+      "title": "规格复核补证据等级与可提交测试摘要",
+      "description": "a8f5023..a2f05a0复核P2：逐处标证据等级、运行与跳过机器摘要、开放边界索引和遗漏负路径；区分scope命令成功与业务验收。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["harness", "backend"],
+      "verifyScopes": ["harness"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-AUDIT-001"],
+      "acceptance": [
+        "CURRENT_STATE和FUNCTION_TESTS逐处区分源码、受控测试、历史运行与本轮PG跳过，不外推Console或监听器顺序",
+        "提交逐类测试/失败/错误/跳过机器摘要，明确所选scope成功不等于PG或全功能验收；保留原始失败manifest",
+        "开放项按原review反例补全定位，旧基线与增量时间区分，不以文档创建第二份状态板",
+        "规格补逐路由错误码、终态/重复取消、拒绝后202/重放200及只读lookup/no-store验收要求"
+      ],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T23:21:00Z",
+      "updatedAt": "2026-10-03T23:21:00Z"
+    },
     {
       "id": "SPEC-CHAT-LIFECYCLE-003",
       "title": "结果不明提交的身份恢复与安全退出",
       "description": "Chat复核新P1：查重晚于Provider校验导致永久4xx锁页；相关P2为取消重POST意外创建、拒绝丢输入、反复连接成功即断开无限补读。",
       "priority": "P1",
-      "status": "pending",
+      "status": "running",
       "scopes": [
         "backend",
         "frontend",
@@ -17,6 +42,7 @@
       ],
       "verifyScopes": [
         "harness",
+        "backend",
         "runtime",
         "frontend"
       ],
@@ -33,11 +59,17 @@
         "明确拒绝保留输入，受控浏览器验证永久4xx和重连边界；不借用mock证明后端"
       ],
       "planPath": "exec-plans/active/SPEC-CHAT-LIFECYCLE-003.md",
-      "checkpoint": null,
+      "checkpoint": {
+        "summary": "task command started",
+        "headCommit": "a2f05a034238baf359215a7f5dc9db964d3a18d4",
+        "workingTreeHash": "b6b9bb8d446b06581baa63352965476cb89ee9a053e1aabdda8fb5d0e752385d",
+        "evidencePath": "harness/evidence/SPEC-CHAT-LIFECYCLE-003/SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49",
+        "updatedAt": "2026-10-03T23:15:05Z"
+      },
       "blockedReason": null,
       "evidence": [],
       "createdAt": "2026-10-03T23:12:00Z",
-      "updatedAt": "2026-10-03T23:12:00Z"
+      "updatedAt": "2026-10-03T23:15:05Z"
     },
     {
       "id": "SPEC-WORKFLOW-GRAPH-003",

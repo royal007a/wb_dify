@@ -21,7 +21,7 @@
 | ID | 场景与必须断言 | 失败/边界 | 已有入口及核验层 |
 |---|---|---|---|
 | F09 | 发消息→Run202→SSE delta→工具→终态→事实回读 | 只合并当前消息；终态/助手消息/最后事件同事务；提交后投影；streamUrl 前缀 | A: RunFlowIntegrationTest；P: PostgresConcurrencyIntegrationTest；B: chat.spec.ts |
-| F10 | 并发同幂等键只建一条消息/Run；同体重放200、异体409 | 空/缺 key、同 key 跨会话、resume 内容不同；原请求提交后停用Provider仍须找回身份（新P1待修） | A/P: RunFlowIntegrationTest、PostgresConcurrencyIntegrationTest；B: chat-lifecycle（不能证明后端校验顺序） |
+| F10 | 同key只建一条消息/Run；同体重放200、异体40901；只读GET身份查询 | 原请求提交后停用Provider仍须重放；新key不放行；GET no-store/跨会话/未命中不创建，不保证晚到POST已取消 | A: RunSubmissionIdentityTest；A/P: RunFlowIntegrationTest、PostgresConcurrencyIntegrationTest；B: chat-lifecycle不替代后端验证 |
 | F11 | 取消持久化并中断阻塞 Provider/MCP，终态单赢家 | 运行前/首包后/工具前取消；终态再次取消；2s SLA | U: ToolRuntimeTest、LlmHttpClientTest、RunWorkflowControlTest；A: McpProtocolClientReliabilityTest、WorkflowRunControlIntegrationTest；实际JDBC/远端副作用停止需独立证明 |
 | F12 | 事件有序持久、游标归属、终态关闭流；慢客户端不阻塞提交 | 回滚不外发、回调乱序/订阅交错、terminal写失败回滚；全局64连接配额/慢读期限仍有限制 | U: RunEventBrokerTest、RunEventBrokerBackpressureTest；P: PostgresConcurrencyIntegrationTest；真实socket见SPEC_SSE_BACKPRESSURE；B: chat-lifecycle受控事件，不替代代理断线 |
 | F13 | 六出口与 FinishGate：回答、required Claim VERIFIED、无 blocking Gap | 空回答/缺证据/未闭合工具调用/权限禁止 | U: ExecutionContextStateTest、QueryLoopTest、KnowledgeCompletionVerifierTest；Knowledge 候选未验证，canonical 回读仅验证来源，答案语义仍未验证 |
@@ -64,6 +64,6 @@
 ## 本轮覆盖报告要求
 
 每次验证记录 `caseId / commit / environment / fixture / command / expected / actual / status / evidence`。status 只取 pass/fail/not-run；not-run 需原因，不能以“测试类存在”填 pass。
-最少三层独立报告：67个接口库存一致性；F01-F38行为矩阵；本地/132部署验收。任何外部真实模型、真实 MCP 凭据缺失均单列，不以 mock 外推。未通过项归入后续原子任务，不删规格降低分母。
+最少三层独立报告：68个接口库存一致性（新增只读身份查询；历史审计为67）；F01-F38行为矩阵；本地/132部署验收。任何外部真实模型、真实 MCP 凭据缺失均单列，不以 mock 外推。未通过项归入后续原子任务，不删规格降低分母。
 
 历史召回12题 toy 排序性能协议：先报告冷启动单轮P95，再预热5轮、采样20轮（240样本），稳态P95保持小于50ms门禁，同时报告稳态最大值。该数值只包含进程内排序/本地bootstrap embedding，不包含数据库/网络/模型生成；禁止与旧冷启动数值直接比较后宣称产品提速。质量断言与黄金标签不随计时协议调整。

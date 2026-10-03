@@ -1,6 +1,6 @@
 # Hify API 契约
 
-完整的当前接口清单与验收边界见 [可执行测试规格](spec/README.md)；67 个显式 `/api` 方法/路径由 `ApiContractInventoryTest` 与真实 Spring 注册映射双向核对。下文不把规划接口列为已开放。
+完整的当前接口清单与验收边界见 [可执行测试规格](spec/README.md)；68个显式 `/api` 方法/路径（含只读提交查询）由 `ApiContractInventoryTest` 与真实 Spring 注册映射双向核对。下文不把规划接口列为已开放。
 
 ## 1. 通用规则
 
@@ -86,6 +86,7 @@ POST   /api/v1/conversations
 GET    /api/conversations/{id}
 
 POST   /api/v1/conversations/{conversationId}/runs
+GET    /api/v1/conversations/{conversationId}/runs/by-key
 GET    /api/v1/runs/{runId}
 POST   /api/v1/runs/{runId}/cancellations
 GET    /api/v1/runs/{runId}/events
@@ -116,9 +117,11 @@ GET    /api/v1/runs/{runId}/events/stream
 
 恢复不会让旧 Run 从终态回退；服务创建一个带 `resumedFromRunId/resolvedGapIds` 的新 Run。源 Run 必须属于同一 Conversation、状态为 `NEEDS_INPUT` 且存在可恢复 checkpoint。未知、已关闭或跨会话 Gap 返回参数错误。
 
-Console按一次逻辑提交保留message/resume/Idempotency-Key；响应结果不明时显式同key重试，创建中取消不会误发给上一Run。非澄清终态清除resume，NEEDS_INPUT按持久事件取Gap；缺Gap时提示新建会话，不无限同步或暗中重发。页面内状态及跨页面/多标签边界见 `spec/SPEC_CHAT_LIFECYCLE.md`。
+Console按一次逻辑提交保留message/resume/Idempotency-Key；响应结果不明时显式同key重试，创建中取消不会误发给上一Run。未知提交的取消只用GET by-key找身份，不再创建Run；找不到不能宣称取消成功。允许明确“放弃等待（不取消服务端）”，解除页面等待但不自动重发，后台可能继续。非澄清终态清除resume，NEEDS_INPUT按持久事件取Gap；缺Gap时提示新建会话，不无限同步或暗中重发。页面内状态及跨页面/多标签边界见 `spec/SPEC_CHAT_LIFECYCLE.md`。
 
 创建 Run 必须提供 `Idempotency-Key`。服务先提交 user message 和 RUNNING run，再尝试调度，返回 `202 Accepted` 与 `runId`/stream URL。相同 `(conversationId, Idempotency-Key)` 只能创建一个 Run：第一次返回 `202`；请求体 checksum 相同的重复提交返回已有 Run、相同 stream URL 和 `200`；相同 key 但请求体不同返回 `409 IDEMPOTENCY_KEY_REUSED`。唯一约束与 user message/run 在同一事务中写入，初始 event 是随后独立事务，不宣称与创建整体原子。
+
+已有记录的同key重放先于可变的Provider/Agent准入检查，停用Provider后仍能找回原结果；异体仍40901，未命中的新工作仍按原规则校验。`GET .../runs/by-key`同样携带`Idempotency-Key`（非空白且最多128字符），仅查这个会话的持久记录：200返回RunView，404表示此刻未找到，400表示key缺失/非法。成功与未命中均`Cache-Control: no-store`，按`Idempotency-Key`变体区分；不写消息/事件、不提交任务、不以Provider启用状态阻止回读。404不证明先前POST不会晚到，也不等于取消成功。没有持久化的取消墓碑。未来引入用户权限时，查找与重放必须与新建同样授权，不能以幂等为由绕过权限。
 
 若本地 Run 执行器因容量拒绝调度，已创建的 Run 收敛为 `FAILED / EXECUTOR_REJECTED`，与 `run.failed` 终态事件一起提交，不保存 assistant 消息，也不返回 JDK 线程池描述。首次请求仍是202，但 body 已为终态；同 key 重放200返回同一失败结果，不会重新调度或重复用户消息。需重新执行时使用新 key。持久化取消先提交时仍优先成为 `CANCELLED`；启动恢复中单条容量拒绝或单条数据库操作失败不会阻止其余 Run 继续收敛，数据库操作失败的行保持未结算，需后续启动恢复，不假报成功。
 

@@ -17,7 +17,7 @@
 - [SPEC_KNOWLEDGE_FINISH.md](SPEC_KNOWLEDGE_FINISH.md)：知识空/失败的拒答、候选与最终引用来源校验、恢复映射；不宣称语义蕴含验证。
 - 本轮新鲜结果单独记在 `docs/evidence/SPEC_AUDIT.md` 和 Harness run manifest；旧 evidence 仅历史参考。
 
-“候选测试存在”不等于“该端点已完整测试”，“路由一致”不等于“67 个接口行为通过”，“H2/Mock 通过”不等于“真实 PostgreSQL/外部模型通过”。缺失、跳过、外部依赖不足必须单列，不能计入成功分母。
+“候选测试存在”不等于“该端点已完整测试”，“路由一致”不等于“68 个接口行为通过”（003身份查询增加1项，审计历史基线为67），“H2/Mock 通过”不等于“真实 PostgreSQL/外部模型通过”。缺失、跳过、外部依赖不足必须单列，不能计入成功分母。
 
 ## 通用协议（当前实际契约）
 
@@ -28,7 +28,7 @@
 5. Instant 时间按 UTC ISO 格式；DemoItem 的 LocalDateTime 为无时区 ISO 本地日期时间。ID 大多为 UUID 字符串；DemoItem 是 Long，不承诺 UUIDv7/ULID。
 6. 管理台无登录/RBAC/租户隔离。数据归属检查（例如 memory 同会话）不等于用户权限。只能在受信网络入口使用，不宣称公网安全产品。
 7. Provider 只存 env/system 引用。MCP 另有 write-only TOKEN：AES-GCM 加密、服务端独立主密钥；页面不回填。Token 保留/替换/清除和历史 snapshot 的影响见 ADR-0020。
-8. 框架 `/error`、Actuator、Nginx 路径前缀属于运维矩阵；隐式 HEAD/OPTIONS 不计入 67 个显式接口。新增显式映射必须增规格与测试，不靠生成器自动“接受”代码变化。
+8. 框架 `/error`、Actuator、Nginx 路径前缀属于运维矩阵；隐式 HEAD/OPTIONS 不计入68个显式接口。新增显式映射必须增规格与测试，不靠生成器自动“接受”代码变化。
 
 ## 复现与安全
 

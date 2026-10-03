@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-03T23:14:17Z`
-- Current task: `none`
-- Counts: pending 16 · running 0 · blocked 0 · completed 55
+- Generated from task state updated at: `2026-10-03T23:15:05Z`
+- Current task: `SPEC-CHAT-LIFECYCLE-003`
+- Counts: pending 16 · running 1 · blocked 0 · completed 55
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -46,7 +46,7 @@
 | `RECALL-002` | P1 | completed | backend, migration, runtime, eval | reversible_write | 建立召回评测门禁并按证据演进检索 |
 | `SECURITY-001` | P1 | completed | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |
 | `SPEC-CHAT-LIFECYCLE-002` | P1 | completed | frontend, runtime, harness | reversible_write | 复核前端Run创建与恢复输入边界 |
-| `SPEC-CHAT-LIFECYCLE-003` | P1 | pending | backend, frontend, runtime, harness | reversible_write | 结果不明提交的身份恢复与安全退出 |
+| `SPEC-CHAT-LIFECYCLE-003` | P1 | running | backend, frontend, runtime, harness | reversible_write | 结果不明提交的身份恢复与安全退出 |
 | `SPEC-HISTORY-RECOVERY-001` | P1 | completed | backend, runtime, migration, harness | reversible_write | 恢复时重放已提交模型响应而非重新生成 |
 | `SPEC-HISTORY-RECOVERY-002` | P1 | completed | backend, runtime, harness | reversible_write | 恢复元数据按JSON语义比较，兼容跨JVM键顺序 |
 | `SPEC-KNOWLEDGE-FINISH-001` | P1 | completed | backend, runtime, harness | reversible_write | 知识缺口与完成门禁契约对齐 |
@@ -63,6 +63,7 @@
 | `SPEC-WORKFLOW-GRAPH-002` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 统一图步数限制与条件语法契约 |
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
+| `SPEC-AUDIT-002` | P2 | pending | harness, backend | reversible_write | 规格复核补证据等级与可提交测试摘要 |
 | `SPEC-CHILD-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 核验子任务孤儿扫描与父Run恢复时序 |
 | `SPEC-CREDENTIAL-BOUNDARY-002` | P2 | completed | backend, runtime, harness | reversible_write | 补齐受保护配置命名空间与冻结凭据负向验收 |
 | `SPEC-CREDENTIAL-BOUNDARY-003` | P2 | completed | backend, harness | reversible_write | 主密钥宽松配置绑定别名不得被误授权 |
