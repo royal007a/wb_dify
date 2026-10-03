@@ -75,7 +75,7 @@ class WorkflowRunControlIntegrationTest {
             assertThat(jdbc.queryForObject("select count(*) from chat_messages where conversation_id=? and role='assistant'",Integer.class,conversation)).isZero();
             assertThat(jdbc.queryForObject("select status from workflow_runs where workflow_version_id=?",String.class,wv)).isEqualTo("CANCELLED");
             assertThat(jdbc.queryForObject("select count(*) from workflow_node_runs n join workflow_runs r on r.id=n.workflow_run_id where r.workflow_version_id=? and n.node_key='end'",Integer.class,wv)).isZero();
-            String events = awaitCancellationEvent(run);
+            String events = http.perform(get("/api/v1/runs/{id}/events",run)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
             assertThat(events).contains("workflow.cancelled","run.cancelled").doesNotContain("run.completed","workflow.completed");
         } finally { release.countDown(); }
     }
@@ -88,15 +88,6 @@ class WorkflowRunControlIntegrationTest {
             Thread.sleep(25);
         }
         throw new AssertionError("Run failed to converge");
-    }
-    private String awaitCancellationEvent(String id) throws Exception {
-        Instant deadline=Instant.now().plusSeconds(5);
-        while(Instant.now().isBefore(deadline)) {
-            String value=http.perform(get("/api/v1/runs/{id}/events",id)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-            if(value.contains("run.cancelled")) return value;
-            Thread.sleep(25);
-        }
-        throw new AssertionError("Cancellation event was not projected");
     }
     private JsonNode body(String value) throws Exception { return json.readTree(value); }
 }

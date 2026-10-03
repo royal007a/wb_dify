@@ -78,6 +78,64 @@ class PostgresConcurrencyIntegrationTest {
     @Autowired MockMvc http;
     @Autowired ObjectMapper objectMapper;
     @Autowired HistoryRecallService historyRecall;
+    @Autowired org.springframework.transaction.support.TransactionTemplate transactions;
+    @org.springframework.boot.test.mock.mockito.SpyBean com.hify.application.RunEventBroker broker;
+
+    @Test void rollbackNeverEmitsAndCommittedTerminalClosesTheLiveStream() throws Exception {
+        AgentRun run = dormantRun();
+        MvcResult stream=http.perform(get("/api/v1/runs/{id}/events/stream",run.getId()).accept(MediaType.TEXT_EVENT_STREAM))
+                .andExpect(request().asyncStarted()).andReturn();
+        transactions.executeWithoutResult(tx->{
+            broker.publish(run.getId(),"message.delta",java.util.Map.of("delta","MUST_ROLL_BACK"));
+            assertThat(new String(stream.getResponse().getContentAsByteArray(),java.nio.charset.StandardCharsets.UTF_8)).doesNotContain("MUST_ROLL_BACK");
+            tx.setRollbackOnly();
+        });
+        assertThat(events.findByRunIdOrderByIdAsc(run.getId())).isEmpty();
+        transactions.executeWithoutResult(tx->{
+            AgentRun locked=runs.findByIdForUpdate(run.getId()).orElseThrow();
+            locked.finish(RunState.CANCELLED,"CANCELLED","cancelled",0,0);runs.save(locked);
+            broker.publish(run.getId(),"run.cancelled",java.util.Map.of("state","CANCELLED"));
+        });
+        String body=http.perform(asyncDispatch(stream)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        assertThat(body).contains("event:run.cancelled").doesNotContain("MUST_ROLL_BACK");
+    }
+
+    @Test void concurrentEventPublishersHaveOrderedUniqueCommittedSequences() throws Exception {
+        AgentRun run=dormantRun();
+        ExecutorService pool=Executors.newFixedThreadPool(6);
+        CountDownLatch ready=new CountDownLatch(6),start=new CountDownLatch(1);
+        List<Future<?>> jobs=new ArrayList<>();
+        try {
+            for(int index=0;index<6;index++){int writer=index;jobs.add(pool.submit(()->{
+                ready.countDown();start.await();broker.publish(run.getId(),"message.delta",java.util.Map.of("writer",writer));return null;
+            }));}
+            assertThat(ready.await(5,java.util.concurrent.TimeUnit.SECONDS)).isTrue();start.countDown();
+            for(Future<?> job:jobs)job.get(10,java.util.concurrent.TimeUnit.SECONDS);
+            assertThat(events.findByRunIdOrderByIdAsc(run.getId())).extracting(com.hify.domain.RunEvent::getSequenceNo)
+                    .containsExactly(1L,2L,3L,4L,5L,6L);
+        } finally {start.countDown();pool.shutdownNow();}
+    }
+
+    @Test void terminalEventFailureRollsBackSuccessAndAssistantMessage() throws Exception {
+        java.util.concurrent.atomic.AtomicBoolean failOnce=new java.util.concurrent.atomic.AtomicBoolean(true);
+        org.mockito.Mockito.doAnswer(invocation->{
+            if(failOnce.getAndSet(false))throw new IllegalStateException("controlled terminal persistence failure");
+            return invocation.callRealMethod();
+        }).when(broker).publish(org.mockito.ArgumentMatchers.anyString(),org.mockito.ArgumentMatchers.eq("run.completed"),org.mockito.ArgumentMatchers.anyMap());
+        String conversation="atomic-terminal-"+UUID.randomUUID();
+        conversations.saveAndFlush(new Conversation(conversation,"demo-agent","terminal failure",Instant.now()));
+        String id=service.create(conversation,"terminal-failure","计算 6 * 7").run().getId();
+        AgentRun terminal=awaitTerminal(id);
+        assertThat(terminal.getState()).isEqualTo(RunState.FAILED);
+        assertThat(messages.findByConversationIdOrderByCreatedAtAsc(conversation)).extracting(com.hify.domain.ChatMessage::getRole).containsExactly("user");
+        assertThat(events.findByRunIdOrderByIdAsc(id)).extracting(com.hify.domain.RunEvent::getEventType).contains("run.failed").doesNotContain("run.completed");
+    }
+
+    private AgentRun dormantRun() {
+        String conversation="event-conversation-"+UUID.randomUUID();
+        conversations.saveAndFlush(new Conversation(conversation,"demo-agent","event fixture",Instant.now()));
+        return runs.saveAndFlush(new AgentRun("event-run-"+UUID.randomUUID(),conversation,"event-key","hash","input",Instant.now()));
+    }
 
     @Test
     void chatSlicePinsPublishedVersionAndReplaysTerminalSseOnPostgres() throws Exception {

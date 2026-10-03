@@ -242,15 +242,15 @@ public class RunApplicationService {
     }
 
     public AgentRun cancel(String runId) {
-        AgentRun run = get(runId);
-        if (!run.getState().terminal()) {
+        Integer changed = transactions.execute(status -> {
             int updated = runs.requestCancel(runId, RunState.RUNNING, Instant.now());
             if (updated == 1) {
-                cancellations.computeIfAbsent(runId, ignored -> new AtomicBoolean()).set(true);
                 eventBroker.publish(runId, "run.cancel.requested",
                         Map.of("version", 1, "runId", runId));
             }
-        }
+            return updated;
+        });
+        if (Integer.valueOf(1).equals(changed)) cancellations.computeIfAbsent(runId, ignored -> new AtomicBoolean()).set(true);
         return get(runId);
     }
 
@@ -314,7 +314,6 @@ public class RunApplicationService {
         if (run.isCancelRequested() || cancellations.computeIfAbsent(run.getId(), ignored -> new AtomicBoolean()).get()) {
             finishTerminal(run.getId(), RunState.CANCELLED, TerminalReason.CANCELLED.name(),
                     "Run cancelled before Workflow execution.", 0, 0, false);
-            eventBroker.publish(run.getId(), "run.cancelled", Map.of("version",1,"runId",run.getId(),"state","CANCELLED"));
             return;
         }
         Duration remaining = runTimeout.minus(Duration.between(run.getCreatedAt(), Instant.now()));
@@ -343,25 +342,20 @@ public class RunApplicationService {
         }
         String output = result.output() == null ? "" : result.output();
         boolean won = finishTerminal(run.getId(), RunState.COMPLETED, TerminalReason.COMPLETED.name(),
-                output, result.nodes().size(), 0, true);
+                output, result.nodes().size(), 0, true, Map.of(), List.of(new RunProjection("workflow.completed", Map.of(
+                        "version",1,"runId",run.getId(),"workflowRunId",result.id(),
+                        "workflowVersionId",binding.workflowVersionId(),"workflowChecksum",binding.checksum()))));
         if (!won) return;
         childTasks.acknowledgeClaimedForCompletedParent(run.getId());
-        eventBroker.publish(run.getId(), "workflow.completed", Map.of(
-                "version",1,"runId",run.getId(),"workflowRunId",result.id(),
-                "workflowVersionId",binding.workflowVersionId(),"workflowChecksum",binding.checksum()));
-        eventBroker.publish(run.getId(), "run.completed", Map.of(
-                "version",1,"runId",run.getId(),"state","COMPLETED",
-                "terminalReason",TerminalReason.COMPLETED.name(),"turns",result.nodes().size(),"toolCalls",0));
     }
 
     private void finishWorkflowStopped(AgentRun run, WorkflowRunResponse result, RunState state,
                                        TerminalReason reason, String message) {
         int nodes = result == null ? 0 : result.nodes().size();
-        if (!finishTerminal(run.getId(), state, reason.name(), message, nodes, 0, false)) return;
-        if (result != null) eventBroker.publish(run.getId(), state == RunState.CANCELLED ? "workflow.cancelled" : "workflow.timed_out",
-                Map.of("version", 1, "runId", run.getId(), "workflowRunId", result.id(), "state", state.name()));
-        eventBroker.publish(run.getId(), state == RunState.CANCELLED ? "run.cancelled" : "run.failed",
-                Map.of("version", 1, "runId", run.getId(), "state", state.name(), "terminalReason", reason.name(), "turns", nodes, "toolCalls", 0));
+        List<RunProjection> projections = result == null ? List.of() : List.of(new RunProjection(
+                state == RunState.CANCELLED ? "workflow.cancelled" : "workflow.timed_out",
+                Map.of("version",1,"runId",run.getId(),"workflowRunId",result.id(),"state",state.name())));
+        finishTerminal(run.getId(),state,reason.name(),message,nodes,0,false,Map.of(),projections);
     }
 
     private QueryLoop.RunObserver observer(String runId) {
@@ -537,24 +531,14 @@ public class RunApplicationService {
             default -> RunState.FAILED;
         };
         boolean won = finishTerminal(runId, state, result.reason().name(), result.finalText(),
-                result.turns(), result.toolCalls(), state == RunState.COMPLETED);
+                result.turns(), result.toolCalls(), state == RunState.COMPLETED,
+                Map.of("decision",result.finalDecision().action().name(),
+                        "decisionReason",result.finalDecision().reason(),
+                        "evidenceIds",result.finalDecision().evidenceIds(),
+                        "gapIds",result.finalDecision().gapIds()),List.of());
         if (!won) return;
         if (state == RunState.COMPLETED) childTasks.acknowledgeClaimedForCompletedParent(runId);
 
-        String type = switch (state) {
-            case COMPLETED -> "run.completed";
-            case CANCELLED -> "run.cancelled";
-            case NEEDS_INPUT -> "run.needs_input";
-            default -> "run.failed";
-        };
-        eventBroker.publish(runId, type, Map.of(
-                "version", 1, "runId", runId, "state", state.name(),
-                "terminalReason", result.reason().name(), "turns", result.turns(),
-                "toolCalls", result.toolCalls(),
-                "decision", result.finalDecision().action().name(),
-                "decisionReason", result.finalDecision().reason(),
-                "evidenceIds", result.finalDecision().evidenceIds(),
-                "gapIds", result.finalDecision().gapIds()));
     }
 
     private void finishFailure(String runId, RuntimeException exception) {
@@ -562,17 +546,19 @@ public class RunApplicationService {
                 ? TerminalReason.CAPABILITY_MISMATCH
                 : exception instanceof HistoryOperationConflictException
                 ? TerminalReason.HISTORY_COMMIT_FAILED : TerminalReason.MODEL_ERROR;
-        boolean won = finishTerminal(runId, RunState.FAILED, reason.name(),
+        finishTerminal(runId, RunState.FAILED, reason.name(),
                 "Run failed: " + exception.getMessage(), 0, 0, false);
-        if (!won) return;
-        eventBroker.publish(runId, "run.failed", Map.of(
-                "version", 1, "runId", runId, "state", RunState.FAILED.name(),
-                "terminalReason", reason.name()));
     }
 
     private boolean finishTerminal(String runId, RunState state, String terminalReason,
                                    String outputMessage, int turns, int toolCalls,
                                    boolean persistAssistantMessage) {
+        return finishTerminal(runId,state,terminalReason,outputMessage,turns,toolCalls,persistAssistantMessage,Map.of(),List.of());
+    }
+
+    private boolean finishTerminal(String runId, RunState state, String terminalReason,
+                                   String outputMessage, int turns, int toolCalls, boolean persistAssistantMessage,
+                                   Map<String,Object> details,List<RunProjection> projections) {
         RunState committed = transactions.execute(status -> {
             // Serialize with requestCancel's row UPDATE; a persisted cancellation wins if committed first.
             AgentRun current = runs.findByIdForUpdate(runId)
@@ -586,17 +572,29 @@ public class RunApplicationService {
             if (updated == 1 && actual == RunState.COMPLETED && persistAssistantMessage && outputMessage != null) {
                 messages.save(new ChatMessage(current.getConversationId(), "assistant", outputMessage));
             }
+            if (updated == 1) {
+                Map<String,Object> payload = new java.util.LinkedHashMap<>();
+                if (actual == state) {
+                    payload.putAll(details);
+                    for (RunProjection projection : projections) eventBroker.publish(runId,projection.type(),projection.payload());
+                }
+                payload.putAll(Map.of("version",1,"runId",runId,"state",actual.name(),
+                        "terminalReason",reason,"turns",turns,"toolCalls",toolCalls));
+                String type = switch(actual) {
+                    case COMPLETED -> "run.completed";
+                    case CANCELLED -> "run.cancelled";
+                    case NEEDS_INPUT -> "run.needs_input";
+                    default -> "run.failed";
+                };
+                // Same transaction: rollback all or commit terminal row, message and final event together.
+                eventBroker.publish(runId,type,payload);
+            }
             return updated == 1 ? actual : null;
         });
-        if (committed == null) return false;
-        if (committed != state) {
-            eventBroker.publish(runId, "run.cancelled", Map.of("version", 1, "runId", runId,
-                    "state", RunState.CANCELLED.name(), "terminalReason", TerminalReason.CANCELLED.name(),
-                    "turns", turns, "toolCalls", toolCalls));
-            return false; // Caller must not publish its now-stale success/failure projection.
-        }
-        return true;
+        return committed == state; // Do not acknowledge children for a stale success.
     }
+
+    private record RunProjection(String type,Map<String,Object> payload) {}
 
     @EventListener(ApplicationReadyEvent.class)
     public void convergeInterruptedRuns() {

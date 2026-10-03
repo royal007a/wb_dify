@@ -9,4 +9,5 @@ public interface RunEventRepository extends JpaRepository<RunEvent, Long> {
     List<RunEvent> findByRunIdOrderByIdAsc(String runId);
     List<RunEvent> findByRunIdAndIdGreaterThanOrderByIdAsc(String runId, Long id);
     Optional<RunEvent> findTopByRunIdOrderBySequenceNoDesc(String runId);
+    Optional<RunEvent> findFirstByRunIdAndEventTypeInOrderByIdAsc(String runId, List<String> types);
 }
