@@ -1,5 +1,7 @@
 package com.hify.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hify.application.*;
 import com.hify.domain.*;
 import com.hify.infra.*;
@@ -7,11 +9,15 @@ import com.hify.runtime.*;
 import com.hify.runtime.plan.*;
 import com.hify.runtime.state.*;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import java.time.*;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.assertj.core.api.Assertions.*;
@@ -26,6 +32,7 @@ class HistoryReplayTest {
     @Autowired ConversationRepository conversations;
     @Autowired AgentRunRepository runs;
     @Autowired JdbcTemplate db;
+    @Autowired ObjectMapper mapper;
     String run;
     final List<RuntimeMessage> prefix=List.of(RuntimeMessage.user("fixture"));
     @BeforeEach void setup(){
@@ -55,6 +62,31 @@ class HistoryReplayTest {
         assertThatThrownBy(()->port.commitTool("tool:tool-a",messages,changed)).isInstanceOf(HistoryOperationConflictException.class);
         db.update("update run_history_commits set recovery_json='{}' where run_id=?",run);
         assertThatThrownBy(()->port.replay("tool:tool-a",prefix)).isInstanceOf(HistoryReplayException.class).hasMessageContaining("digest");
+        assertThatThrownBy(()->port.commitTool("tool:tool-a",messages,recovery)).isInstanceOf(HistoryReplayException.class).hasMessageContaining("digest");
+    }
+    @ParameterizedTest
+    @ValueSource(strings={"value", "type", "array"})
+    void recoverySemanticChangesStillConflict(String mutation) throws Exception {
+        var plan=ExecutionPlan.initial("fixture");
+        var attempt=StepAttempt.start(plan.steps().get(0),1,"tool-a","calculator").finish(false,"NONE");
+        var result=ToolRuntime.ExecutionResult.success("2");
+        var recovery=HistoryCommitter.ToolReplay.capture(result,attempt,plan,
+                ExecutionContextState.empty().recordToolResult(plan,attempt,result),1,0,0,0);
+        var messages=List.of(prefix.get(0),RuntimeMessage.toolResult("tool-a","2",false));
+        var port=writer.forRun(run);port.commitTool("tool:tool-a",messages,recovery);
+        ObjectNode changed=mapper.valueToTree(recovery);
+        var input=(ObjectNode)changed.path("plan").path("steps").get(0).path("input");
+        switch(mutation){
+            case "value" -> input.put("goal","different");
+            case "type" -> input.put("goal",123);
+            case "array" -> {
+                var criteria=(com.fasterxml.jackson.databind.node.ArrayNode)changed.path("plan").path("successCriteria");
+                var first=criteria.get(0);criteria.set(0,criteria.get(1));criteria.set(1,first);
+            }
+            default -> throw new AssertionError(mutation);
+        }
+        var candidate=mapper.treeToValue(changed,HistoryCommitter.ToolReplay.class);
+        assertThatThrownBy(()->port.commitTool("tool:tool-a",messages,candidate)).isInstanceOf(HistoryOperationConflictException.class);
     }
     @Test void legacyToolHistoryIsNotSilentlyExecutedAgain(){
         var plan=ExecutionPlan.initial("fixture");var call=new RuntimeMessage.ToolCall("a","calculator",Map.of("expression","1+1"));
@@ -94,7 +126,9 @@ class HistoryReplayTest {
         assertThat(resumed.contextState().claims()).isEqualTo(state.claims());
         assertThat(resumed.contextState().evidence().get(0).status()).isEqualTo(EvidenceItem.Status.UNVERIFIED);
     }
-    @Test void replayAcrossLocalReplanKeepsOriginalStepAndDoesNotExecuteToolsAgain(){
+    @ParameterizedTest
+    @ValueSource(booleans={false,true})
+    void replayAcrossLocalReplanKeepsOriginalStepAndDoesNotExecuteToolsAgain(boolean simulateOtherJvmOrder) throws Exception {
         var runtime=spy(new ToolRuntime());var capability=runtime.snapshot("test",Set.of("calculator"));
         var plan=ExecutionPlan.initial("fixture");var checkpoint=ExecutionCheckpoint.capture(0,0,plan,ExecutionContextState.empty(),prefix);
         var port=writer.forRun(run);var identity=new RunRuntimeIdentity(run,capability.revision(),capability.toolSchemaDigest(),(a,b)->true,port);
@@ -112,6 +146,25 @@ class HistoryReplayTest {
         };
         assertThatThrownBy(()->loop.resume(checkpoint,model,"mock",0.2,capability,policy,observer,identity))
                 .isInstanceOf(com.hify.common.ExecutionSuspendedException.class);
+        if(simulateOtherJvmOrder){
+            // Deterministically emulate the other JVM's MapN order, independent of this JVM's SALT.
+            String json=db.queryForObject("select recovery_json from run_history_commits where run_id=? and operation_id='tool:right'",String.class,run);
+            ObjectNode tree=(ObjectNode)mapper.readTree(json);
+            ObjectNode input=(ObjectNode)tree.path("plan").path("steps").get(0).path("input");
+            var names=new ArrayList<String>();input.fieldNames().forEachRemaining(names::add);
+            assertThat(names).containsExactlyInAnyOrder("reason","replanFromStepId");
+            Collections.reverse(names);
+            ObjectNode reversed=mapper.createObjectNode();names.forEach(name->reversed.set(name,input.get(name)));
+            ((ObjectNode)tree.path("plan").path("steps").get(0)).set("input",reversed);
+            String otherJson=mapper.writeValueAsString(tree);
+            assertThat(otherJson).isNotEqualTo(json);
+            assertThat(mapper.readTree(otherJson)).isEqualTo(mapper.readTree(json));
+            String digest=db.queryForObject("select semantic_digest from run_history_commits where run_id=? and operation_id='tool:right'",String.class,run);
+            String recoveryDigest=HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
+                    .digest((digest+"\n"+otherJson).getBytes(StandardCharsets.UTF_8)));
+            db.update("update run_history_commits set recovery_json=?,recovery_digest=? where run_id=? and operation_id='tool:right'",otherJson,recoveryDigest,run);
+        }
+        var stored=db.queryForMap("select recovery_json,recovery_digest,revision,semantic_digest,messages_json from run_history_commits where run_id=? and operation_id='tool:right'",run);
         clearInvocations(runtime);
         var result=loop.resume(checkpoint,model,"mock",0.2,capability,policy,QueryLoop.RunObserver.NOOP,identity);
         assertThat(result.reason()).isEqualTo(TerminalReason.COMPLETED);
@@ -119,5 +172,6 @@ class HistoryReplayTest {
         assertThat(result.toolCalls()).isEqualTo(2);
         assertThat(modelCalls).hasValue(2);
         verify(runtime,never()).execute(any(),any(CapabilitySnapshot.class),any(),any());
+        assertThat(db.queryForMap("select recovery_json,recovery_digest,revision,semantic_digest,messages_json from run_history_commits where run_id=? and operation_id='tool:right'",run)).isEqualTo(stored);
     }
 }

@@ -1,5 +1,6 @@
 package com.hify.application;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hify.domain.RunHistoryCommit;
 import com.hify.infra.RunHistoryCommitRepository;
@@ -99,7 +100,13 @@ public class CommittedHistoryWriter {
             if (!existing.getSemanticDigest().equals(digest)) {
                 throw new HistoryOperationConflictException(runId, operationId);
             }
-            if(recoveryJson!=null && !recoveryJson.equals(existing.getRecoveryJson()))throw new HistoryOperationConflictException(runId,operationId);
+            // The stored digest protects the original bytes. Idempotence compares JSON meaning:
+            // Map.copyOf iteration order may change in a new JVM, including nested plan inputs.
+            // Keep arrays ordered and values/types exact; never rewrite the stored JSON or digest.
+            JsonNode existingRecovery = readRecovery(existing);
+            if (recoveryJson != null && !readRecoveryJson(recoveryJson).equals(existingRecovery)) {
+                throw new HistoryOperationConflictException(runId, operationId);
+            }
             return new CommitMutation(existing, true);
         }
         long revision = commits.findTopByRunIdOrderByRevisionDesc(runId)
@@ -126,14 +133,35 @@ public class CommittedHistoryWriter {
                 for(int i=0;i<before.size();i++)if(!before.get(i).equals(history.get(i)))throw new HistoryReplayException("Canonical history prefix mismatch");
                 RuntimeMessage message=objectMapper.treeToValue(history.get(history.size()-1),RuntimeMessage.class);
                 HistoryCommitter.ToolReplay recovery=null;
-                if(row.getRecoveryJson()!=null){
-                    if(!sha256(row.getSemanticDigest()+"\n"+row.getRecoveryJson()).equals(row.getRecoveryDigest()))throw new HistoryReplayException("Tool recovery digest mismatch");
-                    recovery=objectMapper.readValue(row.getRecoveryJson(),HistoryCommitter.ToolReplay.class);
+                JsonNode recoveryTree = readRecovery(row);
+                if(recoveryTree!=null){
+                    recovery=objectMapper.treeToValue(recoveryTree,HistoryCommitter.ToolReplay.class);
                 }
                 return new HistoryCommitter.Replay(message,recovery);
             }catch(HistoryReplayException failure){throw failure;}
             catch(Exception failure){throw new HistoryReplayException("Canonical history recovery data is invalid");}
         });
+    }
+
+    private JsonNode readRecovery(RunHistoryCommit row) {
+        if (row.getRecoveryJson() == null && row.getRecoveryDigest() == null) return null;
+        if (row.getRecoveryJson() == null || row.getRecoveryDigest() == null
+                || !sha256(row.getSemanticDigest() + "\n" + row.getRecoveryJson()).equals(row.getRecoveryDigest())) {
+            throw new HistoryReplayException("Tool recovery digest mismatch");
+        }
+        return readRecoveryJson(row.getRecoveryJson());
+    }
+
+    private JsonNode readRecoveryJson(String json) {
+        try {
+            JsonNode tree = objectMapper.readTree(json);
+            if (tree == null || !tree.isObject()) throw new HistoryReplayException("Invalid tool recovery object");
+            return tree;
+        } catch (HistoryReplayException failure) {
+            throw failure;
+        } catch (Exception failure) {
+            throw new HistoryReplayException("Canonical history recovery data is invalid");
+        }
     }
 
     private String writeRecovery(HistoryCommitter.ToolReplay recovery){
