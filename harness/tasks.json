@@ -1,32 +1,75 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T19:56:06Z",
+  "updatedAt": "2026-10-03T20:15:18Z",
   "tasks": [
+    {
+      "id": "SPEC-RUN-BUDGET-001",
+      "title": "统一聊天与Workflow跨重启的Run预算",
+      "description": "E1复核P2：聊天恢复重置runTimeout而Workflow扣减createdAt；明确关闭与期限竞争和排队计时。",
+      "priority": "P2", "status": "pending",
+      "scopes": ["backend", "runtime", "harness"], "verifyScopes": ["harness"],
+      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
+      "dependsOn": ["SPEC-RUN-SHUTDOWN-002"],
+      "acceptance": ["重启不重新赠送聊天Run预算，已过期不调用模型或工具", "关闭、取消、期限同时出现的优先级有确定性交错测试", "保留同一幂等Run与checkpoint，文档准确披露时钟和排队边界"],
+      "planPath": "exec-plans/active/SPEC-RUN-BUDGET-001.md", "checkpoint": null, "blockedReason": null, "evidence": [],
+      "createdAt": "2026-10-03T20:15:00Z", "updatedAt": "2026-10-03T20:15:00Z"
+    },
+    {
+      "id": "SPEC-CHILD-RECOVERY-001",
+      "title": "核验子任务孤儿扫描与父Run恢复时序",
+      "description": "E1复核待验证项：两个Ready监听没有顺序，旧任务LOST扫描可能碰到已恢复父Run的新认领。",
+      "priority": "P2", "status": "pending",
+      "scopes": ["backend", "runtime", "harness"], "verifyScopes": ["harness"],
+      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
+      "dependsOn": ["SPEC-RUN-SHUTDOWN-002"],
+      "acceptance": ["先以确定性交错验证可达性，不把静态猜测当成已证实缺陷", "若可达，新进程认领不被旧执行孤儿扫描误标LOST", "保留delivered/claimed/consumed提交语义，不新增子Agent执行器"],
+      "planPath": "exec-plans/active/SPEC-CHILD-RECOVERY-001.md", "checkpoint": null, "blockedReason": null, "evidence": [],
+      "createdAt": "2026-10-03T20:15:00Z", "updatedAt": "2026-10-03T20:15:00Z"
+    },
     {
       "id": "SPEC-RUN-SHUTDOWN-002",
       "title": "关闭期间保留已计算终态并验证生产销毁顺序",
       "description": "E1复验：只挂起未完成的执行，不吞掉已计算结果；补没有手工关闭线程池的真实销毁顺序测试。",
       "priority": "P1",
-      "status": "pending",
-      "scopes": ["backend", "runtime", "harness"],
-      "verifyScopes": ["harness", "migration"],
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "migration"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-RUN-SHUTDOWN-001"],
+      "dependsOn": [
+        "SPEC-RUN-SHUTDOWN-001"
+      ],
       "acceptance": [
         "模型完成后提交前进入stopping，仍提交唯一终态和助手消息，重启不再调用模型",
         "已返回Workflow结果不被关闭标志改写，取消优先和未完成执行挂起仍通过",
         "生产context.close顺序下阻塞执行写入run.interrupted，显式取消当场写CANCELLED而非恢复补写",
         "红绿测试、隔离PostgreSQL回归、预算及恢复失败边界的文档校正"
       ],
-      "planPath": "exec-plans/active/SPEC-RUN-SHUTDOWN-002.md",
+      "planPath": "exec-plans/completed/SPEC-RUN-SHUTDOWN-002.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-RUN-SHUTDOWN-002-20261003T200338Z-6fd9d532",
+          "path": "harness/evidence/SPEC-RUN-SHUTDOWN-002/SPEC-RUN-SHUTDOWN-002-20261003T200338Z-6fd9d532",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "1a4b4189cb7479f7150b281dab4aa5cd29d97f75",
+          "headCommit": "6191211a70f7a1ec23158a1bb6d40fc0a7c7fe4d",
+          "recordedAt": "2026-10-03T20:15:18Z"
+        }
+      ],
       "createdAt": "2026-10-03T20:00:00Z",
-      "updatedAt": "2026-10-03T20:00:00Z"
+      "updatedAt": "2026-10-03T20:15:18Z"
     },
     {
       "id": "SPEC-RUN-SHUTDOWN-001",

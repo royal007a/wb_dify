@@ -23,7 +23,13 @@ The model-blocking shutdown fixture no longer has a listener that manually calls
 - `green-pg-regression.log`: 70 passed, 0 skipped (22 common, 12 Workflow, 20 QueryLoop, 16 app). Includes two real PostgreSQL context-close/restart cases, six PostgreSQL transaction/concurrency cases, dispatch/admission and HTTP Workflow cancellation. All containers/ports/databases are test-owned; not shared services.
 - `green-computed-clarify.log`: 6 context tests passed, 0 skipped. Added a real calculator-missing-input loop reaching NEEDS_INPUT before shutdown; the structured clarification is committed once, no assistant fabricated, and restart does not re-run the model. COMPLETED similarly retains one assistant and one terminal event.
 
-The runner's final explicit Harness + migration gates, commit IDs and mutation results are recorded below after they execute. Commands use `mvn -f backend/pom.xml -pl hify-app -am -Dtest=<listed classes> -Dsurefire.failIfNoSpecifiedTests=false test`; PostgreSQL uses the existing Colima/Testcontainers environment and `-Dapi.version=1.44`.
+Commands use `mvn -f backend/pom.xml -pl hify-app -am -Dtest=<listed classes> -Dsurefire.failIfNoSpecifiedTests=false test`; PostgreSQL uses the existing Colima/Testcontainers environment and `-Dapi.version=1.44`.
+
+## Final gate and production-order mutation
+
+Code commit **6191211**. Atomic runner repeated **53 passed / 0 skipped**. Explicit `harness,migration` verification passed at **2026-10-03T20:15:18Z**: migration/PG matrix **19 passed / 0 skipped**, with dedicated non-skipped PostgreSQL guards. This is scoped verification, not full product/browser/deployment completion.
+
+`mutation-destruction-order.log`: exported **6191211** via git archive to `/tmp/hify-shutdown-order-PNn1e4`, changed only that copy's AsyncConfig: removed DependsOn(entityManagerFactory), set acceptTasksAfterContextClose=false, awaitTerminationSeconds=0. Ran the two model-blocking/explicit-user-cancel context tests. Result **2 tests / 2 assertion failures / 0 errors or skips, exit 1**: user cancellation had no CANCELLED reason before restart, and blocked shutdown had no run.interrupted event. Worker logs show the late persistence path failing after context closure. Thus these strengthened assertions detect the former false-positive shutdown order, unlike checking only the later recovered state. This combined mutation proves the protection as a group; it does not isolate each configuration flag's necessity. The main worktree was never reverted, and its unchanged production configuration passes the same tests.
 
 ## Boundaries and review P2s
 
