@@ -21,3 +21,15 @@ Evidence: `harness/evidence/SPEC-CREDENTIAL-BOUNDARY-001/SPEC-CREDENTIAL-BOUNDAR
 Atomic command: 34 tests pass, zero skip (policy four, Provider/native seven, app 23); the additional Provider HTTP contract is separately four pass in `provider-http.log`. Migration gate: 16 pass, zero skip (PostgreSQL concurrency six, MCP credentials seven, Workflow upgrade one, plus two H2 migrations). Harness state/generated progress/API spec/five Python tests/shell syntax all pass. See verification.json, finished 2026-10-03T18:10:13Z.
 
 This does not claim deployment, real credential validation, all-system regression, login/RBAC, or DNS rebinding protection. Deployment must approve existing reference/destination pairs explicitly, not read/export values or automatically whitelist all database entries.
+
+## G follow-up: protected namespaces and frozen legacy execution
+
+Task `SPEC-CREDENTIAL-BOUNDARY-002`, baseline `a92c273`. Evidence: `harness/evidence/SPEC-CREDENTIAL-BOUNDARY-002/SPEC-CREDENTIAL-BOUNDARY-002-20261003T182421Z-0778be20/`.
+
+- Red: CredentialReferencePolicyTest 4 run / 1 failed, exit 1. The first newly added `env:HIFY_DB_PASSWORD` operator grant was incorrectly accepted. Tests only parse names; no infrastructure value is read even on the red run.
+- Protect HIFY_DB_, HIFY_REDIS_ and JAVAX_NET_SSL_ namespaces after case/dot/hyphen normalization. Test Hify URL/user/password names, TLS keyStore/trustStore passwords, normalized variants, and preserve legitimate explicitly granted application names containing SECRET/PASSWORD.
+- Provider trailing-slash grants are not broadened. Test the saved base URL and document the exact canonical spelling; MCP retains its exact raw path distinction.
+- New inherited H2/PostgreSQL contract publishes an Agent, simulates a pre-policy unapproved fake reference in its frozen MCP revision (draft remains credential-free), and invokes the published capability through ToolRuntime -> McpCapabilityService -> client. Expect error without fake secret in result/logs and **zero additional HTTP requests**, not merely a missing Authorization header. Existing positive frozen TOKEN tests remain.
+- Focused green command selects CredentialReferencePolicyTest, ProviderCredentialBoundaryTest, NativeProviderModelClientTest, McpCredentialIntegrationTest, McpServerApiIntegrationTest, McpProtocolClientReliabilityTest and ProviderApiIntegrationTest, using `-pl hify-app -am -Dsurefire.failIfNoSpecifiedTests=false`: exit 0, see green.log. Final atomic and PostgreSQL gates recorded separately in verification.json.
+
+No shared hify-cc worktree, service or data is changed. These fixes have not been deployed, and no new claim is made about DNS rebinding or operator-chosen unprotected custom variable names.

@@ -33,7 +33,10 @@ class CredentialReferencePolicyTest {
 
     @Test void reservedSecretsCannotBeEnabledEvenByMisconfiguredOperator() throws Exception {
         for (String ref : List.of("env:HIFY_MCP_MASTER_KEY", "system:HIFY_MCP_MASTER_KEY",
-                "system:hify.mcp.credentials.master-key", "env:DB_PASSWORD", "env:SPRING_DATASOURCE_PASSWORD")) {
+                "system:hify.mcp.credentials.master-key", "env:DB_PASSWORD", "env:SPRING_DATASOURCE_PASSWORD",
+                "env:HIFY_DB_PASSWORD", "env:HIFY_DB_URL", "env:HIFY_DB_USERNAME",
+                "system:hify.db.password", "system:HiFy-dB-PaSsWoRd", "env:HIFY_REDIS_PASSWORD",
+                "system:javax.net.ssl.keyStorePassword", "system:javax.net.ssl.trustStorePassword")) {
             String config = json.writeValueAsString(java.util.Map.of(ref, List.of("https://approved.example/mcp")));
             assertThatThrownBy(() -> new CredentialReferencePolicy(config, json))
                     .isInstanceOf(IllegalStateException.class).hasMessageNotContaining(ref).hasNoCause();
@@ -45,5 +48,19 @@ class CredentialReferencePolicyTest {
                 "{\"system:fake\":[\"https://u:fake-secret@example.com/mcp\"]}", "{\"system:fake\":null}"))
             assertThatThrownBy(() -> new CredentialReferencePolicy(config, json))
                     .isInstanceOf(IllegalStateException.class).hasMessageNotContaining("fake-secret").hasNoCause();
+    }
+
+    @Test void ordinaryApplicationSecretNamesRemainGrantableAndPathsRemainExact() {
+        var policy = new CredentialReferencePolicy("""
+                {"env:TEAM_API_SECRET":["https://approved.example/mcp/"],
+                 "system:team.api-password":["https://approved.example/v1"]}
+                """, json);
+        // Authorization only: never read these names from the process.
+        assertThatCode(() -> policy.requireAllowed("env:TEAM_API_SECRET", "https://approved.example/mcp/"))
+                .doesNotThrowAnyException();
+        assertThatCode(() -> policy.requireAllowed("system:team.api-password", "https://approved.example/v1"))
+                .doesNotThrowAnyException();
+        assertThatThrownBy(() -> policy.requireAllowed("env:TEAM_API_SECRET", "https://approved.example/mcp"))
+                .isInstanceOf(BizException.class);
     }
 }

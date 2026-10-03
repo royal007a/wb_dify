@@ -6,7 +6,7 @@ Decision:
 
 - A shared common policy loads operator-only `hify.credentials.reference-bindings` / `HIFY_CREDENTIAL_REFERENCE_BINDINGS` JSON. Exact reference -> approved endpoint/base URL list; default empty denies all. Validate on explicit configuration writes and immediately before resolving process values, including legacy records and frozen MCP revisions.
 - Match scheme, case-insensitive hostname, effective port and exact raw path. No wildcard/subdomain/prefix grants; reject userinfo, query, fragment and dot-segment destinations. MCP protocol uses its endpoint; Provider passes its baseUrl before constructing a client.
-- Always reject the MCP master-key names and SPRING_/DB_/DATABASE_ infrastructure namespaces, even if accidentally granted. No diagnostics include supplied configuration, reference values or secret values.
+- Always reject the MCP master-key names and SPRING_/DB_/DATABASE_/HIFY_DB_/HIFY_REDIS_/JAVAX_NET_SSL_ infrastructure namespaces, even if accidentally granted (case-insensitive after replacing dots/hyphens with underscores). This covers Hify's actual datasource settings and JVM keyStore/trustStore credentials. Do not reject every arbitrary name containing SECRET/PASSWORD: explicitly approved application credentials may legitimately use those names. No diagnostics include supplied configuration, reference values or secret values.
 - Changing an MCP endpoint while retaining a credential implicitly is rejected. Require explicit replacement or CLEAR. Existing immutable TOKEN records and endpoint/revision pairs remain unchanged.
 - This supersedes ADR-0020's unrestricted reference compatibility for both MCP and Provider. There is no permissive legacy fallback. Missing grants fail closed rather than silently exporting secrets.
 

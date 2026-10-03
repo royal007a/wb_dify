@@ -64,6 +64,8 @@
 
 F切片独立复核（0975782..fc7bd51）仍为静态阅读：`RunEventBroker` 锁内同步send/afterCommit可能被慢客户端阻塞；跨Run/未知Last-Event-ID需归属检查；取消抢赢时Workflow终态投影及两表一致性仍有缺口。事务保护断言是裸对象单测，生产代理的REQUIRED会自动开事务；受控afterCommit交错测试不是实际多线程竞态。PG序号唯一/回滚投影测试已跑，但不能据此宣称慢客户端隔离和全部重连边界已完成。
 
+G切片独立复核：无P0/P1；P2-1指出受保护命名空间漏掉项目实际HIFY_DB_*及JVM TLS配置，已以误授权红灯证实。后续按命名空间补拦截，不全面禁止合法应用的SECRET/PASSWORD名称。P2-2不改变路径授权范围，OPERATIONS明确Provider去尾斜杠、MCP保持精确路径。P2-3新增已发布AgentVersion旧引用的真实ToolRuntime零外发测试，H2/PG证据见SPEC_CREDENTIAL_BOUNDARY.md的G补充。
+
 ## 已核对的文档漂移
 
 - API.md 把未实现会话列表、v1 会话详情/消息、tool-definition/dry-run 写成可调用；Workflow更新写成不存在的PATCH。

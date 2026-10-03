@@ -56,7 +56,9 @@ public class CredentialReferencePolicy {
         String name = ref.substring(ref.indexOf(':') + 1).replace('.', '_').replace('-', '_').toUpperCase(Locale.ROOT);
         // These are infrastructure secrets, never provider/tool credentials even if mistakenly listed.
         return !name.equals("HIFY_MCP_MASTER_KEY") && !name.equals("HIFY_MCP_CREDENTIALS_MASTER_KEY")
-                && !name.startsWith("SPRING_") && !name.startsWith("DB_") && !name.startsWith("DATABASE_");
+                && !name.startsWith("SPRING_") && !name.startsWith("DB_") && !name.startsWith("DATABASE_")
+                && !name.startsWith("HIFY_DB_") && !name.startsWith("HIFY_REDIS_")
+                && !name.startsWith("JAVAX_NET_SSL_");
     }
 
     private static String target(String value) {

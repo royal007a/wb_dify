@@ -19,6 +19,7 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicInteger;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,11 +34,13 @@ abstract class AbstractMcpCredentialContract {
     @Autowired ToolRuntime runtime;
     HttpServer remote;
     final AtomicReference<String> authorization = new AtomicReference<>();
+    final AtomicInteger requests = new AtomicInteger();
     String endpoint;
     @BeforeEach void serve() throws Exception {
         remote = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         endpoint = "http://127.0.0.1:" + remote.getAddress().getPort() + "/mcp";
         remote.createContext("/mcp", x -> {
+            requests.incrementAndGet();
             authorization.set(x.getRequestHeaders().getFirst("Authorization"));
             JsonNode request = json.readTree(x.getRequestBody());
             String method = request.path("method").asText();
@@ -165,6 +168,7 @@ abstract class AbstractMcpCredentialContract {
 
     @Test void rejectsProcessSecretReferencesAtSaveWithoutReadingTheirValues() throws Exception {
         for (String ref : List.of("env:HIFY_MCP_MASTER_KEY", "env:SPRING_DATASOURCE_PASSWORD",
+                "env:HIFY_DB_PASSWORD", "env:HIFY_DB_URL", "env:HIFY_DB_USERNAME", "system:javax.net.ssl.keyStorePassword",
                 "env:DB_PASSWORD", "system:hify.mcp.credentials.master-key", "system:hify.review.unlisted")) {
             http.perform(post("/api/v1/mcp-servers").contentType("application/json")
                     .content(input().put("credentialAction", "REFERENCE").put("credentialRef", ref).toString()))
@@ -202,5 +206,39 @@ abstract class AbstractMcpCredentialContract {
         body.put("credentialAction", "CLEAR");
         update(id, body);
         assertThat(reference(id)).isNull();
+    }
+
+    @Test void frozenPublishedRevisionWithUnapprovedLegacyReferenceSendsNoHttp(CapturedOutput logs) throws Exception {
+        String id = create(input());
+        http.perform(post("/api/v1/mcp-servers/{id}/tools:refresh", id)).andExpect(status().isOk());
+        var agent = json.createObjectNode().put("name", "Legacy Credential Agent " + UUID.randomUUID()).put("instructions", "Use lookup")
+                .put("providerId", "mock").put("modelId", "hify-mock").put("temperature", 0.2)
+                .put("maxTokens", 1024).put("maxTurns", 4).put("maxContextTurns", 10).put("enabled", true);
+        agent.putArray("enabledTools");
+        String agentId = json.readTree(http.perform(post("/api/v1/agents").contentType("application/json").content(agent.toString()))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();
+        http.perform(put("/api/v1/agents/{id}/mcp-bindings", agentId).contentType("application/json")
+                .content(json.writeValueAsString(Map.of("bindings", List.of(Map.of("serverId", id, "toolNames", List.of("lookup")))))))
+                .andExpect(status().isOk());
+        String version = json.readTree(http.perform(post("/api/v1/agents/{id}/publications", agentId)).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString()).path("data").path("id").asText();
+        var tool = agents.requireVersion(version).mcpTools().get(0);
+        var definition = new ToolDefinition(tool.runtimeToolName(), tool.description(), tool.inputSchema(), "read");
+        var capability = runtime.snapshot(version, Set.of(tool.runtimeToolName()), List.of(definition));
+        // Simulate a pre-policy persisted revision. Production revisions are never edited this way.
+        // Leave the draft credential empty: runtime must validate the frozen reference, not the draft.
+        jdbc.update("update mcp_server_revisions set credential_ref=? where server_id=? and server_revision=?",
+                "system:hify.review.frozen-unlisted", id, tool.serverRevision());
+        int before = requests.get();
+        System.setProperty("hify.review.frozen-unlisted", "fake-frozen-only-secret");
+        try {
+            var result = runtime.execute(new RuntimeMessage.ToolCall("legacy-frozen", tool.runtimeToolName(), Map.of()), capability,
+                    ToolExecutionLease.local("legacy-frozen", capability.revision()), ExecutionControl.none());
+            assertThat(result.error()).isTrue();
+            assertThat(result.toString()).contains("not approved").doesNotContain("fake-frozen-only-secret");
+            assertThat(requests).hasValue(before);
+            assertThat(reference(id)).isNull();
+            assertThat(logs.getAll()).doesNotContain("fake-frozen-only-secret");
+        } finally { System.clearProperty("hify.review.frozen-unlisted"); }
     }
 }
