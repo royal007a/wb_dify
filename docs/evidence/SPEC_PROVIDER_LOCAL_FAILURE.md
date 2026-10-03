@@ -26,3 +26,5 @@ Each execution now owns a once-only probe settlement shared between caller and w
 `green.log`: `mvn -B -f backend/pom.xml -pl hify-common,hify-provider -am test`, exit 0, **47 common + 24 provider = 71 passed, zero skipped**. Six new cases cover real stalled HTTP opening the breaker after five samples, blocked HALF_OPEN late success, Run deadline releasing HALF_OPEN capacity before worker return, queue-only model expiry, wrapped cancellation versus genuine socket timeout, and cancellation during retry wait. Existing cancellation/retry/provider isolation tests remain passing.
 
 Boundary: attempted means entry into the supplied operation, not proof that bytes reached the server. An opaque operation's inner queue cannot be distinguished from its IO without a separate admission signal. This change does not wire streaming into a breaker, change shutdown recovery, or claim deployed verification.
+
+Final gate on code `6775e6e`: the atomic runner repeated all **71 passing tests**, zero skipped, and explicit Harness verification passed at 2026-10-03T19:01:55Z. See command.log and verification.json. No shared services or real credentials were used.

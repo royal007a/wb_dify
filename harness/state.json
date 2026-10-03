@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8",
-    "path": "harness/evidence/SPEC-SSE-BACKPRESSURE-001/SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8",
+    "runId": "SPEC-PROVIDER-LOCAL-FAILURE-002-20261003T185305Z-d0bc5012",
+    "path": "harness/evidence/SPEC-PROVIDER-LOCAL-FAILURE-002/SPEC-PROVIDER-LOCAL-FAILURE-002-20261003T185305Z-d0bc5012",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "0fd14e6ed9d9ba7b3ca6e9a9edf97daac4a54c6e",
-    "headCommit": "95e77f1ac082597f59db5cbb842dcc7f88e9f088",
-    "recordedAt": "2026-10-03T18:48:36Z"
+    "baselineCommit": "c08fbffce585020c52b2025b8af2687200a07612",
+    "headCommit": "6775e6ef20373f35f9fdf2aa22c8a09c7c09825c",
+    "recordedAt": "2026-10-03T19:01:55Z"
   },
-  "lastCompletedTaskId": "SPEC-SSE-BACKPRESSURE-001",
-  "updatedAt": "2026-10-03T18:48:36Z"
+  "lastCompletedTaskId": "SPEC-PROVIDER-LOCAL-FAILURE-002",
+  "updatedAt": "2026-10-03T19:01:55Z"
 }

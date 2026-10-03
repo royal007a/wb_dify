@@ -1,29 +1,50 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T18:48:36Z",
+  "updatedAt": "2026-10-03T19:01:55Z",
   "tasks": [
     {
       "id": "SPEC-PROVIDER-LOCAL-FAILURE-002",
       "title": "区分用户取消与真实上游模型期限超时",
       "description": "B1复验P1：本地model-timeout中断卡死HTTP导致误归用户取消，需记录真实Provider超时而不污染Run取消统计。",
       "priority": "P1",
-      "status": "pending",
-      "scopes": ["backend", "runtime", "harness"],
-      "verifyScopes": ["harness"],
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-PROVIDER-LOCAL-FAILURE-001"],
+      "dependsOn": [
+        "SPEC-PROVIDER-LOCAL-FAILURE-001"
+      ],
       "acceptance": [
         "真实本地HTTP服务接收但不响应，模型期限结束后失败计入breaker并能OPEN",
         "用户取消、Run期限、排队超时、本地容量拒绝不计Provider失败",
         "HALF_OPEN超时/取消各自正确结算且无双计数/许可泄漏",
         "保留旧红绿证据，common/provider完整回归与文档更新"
       ],
-      "planPath": "exec-plans/active/SPEC-PROVIDER-LOCAL-FAILURE-002.md",
-      "checkpoint": null,"blockedReason": null,"evidence": [],
-      "createdAt": "2026-10-03T18:50:00Z","updatedAt": "2026-10-03T18:50:00Z"
+      "planPath": "exec-plans/completed/SPEC-PROVIDER-LOCAL-FAILURE-002.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [
+        {
+          "runId": "SPEC-PROVIDER-LOCAL-FAILURE-002-20261003T185305Z-d0bc5012",
+          "path": "harness/evidence/SPEC-PROVIDER-LOCAL-FAILURE-002/SPEC-PROVIDER-LOCAL-FAILURE-002-20261003T185305Z-d0bc5012",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "c08fbffce585020c52b2025b8af2687200a07612",
+          "headCommit": "6775e6ef20373f35f9fdf2aa22c8a09c7c09825c",
+          "recordedAt": "2026-10-03T19:01:55Z"
+        }
+      ],
+      "createdAt": "2026-10-03T18:50:00Z",
+      "updatedAt": "2026-10-03T19:01:55Z"
     },
     {
       "id": "SPEC-CREDENTIAL-BOUNDARY-003",
@@ -31,20 +52,30 @@
       "description": "G复验P2：masterKey/MASTERKEY等别名不应绕过基础设施引用保护。",
       "priority": "P2",
       "status": "pending",
-      "scopes": ["backend", "harness"],
-      "verifyScopes": ["harness"],
+      "scopes": [
+        "backend",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-CREDENTIAL-BOUNDARY-002"],
+      "dependsOn": [
+        "SPEC-CREDENTIAL-BOUNDARY-002"
+      ],
       "acceptance": [
         "env:HIFY_MCP_CREDENTIALS_MASTERKEY及system:hify.mcp.credentials.masterKey误授权红灯转绿",
         "完整HIFY_MCP_/HIFY_CREDENTIAL_基础配置命名空间禁止外发，合法应用引用仍通过",
         "不读取真实配置值，迁移文档明确保留命名空间"
       ],
       "planPath": "exec-plans/active/SPEC-CREDENTIAL-BOUNDARY-003.md",
-      "checkpoint": null,"blockedReason": null,"evidence": [],
-      "createdAt": "2026-10-03T18:50:00Z","updatedAt": "2026-10-03T18:50:00Z"
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T18:50:00Z",
+      "updatedAt": "2026-10-03T18:50:00Z"
     },
     {
       "id": "SPEC-CREDENTIAL-BOUNDARY-002",

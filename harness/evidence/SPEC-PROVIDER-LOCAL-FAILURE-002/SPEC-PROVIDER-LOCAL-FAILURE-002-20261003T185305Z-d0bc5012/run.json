@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-PROVIDER-LOCAL-FAILURE-002-20261003T185305Z-d0bc5012",
+  "taskId": "SPEC-PROVIDER-LOCAL-FAILURE-002",
+  "status": "completed",
+  "baselineCommit": "c08fbffce585020c52b2025b8af2687200a07612",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T18:53:05Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "6775e6ef20373f35f9fdf2aa22c8a09c7c09825c",
+  "finishedAt": "2026-10-03T19:01:55Z"
+}
