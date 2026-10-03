@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "runtime"
+  ],
+  "base": "working-tree",
+  "headCommit": "6af95d4e9df7e1fa4889803a398468af5ac951fc",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-002/SPEC-HISTORY-RECOVERY-002-20261003T210830Z-27c07002/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-002/SPEC-HISTORY-RECOVERY-002-20261003T210830Z-27c07002/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-002/SPEC-HISTORY-RECOVERY-002-20261003T210830Z-27c07002/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-002/SPEC-HISTORY-RECOVERY-002-20261003T210830Z-27c07002/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-002/SPEC-HISTORY-RECOVERY-002-20261003T210830Z-27c07002/harness-shell-syntax.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-HISTORY-RECOVERY-002/SPEC-HISTORY-RECOVERY-002-20261003T210830Z-27c07002/runtime-tests.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T21:13:21Z"
+}

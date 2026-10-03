@@ -1,31 +1,50 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T21:00:33Z",
+  "updatedAt": "2026-10-03T21:13:21Z",
   "tasks": [
     {
       "id": "SPEC-HISTORY-RECOVERY-002",
       "title": "恢复元数据按JSON语义比较，兼容跨JVM键顺序",
       "description": "历史恢复复核P1：Map.copyOf遍历顺序可跨JVM变化；已提交恢复JSON必须保留原文摘要，但幂等比较不能按对象键顺序判冲突。",
       "priority": "P1",
-      "status": "pending",
-      "scopes": ["backend", "runtime", "harness"],
-      "verifyScopes": ["harness", "runtime"],
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "runtime"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-HISTORY-RECOVERY-001"],
+      "dependsOn": [
+        "SPEC-HISTORY-RECOVERY-001"
+      ],
       "acceptance": [
         "等价但键顺序不同的嵌套recovery_json经真实QueryLoop重放不会误报冲突",
         "真正字段值、数组顺序或计数变化仍冲突，摘要损坏仍拒绝",
         "既有canonical及恢复JSON与digest保持原样，不重写旧记录，不新增模型或工具调用"
       ],
-      "planPath": "exec-plans/active/SPEC-HISTORY-RECOVERY-002.md",
+      "planPath": "exec-plans/completed/SPEC-HISTORY-RECOVERY-002.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-HISTORY-RECOVERY-002-20261003T210830Z-27c07002",
+          "path": "harness/evidence/SPEC-HISTORY-RECOVERY-002/SPEC-HISTORY-RECOVERY-002-20261003T210830Z-27c07002",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "176fb51c7228edf3d61017ce0916b246598fd672",
+          "headCommit": "6af95d4e9df7e1fa4889803a398468af5ac951fc",
+          "recordedAt": "2026-10-03T21:13:21Z"
+        }
+      ],
       "createdAt": "2026-10-03T21:10:00Z",
-      "updatedAt": "2026-10-03T21:10:00Z"
+      "updatedAt": "2026-10-03T21:13:21Z"
     },
     {
       "id": "SPEC-HISTORY-RECOVERY-003",
@@ -33,12 +52,21 @@
       "description": "只读复核P2待核验：轮末replan的UUID可能重生，观察投影重复，replanDecisions/recallLatency与旧记录失败统计可能未完整恢复。",
       "priority": "P2",
       "status": "pending",
-      "scopes": ["backend", "runtime", "harness"],
-      "verifyScopes": ["harness", "runtime"],
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "runtime"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-HISTORY-RECOVERY-002"],
+      "dependsOn": [
+        "SPEC-HISTORY-RECOVERY-002"
+      ],
       "acceptance": [
         "以轮末replan及多次重启确定性用例核验计划身份和累计预算",
         "明确审计投影重放和失败统计契约，不将静态推断写成运行证据",

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-HISTORY-RECOVERY-002-20261003T210830Z-27c07002",
+  "taskId": "SPEC-HISTORY-RECOVERY-002",
+  "status": "completed",
+  "baselineCommit": "176fb51c7228edf3d61017ce0916b246598fd672",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T21:08:30Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "6af95d4e9df7e1fa4889803a398468af5ac951fc",
+  "finishedAt": "2026-10-03T21:13:21Z"
+}

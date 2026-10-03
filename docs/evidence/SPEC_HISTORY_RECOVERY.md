@@ -15,3 +15,5 @@
 最终命令和门禁退出码以本目录 command.log/verification.json 为准。尚未做全仓/浏览器回归或线上部署。对旧工具记录、未提交 READ、部分流式输出、总预算和历史投影的限制见 SPEC_HISTORY_RECOVERY.md；这里不宣称外部副作用恰好一次。
 
 最终代码：73a4f20（数据/持久接口）与 927e5df（QueryLoop 接入、测试、契约）。原子命令 35 项通过，harness（含 5 项 Python）通过，migration 矩阵 27 项通过且 0 skip，包含 PG 的恢复 2 项+V22 升级 1 项。迁移最后新增的恢复字段成对约束也在 H2/PG 升级用例里断言通过；退出码均为 0。未执行项不计入这些数字。
+
+后续只读复核发现跨 JVM 的恢复 JSON 对象键顺序可导致误冲突，已以确定性键序反例复现并修复，见 [SPEC_HISTORY_RECOVERY_SEMANTICS.md](SPEC_HISTORY_RECOVERY_SEMANTICS.md)。原有“恢复原 replan ID”只覆盖后续已提交工具携带新计划的路径，不涵盖最后工具触发的 replan；其余预算与投影边界已收窄契约并登记后续任务。

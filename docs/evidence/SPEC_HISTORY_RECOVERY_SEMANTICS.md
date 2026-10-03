@@ -18,4 +18,6 @@ HistoryReplayTest 在本地 replan 后的第二个工具已经提交、轮末 ch
 
 这是确定性构造另一 JVM 键序的测试，不是实际 fork 多个 JVM 的概率性测试。生产关闭/恢复和运行时门禁结果见本目录最终 command.log / verification.json；仅这两份最终记录可用于声称整个原子任务通过。
 
+最终源码提交 `6af95d4`：原子命令 39 项通过（QueryLoop 20、RunFlow 2、HistoryReplay 9、RunShutdown 6、HistoryRecovery 2），0 failures/errors/skip；Harness runtime 门禁另外跑 34 项，通过且 0 skip。两个命令有重叠，不合计成 73 个独立用例。Harness 状态、接口库存、Python 5 项和 shell 语法均通过。本片未重跑 PostgreSQL、浏览器或全仓测试；没有数据库结构变化。
+
 review 的其他 P2 没有混进这次修复：最后一个工具触发 replan 的 UUID、重复决策投影、累计预算/失败统计登记到 SPEC-HISTORY-RECOVERY-003，Run 总期限仍归 SPEC-RUN-BUDGET-001。契约已收窄原有表述。不把静态意见当成新的实测结果，也不把这次通过当成整个恢复协议已无缺口。

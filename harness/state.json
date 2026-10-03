@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0",
-    "path": "harness/evidence/SPEC-HISTORY-RECOVERY-001/SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0",
+    "runId": "SPEC-HISTORY-RECOVERY-002-20261003T210830Z-27c07002",
+    "path": "harness/evidence/SPEC-HISTORY-RECOVERY-002/SPEC-HISTORY-RECOVERY-002-20261003T210830Z-27c07002",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "20e96670f937bd78f1fd0e413f753b00512841da",
-    "headCommit": "927e5dfb07934d518483c9963d21e7a0300bdd51",
-    "recordedAt": "2026-10-03T21:00:33Z"
+    "baselineCommit": "176fb51c7228edf3d61017ce0916b246598fd672",
+    "headCommit": "6af95d4e9df7e1fa4889803a398468af5ac951fc",
+    "recordedAt": "2026-10-03T21:13:21Z"
   },
-  "lastCompletedTaskId": "SPEC-HISTORY-RECOVERY-001",
-  "updatedAt": "2026-10-03T21:00:33Z"
+  "lastCompletedTaskId": "SPEC-HISTORY-RECOVERY-002",
+  "updatedAt": "2026-10-03T21:13:21Z"
 }
