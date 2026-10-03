@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "frontend",
+    "runtime"
+  ],
+  "base": "working-tree",
+  "headCommit": "496aae5748d3fe138c0cac13e065f53744725c3d",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-002/SPEC-CHAT-LIFECYCLE-002-20261003T230116Z-4da78444/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-002/SPEC-CHAT-LIFECYCLE-002-20261003T230116Z-4da78444/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-002/SPEC-CHAT-LIFECYCLE-002-20261003T230116Z-4da78444/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-002/SPEC-CHAT-LIFECYCLE-002-20261003T230116Z-4da78444/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-002/SPEC-CHAT-LIFECYCLE-002-20261003T230116Z-4da78444/harness-shell-syntax.log"
+    },
+    {
+      "name": "frontend-typecheck",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-002/SPEC-CHAT-LIFECYCLE-002-20261003T230116Z-4da78444/frontend-typecheck.log"
+    },
+    {
+      "name": "frontend-build",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-002/SPEC-CHAT-LIFECYCLE-002-20261003T230116Z-4da78444/frontend-build.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-CHAT-LIFECYCLE-002/SPEC-CHAT-LIFECYCLE-002-20261003T230116Z-4da78444/runtime-tests.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T23:06:42Z"
+}

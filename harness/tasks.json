@@ -1,8 +1,44 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T22:59:42Z",
+  "updatedAt": "2026-10-03T23:06:42Z",
   "tasks": [
+    {
+      "id": "SPEC-WORKFLOW-GRAPH-003",
+      "title": "条件空白、旧转义兼容与迁移诊断",
+      "description": "Workflow图复核5条P2：Unicode空白、旧引用反斜杠语义、旧裸标点关键词、节点提示、非法版本展示/事件投影。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": [
+        "backend",
+        "frontend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "runtime",
+        "frontend"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [
+        "SPEC-WORKFLOW-GRAPH-002"
+      ],
+      "acceptance": [
+        "全角空白正确处理或明确拒绝，不静默走错分支",
+        "旧带转义字面量语义有明确版本/迁移策略，反例回归且不改历史",
+        "旧裸标点、模板关键词限制可诊断，错误定位节点并说明重新发布顺序",
+        "非法发布版本的列表展示与started/failed事件口径不误导"
+      ],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T23:07:00Z",
+      "updatedAt": "2026-10-03T23:07:00Z"
+    },
     {
       "id": "SPEC-KNOWLEDGE-FINISH-004",
       "title": "对齐知识门禁故障分类、检索事件和核验范围展示",
@@ -983,7 +1019,7 @@
       "title": "复核前端Run创建与恢复输入边界",
       "description": "C：创建中取消、过期resume、模糊网络失败幂等、NEEDS_INPUT及重连补读竞争。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "frontend",
         "runtime",
@@ -1004,12 +1040,22 @@
         "同一提交结果不明时重用幂等键不新建重复Run",
         "受控浏览器覆盖重连/终态补读竞争，不外推真实模型链路"
       ],
-      "planPath": "exec-plans/active/SPEC-CHAT-LIFECYCLE-002.md",
+      "planPath": "exec-plans/completed/SPEC-CHAT-LIFECYCLE-002.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-CHAT-LIFECYCLE-002-20261003T230116Z-4da78444",
+          "path": "harness/evidence/SPEC-CHAT-LIFECYCLE-002/SPEC-CHAT-LIFECYCLE-002-20261003T230116Z-4da78444",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "76cf03a5c73a41009431c845b1aa31e507571885",
+          "headCommit": "496aae5748d3fe138c0cac13e065f53744725c3d",
+          "recordedAt": "2026-10-03T23:06:42Z"
+        }
+      ],
       "createdAt": "2026-10-03T18:13:15Z",
-      "updatedAt": "2026-10-03T18:13:15Z"
+      "updatedAt": "2026-10-03T23:06:42Z"
     },
     {
       "id": "SPEC-WORKFLOW-GRAPH-002",

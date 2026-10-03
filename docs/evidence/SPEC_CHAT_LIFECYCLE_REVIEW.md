@@ -12,6 +12,12 @@ red-browser.log：新增6项全部失败（实际到达功能断言，不是浏�
 
 green-browser.log：原8项和新6项，14 passed（24.7s）。继续增加7个边界：创建Conversation时取消不提交Run；未知结果后取消沿用同key；持久空Gap不默默新建任务也不无限同步；持久Gap覆盖临时Gap；首次明确400拒绝可修正；先500后403仍保留未知结果；创建回包已经终态无需再等事件。
 
+green-boundaries.log：21 passed（29.4s）。最终runner command.log再次21 passed（30.3s），源码18d2dee、测试/契约496aae5；无skip。浏览器完成后停止本次隔离Vite（确认命令及PID28142，仅此进程），15174无监听；没有停止共享后端。
+
 ## 范围限制
 
 这是受控浏览器而非后端端到端。没有声称本片证明跨重启/多标签幂等、后端唯一恢复认领或页面刷新后的待提交恢复；详见契约。未部署，未调用付费模型。最终扩展矩阵与runtime/frontend/harness结果在runner完成后补记。
+
+## 最终门禁（2026-10-04 07:06 CST）
+
+verification.json headCommit=496aae5。浏览器21项、runtime34项全部通过无skip；frontend类型检查/生产构建、harness规格/状态/5项单测/Shell语法全部退出0。构建大chunk警告保留。已关闭本片runner并清理自有前端监听，独立复核待回；不代表全接口、全功能矩阵或部署已完成。

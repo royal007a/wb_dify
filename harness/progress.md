@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-03T22:59:42Z`
+- Generated from task state updated at: `2026-10-03T23:06:42Z`
 - Current task: `none`
-- Counts: pending 15 · running 0 · blocked 1 · completed 53
+- Counts: pending 15 · running 0 · blocked 1 · completed 54
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -45,7 +45,7 @@
 | `PROVIDER-001` | P1 | completed | backend, runtime | reversible_write | 补原生流式故障注入矩阵 |
 | `RECALL-002` | P1 | completed | backend, migration, runtime, eval | reversible_write | 建立召回评测门禁并按证据演进检索 |
 | `SECURITY-001` | P1 | completed | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |
-| `SPEC-CHAT-LIFECYCLE-002` | P1 | pending | frontend, runtime, harness | reversible_write | 复核前端Run创建与恢复输入边界 |
+| `SPEC-CHAT-LIFECYCLE-002` | P1 | completed | frontend, runtime, harness | reversible_write | 复核前端Run创建与恢复输入边界 |
 | `SPEC-HISTORY-RECOVERY-001` | P1 | completed | backend, runtime, migration, harness | reversible_write | 恢复时重放已提交模型响应而非重新生成 |
 | `SPEC-HISTORY-RECOVERY-002` | P1 | completed | backend, runtime, harness | reversible_write | 恢复元数据按JSON语义比较，兼容跨JVM键顺序 |
 | `SPEC-KNOWLEDGE-FINISH-001` | P1 | completed | backend, runtime, harness | reversible_write | 知识缺口与完成门禁契约对齐 |
@@ -73,6 +73,7 @@
 | `SPEC-PROVIDER-SAMPLING-001` | P2 | pending | backend, runtime, harness | reversible_write | 区分HTTP实际尝试与Run预算截断的健康采样 |
 | `SPEC-RUN-BUDGET-001` | P2 | pending | backend, runtime, harness | reversible_write | 统一聊天与Workflow跨重启的Run预算 |
 | `SPEC-SSE-BACKPRESSURE-002` | P2 | pending | backend, runtime, harness | reversible_write | SSE公平接入与慢读总时限的确定性验证 |
+| `SPEC-WORKFLOW-GRAPH-003` | P2 | pending | backend, frontend, runtime, harness | reversible_write | 条件空白、旧转义兼容与迁移诊断 |
 | `SPEC-WORKFLOW-KNOWLEDGE-002` | P2 | completed | backend, migration, harness | reversible_write | 补齐冻结Workflow发布边界、锁顺序与事务隔离证据 |
 | `SPEC-WORKFLOW-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 关联Workflow执行事实与父Run恢复及异常边界 |
 | `SUBAGENT-001` | P2 | completed | backend, migration, runtime | reversible_write | 建立子 Agent 任务与延迟消费确认 |

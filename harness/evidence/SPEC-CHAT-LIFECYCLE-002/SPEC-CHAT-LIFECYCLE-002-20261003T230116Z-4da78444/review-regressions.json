@@ -1,0 +1,15 @@
+{
+  "task":"SPEC-CHAT-LIFECYCLE-002",
+  "baseline":"76cf03a",
+  "sourceCommit":"18d2dee",
+  "testAndContractCommit":"496aae5",
+  "browser":"Playwright chromium-headless-shell, 1440x900, one worker, controlled HTTP/EventSource",
+  "runs":[
+    {"log":"red-browser.log","tests":6,"passed":0,"failed":6,"skipped":0,"exitCode":1},
+    {"log":"green-browser.log","tests":14,"passed":14,"failed":0,"skipped":0,"seconds":24.7,"exitCode":0},
+    {"log":"green-boundaries.log","tests":21,"passed":21,"failed":0,"skipped":0,"seconds":29.4,"exitCode":0},
+    {"log":"command.log","tests":21,"passed":21,"failed":0,"skipped":0,"seconds":30.3,"exitCode":0}
+  ],
+  "temporaryFrontend":{"port":15174,"pid":28142,"stopped":true,"listenerAfterStop":false},
+  "limitations":["Not backend/real SSE transaction or provider integration", "Pending submission is page-local, not a durable outbox", "No cross-tab or unique resume claim guarantee", "Empty-gap handling is defensive; normal production reachability not established", "No production deployment"]
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-CHAT-LIFECYCLE-002-20261003T230116Z-4da78444",
+  "taskId": "SPEC-CHAT-LIFECYCLE-002",
+  "status": "completed",
+  "baselineCommit": "76cf03a5c73a41009431c845b1aa31e507571885",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T23:01:16Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "496aae5748d3fe138c0cac13e065f53744725c3d",
+  "finishedAt": "2026-10-03T23:06:42Z"
+}
