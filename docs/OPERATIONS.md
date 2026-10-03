@@ -67,6 +67,8 @@ SSE 投影独立于 Run 提交：`HIFY_SSE_MAX_SUBSCRIBERS` 默认 64（允许 1
 
 MCP 直接 Token 配置：部署时生成独立随机 32-byte Base64 `HIFY_MCP_MASTER_KEY`，放在仅服务用户可读的环境文件中，启动时注入；Compose 也从同名变量读取。不设置时只支持 env/system 引用。不要把主密钥复制进数据库、镜像、日志或 Git。数据库恢复必须同时恢复匹配主密钥；已有密文时禁止重新生成覆盖主密钥。首次配置需重启，后续页面更换 Token 无需重启。细节与回滚限制见 ADR-0020。
 
+不要用命令行 `-D`、`JAVA_TOOL_OPTIONS`、`JDK_JAVA_OPTIONS` 或 `JAVA_OPTS` 传递主密钥/凭据；命令行与启动选项聚合字段可能出现在诊断信息或可查询的系统属性中。引用授权也不得放行这些聚合值或 `system:sun.java.command`。现有保留名单不是对任意聚合内容的自动秘密识别。
+
 引用授权（安全升级）：env/system 默认拒绝，管理员另外配置 `HIFY_CREDENTIAL_REFERENCE_BINDINGS` JSON，例如 `{"env:TEAM_LLM_KEY":["https://api.example.com/v1"],"env:MCP_TOKEN":["https://tools.example.com/mcp"]}`。只包含变量/属性名与目标地址，不包含密钥值；地址精确匹配（scheme、host、port、path），无通配、不允许query/userinfo/fragment。配置错误启动失败，不回显输入。参考 ADR-0021。
 
 Provider 的授权地址必须使用**保存后的 Base URL（去掉所有尾部 `/`）**：页面填 `https://api.example.com/v1/`，授权表应写 `https://api.example.com/v1`；仅根地址则写 `https://api.example.com`，不要补 `/`。授权地址本身不替你去尾斜杠；误写会拒绝调用，不会放宽匹配。MCP 不做这项 Provider 归一化，授权路径应与保存的 endpoint 完全一致，`/mcp` 与 `/mcp/` 不等价。

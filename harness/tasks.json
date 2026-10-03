@@ -4,6 +4,31 @@
   "updatedAt": "2026-10-03T19:13:26Z",
   "tasks": [
     {
+      "id": "SPEC-PROVIDER-SAMPLING-001",
+      "title": "区分HTTP实际尝试与Run预算截断的健康采样",
+      "description": "B1复验P2：Run先到期不计失败和operation边界包含内层排队均已披露；需明确传输阶段信号，不能通过一律计失败污染Provider健康。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["backend", "runtime", "harness"],
+      "verifyScopes": ["harness"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-PROVIDER-LOCAL-FAILURE-002"],
+      "acceptance": [
+        "以真实HTTP发起/内层排队及取消原因区分采样，测试Run短于model和多轮剩余预算",
+        "不把未发送的本地排队、用户取消、关机中断算成Provider错误",
+        "补受控并发503/期限竞争、退避到期、caller中断和HALF_OPEN后续许可测试",
+        "模型和Run配置关系、流式路径未覆盖边界有可核验文档，不以启动校验代替多轮预算设计"
+      ],
+      "planPath": "exec-plans/active/SPEC-PROVIDER-SAMPLING-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T19:15:00Z",
+      "updatedAt": "2026-10-03T19:15:00Z"
+    },
+    {
       "id": "SPEC-RUN-ADMISSION-002",
       "title": "Run 执行器容量拒绝的终态与幂等回放",
       "description": "从B2/E大切片中独立出调度拒绝闭环，不混入关闭恢复及Workflow终态协调。",
