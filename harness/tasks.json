@@ -4,6 +4,31 @@
   "updatedAt": "2026-10-03T12:36:17Z",
   "tasks": [
     {
+      "id": "MCP-TOKEN-001",
+      "title": "MCP 直接 Token 输入与加密凭据版本",
+      "description": "新增 write-only Token 更新协议与 AES-GCM 加密存储，保留环境引用；Console 保持/替换/清除分开并验证旧 revision 不变。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["backend", "frontend", "migration"],
+      "verifyScopes": ["harness", "backend", "frontend", "migration"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "Token 只写不读，加密主密钥独立，缺失或错误主密钥 fail closed",
+        "新增、保持、更换、清除与 env/system 兼容，凭据按 server 绑定不可跨服务复用",
+        "历史 revision 固定旧凭据版本；响应、异常、日志和快照不包含明文",
+        "H2/PostgreSQL 迁移与集成测试、浏览器表单回归通过"
+      ],
+      "planPath": "exec-plans/active/MCP-TOKEN-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T13:00:00Z",
+      "updatedAt": "2026-10-03T13:00:00Z"
+    },
+    {
       "id": "CHAT-DEMO-DEPLOY-001",
       "title": "部署并验证 132 Demo 会话时间修复",
       "description": "备份并更新原 Hify jar/前端，以独立 Demo 测试会话验证连续时间请求和计算，不更改现有会话、发布配置或凭证。",
