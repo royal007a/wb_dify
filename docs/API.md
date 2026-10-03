@@ -216,7 +216,11 @@ POST     /api/v1/workflow-versions/{id}/runs
 GET      /api/v1/workflow-runs/{id}
 ```
 
-Workflow DSL 使用显式 `schemaVersion`。当前发布前验证 START/END 数量、节点 ID 唯一、边可达、Condition 默认分支和无循环。模板变量必经关系、全路径终止、KNOWLEDGE 资源版本冻结仍是审计缺口，见 `spec/AUDIT_FINDINGS.md`。试跑接口目前同步执行后返回 HTTP202，不能据此宣称后台异步队列。
+Workflow DSL 使用显式 `schemaVersion`。保存、发布和执行前共用结构校验：恰有一个START（无入边）、至少一个END（无出边）、全图可达无环；其他非条件节点恰有一条无条件出边，因此每条可走路径都终止于END。CONDITION恰有一个默认分支，其他标签只接受不重复的true/false。非法图返回参数错误，已存储的非法旧版本也在执行前拒绝，不改写其DSL/checksum。
+
+节点/边key、输出变量名为1–128个字母、数字、下划线或连字符，不隐式裁剪空格。模板使用 `{{nodeKey.variable}}`（允许括号内首尾空格），只能引用严格必经上游已声明的变量。START输出为实际START key的userMessage；TEMPLATE/CONDITION默认result、KNOWLEDGE默认citations，可用outputVariable覆盖；END没有输出变量。运行缺值直接失败；插入的用户/工具文本只作为数据，不能二次展开为模板。结构安全不等于KNOWLEDGE已冻结语料，也不等于取消/FinishGate已贯通，这些仍见 `spec/AUDIT_FINDINGS.md`。
+
+试跑接口目前同步执行后返回 HTTP202，不能据此宣称后台异步队列。
 
 Agent 一期最多绑定一个入口 Workflow。发布 Agent 时固定当前 published WorkflowVersion；Chat 创建 Run 后若该固定版本存在，进入确定性 Workflow executor 并发出 `workflow.started/workflow.completed`，否则进入 QueryLoop。Console 画布和 Runtime 读写同一 DSL，并提供节点、连线、属性、校验、试跑和发布版本 diff。
 
