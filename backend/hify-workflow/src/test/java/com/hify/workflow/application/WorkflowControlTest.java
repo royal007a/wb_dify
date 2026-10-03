@@ -21,6 +21,8 @@ class WorkflowControlTest {
     private final WorkflowRunRepository runs = mock(WorkflowRunRepository.class);
     private final WorkflowNodeRunRepository nodes = mock(WorkflowNodeRunRepository.class);
     private final KnowledgeRetrievalPort knowledge = mock(KnowledgeRetrievalPort.class);
+    private static final com.hify.knowledge.api.KnowledgeCorpusSnapshot SNAPSHOT =
+            new com.hify.knowledge.api.KnowledgeCorpusSnapshot("corpus","kb",1,"a".repeat(64),0);
     private final Map<Integer,WorkflowNodeRun> recorded = new ConcurrentHashMap<>();
 
     @AfterEach void cleanup() throws Exception {
@@ -32,7 +34,7 @@ class WorkflowControlTest {
     @Test void cancelledBlockingNodeInterruptsWorkerAndNeverStartsNextNode() throws Exception {
         var engine = engine(worker);
         var entered = new CountDownLatch(1); var interrupted = new CountDownLatch(1);
-        when(knowledge.search("kb","input",3)).thenAnswer(invocation -> {
+        when(knowledge.searchSnapshot(SNAPSHOT,"input",3)).thenAnswer(invocation -> {
             entered.countDown();
             try { new CountDownLatch(1).await(); return List.of(); }
             catch (InterruptedException stopped) { interrupted.countDown(); throw stopped; }
@@ -58,7 +60,7 @@ class WorkflowControlTest {
         when(control.withShutdown(any())).thenReturn(control); // Preserve the deterministic virtual deadline in this fixture.
         when(control.isExpired()).thenAnswer(invocation -> expired.get());
         when(control.remaining(any())).thenReturn(Duration.ofMillis(50));
-        when(knowledge.search("kb","input",3)).thenAnswer(invocation -> {
+        when(knowledge.searchSnapshot(SNAPSHOT,"input",3)).thenAnswer(invocation -> {
             entered.countDown();
             try { new CountDownLatch(1).await(); return List.of(); }
             catch (InterruptedException stopped) { interrupted.countDown(); throw stopped; }
@@ -114,7 +116,7 @@ class WorkflowControlTest {
     @Test void cancelAfterEndNodeStillPreventsWorkflowSuccessCommit() throws Exception {
         var cancelled = new AtomicBoolean();
         var engine = engine(worker);
-        when(knowledge.search("kb","input",3)).thenReturn(List.of());
+        when(knowledge.searchSnapshot(SNAPSHOT,"input",3)).thenReturn(List.of());
         doAnswer(invocation -> {
             WorkflowNodeRun node = invocation.getArgument(0);recorded.put(node.getSequenceNo(),node);
             if(node.getNodeKey().equals("end") && node.getStatus().equals("SUCCEEDED")) cancelled.set(true);
@@ -144,7 +146,7 @@ class WorkflowControlTest {
         when(control.isExpired()).thenAnswer(invocation->expired.get());
         when(control.remaining(any())).thenReturn(Duration.ofMillis(50));
         var engine=engine(Runnable::run);
-        when(knowledge.search("kb","input",3)).thenThrow(new IllegalStateException("real business failure"));
+        when(knowledge.searchSnapshot(SNAPSHOT,"input",3)).thenThrow(new IllegalStateException("real business failure"));
         doAnswer(invocation->{
             WorkflowNodeRun node=invocation.getArgument(0);recorded.put(node.getSequenceNo(),node);
             if(node.getStatus().equals("FAILED")) {if(deadline)expired.set(true);else cancelled.set(true);}
@@ -168,6 +170,8 @@ class WorkflowControlTest {
         var graph = draft(List.of(node("start","START"),
                 node("lookup","KNOWLEDGE","knowledgeBaseId","kb","query","{{start.userMessage}}"),
                 node("end","END","output","should-not-run-after-cancel")),edge("start","lookup"),edge("lookup","end"));
+        ((com.fasterxml.jackson.databind.node.ObjectNode)graph.nodes().get(1).config()).set("knowledgeSnapshot",
+                JSON.createObjectNode().put("corpusVersionId",SNAPSHOT.id()).put("manifestDigest",SNAPSHOT.manifestDigest()).put("revisionNo",1).put("chunkCount",0));
         when(app.requireVersion("v1")).thenReturn(new WorkflowVersion("v1","w1",1,1,JSON.writeValueAsString(graph),"digest",Instant.now()));
         when(nodes.save(any())).thenAnswer(invocation -> {
             WorkflowNodeRun node = invocation.getArgument(0);recorded.put(node.getSequenceNo(),node);return node;

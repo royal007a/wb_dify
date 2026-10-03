@@ -18,7 +18,7 @@
 | 摘要与细节目录 | `memory/*`、`V11__context_memory_catalog.sql`、ADR-0012 | 所有 canonical message 建统一 DetailRef；结构化 checkpoint 摘要带逐 Claim sourceRefs、原文 digest 校验与冲突/缺源状态；摘要明确不作为证据 |
 | 分层上下文/历史召回 | `LayeredContextMemoryService`、`HistoryRecallService`、`history.search/detail`、V12/V13、ADR-0013/0014 | 最近 3 轮原文 + 更早摘要/目录；PostgreSQL FTS + pgvector HNSW + 加权 RRF，并支持时间/类型/实体过滤；search 为导航、detail 才是 VERIFIED evidence；有 recall/no-progress 预算和只读 HTTP API |
 | Knowledge/RAG 数据管线 | `hify-knowledge`、V14/V15/V18、`KnowledgeApiIntegrationTest` | TXT/Markdown、递归分块、64维 hash bootstrap embedding、FTS/pgvector/HNSW + RRF、canonical引用；已绑定 AgentVersion 的 corpus revision，并在 Chat QueryLoop 前注入。真实 embedding、空命中/失败的强约束、最终 Claim 引用 gate 尚不完整 |
-| Workflow 版本化运行时 | `hify-workflow`、V16/V19、`WorkflowApiIntegrationTest`、`AgentApiIntegrationTest` | 已绑定 AgentVersion/Chat，START/TEMPLATE/CONDITION/KNOWLEDGE/END，固定 DSL checksum、变量池/节点轨迹；未接 LLM/Tool 节点。变量必经校验、KNOWLEDGE节点语料冻结、取消/deadline传播存在审计缺口 |
+| Workflow 版本化运行时 | `hify-workflow`、V16/V19、`WorkflowApiIntegrationTest`、`WorkflowKnowledgePostgresTest` | 已绑定 AgentVersion/Chat；确定性节点、变量必经校验、发布 DSL/corpus 快照、历史引用和取消/deadline 已有专项回归。旧未冻结知识图拒绝并要求重新发布；知识相关性/FinishGate、异常及崩溃恢复仍有单列缺口。未接 LLM/Tool 节点 |
 | MCP Server 管理 | `hify-mcp`、V17/V19/V20、`McpServerApiIntegrationTest`、McpCredential tests | Streamable HTTP JSON-RPC子集、工具发现/schema快照、READ调试；已绑定 AgentVersion/QueryLoop，冻结endpoint/credential/schema。Console可编辑、Token加密只写。官方SDK conformance、DNS固定解析未具备 |
 | 子任务控制协议 | `ChildAgentTask`、`ChildAgentTaskService`、`V10__child_agent_task_protocol.sql` | 独立状态机、outputRef、delivered/claimed/consumed、父成功后确认、lost 收敛已验证；尚无真实子 Agent worker/调度器 |
 | Intent Router | `hify-chat/com.hify.intent`、`IntentRoutingController` | 四出口契约、确定性规则层、结构化模型候选、低置信/歧义/缺槽澄清、120 条中文评测集；当前仅预览，不接管 Run |

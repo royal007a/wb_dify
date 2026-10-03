@@ -58,10 +58,11 @@ class WorkflowRunControlIntegrationTest {
 
         var entered = new CountDownLatch(1); var release = new CountDownLatch(1); var interrupted = new CountDownLatch(1);
         doAnswer(invocation -> {
+            assertThat(((com.hify.knowledge.api.KnowledgeCorpusSnapshot)invocation.getArgument(0)).knowledgeBaseId()).isEqualTo(kb);
             entered.countDown();
             try { release.await(); return List.of(); }
             catch (InterruptedException stopped) { interrupted.countDown(); throw new IllegalStateException("test retrieval interrupted"); }
-        }).when(knowledge).search(kb,"blocked",3);
+        }).when(knowledge).searchSnapshot(any(),eq("blocked"),eq(3));
         try {
             String run = body(http.perform(post("/api/v1/conversations/{id}/runs",conversation).header("Idempotency-Key",suffix)
                     .contentType("application/json").content("{\"message\":\"blocked\"}")).andExpect(status().isAccepted())

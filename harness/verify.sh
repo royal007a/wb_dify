@@ -149,13 +149,14 @@ for scope in $SCOPES; do
       if [ "$docker_status" -ne 0 ]; then
         OVERALL=1
       else
-        run_step migration-postgres sh -c "cd '$ROOT_DIR/backend' && mvn -Dapi.version='${HIFY_DOCKER_API_VERSION:-1.44}' -pl hify-app -am -Dtest=AgentToolBindingMigrationTest,PostgresConcurrencyIntegrationTest,McpCredentialPostgresTest,WorkflowTerminalMigrationTest,WorkflowTerminalPostgresTest,RunShutdownPostgresTest,WorkflowSettlementPostgresTest,HistoryRecoveryMigrationTest,HistoryRecoveryPostgresTest -Dsurefire.failIfNoSpecifiedTests=false test"
+        run_step migration-postgres sh -c "cd '$ROOT_DIR/backend' && mvn -Dapi.version='${HIFY_DOCKER_API_VERSION:-1.44}' -pl hify-app -am -Dtest=AgentToolBindingMigrationTest,PostgresConcurrencyIntegrationTest,McpCredentialPostgresTest,WorkflowTerminalMigrationTest,WorkflowTerminalPostgresTest,RunShutdownPostgresTest,WorkflowSettlementPostgresTest,HistoryRecoveryMigrationTest,HistoryRecoveryPostgresTest,WorkflowKnowledgePostgresTest -Dsurefire.failIfNoSpecifiedTests=false test"
         run_step migration-not-skipped sh -c "grep -Eq 'Tests run: [1-9][0-9]*, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.PostgresConcurrencyIntegrationTest.txt'"
         run_step migration-mcp-not-skipped sh -c "grep -Eq 'Tests run: [1-9][0-9]*, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.McpCredentialPostgresTest.txt'"
         run_step migration-workflow-not-skipped sh -c "grep -Eq 'Tests run: [1-9][0-9]*, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.WorkflowTerminalPostgresTest.txt'"
         run_step migration-shutdown-not-skipped sh -c "grep -Eq 'Tests run: [1-9][0-9]*, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.RunShutdownPostgresTest.txt'"
         run_step migration-settlement-not-skipped sh -c "grep -Eq 'Tests run: 4, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.WorkflowSettlementPostgresTest.txt'"
         run_step migration-history-recovery-not-skipped sh -c "grep -Eq 'Tests run: 3, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.HistoryRecoveryPostgresTest.txt'"
+        run_step migration-workflow-knowledge-not-skipped sh -c "grep -Eq 'Tests run: 10, Failures: 0, Errors: 0, Skipped: 0' '$ROOT_DIR/backend/hify-app/target/surefire-reports/com.hify.api.WorkflowKnowledgePostgresTest.txt'"
       fi
       ;;
     runtime)

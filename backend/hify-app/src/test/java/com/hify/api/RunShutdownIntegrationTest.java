@@ -117,7 +117,9 @@ class RunShutdownIntegrationTest {
         String url=database(), run, version;
         var entered=new CountDownLatch(1); var interrupted=new CountDownLatch(1);
         var knowledge=mock(KnowledgeRetrievalPort.class);
-        when(knowledge.search("fixture-kb","blocked",3)).thenAnswer(invocation -> {
+        var corpus=new com.hify.knowledge.api.KnowledgeCorpusSnapshot("fixture-corpus","fixture-kb",1,"a".repeat(64),0);
+        when(knowledge.freeze("fixture-kb")).thenReturn(corpus);
+        when(knowledge.searchSnapshot(corpus,"blocked",3)).thenAnswer(invocation -> {
             entered.countDown();
             try {new CountDownLatch(1).await();return List.of();}
             catch(InterruptedException stop){interrupted.countDown();throw new IllegalStateException("test read interrupted");}
@@ -147,7 +149,7 @@ class RunShutdownIntegrationTest {
         assertThat(db.queryForList("select status from workflow_node_runs where node_key='lookup'",String.class)).containsExactly("INTERRUPTED");
         assertThat(db.queryForObject("select count(*) from workflow_node_runs where node_key='end'",Integer.class)).isZero();
         assertThat(db.queryForList("select event_type from run_events where run_id=?",String.class,run)).contains("workflow.interrupted","run.interrupted").doesNotContain("run.cancelled","run.failed");
-        doReturn(List.of()).when(knowledge).search("fixture-kb","blocked",3);
+        doReturn(List.of()).when(knowledge).searchSnapshot(corpus,"blocked",3);
         try(var second=start(url,request->new RuntimeMessage("assistant","unused",null,List.of()),knowledge)){
             var service=second.getBean(RunApplicationService.class);awaitTerminal(service,run);
             assertThat(service.get(run).getState()).isEqualTo(RunState.COMPLETED);

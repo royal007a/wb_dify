@@ -19,6 +19,8 @@
 
 `WorkflowEngine.executeNode` 使用 `knowledge.search(base,query,topK)`，未固定 corpus revision。现有冻结 Workflow checksum 只固定 DSL，不固定节点关联的语料。需验证“发布图→更新/归档知识→旧图执行”的行为，并明确资源快照与 schema checksum 两者不可混淆。
 
+后续 SPEC-WORKFLOW-KNOWLEDGE-001 用 HTTP/H2 红灯确认旧版本随文档变化，改为发布冻结 corpus 并进入 DSL/checksum，执行校验完整 manifest 和原文摘要；归档后保留带正确摘要的冻结引用。真实 PG 回归额外发现并修复 Instant JDBC 绑定失败。新鲜日志与最终门禁见 `docs/evidence/SPEC_WORKFLOW_KNOWLEDGE.md`。旧未冻结知识图显式拒绝、不改历史；空/无关命中及 FinishGate 不在本片完成范围。
+
 ### A04 Workflow 图校验没有变量可达/必经与所有路径终止门禁
 
 `WorkflowGraphValidator` 目前只查类型、START/END计数、边引用、默认分支、整体可达与环。未验证每条可走路径到 END、非条件多出边、模板变量是否来自必经节点；运行时能否 fail closed 还需反例测试。课程 hify-cc 的修复不能算本仓库已具备。

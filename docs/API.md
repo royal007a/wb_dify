@@ -234,7 +234,9 @@ GET      /api/v1/workflow-runs/{id}
 
 Workflow DSL 使用显式 `schemaVersion`。保存、发布和执行前共用结构校验：恰有一个START（无入边）、至少一个END（无出边）、全图可达无环；其他非条件节点恰有一条无条件出边，因此每条可走路径都终止于END。CONDITION恰有一个默认分支，其他标签只接受不重复的true/false。非法图返回参数错误，已存储的非法旧版本也在执行前拒绝，不改写其DSL/checksum。
 
-节点/边key、输出变量名为1–128个字母、数字、下划线或连字符，不隐式裁剪空格。模板使用 `{{nodeKey.variable}}`（允许括号内首尾空格），只能引用严格必经上游已声明的变量。START输出为实际START key的userMessage；TEMPLATE/CONDITION默认result、KNOWLEDGE默认citations，可用outputVariable覆盖；END没有输出变量。运行缺值直接失败；插入的用户/工具文本只作为数据，不能二次展开为模板。结构安全不等于KNOWLEDGE已冻结语料，也不等于取消/FinishGate已贯通，这些仍见 `spec/AUDIT_FINDINGS.md`。
+节点/边key、输出变量名为1–128个字母、数字、下划线或连字符，不隐式裁剪空格。模板使用 `{{nodeKey.variable}}`（允许括号内首尾空格），只能引用严格必经上游已声明的变量。START输出为实际START key的userMessage；TEMPLATE/CONDITION默认result、KNOWLEDGE默认citations，可用outputVariable覆盖；END没有输出变量。运行缺值直接失败；插入的用户/工具文本只作为数据，不能二次展开为模板。结构安全不等于知识相关性或 FinishGate 已贯通，这些仍见 `spec/AUDIT_FINDINGS.md`。
+
+KNOWLEDGE 发布时在 config 中生成只读 `knowledgeSnapshot={corpusVersionId,manifestDigest,revisionNo,chunkCount}`，连同 knowledgeBaseId 固定到 DSL/checksum。草稿不能提交该保留字段（400）。旧未冻结 KNOWLEDGE 发布版本执行返回409并提示重新发布，不重写旧版本；纯模板/条件图不受影响。冻结运行验证清单及原文摘要，文档/库归档不改变历史语料；归档不是撤销历史访问或数据擦除。canonical application port 仅在提供准确摘要且有冻结成员引用时允许回读归档分块，没有新增 HTTP 回读路由。详见 `spec/SPEC_WORKFLOW_KNOWLEDGE.md`。
 
 试跑接口目前同步执行后返回 HTTP202，不能据此宣称后台异步队列。
 

@@ -38,6 +38,7 @@ public class WorkflowEngine {
   control.throwIfSuspended();
   WorkflowVersion version=application.requireVersion(versionId); WorkflowDraftRequest draft=read(version.getDslJson());
   validator.validate(draft);
+  draft.nodes().stream().filter(WorkflowKnowledgeSnapshots::isKnowledge).forEach(WorkflowKnowledgeSnapshots::require);
   Map<String,WorkflowNodeSpec> nodeMap=new LinkedHashMap<>();draft.nodes().forEach(n->nodeMap.put(n.nodeKey(),n));Map<String,List<WorkflowEdgeSpec>> edgeMap=new HashMap<>();for(var e:draft.edges())edgeMap.computeIfAbsent(e.sourceNodeKey(),k->new ArrayList<>()).add(e);
   String current=nodeMap.values().stream().filter(n->n.type().equalsIgnoreCase("START")).findFirst().orElseThrow().nodeKey();
   WorkflowRun run = runs.save(new WorkflowRun(UUID.randomUUID().toString(), versionId, version.getChecksum(), input, Instant.now()));
@@ -95,7 +96,7 @@ public class WorkflowEngine {
   case "START" -> new NodeOutcome(null,null);
   case "TEMPLATE" -> {String value=ctx.resolve(required(c,"template"));String variable=text(c,"outputVariable","result");ctx.set(node.nodeKey(),variable,value);yield new NodeOutcome(null,null);}
   case "CONDITION" -> {boolean result=evaluate(required(c,"expression"),ctx);ctx.set(node.nodeKey(),text(c,"outputVariable","result"),result);yield new NodeOutcome(result,null);}
-  case "KNOWLEDGE" -> {String base=required(c,"knowledgeBaseId"),query=ctx.resolve(required(c,"query"));int topK=c.path("topK").asInt(3);var citations=WorkflowControl.call(control,ioExecutor,()->knowledge.search(base,query,topK));ctx.set(node.nodeKey(),text(c,"outputVariable","citations"),citations);yield new NodeOutcome(null,null);}
+  case "KNOWLEDGE" -> {var snapshot=WorkflowKnowledgeSnapshots.require(node);String query=ctx.resolve(required(c,"query"));int topK=c.path("topK").asInt(3);var citations=WorkflowControl.call(control,ioExecutor,()->knowledge.searchSnapshot(snapshot,query,topK));ctx.set(node.nodeKey(),text(c,"outputVariable","citations"),citations);yield new NodeOutcome(null,null);}
   case "END" -> new NodeOutcome(null,ctx.resolve(required(c,"output")));
   default -> throw new BizException(ErrorCode.PARAM_ERROR,"不支持的节点类型: "+type);
  };}
