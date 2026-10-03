@@ -7,7 +7,7 @@ import HifyTable, { type HifyColumn, type HifyPageResult } from '@/components/Hi
 import HifyFormDialog from '@/components/HifyFormDialog.vue'
 import {
   archiveMcpServer, callMcpTool, createMcpServer, updateMcpServer,
-  listMcpServers, listMcpTools, refreshMcpTools, type McpServer, type McpTool,
+  listMcpServers, listMcpTools, refreshMcpTools, type McpServer, type McpTool, type McpServerInput, type McpCredentialAction,
 } from '@/api/mcp'
 import { notifySuccess } from '@/utils/notify'
 
@@ -15,6 +15,8 @@ interface Form extends Record<string, unknown> {
   name: string
   endpointUrl: string
   credentialRef: string
+  credentialToken: string
+  credentialAction: McpCredentialAction
   enabled: boolean
 }
 type TableExpose = { refresh: (reset?: boolean) => Promise<void> }
@@ -23,6 +25,8 @@ const table = ref<TableExpose>()
 const dialog = ref<DialogExpose>()
 const visible = ref(false)
 const editingId = ref<string>()
+const credentialStatus = ref('未配置凭据')
+const originalReference = ref('')
 const current = ref<McpServer>()
 const tools = ref<McpTool[]>([])
 const toolsVisible = ref(false)
@@ -53,37 +57,56 @@ const rules: FormRules<Form> = {
   credentialRef: [{
     validator: (_rule, value: string, callback) => {
       const ref = (value ?? '').trim()
-      callback(!ref || credentialPattern.test(ref) ? undefined
+      callback(credentialPattern.test(ref) ? undefined
         : new Error('仅支持 env:变量名 或 system:属性名，请勿填写 Token 明文'))
     }, trigger: 'blur',
   }],
+  credentialToken: [{
+    validator: (_rule, value: string, callback) => {
+      callback(value && value.length <= 8192 && /^[A-Za-z0-9\-._~+/]+=*$/.test(value) ? undefined
+        : new Error('请输入 Token 原文，不加 env: 或 Bearer 前缀，不含空格或换行'))
+    }, trigger: 'blur',
+  }],
 }
-const empty = (): Form => ({ name: '', endpointUrl: '', credentialRef: '', enabled: true })
+const empty = (): Form => ({ name: '', endpointUrl: '', credentialRef: '', credentialToken: '', credentialAction: 'CLEAR', enabled: true })
 async function load(): Promise<HifyPageResult<McpServer>> {
   const data = await listMcpServers()
   return { data, total: data.length, page: 1, size: 100 }
 }
 async function openCreate() {
   editingId.value = undefined
+  credentialStatus.value = '未配置凭据'
+  originalReference.value = ''
   await dialog.value?.open()
 }
 async function openEdit(row: McpServer) {
   editingId.value = row.id
+  originalReference.value = row.credentialRef && credentialPattern.test(row.credentialRef) ? row.credentialRef : ''
+  credentialStatus.value = row.credentialMode === 'TOKEN' ? '已配置 Token（加密保存，不回显）'
+    : row.credentialMode === 'UNAVAILABLE' ? '旧凭据格式无效，请重新配置'
+    : originalReference.value ? '已配置环境变量 / 系统属性引用' : '未配置凭据'
   await dialog.value?.open({
     name: row.name, endpointUrl: row.endpointUrl,
-    credentialRef: row.credentialRef ?? '', enabled: row.enabled,
+    credentialAction: 'KEEP', enabled: row.enabled,
   })
+}
+function changeCredentialMode(model: Record<string, unknown>) {
+  model.credentialToken = ''
+  model.credentialRef = model.credentialAction === 'REFERENCE' ? originalReference.value : ''
 }
 async function save(form: Form, done: (ok?: boolean) => void) {
   const id = editingId.value
-  const payload = {
+  const payload: McpServerInput = {
     name: form.name.trim(), endpointUrl: form.endpointUrl.trim(),
-    credentialRef: form.credentialRef.trim(), enabled: form.enabled,
+    credentialAction: form.credentialAction, enabled: form.enabled,
   }
+  if (form.credentialAction === 'TOKEN') payload.credentialToken = form.credentialToken
+  if (form.credentialAction === 'REFERENCE') payload.credentialRef = form.credentialRef.trim()
   try {
     if (id) await updateMcpServer(id, payload)
     else await createMcpServer(payload)
   } catch { done(false); return }
+  finally { delete payload.credentialToken; form.credentialToken = '' }
   notifySuccess(id ? 'MCP Server 已更新；连接配置变更后请重新发现工具' : 'MCP Server 已创建')
   done()
   await table.value?.refresh(!id)
@@ -152,13 +175,26 @@ async function remove(row: McpServer) {
       <template #default="{ model }">
         <el-form-item label="名称" prop="name"><el-input v-model="model.name" maxlength="160" /></el-form-item>
         <el-form-item label="Endpoint" prop="endpointUrl"><el-input v-model="model.endpointUrl" maxlength="1000" placeholder="https://mcp.example.com/mcp" /></el-form-item>
-        <el-form-item label="凭证引用" prop="credentialRef">
-          <el-input v-model="model.credentialRef" maxlength="255" type="password" show-password autocomplete="off" placeholder="env:MCP_TOKEN" />
-          <p class="field-help">无鉴权可留空。有鉴权请填 env:MCP_TOKEN 或 system:mcp.token，并在后端配置对应值；此处不要粘贴 Token。</p>
+        <el-form-item label="鉴权方式">
+          <el-select v-model="model.credentialAction" style="width: 100%" @change="changeCredentialMode(model)">
+            <el-option v-if="editingId" label="保持原凭据" value="KEEP" />
+            <el-option label="直接输入 Token" value="TOKEN" />
+            <el-option label="环境变量引用（高级）" value="REFERENCE" />
+            <el-option :label="editingId ? '清除鉴权' : '无鉴权'" value="CLEAR" />
+          </el-select>
+          <p class="field-help">{{ credentialStatus }}</p>
+        </el-form-item>
+        <el-form-item v-if="model.credentialAction === 'TOKEN'" label="Token" prop="credentialToken">
+          <el-input v-model="model.credentialToken" maxlength="8192" type="password" show-password autocomplete="new-password" placeholder="直接粘贴 Token，无需 env: 或 Bearer 前缀" />
+          <p class="field-help">保存后加密存储，只显示已配置；更换 Token 不需要重启服务。</p>
+        </el-form-item>
+        <el-form-item v-if="model.credentialAction === 'REFERENCE'" label="凭证引用" prop="credentialRef">
+          <el-input v-model="model.credentialRef" maxlength="255" autocomplete="off" placeholder="env:MCP_TOKEN" />
+          <p class="field-help">填写环境变量名，不是密钥本身；需在后端配置对应变量。直接粘贴密钥请选择「直接输入 Token」。</p>
         </el-form-item>
         <el-form-item label="启用"><el-switch v-model="model.enabled" /></el-form-item>
         <div class="warning">
-          <template v-if="editingId">修改地址或凭证引用后，需重新「发现工具」，再到 Agent 发布新版本；旧会话继续使用原有能力快照。<br /></template>
+          <template v-if="editingId">修改地址或凭据后，需重新「发现工具」，再到 Agent 发布新版本；旧会话继续使用原有能力快照和旧凭据。清除仅影响草稿，撤销泄露的 Token 请到 MCP 服务端操作。<br /></template>
           生产默认拒绝 loopback、私网和 link-local 地址，并关闭 HTTP 重定向。
         </div>
       </template>

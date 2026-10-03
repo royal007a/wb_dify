@@ -1,6 +1,7 @@
 import { del, get, post, put } from '@/utils/request'
-export interface McpServerInput { name: string; endpointUrl: string; credentialRef?: string; enabled: boolean }
-export interface McpServer extends Record<string,unknown>{id:string;name:string;transport:string;endpointUrl:string;credentialRef?:string;enabled:boolean;serverRevision:number;schemaDigest?:string;status:string;lastError?:string;createdAt:string;updatedAt:string}
+export type McpCredentialAction = 'KEEP' | 'TOKEN' | 'REFERENCE' | 'CLEAR'
+export interface McpServerInput { name: string; endpointUrl: string; credentialRef?: string; enabled: boolean; credentialAction?: McpCredentialAction; credentialToken?: string }
+export interface McpServer extends Record<string,unknown>{id:string;name:string;transport:string;endpointUrl:string;credentialRef?:string;credentialMode?:'NONE'|'TOKEN'|'REFERENCE'|'UNAVAILABLE';credentialConfigured?:boolean;enabled:boolean;serverRevision:number;schemaDigest?:string;status:string;lastError?:string;createdAt:string;updatedAt:string}
 export interface McpTool{name:string;description:string;inputSchema:Record<string,unknown>;risk:string;schemaDigest:string;serverRevision:number}
 export interface McpDebugResult{callId:string;toolName:string;serverRevision:number;schemaDigest:string;result:unknown;error:boolean;elapsedMs:number}
 export const listMcpServers=()=>get<McpServer[]>('/v1/mcp-servers')

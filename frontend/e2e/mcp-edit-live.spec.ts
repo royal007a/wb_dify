@@ -17,6 +17,8 @@ test('live MCP edit persists through the API and reload', async ({ page, baseURL
     await expect(dialog.getByLabel('名称', { exact: true })).toHaveValue(name)
     await dialog.getByLabel('名称', { exact: true }).fill(name + '-updated')
     await dialog.getByLabel('Endpoint').fill('https://example.com/updated-mcp')
+    await dialog.locator('.el-select__wrapper').click()
+    await page.getByRole('option', { name: '环境变量引用（高级）' }).click()
     await dialog.getByLabel('凭证引用').fill('env:MCP_EDIT_SMOKE_TOKEN')
     await dialog.getByRole('button', { name: '保存', exact: true }).click()
     await expect(dialog).not.toBeVisible()
