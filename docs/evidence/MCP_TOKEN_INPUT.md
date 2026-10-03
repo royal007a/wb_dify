@@ -10,6 +10,7 @@
 ## 验证
 
 - `harness/evidence/MCP-TOKEN-001/MCP-TOKEN-001-20261003T130723Z-bab6d426/verification.json`：harness/backend/frontend/migration 全通过。
+- 后端默认测试 149 项，142 通过、7 项 Docker 测试默认跳过；独立 migration 门禁 8/8（包括凭据 4 项及既有 PostgreSQL 3 项、迁移 1 项），没有把 skip 当通过。
 - 新加密单测 5 项：随机 nonce、跨重建实例解密、篡改/错 key/错 owner 拒绝、无 key 拒绝、DTO write-only、旧引用兼容。
 - 同一 API 契约在 H2 和真实 PostgreSQL 各 4 项：存储不含明文，列表不回显，保持/替换/清除，AgentVersion 仍用旧 Token，跨 Server 拒绝，非法操作不泄密，畸形 JSON 日志不泄密。
 - 既有 MCP API 新增未配置主密钥的失败测试，验证事务回滚且没有半成品 Server。
@@ -30,4 +31,13 @@
 
 ## 部署
 
-待执行独立部署任务 MCP-TOKEN-DEPLOY-001；机器状态以 tasks.json 为准。
+- 2026-10-03 发布构建基线 `d06034e`，入口 https://118.196.123.132/hify/mcp。
+- jar SHA-256（本地/远端一致）：`299838bdd9b7fddcb4d7554e2f06099aec6d14e38c49181829a152f69801a667`。
+- V20 Flyway `success=true`，服务 active，内外健康均 HTTP 200。
+- 原数据库 dump/旧 jar/旧前端备份：`/opt/hify/releases/mcp-token-20261003-d06034e/`；dump 0600，目录 0700。
+- 主密钥位于 `/etc/hify/mcp-credentials.env`，root:0600；systemd drop-in 只声明路径。值未回显、未导出、未存 Git。
+- 部署浏览器 4/4：MCP 直接 Token 创建/保持/替换/清除、旧引用编辑、Demo 多轮时间、calculator SSE。
+- 首轮 live Token smoke 因定位到 Element Plus 隐藏 switch input 而超时（尚未发创建请求），改点可见 wrapper 并断言关闭后，完整 4/4 通过。
+- SQL 聚合确认 synthetic 测试凭据是 v1 密文且不含测试原文；服务日志 synthetic Token 匹配数 0。测试记录均归档，不修改现有 teacher_mcp。
+- hify-cc 六个服务仍 healthy，无本次修改；本地临时 Vite 5197 已停止。
+- 未使用真实 teacher Token 做发现调用；对该服务的远端鉴权/TLS/READ 工具标注不宣称本次已验通。

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "MCP-TOKEN-DEPLOY-001-20261003T133102Z-5fda8339",
+  "taskId": "MCP-TOKEN-DEPLOY-001",
+  "status": "completed",
+  "baselineCommit": "d06034e7ecf7865611b41203d7b99b04650008e9",
+  "approvalRef": "lark:om_x100b633b91ae04a4b03c19af18594c7",
+  "startedAt": "2026-10-03T13:31:02Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "d06034e7ecf7865611b41203d7b99b04650008e9",
+  "finishedAt": "2026-10-03T13:38:20Z"
+}

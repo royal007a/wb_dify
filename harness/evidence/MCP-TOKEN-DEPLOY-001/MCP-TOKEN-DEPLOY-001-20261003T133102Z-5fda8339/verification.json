@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "frontend"
+  ],
+  "base": "working-tree",
+  "headCommit": "d06034e7ecf7865611b41203d7b99b04650008e9",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-TOKEN-DEPLOY-001/MCP-TOKEN-DEPLOY-001-20261003T133102Z-5fda8339/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-TOKEN-DEPLOY-001/MCP-TOKEN-DEPLOY-001-20261003T133102Z-5fda8339/harness-progress.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-TOKEN-DEPLOY-001/MCP-TOKEN-DEPLOY-001-20261003T133102Z-5fda8339/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-TOKEN-DEPLOY-001/MCP-TOKEN-DEPLOY-001-20261003T133102Z-5fda8339/harness-shell-syntax.log"
+    },
+    {
+      "name": "frontend-typecheck",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-TOKEN-DEPLOY-001/MCP-TOKEN-DEPLOY-001-20261003T133102Z-5fda8339/frontend-typecheck.log"
+    },
+    {
+      "name": "frontend-build",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-TOKEN-DEPLOY-001/MCP-TOKEN-DEPLOY-001-20261003T133102Z-5fda8339/frontend-build.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T13:38:19Z"
+}

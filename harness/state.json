@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "MCP-TOKEN-001-20261003T130723Z-bab6d426",
-    "path": "harness/evidence/MCP-TOKEN-001/MCP-TOKEN-001-20261003T130723Z-bab6d426",
+    "runId": "MCP-TOKEN-DEPLOY-001-20261003T133102Z-5fda8339",
+    "path": "harness/evidence/MCP-TOKEN-DEPLOY-001/MCP-TOKEN-DEPLOY-001-20261003T133102Z-5fda8339",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "051859f0fd1d9afa30477bd384d24593a3461dc0",
-    "headCommit": "0bd202b694aa0e6634767310bb454102eb849344",
-    "recordedAt": "2026-10-03T13:27:35Z"
+    "baselineCommit": "d06034e7ecf7865611b41203d7b99b04650008e9",
+    "headCommit": "d06034e7ecf7865611b41203d7b99b04650008e9",
+    "recordedAt": "2026-10-03T13:38:20Z"
   },
-  "lastCompletedTaskId": "MCP-TOKEN-001",
-  "updatedAt": "2026-10-03T13:27:35Z"
+  "lastCompletedTaskId": "MCP-TOKEN-DEPLOY-001",
+  "updatedAt": "2026-10-03T13:38:20Z"
 }
