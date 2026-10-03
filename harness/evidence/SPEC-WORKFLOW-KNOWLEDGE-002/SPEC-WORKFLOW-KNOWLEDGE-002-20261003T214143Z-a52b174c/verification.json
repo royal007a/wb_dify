@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "migration"
+  ],
+  "base": "working-tree",
+  "headCommit": "356f9e68fc282acba4c24310d6e37ef3f93c53b7",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c/harness-shell-syntax.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c/migration-not-skipped.log"
+    },
+    {
+      "name": "migration-mcp-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c/migration-mcp-not-skipped.log"
+    },
+    {
+      "name": "migration-workflow-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c/migration-workflow-not-skipped.log"
+    },
+    {
+      "name": "migration-shutdown-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c/migration-shutdown-not-skipped.log"
+    },
+    {
+      "name": "migration-settlement-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c/migration-settlement-not-skipped.log"
+    },
+    {
+      "name": "migration-history-recovery-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c/migration-history-recovery-not-skipped.log"
+    },
+    {
+      "name": "migration-workflow-knowledge-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c/migration-workflow-knowledge-not-skipped.log"
+    },
+    {
+      "name": "migration-workflow-review-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c/migration-workflow-review-not-skipped.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T21:52:28Z"
+}

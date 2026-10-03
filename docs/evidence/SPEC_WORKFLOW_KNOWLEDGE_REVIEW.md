@@ -21,3 +21,7 @@
 原 WorkflowControl/Engine 单测 fixture 改成合法 checksum/envelope；旧非法图测试改为合法 checksum，继续检验图本身被拒绝，没有降低原断言。原切片结算夹具的修复见 SPEC_WORKFLOW_KNOWLEDGE.md。
 
 最终定向命令与 harness/migration 门禁以 command.log 和 verification.json 为准；上述中间通过不代替最终门禁。没有全仓库、浏览器或服务器部署证据。
+
+## 最终门禁
+
+源码 9183f05，测试与契约 356f9e6。2026-10-04 05:52 CST 完成：command.log 定向 67 项通过（模块17、应用50），migration-postgres.log 53 项通过、0 skip；harness 与所有 migration-not-skipped 断言通过。包含缓存、Agent发布、图验证、结算、取消、生产关闭/重启的回归。H2/PG继承原10项，因此各阶段数字不可累加成互不重复的用例数。已送独立 reviewer 复验，复验状态另记，不用门禁替代审查。

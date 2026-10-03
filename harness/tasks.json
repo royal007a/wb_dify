@@ -1,31 +1,50 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T21:40:31Z",
+  "updatedAt": "2026-10-03T21:52:28Z",
   "tasks": [
     {
       "id": "SPEC-WORKFLOW-KNOWLEDGE-002",
       "title": "补齐冻结Workflow发布边界、锁顺序与事务隔离证据",
       "description": "处理知识快照复核六项P2：旧版本Agent发布、客户端旧快照来源、checksum、多库死锁、隔离交错、额外借连接；明确向量排序边界。",
       "priority": "P2",
-      "status": "pending",
-      "scopes": ["backend", "migration", "harness"],
-      "verifyScopes": ["harness", "migration"],
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "migration",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "migration"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-WORKFLOW-KNOWLEDGE-001"],
+      "dependsOn": [
+        "SPEC-WORKFLOW-KNOWLEDGE-001"
+      ],
       "acceptance": [
         "Agent发布和执行拒绝未冻结、旧客户端伪造快照及checksum损坏，不回写旧版本",
         "Agent与Workflow按同一知识库顺序加锁，并发发布有真实数据库交错证据",
         "H2/PG读取不混入校验后提交的新原文，类型判断不额外借连接，明确向量重建排序非目标"
       ],
-      "planPath": "exec-plans/active/SPEC-WORKFLOW-KNOWLEDGE-002.md",
+      "planPath": "exec-plans/completed/SPEC-WORKFLOW-KNOWLEDGE-002.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c",
+          "path": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "a5f611cb0f5f8ac71776e0db2a9a247a5cddbcc0",
+          "headCommit": "356f9e68fc282acba4c24310d6e37ef3f93c53b7",
+          "recordedAt": "2026-10-03T21:52:28Z"
+        }
+      ],
       "createdAt": "2026-10-03T21:41:00Z",
-      "updatedAt": "2026-10-03T21:41:00Z"
+      "updatedAt": "2026-10-03T21:52:28Z"
     },
     {
       "id": "SPEC-HISTORY-RECOVERY-002",
