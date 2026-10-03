@@ -72,6 +72,15 @@ class RunWorkflowControlTest {
         assertThat(expired.getState()).isEqualTo(RunState.TIMED_OUT);
         verifyNoInteractions(workflows);
     }
+    @Test @SuppressWarnings("unchecked") void dispatchPreservesCancellationFlagSetBeforeSubmission() {
+        prepare(run);
+        var flags=(Map<String,java.util.concurrent.atomic.AtomicBoolean>)org.springframework.test.util.ReflectionTestUtils.getField(service,"cancellations");
+        flags.put("run",new java.util.concurrent.atomic.AtomicBoolean(true));
+        service.convergeInterruptedRuns();
+        assertThat(run.getState()).isEqualTo(RunState.CANCELLED);
+        verifyNoInteractions(workflows);
+        assertThat(flags).doesNotContainKey("run");
+    }
     @Test void cancellationCommittedJustBeforeTerminalLockPreventsAssistantAndSuccessEvent() {
         prepare(run);
         when(workflows.execute(eq("wv1"),eq("input"),any())).thenReturn(result("SUCCEEDED"));

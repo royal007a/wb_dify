@@ -116,7 +116,9 @@ GET    /api/v1/runs/{runId}/events/stream
 
 恢复不会让旧 Run 从终态回退；服务创建一个带 `resumedFromRunId/resolvedGapIds` 的新 Run。源 Run 必须属于同一 Conversation、状态为 `NEEDS_INPUT` 且存在可恢复 checkpoint。未知、已关闭或跨会话 Gap 返回参数错误。
 
-创建 Run 必须提供 `Idempotency-Key`。服务先提交 user message 和 RUNNING run，再返回 `202 Accepted` 与 `runId`/stream URL。相同 `(conversationId, Idempotency-Key)` 只能创建一个 Run：第一次返回 `202`；请求体 checksum 相同的重复提交返回已有 Run、相同 stream URL 和 `200`；相同 key 但请求体不同返回 `409 IDEMPOTENCY_KEY_REUSED`。唯一约束与 user message/run/初始 event 在同一事务中写入。
+创建 Run 必须提供 `Idempotency-Key`。服务先提交 user message 和 RUNNING run，再尝试调度，返回 `202 Accepted` 与 `runId`/stream URL。相同 `(conversationId, Idempotency-Key)` 只能创建一个 Run：第一次返回 `202`；请求体 checksum 相同的重复提交返回已有 Run、相同 stream URL 和 `200`；相同 key 但请求体不同返回 `409 IDEMPOTENCY_KEY_REUSED`。唯一约束与 user message/run 在同一事务中写入，初始 event 是随后独立事务，不宣称与创建整体原子。
+
+若本地 Run 执行器拒绝调度，已创建的 Run 收敛为 `FAILED / EXECUTOR_REJECTED`，与 `run.failed` 终态事件一起提交，不保存 assistant 消息，也不返回 JDK 线程池描述。首次请求仍是202，但 body 已为终态；同 key 重放200返回同一失败结果，不会重新调度或重复用户消息。需重新执行时使用新 key。持久化取消先提交时仍优先成为 `CANCELLED`；启动恢复中单条容量拒绝不会阻止其他 Run 继续收敛。此规则不等于已解决应用关闭中断的恢复语义。
 
 Run 响应同时返回 `agentVersionId/agentSnapshotDigest/capabilityRevision/toolSchemaDigest`。前两项固定产品配置，后两项固定本轮实际暴露的工具定义；执行时不匹配会终止，不静默升级能力。
 

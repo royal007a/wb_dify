@@ -59,6 +59,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
@@ -165,10 +166,29 @@ public class RunApplicationService {
                         "resumedFromRunId", created.run().getResumedFromRunId(),
                         "resolvedGapIds", resume == null ? List.of() : resume.gapIds()));
             }
-            cancellations.put(runId, new AtomicBoolean(false));
-            executor.execute(() -> execute(runId));
+            if (!dispatch(runId)) return new CreateResult(get(runId), false);
         }
         return created;
+    }
+
+    /** A Run is durable before submission. Refusal must settle it, not leave a replayable zombie. */
+    private boolean dispatch(String runId) {
+        cancellations.putIfAbsent(runId, new AtomicBoolean(false));
+        try {
+            executor.execute(() -> execute(runId));
+            return true;
+        } catch (RejectedExecutionException rejected) {
+            try {
+                AgentRun current = get(runId);
+                finishTerminal(runId, RunState.FAILED, TerminalReason.EXECUTOR_REJECTED.name(),
+                        "Run execution capacity exhausted; retry with a new idempotency key.",
+                        current.getTurns(), current.getToolCalls(), false);
+            } finally {
+                cancellations.remove(runId);
+                activeAttempts.remove(runId);
+            }
+            return false;
+        }
     }
 
     private CreateResult createInTransaction(String conversationId, String idempotencyKey,
@@ -605,8 +625,7 @@ public class RunApplicationService {
                         run.getTurns(), run.getToolCalls(), false);
                 return;
             }
-            cancellations.put(run.getId(), new AtomicBoolean(false));
-            executor.execute(() -> execute(run.getId()));
+            dispatch(run.getId());
         });
     }
 
