@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-03T23:07:50Z`
-- Current task: `SPEC-AUDIT-001`
-- Counts: pending 16 · running 1 · blocked 0 · completed 54
+- Generated from task state updated at: `2026-10-03T23:14:17Z`
+- Current task: `none`
+- Counts: pending 16 · running 0 · blocked 0 · completed 55
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -21,7 +21,7 @@
 | `MEMORY-002` | P0 | completed | backend, migration, runtime | reversible_write | 建立结构化摘要与统一细节目录 |
 | `RECALL-001` | P0 | completed | backend, migration, runtime, eval | reversible_write | 完成分层上下文与迭代式细节召回 |
 | `RUNTIME-001` | P0 | completed | backend, migration, runtime | reversible_write | 建立 Runtime 能力租约与历史提交协议 |
-| `SPEC-AUDIT-001` | P0 | running | harness, backend | reversible_write | 建立全接口与功能测试规格及覆盖门禁 |
+| `SPEC-AUDIT-001` | P0 | completed | harness, backend | reversible_write | 建立全接口与功能测试规格及覆盖门禁 |
 | `SPEC-CHAT-UI-001` | P0 | completed | frontend, harness | reversible_write | 修复流式会话生命周期与终态回读恢复 |
 | `SPEC-COMMON-001` | P0 | completed | backend, harness | reversible_write | 修复 HTTP 客户端错误映射与阻塞调用取消 |
 | `SPEC-CREDENTIAL-BOUNDARY-001` | P0 | completed | backend, runtime, harness | reversible_write | 凭据引用只允许管理员配置的引用与目标绑定 |

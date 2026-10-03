@@ -2,8 +2,12 @@
   "schemaVersion": 1,
   "runId": "SPEC-AUDIT-001-20261003T230750Z-14ee53bf",
   "taskId": "SPEC-AUDIT-001",
-  "status": "running",
+  "status": "completed",
   "baselineCommit": "641fdcb2da876cfb0843da20c35e7c4a5334a6a6",
   "approvalRef": null,
-  "startedAt": "2026-10-03T23:07:50Z"
+  "startedAt": "2026-10-03T23:07:50Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "a8f5023aaa9cda98a85f5c2adf60e69bc43af20e",
+  "finishedAt": "2026-10-03T23:14:17Z"
 }

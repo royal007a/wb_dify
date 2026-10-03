@@ -52,3 +52,5 @@ HistoryRecallEvaluationTest 的12题单轮 P95=74,157μs，超过50,000μs。词
 - CURRENT_STATE与F01-F38候选入口对齐新专项：SSE背压、关机/恢复、历史重放、知识memory隔离、Workflow语法与Chat生命周期。保留真实模型/完整浏览器/全行为未验收边界；补录最新Chat永久4xx的P1，不把前端受控21项当后端幂等证明。
 - 本轮完整backend/Harness门禁的结果，以此目录`verification.json`和下方收尾记录为准；上面两次失败基线保留，不能覆盖成通过。
 - reviewer已逐片返回静态复核及新反例；本次规格整理本身仍需抽查，不宣称全量独立复跑。
+
+收尾：`a8f5023` 的 Harness/backend 退出0，完整 Maven reactor 1分36秒；按本次日志逐类汇总495项，其中406实际运行通过、89跳过、失败/错误0。跳过均为11个Testcontainers PG测试类（本scope未配置Colima Docker连接），**不能写成495项全通过或PG已验收**；下一SPEC-VERIFY必须跑migration的零skip硬门禁。Harness五项步骤均退出0，Python制度测试5/5。审计任务的窄验收是规格/库存/候选映射和后端基线，不是全行为或部署交付。Chat新P1和其余未验证项仍明确保留。
