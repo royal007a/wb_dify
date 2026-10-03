@@ -203,6 +203,41 @@ class RunFlowIntegrationTest {
         assertThat(recoveryEvents.toString()).contains("checkpoint.restored", "run.completed");
     }
 
+    @Test
+    void demoConversationHandlesGreetingThenRepeatedTimeAndCalculatorTurns() throws Exception {
+        JsonNode conversation = json(http.perform(post("/api/v1/conversations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"agentId\":\"demo-agent\",\"title\":\"Demo time regression\"}"))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString());
+        String id = conversation.path("id").asText();
+        for (String input : List.of("hi", "现在几点", "现在几点？", "计算 12.5 * 4", "现在几点?")) {
+            JsonNode created = json(http.perform(post("/api/v1/conversations/{id}/runs", id)
+                            .header("Idempotency-Key", java.util.UUID.randomUUID().toString())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(Map.of("message", input))))
+                    .andExpect(status().isAccepted()).andReturn().getResponse().getContentAsString());
+            String runId = created.path("id").asText();
+            JsonNode run = awaitTerminal(runId);
+            assertThat(run.path("state").asText()).isEqualTo("COMPLETED");
+            assertThat(run.path("agentVersionId").asText()).isEqualTo(conversation.path("agentVersionId").asText());
+            if (input.equals("hi")) {
+                assertThat(run.path("toolCalls").asInt()).isZero();
+                assertThat(run.path("outputMessage").asText()).contains("本地规则模拟");
+            } else {
+                assertThat(run.path("toolCalls").asInt()).isEqualTo(1);
+                JsonNode events = json(http.perform(get("/api/v1/runs/{id}/events", runId))
+                        .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+                assertThat(events.toString()).contains("tool.call.started", "tool.call.completed", "run.completed");
+                if (input.startsWith("计算")) assertThat(run.path("outputMessage").asText()).contains("50");
+                else {
+                    assertThat(events.toString()).contains("current_time");
+                    assertThat(run.path("outputMessage").asText()).containsPattern("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}")
+                            .doesNotContain("已收到");
+                }
+            }
+        }
+    }
+
     private JsonNode awaitTerminal(String runId) throws Exception {
         Instant deadline = Instant.now().plus(Duration.ofSeconds(5));
         while (Instant.now().isBefore(deadline)) {
