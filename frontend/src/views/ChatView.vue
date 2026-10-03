@@ -6,6 +6,7 @@ import {
   ChatHttpError,
   createConversation,
   createRun,
+  findSubmission,
   getRun,
   getRunEvents,
   listRunnableAgents,
@@ -27,7 +28,7 @@ const activeRun = ref<Run>()
 const resumeState = ref<ResumeState>()
 const syncIssue = ref(false)
 const syncingRun = ref(false)
-type Submission = { key: string; text: string; resume?: ResumeState; conversation?: string; cancelRequested: boolean; unknown: boolean }
+type Submission = { key: string; text: string; resume?: ResumeState; conversation?: string; cancelRequested: boolean; unknown: boolean; issueIndex?: number }
 const pendingSubmission = ref<Submission>()
 const submitting = ref(false)
 const resumeUnavailable = ref(false)
@@ -101,6 +102,7 @@ async function send() {
 async function submitPending(token = generation) {
   const pending = pendingSubmission.value
   if (!pending || submitting.value || !isCurrent(token)) return
+  if (pending.cancelRequested && pending.unknown) { await lookupPending(token); return }
   submitting.value = true
   running.value = true
   try {
@@ -116,21 +118,15 @@ async function submitPending(token = generation) {
     }
     const created = await createRun(conversation, pending.text, pending.resume, pending.key)
     if (!isCurrent(token)) return
-    if (typeof created.id !== 'string' || !created.id || created.conversationId !== conversation
-        || typeof created.streamUrl !== 'string' || !created.streamUrl || typeof created.state !== 'string') throw new Error('创建结果不匹配')
-    activeRun.value = created
-    pendingSubmission.value = undefined
-    resumeState.value = undefined
-    status.value = `Run ${created.id.slice(0, 8)} 执行中`
-    listen(created, token)
-    if (pending.cancelRequested && !terminalStates.has(created.state)) await cancel()
+    await acceptSubmission(created, pending, token)
   } catch (error) {
     if (!isCurrent(token)) return
-    chat.value.push({ role: 'event', content: error instanceof Error ? error.message : '请求失败' })
+    submissionIssue(pending, error instanceof Error ? error.message : '请求失败')
     running.value = false
     const definiteRejection = error instanceof ChatHttpError && [400, 401, 403, 404, 405, 406, 409, 415, 422].includes(error.status)
     if (definiteRejection && !pending.unknown) {
       pendingSubmission.value = undefined
+      if (!message.value.trim()) message.value = pending.text
       status.value = '提交被拒绝'
     } else {
       pending.unknown = true
@@ -139,6 +135,63 @@ async function submitPending(token = generation) {
   } finally {
     if (isCurrent(token)) submitting.value = false
   }
+}
+
+function submissionIssue(pending: Submission, content: string) {
+  if (pending.issueIndex !== undefined && chat.value[pending.issueIndex]?.role === 'event') {
+    chat.value[pending.issueIndex].content = content
+  } else {
+    pending.issueIndex = chat.value.length
+    chat.value.push({ role: 'event', content })
+  }
+}
+
+async function acceptSubmission(created: Run, pending: Submission, token: number) {
+  if (typeof created.id !== 'string' || !created.id || created.conversationId !== pending.conversation
+      || typeof created.streamUrl !== 'string' || !created.streamUrl || typeof created.state !== 'string') throw new Error('创建结果不匹配')
+  activeRun.value = created
+  pendingSubmission.value = undefined
+  resumeState.value = undefined
+  status.value = `Run ${created.id.slice(0, 8)} 执行中`
+  listen(created, token)
+  if (pending.cancelRequested && !terminalStates.has(created.state)) await cancel()
+}
+
+async function lookupPending(token = generation) {
+  const pending = pendingSubmission.value
+  if (!pending || submitting.value || !isCurrent(token)) return
+  if (!pending.conversation) {
+    status.value = '会话创建结果未知，无法查找 Run，未确认取消；可放弃等待'
+    return
+  }
+  submitting.value = true
+  running.value = true
+  try {
+    const found = await findSubmission(pending.conversation, pending.key)
+    if (!isCurrent(token)) return
+    await acceptSubmission(found, pending, token)
+  } catch (error) {
+    if (!isCurrent(token)) return
+    running.value = false
+    pending.unknown = true
+    status.value = error instanceof ChatHttpError && error.status === 404
+      ? '暂未查到 Run；原请求仍可能晚到，未确认取消。可再次查询或放弃等待'
+      : '查找提交失败，未确认取消。可再次查询或放弃等待'
+    submissionIssue(pending, status.value)
+  } finally {
+    if (isCurrent(token)) submitting.value = false
+  }
+}
+
+function abandonSubmission() {
+  const pending = pendingSubmission.value
+  if (!pending?.unknown || submitting.value) return
+  pendingSubmission.value = undefined
+  running.value = false
+  if (!message.value.trim()) message.value = pending.text
+  newConversation() // Detach instead of letting a late unknown request share the new dialogue.
+  status.value = '已放弃等待（未取消服务端）'
+  chat.value.push({ role: 'event', content: '已放弃本地等待；后台仍可能执行，未确认取消。再次运行将是新的提交。' })
 }
 
 function listen(run: Run, token: number) {
@@ -152,6 +205,9 @@ function listen(run: Run, token: number) {
   let terminalObserved = false
   let connected = false
   let polls = 0
+  let shortDisconnects = 0
+  let openedAt: number | undefined
+  let autoPaused = false
   const seen = new Set<string>()
   const current = () => isCurrent(token) && !settled
 
@@ -163,6 +219,7 @@ function listen(run: Run, token: number) {
         if (seen.has(messageEvent.lastEventId)) return
         seen.add(messageEvent.lastEventId)
       }
+      shortDisconnects = 0 // New business progress, not merely another HTTP 200.
       handler(parsePayload(messageEvent.data))
     })
   }
@@ -188,7 +245,7 @@ function listen(run: Run, token: number) {
   on('continuation.decided', clarification)
 
   function scheduleRead() {
-    if (!current() || syncTimer || polls >= 3) return
+    if (!current() || autoPaused || syncTimer || polls >= 3) return
     syncTimer = setTimeout(() => {
       syncTimer = undefined
       polls++
@@ -207,8 +264,8 @@ function listen(run: Run, token: number) {
       if (latest.id !== run.id || latest.conversationId !== run.conversationId) throw new Error('Run 状态不匹配')
       activeRun.value = latest
       if (!terminalStates.has(latest.state)) {
-        status.value = terminalObserved ? '终态尚未保存，正在同步…' : connected ? `Run ${run.id.slice(0, 8)} 执行中` : '事件流重连中，Run 仍在执行…'
-        syncIssue.value = terminalObserved || (!connected && polls >= 3)
+        status.value = terminalObserved ? '终态尚未保存，正在同步…' : autoPaused ? '已暂停自动重连，Run 仍在执行；请重试同步' : connected ? `Run ${run.id.slice(0, 8)} 执行中` : '事件流重连中，Run 仍在执行…'
+        syncIssue.value = autoPaused || terminalObserved || (!connected && polls >= 3)
         if (terminalObserved || !connected) scheduleRead()
         return
       }
@@ -271,14 +328,26 @@ function listen(run: Run, token: number) {
   }
   for (const type of ['run.completed', 'run.failed', 'run.cancelled', 'run.needs_input']) on(type, finish)
   source.onerror = () => {
-    if (!current()) return
+    if (!current() || autoPaused) return
+    if (openedAt !== undefined && performance.now() - openedAt >= 15_000) shortDisconnects = 0
+    openedAt = undefined
     connected = false
+    if (++shortDisconnects >= 6) {
+      autoPaused = true
+      source.close()
+      if (syncTimer) clearTimeout(syncTimer)
+      syncTimer = undefined
+      syncIssue.value = true
+      status.value = '事件流反复中断，已暂停自动重连；请重试同步'
+      return
+    }
     status.value = '事件流重连中…'
     scheduleRead()
   }
   source.onopen = () => {
-    if (!current() || terminalObserved) return
+    if (!current() || terminalObserved || autoPaused) return
     connected = true
+    openedAt = performance.now()
     polls = 0
     syncIssue.value = false
     if (syncTimer) clearTimeout(syncTimer)
@@ -295,7 +364,7 @@ async function cancel() {
   if (pendingSubmission.value) {
     pendingSubmission.value.cancelRequested = true
     status.value = '已记录取消，等待本次创建结果…'
-    if (!submitting.value) await submitPending()
+    if (!submitting.value) await lookupPending()
     return
   }
   if (!activeRun.value || !running.value) return
@@ -358,6 +427,7 @@ function parsePayload(raw: string): Record<string, unknown> {
           <span>{{ selectedAgent?.name ?? '未选择 Agent' }}<small v-if="pinnedVersionId"> · 固定版本 {{ pinnedVersionId.slice(0, 8) }}</small></span>
           <el-button v-if="syncIssue" :loading="syncingRun" @click="retrySync">重试同步</el-button>
           <el-button v-if="pendingSubmission?.unknown" :loading="submitting" @click="submitPending()">重试提交结果</el-button>
+          <el-button v-if="pendingSubmission?.unknown" :disabled="submitting" @click="abandonSubmission">放弃等待（不取消服务端）</el-button>
           <el-button v-if="running || pendingSubmission" type="danger" @click="cancel">取消</el-button>
           <el-button v-else type="primary" class="primary-gradient" native-type="submit" :disabled="submitting || syncIssue || resumeUnavailable || !message.trim() || !selectedAgentId">运行</el-button>
         </div>

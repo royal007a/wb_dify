@@ -65,6 +65,11 @@ export const createRun = (conversationId: string, message: string, resume: Resum
 
 export const getRun = (runId: string) => requestJson<Run>(`/v1/runs/${runId}`, { signal: AbortSignal.timeout(10_000) })
 
+export const findSubmission = (conversationId: string, idempotencyKey: string) => requestJson<Run>(
+  `/v1/conversations/${conversationId}/runs/by-key`, {
+    signal: AbortSignal.timeout(10_000), cache: 'no-store', headers: { 'Idempotency-Key': idempotencyKey },
+  })
+
 export interface RunEvent { id: number; sequence: number; type: string; payload: string }
 export const getRunEvents = (runId: string) => requestJson<RunEvent[]>(`/v1/runs/${runId}/events`, {
   signal: AbortSignal.timeout(10_000),
