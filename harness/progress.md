@@ -4,7 +4,7 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-10-03T18:10:13Z`
 - Current task: `none`
-- Counts: pending 5 · running 0 · blocked 1 · completed 35
+- Counts: pending 11 · running 0 · blocked 1 · completed 35
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -45,6 +45,12 @@
 | `PROVIDER-001` | P1 | completed | backend, runtime | reversible_write | 补原生流式故障注入矩阵 |
 | `RECALL-002` | P1 | completed | backend, migration, runtime, eval | reversible_write | 建立召回评测门禁并按证据演进检索 |
 | `SECURITY-001` | P1 | completed | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |
+| `SPEC-CHAT-LIFECYCLE-002` | P1 | pending | frontend, runtime, harness | reversible_write | 复核前端Run创建与恢复输入边界 |
+| `SPEC-KNOWLEDGE-FINISH-001` | P1 | pending | backend, runtime, harness | reversible_write | 知识缺口与完成门禁契约对齐 |
+| `SPEC-PROVIDER-LOCAL-FAILURE-001` | P1 | pending | backend, runtime, harness | reversible_write | 取消与本地拒绝不得污染供应商熔断 |
+| `SPEC-RUN-ADMISSION-001` | P1 | pending | backend, runtime, harness | reversible_write | 执行拒绝和关机中断的Run收敛 |
+| `SPEC-SSE-BACKPRESSURE-001` | P1 | pending | backend, runtime, harness | reversible_write | SSE慢客户端隔离及游标归属验证 |
+| `SPEC-WORKFLOW-GRAPH-002` | P1 | pending | backend, runtime, harness | reversible_write | 统一图步数限制与条件语法契约 |
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
 | `SUBAGENT-001` | P2 | completed | backend, migration, runtime | reversible_write | 建立子 Agent 任务与延迟消费确认 |

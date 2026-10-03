@@ -4,6 +4,192 @@
   "updatedAt": "2026-10-03T18:10:13Z",
   "tasks": [
     {
+      "id": "SPEC-PROVIDER-LOCAL-FAILURE-001",
+      "title": "取消与本地拒绝不得污染供应商熔断",
+      "description": "B1：区分请求取消/本地执行容量与上游失败，保留真实上游失败熔断和重试。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "五次取消后breaker仍CLOSED且不记为供应商失败",
+        "本地外层/HTTP执行器拒绝不重试、不计供应商失败且不泄漏executor描述",
+        "真实TIMEOUT/5xx继续按阈值熔断；其他Provider相互隔离",
+        "红灯反例与公共层/协议适配回归通过"
+      ],
+      "planPath": "exec-plans/active/SPEC-PROVIDER-LOCAL-FAILURE-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T18:13:15Z",
+      "updatedAt": "2026-10-03T18:13:15Z"
+    },
+    {
+      "id": "SPEC-SSE-BACKPRESSURE-001",
+      "title": "SSE慢客户端隔离及游标归属验证",
+      "description": "F：提交线程不得执行阻塞send；慢连接不能阻塞其他Run，未知或其他Run游标不能跳过终态。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "受控阻塞send和实际不读socket反例，业务提交不等待网络send",
+        "发送有序有界、过载断开可replay，线程/订阅释放",
+        "跨Run及未知游标按契约拒绝或重置，不假关闭漏事件",
+        "PG事务SSE及浏览器重连回归"
+      ],
+      "planPath": "exec-plans/active/SPEC-SSE-BACKPRESSURE-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T18:13:15Z",
+      "updatedAt": "2026-10-03T18:13:15Z"
+    },
+    {
+      "id": "SPEC-RUN-ADMISSION-001",
+      "title": "执行拒绝和关机中断的Run收敛",
+      "description": "B2/E：提交拒绝不能永远RUNNING；关机不是用户取消，取消标志不能覆盖。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "executor拒绝持久化明确安全终态且相同幂等键可重放",
+        "没有cancelRequestedAt的应用关闭中断不伪造用户取消，重启恢复有证据",
+        "持久化取消在执行/工具前复查，putIfAbsent保留已取消标记",
+        "Workflow和agent_run终态竞争及事件投影一致性有确定性测试"
+      ],
+      "planPath": "exec-plans/active/SPEC-RUN-ADMISSION-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T18:13:15Z",
+      "updatedAt": "2026-10-03T18:13:15Z"
+    },
+    {
+      "id": "SPEC-CHAT-LIFECYCLE-002",
+      "title": "复核前端Run创建与恢复输入边界",
+      "description": "C：创建中取消、过期resume、模糊网络失败幂等、NEEDS_INPUT及重连补读竞争。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": [
+        "frontend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "新Run创建中取消不打到上一Run，晚到创建响应被正确处理",
+        "终态取消/超时清除失效resume；无gapIds场景先确认可达性",
+        "同一提交结果不明时重用幂等键不新建重复Run",
+        "受控浏览器覆盖重连/终态补读竞争，不外推真实模型链路"
+      ],
+      "planPath": "exec-plans/active/SPEC-CHAT-LIFECYCLE-002.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T18:13:15Z",
+      "updatedAt": "2026-10-03T18:13:15Z"
+    },
+    {
+      "id": "SPEC-WORKFLOW-GRAPH-002",
+      "title": "统一图步数限制与条件语法契约",
+      "description": "D：允许发布的图不应因硬编码50步或未校验条件表达式必然失败。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "保存/发布时验证最长可执行路径或明确节点上限并覆盖边界",
+        "条件表达式词法解析支持含contains/==的字面量，非法语法发布拒绝",
+        "环/真正自引用/多START及旧非法DSL归类有测试",
+        "纯确定性已发布合法图保持兼容"
+      ],
+      "planPath": "exec-plans/active/SPEC-WORKFLOW-GRAPH-002.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T18:13:15Z",
+      "updatedAt": "2026-10-03T18:13:15Z"
+    },
+    {
+      "id": "SPEC-KNOWLEDGE-FINISH-001",
+      "title": "知识缺口与完成门禁契约对齐",
+      "description": "A01/A3：知识空/错/无关候选不能被描述为已验证证据；分离可检索来源与答案语义正确性。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "空命中/检索异常产生明确缺口或拒答，不继续无证据宣告有依据完成",
+        "检索候选仅导航，canonical校验不冒充答案语义验证",
+        "无工具普通聊天与受知识约束任务的成功标准明确且可测",
+        "Workflow完成语义与QueryLoop证据门禁边界一致，文档不夸大"
+      ],
+      "planPath": "exec-plans/active/SPEC-KNOWLEDGE-FINISH-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T18:13:15Z",
+      "updatedAt": "2026-10-03T18:13:15Z"
+    },
+    {
       "id": "SPEC-CREDENTIAL-BOUNDARY-001",
       "title": "凭据引用只允许管理员配置的引用与目标绑定",
       "description": "独立复核A1：MCP和Provider不得任意读取进程环境/系统属性，引用默认拒绝并绑定目标；修改MCP endpoint不得隐式沿用已存Token。",
