@@ -1,12 +1,14 @@
 # Hify API 契约
 
+完整的当前接口清单与验收边界见 [可执行测试规格](spec/README.md)；67 个显式 `/api` 方法/路径由 `ApiContractInventoryTest` 与真实 Spring 注册映射双向核对。下文不把规划接口列为已开放。
+
 ## 1. 通用规则
 
 - 前缀 `/api/v1`，资源名复数；非 CRUD 动作使用显式子资源或动作。
 - JSON 字段使用 `camelCase`；数据库列使用 `snake_case`。
-- 写请求支持 `Idempotency-Key`；错误有稳定 `code`，不把内部异常直接暴露给前端。
-- 列表默认 cursor pagination；配置型小表可用 page/size，但 size 最大 100。
-- 时间使用 RFC 3339 UTC；ID 对外使用不透明 UUIDv7/ULID 字符串。
+- 仅创建 Run 强制支持 `Idempotency-Key`；其他写请求目前不承诺幂等键。错误通过 `Result.fail(ErrorCode)` 返回，协议边界完整性见审计 A05。
+- 分页管理表使用 page/pageSize；响应 size/total/page 在顶层。MCP 和历史事件部分接口直接返回完整列表，没有 cursor pagination。
+- Instant 时间为 UTC ISO 格式；DemoItem 的 LocalDateTime 为无时区 ISO。大多数 ID 是 UUID 字符串，DemoItem 为 Long，不承诺 UUIDv7/ULID。
 
 当前已发布的 Run API 成功响应直接返回资源；新管理 API 使用 `Result<T>`。错误统一使用 `Result.fail(ErrorCode)`：
 
@@ -79,9 +81,7 @@ DELETE 是归档而非物理删除：归档后不再列表展示，不能创建�
 
 ```text
 POST   /api/v1/conversations
-GET    /api/v1/conversations
-GET    /api/v1/conversations/{conversationId}
-GET    /api/v1/conversations/{conversationId}/messages
+GET    /api/conversations/{id}
 
 POST   /api/v1/conversations/{conversationId}/runs
 GET    /api/v1/runs/{runId}
@@ -89,6 +89,8 @@ POST   /api/v1/runs/{runId}/cancellations
 GET    /api/v1/runs/{runId}/events
 GET    /api/v1/runs/{runId}/events/stream
 ```
+
+当前无会话列表 API，也无 v1 会话详情/独立消息列表。旧 `/api/conversations/{id}` 一次返回 conversation 与 messages。旧 `/api/tools` 返回两种基础工具定义；新的 `/api/v1/tools` 为四种内置工具目录。
 
 创建 Run：
 
@@ -176,8 +178,6 @@ POST /api/v1/intent-decisions
 
 ```text
 GET    /api/v1/tools
-GET    /api/v1/tool-definitions/{toolName}
-POST   /api/v1/tools/{toolName}/dry-runs
 
 GET    /api/v1/mcp-servers
 POST   /api/v1/mcp-servers
@@ -186,7 +186,7 @@ DELETE /api/v1/mcp-servers/{serverId}
 POST   /api/v1/mcp-servers/{serverId}/tools:refresh
 ```
 
-MCP Server 保存 URL、transport、credentialRef、allow policy 和最近一次工具 schema snapshot。Agent 绑定具体 tool identity + schema version。
+MCP Server 保存 URL、transport、credentialRef、enabled 和最近一次工具 schema snapshot。Agent 绑定具体 tool identity + schema version。独立 tool-definitions/dry-runs 尚未提供；内置工具通过 Run 执行，MCP READ 调试见第 8 节。
 
 ## 6. Knowledge（P1）
 
@@ -207,15 +207,16 @@ POST     /api/v1/knowledge-bases/{id}/retrieval-tests
 
 ```text
 GET/POST /api/v1/workflows
-GET/DELETE /api/v1/workflows/{id}
-PATCH    /api/v1/workflows/{id}/draft
+GET/PUT/DELETE /api/v1/workflows/{id}
 POST     /api/v1/workflows/{id}/validations
 POST     /api/v1/workflows/{id}/versions
+GET      /api/v1/workflows/{id}/versions
+GET      /api/v1/workflow-versions/{id}
 POST     /api/v1/workflow-versions/{id}/runs
 GET      /api/v1/workflow-runs/{id}
 ```
 
-Workflow DSL 使用显式 `schemaVersion`。发布前验证入口/终点、节点 ID 唯一、边可达、Condition 默认分支、无循环和引用资源版本存在。
+Workflow DSL 使用显式 `schemaVersion`。当前发布前验证 START/END 数量、节点 ID 唯一、边可达、Condition 默认分支和无循环。模板变量必经关系、全路径终止、KNOWLEDGE 资源版本冻结仍是审计缺口，见 `spec/AUDIT_FINDINGS.md`。试跑接口目前同步执行后返回 HTTP202，不能据此宣称后台异步队列。
 
 Agent 一期最多绑定一个入口 Workflow。发布 Agent 时固定当前 published WorkflowVersion；Chat 创建 Run 后若该固定版本存在，进入确定性 Workflow executor 并发出 `workflow.started/workflow.completed`，否则进入 QueryLoop。Console 画布和 Runtime 读写同一 DSL，并提供节点、连线、属性、校验、试跑和发布版本 diff。
 
@@ -256,9 +257,10 @@ Agent 发布时把 MCP 工具映射成稳定 runtime tool name 和 `ToolDefiniti
 
 | 范围 | 示例 |
 |---|---|
-| 通用 | `VALIDATION_FAILED`、`NOT_FOUND`、`CONFLICT`、`RATE_LIMITED` |
-| Provider | `PROVIDER_AUTH_FAILED`、`PROVIDER_TIMEOUT`、`MODEL_NOT_AVAILABLE` |
-| Run | `RUN_ALREADY_TERMINAL`、`RUN_CANCELLED`、`BUDGET_EXCEEDED` |
-| Tool/MCP | `TOOL_NOT_FOUND`、`TOOL_INPUT_INVALID`、`TOOL_PERMISSION_DENIED`、`MCP_UNREACHABLE` |
-| Knowledge | `DOCUMENT_TYPE_UNSUPPORTED`、`INDEXING_FAILED` |
-| Workflow | `WORKFLOW_INVALID`、`NODE_FAILED` |
+| 成功 | 200 / HTTP200（创建时按接口使用201/202） |
+| 参数/权限 | 40000 / HTTP400，40100 / HTTP401，40300 / HTTP403 |
+| 不存在/冲突 | 40400 / HTTP404，40900 / HTTP409 |
+| 幂等冲突 | 40901 / HTTP409 |
+| 系统 | 50000 / HTTP500 |
+
+以上为 `ErrorCode` 数字枚举。Provider 失败分类、Run terminalReason 和 Tool errorCode 属于结果/事件字段，不应与 HTTP 错误码混称。部分旧 Run/Memory 缺资源目前抛 IllegalArgumentException 映射400，并非已统一404，需回归对齐。

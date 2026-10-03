@@ -133,6 +133,7 @@ for scope in $SCOPES; do
     harness)
       run_step harness-state python3 "$ROOT_DIR/harness/harness.py" validate
       run_step harness-progress python3 "$ROOT_DIR/harness/harness.py" check-progress
+      run_step harness-api-spec python3 "$ROOT_DIR/harness/render-api-spec.py" --check
       run_step harness-python-tests python3 -m unittest discover -s "$ROOT_DIR/harness/tests" -p 'test_*.py'
       run_step harness-shell-syntax sh -n "$ROOT_DIR/harness/init.sh" "$ROOT_DIR/harness/verify.sh" "$ROOT_DIR/harness/run-task.sh"
       ;;

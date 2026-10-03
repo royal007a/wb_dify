@@ -18,6 +18,7 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 - 课程 10–17 与 Harness 阅读：`docs/PDF_READING_10_17_AND_HARNESS.md`
 - 课程 18–25 阅读与技术取舍：`docs/PDF_READING_18_25.md`
 - API：`docs/API.md`
+- 全接口/功能测试规格：`docs/spec/README.md`（路由库存与行为验证必须分开）
 - 数据：`docs/DATA_MODEL.md`
 - 工程：`docs/ENGINEERING.md`
 - 安全：`docs/SECURITY.md`
@@ -55,8 +56,8 @@ Hify 是面向内部 20-50 人的本地 AI Agent 平台。当前优先完成可�
 ## 产品边界
 
 - 一期必须：Provider、Agent、Chat、Tool/MCP、Console、可观测 Query Loop。
-- 一期简化：RAG 只支持 TXT/Markdown + 固定/递归分块；Workflow 只支持 JSON 线性与条件分支。
-- 一期不做：多租户、计费、插件市场、微调、可视化画布、分布式执行、子 Agent、公开 WebApp。
+- 一期简化：RAG 只支持 TXT/Markdown + 固定/递归分块；Workflow 支持同源 JSON DSL 的确定性节点、条件分支和已交付的编辑画布（CONSOLE-003），不是任意 DAG 调度。
+- 一期不做：多租户、计费、插件市场、微调、分布式执行、真实子 Agent worker、公开 WebApp。已有子任务协议不等于 worker 已实现。
 
 ## 架构硬规则
 

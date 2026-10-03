@@ -1,0 +1,1035 @@
+{
+  "schemaVersion": 1,
+  "baseline": "973257c",
+  "scope": "Explicit application /api routes; excludes framework /error, actuator and implicit HEAD/OPTIONS. testCandidates are inspection pointers, NOT execution/coverage claims.",
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/api/conversations/{id}",
+      "feature": "legacy",
+      "handler": "ChatController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/ChatController.java",
+      "purpose": "旧版会话与消息回读",
+      "request": "id",
+      "success": 200,
+      "response": "ConversationView (raw)",
+      "checks": "现有 Console 使用；没有 v1 列表/消息独立接口",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/tools",
+      "feature": "legacy",
+      "handler": "ChatController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/ChatController.java",
+      "purpose": "旧版内置工具 schema",
+      "request": "none",
+      "success": 200,
+      "response": "List<ToolDefinition> (raw)",
+      "checks": "只有 current_time/calculator；不同于 v1 catalog",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agents",
+      "feature": "agent",
+      "handler": "AgentController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/AgentController.java",
+      "purpose": "分页列草稿与发布差异",
+      "request": "page/pageSize",
+      "success": 200,
+      "response": "PageResult<AgentResponse>",
+      "checks": "分页边界；查询数不随行数增长",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/agents",
+      "feature": "agent",
+      "handler": "AgentController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/AgentController.java",
+      "purpose": "新建草稿",
+      "request": "AgentUpsertRequest",
+      "success": 201,
+      "response": "Result<String>",
+      "checks": "名称唯一；模型可用；工具存在；不自动发布",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/agents/{agentId}",
+      "feature": "agent",
+      "handler": "AgentController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/AgentController.java",
+      "purpose": "归档草稿",
+      "request": "agentId",
+      "success": 200,
+      "response": "Result<Void>",
+      "checks": "删草稿工具绑定不删版本；名称不复用",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agents/{agentId}",
+      "feature": "agent",
+      "handler": "AgentController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/AgentController.java",
+      "purpose": "读取草稿",
+      "request": "agentId",
+      "success": 200,
+      "response": "Result<AgentResponse>",
+      "checks": "归档/不存在拒绝；hasUnpublishedChanges 用 digest",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/agents/{agentId}",
+      "feature": "agent",
+      "handler": "AgentController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/AgentController.java",
+      "purpose": "更新草稿基本信息",
+      "request": "AgentUpdateRequest",
+      "success": 200,
+      "response": "Result<Void>",
+      "checks": "不修改独立绑定；旧发布快照不变",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/agents/{agentId}/knowledge-bindings",
+      "feature": "agent",
+      "handler": "AgentController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/AgentController.java",
+      "purpose": "替换知识绑定",
+      "request": "AgentKnowledgeBindingRequest",
+      "success": 200,
+      "response": "Result<List<AgentKnowledgeBindingSnapshot>>",
+      "checks": "有效库/topK；发布固定 corpusVersionId/manifest",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/agents/{agentId}/mcp-bindings",
+      "feature": "agent",
+      "handler": "AgentController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/AgentController.java",
+      "purpose": "替换 MCP 绑定",
+      "request": "AgentMcpBindingRequest",
+      "success": 200,
+      "response": "Result<List<AgentMcpToolSnapshot>>",
+      "checks": "仅 READ、已发现 revision；未知/过期拒绝",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/agents/{agentId}/publications",
+      "feature": "agent",
+      "handler": "AgentController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/AgentController.java",
+      "purpose": "发布不可变版本",
+      "request": "agentId",
+      "success": 200,
+      "response": "Result<AgentVersionResponse>",
+      "checks": "全能力校验；digest 覆盖绑定；旧版本不变",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/agents/{agentId}/tools",
+      "feature": "agent",
+      "handler": "AgentController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/AgentController.java",
+      "purpose": "替换内置工具绑定",
+      "request": "AgentToolBindingRequest",
+      "success": 200,
+      "response": "Result<List<String>>",
+      "checks": "未知/重复工具拒绝；发布才冻结",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/agents/{agentId}/versions",
+      "feature": "agent",
+      "handler": "AgentController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/AgentController.java",
+      "purpose": "列发布历史",
+      "request": "agentId",
+      "success": 200,
+      "response": "Result<List<AgentVersionResponse>>",
+      "checks": "按版本返回；与固定 Conversation 一致",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/agents/{agentId}/workflow-binding",
+      "feature": "agent",
+      "handler": "AgentController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/AgentController.java",
+      "purpose": "清除入口绑定",
+      "request": "agentId",
+      "success": 200,
+      "response": "Result<Void>",
+      "checks": "只影响草稿；旧版本不清除",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/agents/{agentId}/workflow-binding",
+      "feature": "agent",
+      "handler": "AgentController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/AgentController.java",
+      "purpose": "替换入口 Workflow",
+      "request": "AgentWorkflowBindingRequest",
+      "success": 200,
+      "response": "Result<AgentWorkflowBindingSnapshot>",
+      "checks": "需要已发布版本；旧会话不跟随变化",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/conversations",
+      "feature": "run",
+      "handler": "RunController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/RunController.java",
+      "purpose": "创建固定版本会话",
+      "request": "CreateConversation(agentId,title)",
+      "success": 201,
+      "response": "Conversation (raw)",
+      "checks": "未发布/停用/归档拒绝；固定 versionId",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/conversations/{conversationId}/runs",
+      "feature": "run",
+      "handler": "RunController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/RunController.java",
+      "purpose": "异步创建或重放 Run",
+      "request": "Idempotency-Key + CreateRun(message,resume?)",
+      "success": 202,
+      "response": "RunView (raw; replay HTTP 200)",
+      "checks": "同 key 同体200；异体409；resume 验证归属和 Gap；不重复消息",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/demo-items",
+      "feature": "demo",
+      "handler": "DemoItemController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/DemoItemController.java",
+      "purpose": "教学分页",
+      "request": "page/pageSize",
+      "success": 200,
+      "response": "PageResult<DemoItemResponse>",
+      "checks": "参数合法；ISO 时间",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/DemoItemApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/demo-items",
+      "feature": "demo",
+      "handler": "DemoItemController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/DemoItemController.java",
+      "purpose": "创建教学记录",
+      "request": "DemoItemCreateRequest",
+      "success": 201,
+      "response": "Result<Long>",
+      "checks": "@Valid；时间自动填充",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/DemoItemApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/demo-items/{id}",
+      "feature": "demo",
+      "handler": "DemoItemController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/DemoItemController.java",
+      "purpose": "逻辑删除教学记录",
+      "request": "Long id",
+      "success": 200,
+      "response": "Result<Void>",
+      "checks": "不物理删除；列表不返回",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/DemoItemApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/demo-items/{id}",
+      "feature": "demo",
+      "handler": "DemoItemController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/DemoItemController.java",
+      "purpose": "读取教学记录",
+      "request": "Long id",
+      "success": 200,
+      "response": "Result<DemoItemResponse>",
+      "checks": "逻辑删除后不可读",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/DemoItemApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/demo-items/{id}",
+      "feature": "demo",
+      "handler": "DemoItemController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/DemoItemController.java",
+      "purpose": "更新教学记录",
+      "request": "DemoItemUpdateRequest",
+      "success": 200,
+      "response": "Result<Void>",
+      "checks": "校验；updatedAt 更新",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/DemoItemApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/documents/{id}",
+      "feature": "knowledge",
+      "handler": "KnowledgeController",
+      "source": "backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java",
+      "purpose": "归档文档",
+      "request": "id",
+      "success": 200,
+      "response": "Result<Void>",
+      "checks": "当前召回剔除；历史 corpus 可复验",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/documents/{id}",
+      "feature": "knowledge",
+      "handler": "KnowledgeController",
+      "source": "backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java",
+      "purpose": "文档详情",
+      "request": "id",
+      "success": 200,
+      "response": "Result<KnowledgeDocumentResponse>",
+      "checks": "DONE/FAILED；不泄露跨库内容",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/documents/{id}/chunks",
+      "feature": "knowledge",
+      "handler": "KnowledgeController",
+      "source": "backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java",
+      "purpose": "canonical chunk 列表",
+      "request": "id",
+      "success": 200,
+      "response": "Result<List<KnowledgeChunkResponse>>",
+      "checks": "原文/digest/index 一致",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/health",
+      "feature": "health",
+      "handler": "HealthController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/HealthController.java",
+      "purpose": "应用存活检查",
+      "request": "none",
+      "success": 200,
+      "response": "Result<String>",
+      "checks": "data=Hify is running；不证明外部依赖健康",
+      "testCandidates": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/intent-decisions",
+      "feature": "intent",
+      "handler": "IntentRoutingController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/IntentRoutingController.java",
+      "purpose": "只读意图预览",
+      "request": "DecideIntent(agentId,input<=4000)",
+      "success": 200,
+      "response": "IntentDecision (raw)",
+      "checks": "unknown/clarify/tool/workflow；不得执行工具/Workflow",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/IntentRoutingApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/knowledge-bases",
+      "feature": "knowledge",
+      "handler": "KnowledgeController",
+      "source": "backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java",
+      "purpose": "知识库分页",
+      "request": "page/pageSize/keyword",
+      "success": 200,
+      "response": "PageResult<KnowledgeBaseResponse>",
+      "checks": "过滤归档；分页边界",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/knowledge-bases",
+      "feature": "knowledge",
+      "handler": "KnowledgeController",
+      "source": "backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java",
+      "purpose": "创建知识库",
+      "request": "KnowledgeBaseRequest",
+      "success": 201,
+      "response": "Result<String>",
+      "checks": "chunkSize/overlap 校验",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/knowledge-bases/{id}",
+      "feature": "knowledge",
+      "handler": "KnowledgeController",
+      "source": "backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java",
+      "purpose": "归档库",
+      "request": "id",
+      "success": 200,
+      "response": "Result<Void>",
+      "checks": "新检索不可用；已发布 revision 不变",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/knowledge-bases/{id}",
+      "feature": "knowledge",
+      "handler": "KnowledgeController",
+      "source": "backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java",
+      "purpose": "库详情",
+      "request": "id",
+      "success": 200,
+      "response": "Result<KnowledgeBaseResponse>",
+      "checks": "不存在/归档拒绝",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/knowledge-bases/{id}",
+      "feature": "knowledge",
+      "handler": "KnowledgeController",
+      "source": "backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java",
+      "purpose": "更新库配置",
+      "request": "KnowledgeBaseRequest",
+      "success": 200,
+      "response": "Result<Void>",
+      "checks": "策略校验；既有 corpus 快照保持",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/knowledge-bases/{id}/documents",
+      "feature": "knowledge",
+      "handler": "KnowledgeController",
+      "source": "backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java",
+      "purpose": "列文档与索引状态",
+      "request": "id; page/pageSize",
+      "success": 200,
+      "response": "PageResult<KnowledgeDocumentResponse>",
+      "checks": "过滤归档；索引进度",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/knowledge-bases/{id}/documents",
+      "feature": "knowledge",
+      "handler": "KnowledgeController",
+      "source": "backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java",
+      "purpose": "上传异步索引",
+      "request": "multipart file (TXT/Markdown)",
+      "success": 202,
+      "response": "Result<String>",
+      "checks": "大小/类型/编码/内容；持久任务；失败有状态",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/knowledge-bases/{id}/retrieval-tests",
+      "feature": "knowledge",
+      "handler": "KnowledgeController",
+      "source": "backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java",
+      "purpose": "单轮混合检索调试",
+      "request": "RetrievalTestRequest(query,topK)",
+      "success": 200,
+      "response": "Result<List<KnowledgeCitation>>",
+      "checks": "FTS/vector/RRF；H2 与 PG 不等价；空命中不能当已获证据",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/mcp-servers",
+      "feature": "mcp",
+      "handler": "McpServerController",
+      "source": "backend/hify-mcp/src/main/java/com/hify/mcp/api/McpServerController.java",
+      "purpose": "列表",
+      "request": "none",
+      "success": 200,
+      "response": "Result<List<McpServerResponse>>",
+      "checks": "无分页；无 Token/ciphertext/stored ref",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/McpServerApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AbstractMcpCredentialContract.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/mcp-servers",
+      "feature": "mcp",
+      "handler": "McpServerController",
+      "source": "backend/hify-mcp/src/main/java/com/hify/mcp/api/McpServerController.java",
+      "purpose": "创建 Server",
+      "request": "McpServerRequest",
+      "success": 201,
+      "response": "Result<String>",
+      "checks": "URL/SSRF；credentialAction；无明文持久化",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/McpServerApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AbstractMcpCredentialContract.java"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/mcp-servers/{id}",
+      "feature": "mcp",
+      "handler": "McpServerController",
+      "source": "backend/hify-mcp/src/main/java/com/hify/mcp/api/McpServerController.java",
+      "purpose": "归档 Server",
+      "request": "id",
+      "success": 200,
+      "response": "Result<Void>",
+      "checks": "不撤销冻结旧能力/凭据；不删除版本",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/McpServerApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AbstractMcpCredentialContract.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/mcp-servers/{id}",
+      "feature": "mcp",
+      "handler": "McpServerController",
+      "source": "backend/hify-mcp/src/main/java/com/hify/mcp/api/McpServerController.java",
+      "purpose": "详情",
+      "request": "id",
+      "success": 200,
+      "response": "Result<McpServerResponse>",
+      "checks": "configured 不是远端鉴权成功",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/McpServerApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AbstractMcpCredentialContract.java"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/mcp-servers/{id}",
+      "feature": "mcp",
+      "handler": "McpServerController",
+      "source": "backend/hify-mcp/src/main/java/com/hify/mcp/api/McpServerController.java",
+      "purpose": "编辑与凭据管理",
+      "request": "McpServerRequest",
+      "success": 200,
+      "response": "Result<Void>",
+      "checks": "KEEP/TOKEN/REFERENCE/CLEAR；连接改变需重新发现；旧版本不变",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/McpServerApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AbstractMcpCredentialContract.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/mcp-servers/{id}/tools",
+      "feature": "mcp",
+      "handler": "McpServerController",
+      "source": "backend/hify-mcp/src/main/java/com/hify/mcp/api/McpServerController.java",
+      "purpose": "读当前工具快照",
+      "request": "id",
+      "success": 200,
+      "response": "Result<List<McpToolResponse>>",
+      "checks": "调用必须已发现；无假定 READ",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/McpServerApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AbstractMcpCredentialContract.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/mcp-servers/{id}/tools:refresh",
+      "feature": "mcp",
+      "handler": "McpServerController",
+      "source": "backend/hify-mcp/src/main/java/com/hify/mcp/api/McpServerController.java",
+      "purpose": "发现工具",
+      "request": "id",
+      "success": 200,
+      "response": "Result<List<McpToolResponse>>",
+      "checks": "initialize/tools/list；新 revision；schema drift 隔离",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/McpServerApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AbstractMcpCredentialContract.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/mcp-servers/{id}/tools/{toolName}:call",
+      "feature": "mcp",
+      "handler": "McpServerController",
+      "source": "backend/hify-mcp/src/main/java/com/hify/mcp/api/McpServerController.java",
+      "purpose": "只读工具调试",
+      "request": "McpDebugRequest(arguments,...) ",
+      "success": 200,
+      "response": "Result<McpDebugResponse>",
+      "checks": "schema 校验；非 READ 拒绝；截断/脱敏；deadline/cancel",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/McpServerApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AbstractMcpCredentialContract.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/providers",
+      "feature": "provider",
+      "handler": "ProviderController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/ProviderController.java",
+      "purpose": "筛选分页目录",
+      "request": "page/pageSize/keyword/type/enabled",
+      "success": 200,
+      "response": "PageResult<ProviderResponse>",
+      "checks": "四种管理类型；不泄露鉴权",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/ProviderApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/providers",
+      "feature": "provider",
+      "handler": "ProviderController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/ProviderController.java",
+      "purpose": "创建 Provider 与模型",
+      "request": "ProviderCreateRequest",
+      "success": 201,
+      "response": "Result<String>",
+      "checks": "禁止 MOCK；恰一启用默认模型；无原始 Key",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/ProviderApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/providers/{providerId}",
+      "feature": "provider",
+      "handler": "ProviderController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/ProviderController.java",
+      "purpose": "归档 Provider",
+      "request": "providerId",
+      "success": 200,
+      "response": "Result<Void>",
+      "checks": "被引用时拒绝；健康/缓存边界",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/ProviderApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/providers/{providerId}",
+      "feature": "provider",
+      "handler": "ProviderController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/ProviderController.java",
+      "purpose": "读取目录",
+      "request": "providerId",
+      "success": 200,
+      "response": "Result<ProviderResponse>",
+      "checks": "模型显示名和调用 ID 分离；无密钥",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/ProviderApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/providers/{providerId}",
+      "feature": "provider",
+      "handler": "ProviderController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/ProviderController.java",
+      "purpose": "更新聚合",
+      "request": "ProviderUpdateRequest",
+      "success": 200,
+      "response": "Result<Void>",
+      "checks": "auth 缺省保留；类型变更需新 auth；引用模型不可损坏",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/ProviderApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/providers/{providerId}/connection-tests",
+      "feature": "provider",
+      "handler": "ProviderController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/ProviderController.java",
+      "purpose": "连通性检查",
+      "request": "providerId",
+      "success": 200,
+      "response": "Result<ConnectionTestResponse>",
+      "checks": "外部失败体 success=false；只更新 health；脱敏",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/ProviderApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/runs/{runId}",
+      "feature": "run",
+      "handler": "RunController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/RunController.java",
+      "purpose": "读取运行事实源",
+      "request": "runId",
+      "success": 200,
+      "response": "RunView (raw)",
+      "checks": "终态唯一；version/digest/cancelRequestedAt 可审计",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/runs/{runId}/cancellations",
+      "feature": "run",
+      "handler": "RunController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/RunController.java",
+      "purpose": "请求取消",
+      "request": "runId",
+      "success": 202,
+      "response": "RunView (raw)",
+      "checks": "取消持久化且传阻塞调用；已终态不回退",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/runs/{runId}/events",
+      "feature": "run",
+      "handler": "RunController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/RunController.java",
+      "purpose": "读全部持久事件",
+      "request": "runId",
+      "success": 200,
+      "response": "List<EventView> (raw)",
+      "checks": "ID 有序；无秘密；未知 run 错误",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/runs/{runId}/events/stream",
+      "feature": "run",
+      "handler": "RunController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/RunController.java",
+      "purpose": "流式订阅及重放",
+      "request": "runId; Last-Event-ID?",
+      "success": 200,
+      "response": "text/event-stream",
+      "checks": "只 replay 游标之后；delta 追加；终态关闭；取消与断开语义区分",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/runs/{runId}/memory",
+      "feature": "memory",
+      "handler": "MemoryController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/MemoryController.java",
+      "purpose": "摘要与细节目录",
+      "request": "runId",
+      "success": 200,
+      "response": "MemoryView (raw)",
+      "checks": "source revision/digest；摘要不是 evidence",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/ContextMemoryIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/runs/{runId}/memory/details/{refId}",
+      "feature": "memory",
+      "handler": "MemoryController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/MemoryController.java",
+      "purpose": "回读 canonical detail",
+      "request": "runId/refId",
+      "success": 200,
+      "response": "DetailResult (raw)",
+      "checks": "同一 Conversation；digest 完整性；过期/跨域拒绝",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/ContextMemoryIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/runs/{runId}/memory/search",
+      "feature": "memory",
+      "handler": "MemoryController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/MemoryController.java",
+      "purpose": "查询历史候选",
+      "request": "SearchRequest(query,kind,from,to,entity,limit)",
+      "success": 200,
+      "response": "SearchResult (raw)",
+      "checks": "limit 1..20；范围隔离；只导航",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/ContextMemoryIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tools",
+      "feature": "tool",
+      "handler": "ToolCatalogController",
+      "source": "backend/hify-app/src/main/java/com/hify/api/ToolCatalogController.java",
+      "purpose": "稳定内置目录",
+      "request": "none",
+      "success": 200,
+      "response": "Result<List<ToolCatalogItem>>",
+      "checks": "当前四个 BUILTIN READ；MCP 用独立 server/tools 目录",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/workflow-runs/{id}",
+      "feature": "workflow",
+      "handler": "WorkflowController",
+      "source": "backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java",
+      "purpose": "读取图运行轨迹",
+      "request": "id",
+      "success": 200,
+      "response": "Result<WorkflowRunResponse>",
+      "checks": "状态/节点输出对应固定 checksum",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/workflow-versions/{id}",
+      "feature": "workflow",
+      "handler": "WorkflowController",
+      "source": "backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java",
+      "purpose": "读发布 DSL",
+      "request": "id",
+      "success": 200,
+      "response": "Result<WorkflowVersionDetail>",
+      "checks": "版本 diff 的事实源",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/workflow-versions/{id}/runs",
+      "feature": "workflow",
+      "handler": "WorkflowController",
+      "source": "backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java",
+      "purpose": "执行确定性图",
+      "request": "WorkflowRunRequest(input)",
+      "success": 202,
+      "response": "Result<WorkflowRunResponse>",
+      "checks": "当前同步完成再返回202；节点轨迹；失败/取消",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/workflows",
+      "feature": "workflow",
+      "handler": "WorkflowController",
+      "source": "backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java",
+      "purpose": "分页列图",
+      "request": "page/pageSize",
+      "success": 200,
+      "response": "PageResult<WorkflowResponse>",
+      "checks": "分页/归档边界",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/workflows",
+      "feature": "workflow",
+      "handler": "WorkflowController",
+      "source": "backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java",
+      "purpose": "创建草稿图",
+      "request": "WorkflowDraftRequest",
+      "success": 201,
+      "response": "Result<String>",
+      "checks": "合法图；当前只支持确定性节点",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/workflows/{id}",
+      "feature": "workflow",
+      "handler": "WorkflowController",
+      "source": "backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java",
+      "purpose": "归档图",
+      "request": "id",
+      "success": 200,
+      "response": "Result<Void>",
+      "checks": "不删除已发布版本",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/workflows/{id}",
+      "feature": "workflow",
+      "handler": "WorkflowController",
+      "source": "backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java",
+      "purpose": "读取草稿图",
+      "request": "id",
+      "success": 200,
+      "response": "Result<WorkflowResponse>",
+      "checks": "nodes/edges 同源 DSL",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/workflows/{id}",
+      "feature": "workflow",
+      "handler": "WorkflowController",
+      "source": "backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java",
+      "purpose": "替换草稿图",
+      "request": "WorkflowDraftRequest",
+      "success": 200,
+      "response": "Result<Void>",
+      "checks": "不是 PATCH /draft；不改发布版本",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/workflows/{id}/validations",
+      "feature": "workflow",
+      "handler": "WorkflowController",
+      "source": "backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java",
+      "purpose": "校验图",
+      "request": "id",
+      "success": 200,
+      "response": "Result<Void>",
+      "checks": "入口/出口/可达/环/缺省分支/变量",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/workflows/{id}/versions",
+      "feature": "workflow",
+      "handler": "WorkflowController",
+      "source": "backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java",
+      "purpose": "列发布版本",
+      "request": "id",
+      "success": 200,
+      "response": "Result<List<WorkflowVersionResponse>>",
+      "checks": "草稿修改不改旧版本",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/workflows/{id}/versions",
+      "feature": "workflow",
+      "handler": "WorkflowController",
+      "source": "backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java",
+      "purpose": "发布不可变图",
+      "request": "id",
+      "success": 200,
+      "response": "Result<WorkflowVersionResponse>",
+      "checks": "checksum/版本固定；非法图拒绝",
+      "testCandidates": [
+        "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+      ]
+    }
+  ]
+}

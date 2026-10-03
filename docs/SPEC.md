@@ -41,8 +41,8 @@ Hify 是一个可在单机或内网服务器部署的轻量 AI Agent 平台，�
 
 - 多租户、复杂 RBAC、SSO、计费、配额商业化。
 - 插件打包/市场、模型微调、运营大盘。
-- 可视化 Workflow 画布、任意 DAG、分布式调度。
-- 子 Agent、并行工具、浏览器自动化、任意 shell/代码执行。
+- 任意 DAG 并行调度、分布式调度；确定性节点的同源编辑画布已由 CONSOLE-003 扩展交付。
+- 真实子 Agent worker、并行工具、浏览器自动化、任意 shell/代码执行（已有子任务状态协议不代表 worker）。
 - 公网 WebApp 和开放注册。
 
 ## 2. 成功指标与门禁
@@ -65,8 +65,10 @@ Hify 是一个可在单机或内网服务器部署的轻量 AI Agent 平台，�
 - 生产形态优先 Docker Compose；Kubernetes 只在多副本/统一平台运维成为真实需求后评估。
 - PostgreSQL 16 + pgvector 合并业务与向量事实源，避免 MySQL + PostgreSQL 双数据库运维和一致性成本。
 - Redis 可用于限流、短缓存和 SSE 事件 replay，但不是消息、Run 或任务的唯一事实源。
-- 当前后端已完成 Maven 多模块、MVC/SSE、PostgreSQL/Flyway、短事务 Run API、并发幂等和终态 CAS；直接 Entity API、JPA→MyBatis-Plus 过渡、真实流式和完整权限仍未达到本规格，继续按 `CURRENT_STATE.md` 与 ADR 收敛。
+- 当前后端有 Maven 多模块、MVC/SSE、PostgreSQL/Flyway、短事务 Run API、并发幂等、终态 CAS、原生 Provider 流协议及三类能力发布绑定。部分 API 仍直接返回 Entity、JPA/MP 并存、没有登录鉴权；真实外部模型的效果/成本与全功能部署验收不能由 mock 流测试外推。继续按 `CURRENT_STATE.md` 与 ADR 收敛。
 
 ## 4. 文档与事实规则
 
 源码和运行证据 > 自动化测试 > ADR > 本规格 > README。规划能力必须标为“待实现”，不能出现在 README 的“已包含”列表中。
+
+全部显式接口及跨模块功能的验收要求见 [spec/README.md](spec/README.md)。本规格中的指标是目标，不意味着当前全部达到；空知识/Workflow取消等差距见 [审计发现](spec/AUDIT_FINDINGS.md)。
