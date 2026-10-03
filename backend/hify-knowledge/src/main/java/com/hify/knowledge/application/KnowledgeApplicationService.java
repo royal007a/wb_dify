@@ -79,7 +79,7 @@ public class KnowledgeApplicationService {
     @Transactional
     public void archiveBase(String id){
         KnowledgeBase base=requireBase(id); documents.findByKnowledgeBaseIdAndArchivedAtIsNull(id).forEach(KnowledgeDocument::archive);
-        jdbc.update("UPDATE document_chunks SET archived_at = ? WHERE knowledge_base_id = ? AND archived_at IS NULL",Instant.now(),id);
+        jdbc.update("UPDATE document_chunks SET archived_at = ? WHERE knowledge_base_id = ? AND archived_at IS NULL",java.sql.Timestamp.from(Instant.now()),id);
         base.archive(); bases.save(base);
     }
 
@@ -113,7 +113,7 @@ public class KnowledgeApplicationService {
     public void archiveDocument(String id){
         KnowledgeDocument document=requireDocument(id);
         if(document.getIndexingState()==DocumentIndexingState.PROCESSING) throw new BizException(ErrorCode.CONFLICT,"文档正在处理，不能归档");
-        jdbc.update("UPDATE document_chunks SET archived_at = ? WHERE document_id = ? AND archived_at IS NULL",Instant.now(),id);
+        jdbc.update("UPDATE document_chunks SET archived_at = ? WHERE document_id = ? AND archived_at IS NULL",java.sql.Timestamp.from(Instant.now()),id);
         document.archive(); documents.save(document);
     }
 

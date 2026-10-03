@@ -9,6 +9,7 @@ import com.hify.knowledge.api.KnowledgeRetrievalPort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Isolation;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -42,19 +43,23 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     @Override
     @Transactional
     public KnowledgeCorpusSnapshot freeze(String knowledgeBaseId) {
-        var base=knowledge.requireBase(knowledgeBaseId);
-        if(!base.isEnabled())throw new BizException(ErrorCode.CONFLICT,"知识库已停用");
+        // Serialize version allocation and observe the current base state, not a cached JPA entity.
+        List<Boolean> enabled=jdbc.query("SELECT enabled FROM knowledge_bases WHERE id=? AND archived_at IS NULL FOR UPDATE",
+                (rs,n)->rs.getBoolean(1),knowledgeBaseId);
+        if(enabled.isEmpty())throw new BizException(ErrorCode.NOT_FOUND,"知识库不存在");
+        if(!enabled.get(0))throw new BizException(ErrorCode.CONFLICT,"知识库已停用");
         List<Row> rows=activeRows(knowledgeBaseId);
+        rows.forEach(this::verifyContent);
         String manifest=manifestDigest(rows);
         List<KnowledgeCorpusSnapshot> existing=jdbc.query("SELECT id,knowledge_base_id,revision_no,manifest_digest,chunk_count FROM knowledge_corpus_versions WHERE knowledge_base_id=? AND manifest_digest=?",
                 (rs,n)->new KnowledgeCorpusSnapshot(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getString(4),rs.getInt(5)),knowledgeBaseId,manifest);
-        if(!existing.isEmpty())return existing.get(0);
+        if(!existing.isEmpty()){verifiedRows(existing.get(0));return existing.get(0);}
         Integer revision=jdbc.queryForObject("SELECT COALESCE(MAX(revision_no),0)+1 FROM knowledge_corpus_versions WHERE knowledge_base_id=?",Integer.class,knowledgeBaseId);
         String id=UUID.randomUUID().toString(); Instant now=Instant.now();
         jdbc.update("INSERT INTO knowledge_corpus_versions(id,knowledge_base_id,revision_no,manifest_digest,chunk_count,created_at) VALUES (?,?,?,?,?,?)",
-                id,knowledgeBaseId,revision,manifest,rows.size(),now);
+                id,knowledgeBaseId,revision,manifest,rows.size(),java.sql.Timestamp.from(now));
         for(Row row:rows)jdbc.update("INSERT INTO knowledge_corpus_version_chunks(corpus_version_id,chunk_id,content_digest,created_at) VALUES (?,?,?,?)",
-                id,row.id(),row.digest(),now);
+                id,row.id(),row.digest(),java.sql.Timestamp.from(now));
         return new KnowledgeCorpusSnapshot(id,knowledgeBaseId,revision,manifest,rows.size());
     }
 
@@ -68,12 +73,40 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     }
 
     @Override
-    @Transactional(readOnly=true)
+    @Transactional(readOnly=true,isolation=Isolation.REPEATABLE_READ)
     public List<KnowledgeCitation> searchRevision(String corpusVersionId,String query,int topK) {
         if(query==null||query.isBlank())throw new BizException(ErrorCode.PARAM_ERROR,"检索问题不能为空");
-        Long count=jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_corpus_versions WHERE id=?",Long.class,corpusVersionId);
-        if(count==null||count==0)throw new BizException(ErrorCode.NOT_FOUND,"知识语料版本不存在");
-        return rank(query,topK,revisionRows(corpusVersionId),null,corpusVersionId);
+        KnowledgeCorpusSnapshot snapshot=requireSnapshot(corpusVersionId);
+        return rank(query,topK,verifiedRows(snapshot),null,corpusVersionId);
+    }
+
+    @Override
+    @Transactional(readOnly=true,isolation=Isolation.REPEATABLE_READ)
+    public List<KnowledgeCitation> searchSnapshot(KnowledgeCorpusSnapshot expected,String query,int topK) {
+        if(expected==null)throw new BizException(ErrorCode.CONFLICT,"缺少发布知识快照，请重新发布");
+        if(query==null||query.isBlank())throw new BizException(ErrorCode.PARAM_ERROR,"检索问题不能为空");
+        KnowledgeCorpusSnapshot actual=requireSnapshot(expected.id());
+        if(!actual.equals(expected))throw new BizException(ErrorCode.CONFLICT,"知识语料快照摘要或身份不匹配");
+        return rank(query,topK,verifiedRows(actual),null,actual.id());
+    }
+
+    private KnowledgeCorpusSnapshot requireSnapshot(String id) {
+        var snapshots=jdbc.query("SELECT id,knowledge_base_id,revision_no,manifest_digest,chunk_count FROM knowledge_corpus_versions WHERE id=?",
+                (rs,n)->new KnowledgeCorpusSnapshot(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getString(4),rs.getInt(5)),id);
+        if(snapshots.isEmpty())throw new BizException(ErrorCode.NOT_FOUND,"知识语料版本不存在");
+        return snapshots.get(0);
+    }
+
+    private List<Row> verifiedRows(KnowledgeCorpusSnapshot snapshot) {
+        List<Row> rows=revisionRows(snapshot.id());
+        if(rows.size()!=snapshot.chunkCount()||!manifestDigest(rows).equals(snapshot.manifestDigest()))
+            throw new BizException(ErrorCode.CONFLICT,"知识语料清单或摘要不完整");
+        rows.forEach(this::verifyContent);
+        return rows;
+    }
+
+    private void verifyContent(Row row) {
+        if(!sha256(row.content()).equals(row.digest()))throw new BizException(ErrorCode.CONFLICT,"引用分块原文摘要不匹配");
     }
 
     private List<KnowledgeCitation> rank(String query,int topK,List<Row> fallbackRows,String baseId,String corpusVersionId){
@@ -101,9 +134,10 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     @Override
     @Transactional(readOnly=true)
     public KnowledgeChunkResponse requireCanonicalChunk(String chunkId,String expectedDigest){
-        List<Row> rows=jdbc.query("SELECT id,document_id,document_version,ordinal,content,content_digest,token_count,embedding_text FROM document_chunks WHERE id=? AND archived_at IS NULL",(rs,n)->new Row(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getString(8)),chunkId);
+        List<Row> rows=jdbc.query("SELECT c.id,c.document_id,c.document_version,c.ordinal,c.content,c.content_digest,c.token_count,c.embedding_text FROM document_chunks c WHERE c.id=? AND (c.archived_at IS NULL OR EXISTS (SELECT 1 FROM knowledge_corpus_version_chunks vc WHERE vc.chunk_id=c.id AND vc.content_digest=c.content_digest AND vc.content_digest=?))",(rs,n)->new Row(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getString(8)),chunkId,expectedDigest);
         if(rows.isEmpty())throw new BizException(ErrorCode.NOT_FOUND,"引用分块不存在"); Row r=rows.get(0);
         if(expectedDigest!=null&&!expectedDigest.equals(r.digest()))throw new BizException(ErrorCode.CONFLICT,"引用分块摘要不匹配");
+        verifyContent(r);
         return new KnowledgeChunkResponse(r.id(),r.documentId(),r.version(),r.ordinal(),r.content(),r.digest(),r.tokens());
     }
 
@@ -114,7 +148,7 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     }
 
     private List<Row> activeRows(String baseId){return jdbc.query("SELECT id,document_id,document_version,ordinal,content,content_digest,token_count,embedding_text FROM document_chunks WHERE knowledge_base_id=? AND archived_at IS NULL ORDER BY id",(rs,n)->new Row(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getString(8)),baseId);}
-    private List<Row> revisionRows(String versionId){return jdbc.query("SELECT c.id,c.document_id,c.document_version,c.ordinal,c.content,c.content_digest,c.token_count,c.embedding_text FROM knowledge_corpus_version_chunks vc JOIN document_chunks c ON c.id=vc.chunk_id WHERE vc.corpus_version_id=? AND c.content_digest=vc.content_digest ORDER BY c.id",(rs,n)->new Row(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getString(8)),versionId);}
+    private List<Row> revisionRows(String versionId){return jdbc.query("SELECT c.id,c.document_id,c.document_version,c.ordinal,c.content,c.content_digest,c.token_count,c.embedding_text FROM knowledge_corpus_version_chunks vc JOIN document_chunks c ON c.id=vc.chunk_id JOIN knowledge_corpus_versions v ON v.id=vc.corpus_version_id WHERE vc.corpus_version_id=? AND c.content_digest=vc.content_digest AND c.knowledge_base_id=v.knowledge_base_id ORDER BY c.id",(rs,n)->new Row(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getString(8)),versionId);}
     private List<Row> postgresLexical(String baseId,String query,int limit){return jdbc.query("""
             SELECT id,document_id,document_version,ordinal,content,content_digest,token_count,embedding_text
             FROM document_chunks
@@ -142,6 +176,7 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
             ORDER BY c.embedding <=> CAST(? AS vector) LIMIT ?
             """,(rs,n)->new Row(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getString(8)),versionId,literal,limit);}
     private String manifestDigest(List<Row> rows){StringBuilder canonical=new StringBuilder();for(Row row:rows)canonical.append(row.id()).append(':').append(row.digest()).append('\n');try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(canonical.toString().getBytes(StandardCharsets.UTF_8)));}catch(Exception e){throw new IllegalStateException("SHA-256 unavailable",e);}}
+    private String sha256(String value){try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8)));}catch(Exception failure){throw new IllegalStateException("SHA-256 unavailable",failure);}}
     private boolean isPostgres(){try(var connection=jdbc.getDataSource().getConnection()){return connection.getMetaData().getDatabaseProductName().toLowerCase(Locale.ROOT).contains("postgresql");}catch(Exception e){return false;}}
     private void add(Map<String,Double>s,Map<String,Row>rows,List<Row>ranked,double weight){for(int i=0;i<ranked.size();i++){Row r=ranked.get(i);rows.put(r.id(),r);s.merge(r.id(),weight/(RRF_K+i+1),Double::sum);}}
     private double lexicalScore(String query,String text){String q=normalize(query),t=normalize(text);if(q.isBlank())return 0;if(t.contains(q))return 10+q.length();double score=0;for(int i=0;i<q.length()-1;i++){if(t.contains(q.substring(i,i+2)))score++;}return score;}

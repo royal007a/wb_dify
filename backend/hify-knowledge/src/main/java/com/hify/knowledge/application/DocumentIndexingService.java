@@ -58,12 +58,12 @@ public class DocumentIndexingService {
                     jdbc.update("""
                             INSERT INTO document_chunks(id,knowledge_base_id,document_id,document_version,ordinal,content,content_digest,token_count,embedding_text,embedding,created_at)
                             VALUES (?,?,?,?,?,?,?,?,?,CAST(? AS vector),?)
-                            """,id,base.getId(),documentId,document.getDocumentVersion(),chunk.ordinal(),chunk.content(),digest,chunk.tokenCount(),literal,literal,Instant.now());
+                            """,id,base.getId(),documentId,document.getDocumentVersion(),chunk.ordinal(),chunk.content(),digest,chunk.tokenCount(),literal,literal,java.sql.Timestamp.from(Instant.now()));
                 }else{
                     jdbc.update("""
                             INSERT INTO document_chunks(id,knowledge_base_id,document_id,document_version,ordinal,content,content_digest,token_count,embedding_text,created_at)
                             VALUES (?,?,?,?,?,?,?,?,?,?)
-                            """,id,base.getId(),documentId,document.getDocumentVersion(),chunk.ordinal(),chunk.content(),digest,chunk.tokenCount(),literal,Instant.now());
+                            """,id,base.getId(),documentId,document.getDocumentVersion(),chunk.ordinal(),chunk.content(),digest,chunk.tokenCount(),literal,java.sql.Timestamp.from(Instant.now()));
                 }
                 task.checkpoint(chunk.ordinal());
             }

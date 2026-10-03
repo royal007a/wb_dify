@@ -76,7 +76,7 @@ class KnowledgeApiIntegrationTest {
 
         http.perform(delete("/api/v1/documents/{id}",documentId)).andExpect(status().isOk());
         http.perform(get("/api/v1/documents/{id}",documentId)).andExpect(status().isNotFound());
-        assertThatThrownBy(()->retrieval.requireCanonicalChunk(chunkId,digest)).isInstanceOf(BizException.class);
+        assertThat(retrieval.requireCanonicalChunk(chunkId,digest).content()).contains("退货政策");
         assertThat(retrieval.searchRevision(frozen.id(),"七天无理由退货",3))
                 .extracting(com.hify.knowledge.api.KnowledgeCitation::chunkId).contains(retrievedChunkId);
     }
