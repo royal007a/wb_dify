@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-WORKFLOW-KNOWLEDGE-001-20261003T211653Z-11fb17fe",
-    "path": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-001/SPEC-WORKFLOW-KNOWLEDGE-001-20261003T211653Z-11fb17fe",
-    "result": "blocked",
-    "exitCode": 1,
-    "baselineCommit": "6c06f0dfda5f0fd8c1078f531217275004be381e",
-    "headCommit": "60e74c8e7c844e253410b6a226632cf81f2f63b9",
-    "recordedAt": "2026-10-03T21:33:35Z"
+    "runId": "SPEC-WORKFLOW-KNOWLEDGE-001-20261003T213835Z-5121176c",
+    "path": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-001/SPEC-WORKFLOW-KNOWLEDGE-001-20261003T213835Z-5121176c",
+    "result": "completed",
+    "exitCode": 0,
+    "baselineCommit": "3af053cec7756416b17bbb26cd6bfcfafa8ca0e1",
+    "headCommit": "be205dd9321c1e5c2d429fbe0b748aea290198de",
+    "recordedAt": "2026-10-03T21:40:31Z"
   },
-  "lastCompletedTaskId": "SPEC-HISTORY-RECOVERY-002",
-  "updatedAt": "2026-10-03T21:33:35Z"
+  "lastCompletedTaskId": "SPEC-WORKFLOW-KNOWLEDGE-001",
+  "updatedAt": "2026-10-03T21:40:31Z"
 }

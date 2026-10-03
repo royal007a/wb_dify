@@ -1,8 +1,32 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T21:33:35Z",
+  "updatedAt": "2026-10-03T21:40:31Z",
   "tasks": [
+    {
+      "id": "SPEC-WORKFLOW-KNOWLEDGE-002",
+      "title": "补齐冻结Workflow发布边界、锁顺序与事务隔离证据",
+      "description": "处理知识快照复核六项P2：旧版本Agent发布、客户端旧快照来源、checksum、多库死锁、隔离交错、额外借连接；明确向量排序边界。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["backend", "migration", "harness"],
+      "verifyScopes": ["harness", "migration"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-WORKFLOW-KNOWLEDGE-001"],
+      "acceptance": [
+        "Agent发布和执行拒绝未冻结、旧客户端伪造快照及checksum损坏，不回写旧版本",
+        "Agent与Workflow按同一知识库顺序加锁，并发发布有真实数据库交错证据",
+        "H2/PG读取不混入校验后提交的新原文，类型判断不额外借连接，明确向量重建排序非目标"
+      ],
+      "planPath": "exec-plans/active/SPEC-WORKFLOW-KNOWLEDGE-002.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T21:41:00Z",
+      "updatedAt": "2026-10-03T21:41:00Z"
+    },
     {
       "id": "SPEC-HISTORY-RECOVERY-002",
       "title": "恢复元数据按JSON语义比较，兼容跨JVM键顺序",
@@ -857,7 +881,7 @@
       "title": "固定 Workflow 知识语料快照并保留历史引用",
       "description": "A03：发布时冻结KNOWLEDGE节点语料，运行仅使用冻结revision，归档不得破坏已发布引用；旧未冻结知识版本显式拒绝，不能改写历史DSL。",
       "priority": "P0",
-      "status": "blocked",
+      "status": "completed",
       "scopes": [
         "backend",
         "runtime",
@@ -882,7 +906,7 @@
       ],
       "planPath": "exec-plans/blocked/SPEC-WORKFLOW-KNOWLEDGE-001.md",
       "checkpoint": null,
-      "blockedReason": "verification failed",
+      "blockedReason": null,
       "evidence": [
         {
           "runId": "SPEC-WORKFLOW-KNOWLEDGE-001-20261003T211653Z-11fb17fe",
@@ -892,10 +916,19 @@
           "baselineCommit": "6c06f0dfda5f0fd8c1078f531217275004be381e",
           "headCommit": "60e74c8e7c844e253410b6a226632cf81f2f63b9",
           "recordedAt": "2026-10-03T21:33:35Z"
+        },
+        {
+          "runId": "SPEC-WORKFLOW-KNOWLEDGE-001-20261003T213835Z-5121176c",
+          "path": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-001/SPEC-WORKFLOW-KNOWLEDGE-001-20261003T213835Z-5121176c",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "3af053cec7756416b17bbb26cd6bfcfafa8ca0e1",
+          "headCommit": "be205dd9321c1e5c2d429fbe0b748aea290198de",
+          "recordedAt": "2026-10-03T21:40:31Z"
         }
       ],
       "createdAt": "2026-10-03T17:50:00Z",
-      "updatedAt": "2026-10-03T21:33:35Z"
+      "updatedAt": "2026-10-03T21:40:31Z"
     },
     {
       "id": "SPEC-SSE-COMMIT-001",

@@ -25,3 +25,7 @@
 60e74c8 的定向命令 41 项通过；migration 组合 37 项中 2 errors，均为 WorkflowSettlementPostgresTest 的失败路径夹具。该夹具原来通过发布一个不存在的知识库，在运行时制造 FAILED；新契约已在发布时拒绝，因此夹具停在发布，而不是检验原有结算竞争。新 WorkflowKnowledgePostgresTest 的 10 项全部通过。原子任务保持 blocked，修正夹具后重新执行完整门禁；不能把这次组合写为通过。
 
 独立 reviewer 对 6c06f0d..60e74c8 仅做静态阅读，未发现 P0/P1；提出旧 Workflow 在 Agent 发布时的拒绝/提示、旧客户端快照来源与 checksum、向量重建排序边界、多库加锁顺序、事务交错测试、数据库产品判断额外借连接六项 P2。静态复核不替代门禁，后续按反例处理。
+
+## 最终复跑
+
+be205dd 只修正结算测试夹具：先发布有效空语料，再破坏其 manifest，产生真正的执行失败；原四组成功/失败与取消竞争断言全部保留。复跑目录 `harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-001/SPEC-WORKFLOW-KNOWLEDGE-001-20261003T213835Z-5121176c/`：定向 45 项通过（模块17、应用28），migration 37 项通过且 0 skip，harness 门禁通过。未跑全仓库/浏览器/生产部署。六项 P2 由后续 SPEC-WORKFLOW-KNOWLEDGE-002 处理。

@@ -40,10 +40,10 @@
 | ID | 场景与必须断言 | 失败/边界 | 已有入口及核验层 |
 |---|---|---|---|
 | F23 | KB CRUD→TXT/MD上传→持久索引→chunk/digest→检索→归档 | 空/超大/错误类型/重启/归档竞态；分页负值；非法 overlap | A: KnowledgeApiIntegrationTest；多条管理读取/更新/归档路径需补 |
-| F24 | FTS+向量/RRF 正确过滤，canonical chunk可回读；旧语料快照稳定 | 空命中/库停用/失败；H2 不测 PG SQL；中文分词限制 | A/P: KnowledgeApiIntegrationTest、PostgresConcurrencyIntegrationTest；embedding 为64维 hash bootstrap，不是真实模型 |
+| F24 | FTS+向量/RRF 正确过滤，canonical chunk可回读；旧语料原文/成员快照稳定 | 空命中/库停用/失败；冻结归档引用需匹配摘要；H2 不测 PG SQL；向量重建排序未冻结 | A/P: KnowledgeApiIntegrationTest、WorkflowKnowledgeIntegrationTest/WorkflowKnowledgePostgresTest、PostgresConcurrencyIntegrationTest；embedding 为64维 hash bootstrap，不是真实模型 |
 | F25 | Agent 知识绑定发布固定 revision、注入来源事件 | 空命中/检索异常不得无依据宣称 grounded；最终引用需校验 | A: AgentApiIntegrationTest 目前只验证空库事件，grounding 闭环不足 |
 | F26 | Workflow 创建/修改/校验/发布/历史/归档/试跑/轨迹 | 无环可达不等于变量必经；死路/重复分支/END出边/未知变量 | U/A: SPEC_WORKFLOW_GRAPH 记录25项单测+5项HTTP通过；列表/归档等全覆盖仍需VERIFY，资源冻结/取消另验 |
-| F27 | Chat 固定已发布 Workflow 执行，图更新不变旧行为 | KNOWLEDGE节点语料变化；取消中执行；超时/空输出 gate | A: AgentApiIntegrationTest 只覆盖 TEMPLATE 版本；需扩展 |
+| F27 | Chat 固定已发布 Workflow 执行，图更新不变旧行为 | KNOWLEDGE 发布语料、归档后引用；取消中执行；超时/空输出 gate | A/P: WorkflowKnowledgeIntegrationTest/WorkflowKnowledgePostgresTest 覆盖旧新会话原文隔离；A: WorkflowRunControlIntegrationTest；空/无关证据 gate 仍未闭环 |
 | F28 | MCP Server CRUD、发现新 revision、READ工具调试、绑定 QueryLoop | 假工具/非READ、schema漂移、不可用/超时/取消/SSE replay | A: McpServerApiIntegrationTest、McpProtocolClientReliabilityTest |
 | F29 | MCP Token KEEP/TOKEN/REFERENCE/CLEAR；GCM随机nonce/所有者绑定；旧快照旧凭据；引用/目标默认拒绝 | 缺/错主密钥、篡改、跨Server、畸形JSON、回显、清除不等于全局撤销；换地址不得KEEP、历史引用运行时复查 | U: McpCredentialCipherTest、CredentialReferencePolicyTest；A/P: AbstractMcpCredentialContract 两环境；A: McpProtocolClientReliabilityTest；B: mcp-token-live.spec.ts（引用新策略尚未部署验证） |
 | F30 | 出站 URL/risk/headers/大小的安全边界 | DNS rebinding、协议重定向/元数据/用户信息、工具描述不可信 | U/A: ProviderUrlPolicyTest、McpServerApiIntegrationTest；完整 MCP session/SSE conformance 未实现 |
@@ -56,7 +56,7 @@
 | F32 | Workflow 画布与 JSON 使用同一 DSL、校验/试跑/diff | 非法连线、编辑未保存、旧版本 diff | B: management.spec.ts 仅打开画布/diff；真实图编辑需补 |
 | F33 | MCP 编辑原ID、Token不回填、关闭清空、保存/替换/清除 | API失败保留本次输入；切换操作不误传 token | B: mcp-edit.spec.ts mock；mcp-edit-live/mcp-token-live opt-in 真实链路 |
 | F34 | Reactor依赖、统一Result/异常、线程池隔离、分页/时间/Redis基础 | 池饱和、Redis停机、事务后缓存、解析/缺header/参数类型错误 | U/A: MavenStructureTest、CommonContractsTest、AgentCacheIntegrationTest；统一4xx边界待补 |
-| F35 | Flyway V1-V20从空库/升级不丢版本，唯一约束/加密存储 | 不能将 Testcontainers skip 当通过；数据真实且隔离 | P: migration scope（3个类）；不是全部业务的 PG 覆盖 |
+| F35 | Flyway V1-V23从空库/升级不丢版本，唯一约束/加密存储 | 不能将 Testcontainers skip 当通过；数据真实且隔离 | P: migration scope（具体类和计数见 harness/verify.sh）；不是全部业务的 PG 覆盖 |
 | F36 | 启停脚本、失败清理、PID归属、备份恢复、SSE代理、TLS、前缀 | 不杀其他进程；构建与已部署SHA一致；Token主密钥不可重置 | O: start/stop/deploy 脚本；本轮需重新验证授权范围 |
 | F37 | 版本化评测数据、成功率/召回/覆盖/重复调查/成本延迟 | 测试集与参数不能混用；mock token/延迟不能称真实P95 | E: IntentEvaluationDatasetTest、HistoryRecallEvaluationTest、ContextManagementEvaluationTest；真实供应商效果未验收 |
 | F38 | Harness单任务、权限、baseline/checkpoint/evidence、生成进度 | 不同高风险动作需approvalRef；失败不标完成；测试记录版本对齐 | harness/tests/test_harness.py；全接口门禁 ApiContractInventoryTest |

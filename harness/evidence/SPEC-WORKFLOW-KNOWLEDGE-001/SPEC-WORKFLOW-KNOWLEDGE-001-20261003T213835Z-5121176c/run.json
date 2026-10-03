@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-WORKFLOW-KNOWLEDGE-001-20261003T213835Z-5121176c",
+  "taskId": "SPEC-WORKFLOW-KNOWLEDGE-001",
+  "status": "completed",
+  "baselineCommit": "3af053cec7756416b17bbb26cd6bfcfafa8ca0e1",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T21:38:35Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "be205dd9321c1e5c2d429fbe0b748aea290198de",
+  "finishedAt": "2026-10-03T21:40:31Z"
+}
