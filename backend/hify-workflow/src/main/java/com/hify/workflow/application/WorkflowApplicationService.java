@@ -13,8 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.*;
 
@@ -30,10 +28,10 @@ public class WorkflowApplicationService {
  @Transactional(readOnly=true) public PageResult<WorkflowResponse> list(Integer page,Integer size){int p=page==null?1:Math.max(1,page),s=size==null?20:Math.min(100,Math.max(1,size));var result=workflows.findByArchivedAtIsNull(PageRequest.of(p-1,s,Sort.by(Sort.Direction.DESC,"updatedAt")));return PageResult.of(result.getContent().stream().map(this::response).toList(),result.getTotalElements(),p,s);}
  @Transactional public void archive(String id){require(id).archive();}
  @Transactional(readOnly=true) public void validate(String id){validator.validate(draft(require(id)));}
- @Transactional public WorkflowVersionResponse publish(String id){WorkflowDefinition workflow=require(id);WorkflowDraftRequest draft=draft(workflow);validator.validate(draft);String dsl=write(WorkflowKnowledgeSnapshots.freeze(draft,knowledge,json));String checksum=digest(dsl);int no=Math.toIntExact(versions.countByWorkflowId(id)+1);WorkflowVersion entity=new WorkflowVersion(UUID.randomUUID().toString(),id,no,workflow.getSchemaVersion(),dsl,checksum,Instant.now());versions.save(entity);workflow.published(entity.getId());workflows.save(workflow);return versionResponse(entity);}
+ @Transactional public WorkflowVersionResponse publish(String id){WorkflowDefinition workflow=require(id);WorkflowDraftRequest draft=draft(workflow);validator.validate(draft);String dsl=WorkflowPublishedGraph.write(WorkflowKnowledgeSnapshots.freeze(draft,knowledge,json),json);String checksum=WorkflowPublishedGraph.checksum(dsl);int no=Math.toIntExact(versions.countByWorkflowId(id)+1);WorkflowVersion entity=new WorkflowVersion(UUID.randomUUID().toString(),id,no,workflow.getSchemaVersion(),dsl,checksum,Instant.now());versions.save(entity);workflow.published(entity.getId());workflows.save(workflow);return versionResponse(entity);}
  @Transactional(readOnly=true) public List<WorkflowVersionResponse> versions(String id){require(id);return versions.findByWorkflowIdOrderByVersionNoDesc(id).stream().map(this::versionResponse).toList();}
  @Transactional(readOnly=true) public WorkflowVersionDetail versionDetail(String id){WorkflowVersion v=requireVersion(id);try{WorkflowDraftRequest d=json.readValue(v.getDslJson(),WorkflowDraftRequest.class);return new WorkflowVersionDetail(v.getId(),v.getWorkflowId(),v.getVersionNo(),v.getSchemaVersion(),v.getChecksum(),d.nodes(),d.edges(),v.getCreatedAt());}catch(Exception e){throw new BizException(ErrorCode.INTERNAL_ERROR,"Stored Workflow version is invalid");}}
- @Transactional(readOnly=true) public WorkflowCapabilitySnapshot publishedSnapshot(String id){WorkflowDefinition workflow=require(id);if(workflow.getPublishedVersionId()==null)throw new BizException(ErrorCode.CONFLICT,"Workflow 尚未发布");WorkflowVersion version=requireVersion(workflow.getPublishedVersionId());return new WorkflowCapabilitySnapshot(id,version.getId(),version.getVersionNo(),version.getChecksum());}
+ @Transactional(readOnly=true) public WorkflowCapabilitySnapshot publishedSnapshot(String id){WorkflowDefinition workflow=require(id);if(workflow.getPublishedVersionId()==null)throw new BizException(ErrorCode.CONFLICT,"Workflow 尚未发布");WorkflowVersion version=requireVersion(workflow.getPublishedVersionId());validator.validate(WorkflowPublishedGraph.read(version,json));return new WorkflowCapabilitySnapshot(id,version.getId(),version.getVersionNo(),version.getChecksum());}
  @Transactional(readOnly=true) public Map<String,WorkflowCapabilitySnapshot> publishedSnapshots(Collection<String> ids){if(ids.isEmpty())return Map.of();Map<String,WorkflowDefinition> definitions=workflows.findAllById(ids).stream().filter(w->w.getArchivedAt()==null).collect(java.util.stream.Collectors.toMap(WorkflowDefinition::getId,w->w));List<String> versionIds=definitions.values().stream().map(WorkflowDefinition::getPublishedVersionId).filter(Objects::nonNull).toList();Map<String,WorkflowVersion> byVersion=versions.findAllById(versionIds).stream().collect(java.util.stream.Collectors.toMap(WorkflowVersion::getId,v->v));Map<String,WorkflowCapabilitySnapshot> result=new HashMap<>();definitions.forEach((id,w)->{WorkflowVersion v=byVersion.get(w.getPublishedVersionId());if(v!=null)result.put(id,new WorkflowCapabilitySnapshot(id,v.getId(),v.getVersionNo(),v.getChecksum()));});return result;}
  WorkflowVersion requireVersion(String id){return versions.findById(id).orElseThrow(()->new BizException(ErrorCode.NOT_FOUND,"Workflow 版本不存在"));}
 
@@ -46,5 +44,4 @@ public class WorkflowApplicationService {
  private BizException duplicate(){return new BizException(ErrorCode.CONFLICT,"Workflow 名称已存在");}
  private String write(Object value){try{return json.writeValueAsString(value);}catch(Exception e){throw new BizException(ErrorCode.PARAM_ERROR,"Workflow JSON 无法序列化");}}
  private com.fasterxml.jackson.databind.JsonNode readTree(String value){try{return json.readTree(value);}catch(Exception e){throw new IllegalStateException(e);}}
- private String digest(String value){try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8)));}catch(Exception e){throw new IllegalStateException(e);}}
 }

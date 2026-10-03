@@ -298,8 +298,12 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
         List<String> toolNames = draftTools(List.of(id)).getOrDefault(id, List.of());
         validateTools(toolNames);
         List<AgentKnowledgeBindingSnapshot> draftKnowledge=draftKnowledge(List.of(id)).getOrDefault(id,List.of());
+        // Lock acquisition order is independent of retrieval priority; match Workflow publication.
+        Map<String,KnowledgeCorpusSnapshot> corpora=new HashMap<>();
+        draftKnowledge.stream().map(AgentKnowledgeBindingSnapshot::knowledgeBaseId).distinct().sorted()
+                .forEach(baseId->corpora.put(baseId,knowledge.freeze(baseId)));
         List<AgentKnowledgeBindingSnapshot> frozenKnowledge=draftKnowledge.stream().map(binding->{
-            KnowledgeCorpusSnapshot corpus=knowledge.freeze(binding.knowledgeBaseId());
+            KnowledgeCorpusSnapshot corpus=corpora.get(binding.knowledgeBaseId());
             return new AgentKnowledgeBindingSnapshot(binding.knowledgeBaseId(),binding.topK(),binding.priority(),corpus.id(),corpus.manifestDigest());
         }).toList();
         AgentWorkflowBindingSnapshot draftWorkflow = draftWorkflow(List.of(id)).get(id);

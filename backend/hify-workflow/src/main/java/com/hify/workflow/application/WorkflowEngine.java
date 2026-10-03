@@ -36,7 +36,7 @@ public class WorkflowEngine {
  public WorkflowRunResponse execute(String versionId,String input,ExecutionControl control){
   control=control.withShutdown(lifecycle::isStopping);
   control.throwIfSuspended();
-  WorkflowVersion version=application.requireVersion(versionId); WorkflowDraftRequest draft=read(version.getDslJson());
+  WorkflowVersion version=application.requireVersion(versionId); WorkflowDraftRequest draft=WorkflowPublishedGraph.read(version,json);
   validator.validate(draft);
   draft.nodes().stream().filter(WorkflowKnowledgeSnapshots::isKnowledge).forEach(WorkflowKnowledgeSnapshots::require);
   Map<String,WorkflowNodeSpec> nodeMap=new LinkedHashMap<>();draft.nodes().forEach(n->nodeMap.put(n.nodeKey(),n));Map<String,List<WorkflowEdgeSpec>> edgeMap=new HashMap<>();for(var e:draft.edges())edgeMap.computeIfAbsent(e.sourceNodeKey(),k->new ArrayList<>()).add(e);
@@ -116,7 +116,6 @@ public class WorkflowEngine {
  }
  private String strip(String value){String out=value.trim();if((out.startsWith("'")&&out.endsWith("'"))||(out.startsWith("\"")&&out.endsWith("\"")))return out.substring(1,out.length()-1);return out;}
  private WorkflowRunResponse response(WorkflowRun r){Map<String,Object> context;try{context=json.readValue(r.getContextJson(),new com.fasterxml.jackson.core.type.TypeReference<>(){});}catch(Exception e){context=Map.of();}var nodes=nodeRuns.findByWorkflowRunIdOrderBySequenceNo(r.getId()).stream().map(n->new WorkflowRunResponse.NodeRunResponse(n.getSequenceNo(),n.getNodeKey(),n.getNodeType(),n.getStatus(),n.getOutputJson(),n.getErrorMessage(),n.getElapsedMs())).toList();return new WorkflowRunResponse(r.getId(),r.getWorkflowVersionId(),r.getWorkflowDigest(),r.getStatus(),r.getInputText(),r.getOutputText(),context,r.getErrorMessage(),r.getElapsedMs(),nodes,r.getCreatedAt(),r.getFinishedAt());}
- private WorkflowDraftRequest read(String value){try{return json.readValue(value,WorkflowDraftRequest.class);}catch(Exception e){throw new BizException(ErrorCode.CONFLICT,"发布版本 DSL 无法解析");}}
  private String write(Object value){try{return json.writeValueAsString(value);}catch(Exception e){throw new IllegalStateException(e);}}
  private String required(JsonNode node,String field){String value=node.path(field).asText();if(value.isBlank())throw new BizException(ErrorCode.PARAM_ERROR,"节点缺少配置: "+field);return value;}private String text(JsonNode n,String f,String d){String v=n.path(f).asText();return v.isBlank()?d:v;}
  private long millis(Instant started){return Math.max(0,Duration.between(started,Instant.now()).toMillis());}private String safe(Exception e){String v=e.getMessage();if(v==null||v.isBlank())v=e.getClass().getSimpleName();return v.substring(0,Math.min(900,v.length()));}

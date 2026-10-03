@@ -44,7 +44,7 @@ final class WorkflowKnowledgeSnapshots {
                 ||!snapshot.path("manifestDigest").isTextual()||!snapshot.path("manifestDigest").asText().matches("[0-9a-f]{64}")
                 ||!snapshot.path("revisionNo").isIntegralNumber()||!snapshot.path("revisionNo").canConvertToInt()||snapshot.path("revisionNo").asInt()<1
                 ||!snapshot.path("chunkCount").isIntegralNumber()||!snapshot.path("chunkCount").canConvertToInt()||snapshot.path("chunkCount").asInt()<0)
-            throw new BizException(ErrorCode.CONFLICT,"发布版本缺少有效知识快照，请重新发布 Workflow");
+            throw new BizException(ErrorCode.CONFLICT,"发布版本缺少有效知识快照，请先重新发布 Workflow，再发布 Agent 并创建新会话");
         return new KnowledgeCorpusSnapshot(snapshot.path("corpusVersionId").asText(),node.config().path("knowledgeBaseId").asText(),
                 snapshot.path("revisionNo").asInt(),snapshot.path("manifestDigest").asText(),snapshot.path("chunkCount").asInt());
     }
