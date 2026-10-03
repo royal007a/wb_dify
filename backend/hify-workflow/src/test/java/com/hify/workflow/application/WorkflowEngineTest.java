@@ -6,6 +6,7 @@ import com.hify.workflow.api.WorkflowDraftRequest;
 import com.hify.workflow.domain.WorkflowVersion;
 import com.hify.workflow.infrastructure.*;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import java.time.Instant;
 import java.util.List;
 import static org.assertj.core.api.Assertions.*;
@@ -17,7 +18,9 @@ class WorkflowEngineTest {
     private final WorkflowRunRepository runs = mock(WorkflowRunRepository.class);
     private final WorkflowNodeRunRepository nodes = mock(WorkflowNodeRunRepository.class);
     private final KnowledgeRetrievalPort knowledge = mock(KnowledgeRetrievalPort.class);
-    private final WorkflowEngine engine = new WorkflowEngine(app, runs, nodes, knowledge, JSON, new WorkflowGraphValidator());
+    private final WorkflowEngine engine = new WorkflowEngine(app, runs, nodes, knowledge, JSON, new WorkflowGraphValidator(), Runnable::run, java.time.Duration.ofSeconds(60));
+
+    @BeforeEach void saveReturnsPersistedRun() { when(runs.save(any())).thenAnswer(invocation -> invocation.getArgument(0)); }
 
     @Test void rejectsOldInvalidPublishedGraphBeforeAnyExecutionOrWrite() throws Exception {
         stored(diamond("{{left.result}}"));
