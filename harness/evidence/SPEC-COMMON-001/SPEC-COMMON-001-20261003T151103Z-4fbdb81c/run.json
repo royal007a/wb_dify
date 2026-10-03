@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-COMMON-001-20261003T151103Z-4fbdb81c",
+  "taskId": "SPEC-COMMON-001",
+  "status": "completed",
+  "baselineCommit": "09ab1077dbc0c23efdf2675a954f12c7ce093a14",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T15:11:03Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "5a36569a215586aa2548113d7d9eacc07ff22b39",
+  "finishedAt": "2026-10-03T15:26:57Z"
+}

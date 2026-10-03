@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness"
+  ],
+  "base": "working-tree",
+  "headCommit": "5a36569a215586aa2548113d7d9eacc07ff22b39",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-COMMON-001/SPEC-COMMON-001-20261003T151103Z-4fbdb81c/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-COMMON-001/SPEC-COMMON-001-20261003T151103Z-4fbdb81c/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-COMMON-001/SPEC-COMMON-001-20261003T151103Z-4fbdb81c/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-COMMON-001/SPEC-COMMON-001-20261003T151103Z-4fbdb81c/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-COMMON-001/SPEC-COMMON-001-20261003T151103Z-4fbdb81c/harness-shell-syntax.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T15:26:57Z"
+}

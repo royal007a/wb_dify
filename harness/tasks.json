@@ -1,16 +1,46 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T15:09:49Z",
+  "updatedAt": "2026-10-03T15:26:57Z",
   "tasks": [
+    {
+      "id": "SPEC-CHAT-UI-001",
+      "title": "修复流式会话生命周期与终态回读恢复",
+      "description": "针对 A08：受控浏览器事件源验证新会话隔离、离页清理、重复事件、终态回读失败/重试和取消失败提示。保持后端协议不变。",
+      "priority": "P0",
+      "status": "pending",
+      "scopes": ["frontend", "harness"],
+      "verifyScopes": ["harness", "frontend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-COMMON-001"],
+      "acceptance": [
+        "流式执行期间不可切换会话；组件退出时关闭连接并使旧回调失效",
+        "终态回读失败有明确恢复操作，持久化输出可纠正漏delta/重复delta",
+        "受控浏览器回归先红后绿；取消失败不产生未处理Promise；typecheck/build通过",
+        "明确受控浏览器结果不是后端SSE事务或真实模型端到端证明"
+      ],
+      "planPath": "exec-plans/active/SPEC-CHAT-UI-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T15:28:00Z",
+      "updatedAt": "2026-10-03T15:28:00Z"
+    },
     {
       "id": "SPEC-COMMON-001",
       "title": "修复 HTTP 客户端错误映射与阻塞调用取消",
       "description": "针对审计 A05/A06 先加入红灯用例，修复取消前提交、取消后后台继续和 HTTP 4xx 映射。此原子任务只验 common；全应用矩阵仍由 SPEC-AUDIT/VERIFY 验收。",
       "priority": "P0",
-      "status": "pending",
-      "scopes": ["backend", "harness"],
-      "verifyScopes": ["harness"],
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
@@ -20,12 +50,22 @@
         "预取消或过期请求不提交后台；取消/超时中断未完成 worker，重试前复查资格",
         "原子任务命令 mvn -pl hify-common -am test 全通过，红灯和修复日志保留；不冒充全应用通过"
       ],
-      "planPath": "exec-plans/active/SPEC-COMMON-001.md",
+      "planPath": "exec-plans/completed/SPEC-COMMON-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-COMMON-001-20261003T151103Z-4fbdb81c",
+          "path": "harness/evidence/SPEC-COMMON-001/SPEC-COMMON-001-20261003T151103Z-4fbdb81c",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "09ab1077dbc0c23efdf2675a954f12c7ce093a14",
+          "headCommit": "5a36569a215586aa2548113d7d9eacc07ff22b39",
+          "recordedAt": "2026-10-03T15:26:57Z"
+        }
+      ],
       "createdAt": "2026-10-03T15:11:00Z",
-      "updatedAt": "2026-10-03T15:11:00Z"
+      "updatedAt": "2026-10-03T15:26:57Z"
     },
     {
       "id": "SPEC-AUDIT-001",

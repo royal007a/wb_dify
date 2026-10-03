@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-03T15:09:49Z`
+- Generated from task state updated at: `2026-10-03T15:26:57Z`
 - Current task: `none`
-- Counts: pending 5 · running 0 · blocked 1 · completed 29
+- Counts: pending 5 · running 0 · blocked 1 · completed 30
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -22,7 +22,8 @@
 | `RECALL-001` | P0 | completed | backend, migration, runtime, eval | reversible_write | 完成分层上下文与迭代式细节召回 |
 | `RUNTIME-001` | P0 | completed | backend, migration, runtime | reversible_write | 建立 Runtime 能力租约与历史提交协议 |
 | `SPEC-AUDIT-001` | P0 | blocked | harness, backend | reversible_write | 建立全接口与功能测试规格及覆盖门禁 |
-| `SPEC-COMMON-001` | P0 | pending | backend, harness | reversible_write | 修复 HTTP 客户端错误映射与阻塞调用取消 |
+| `SPEC-CHAT-UI-001` | P0 | pending | frontend, harness | reversible_write | 修复流式会话生命周期与终态回读恢复 |
+| `SPEC-COMMON-001` | P0 | completed | backend, harness | reversible_write | 修复 HTTP 客户端错误映射与阻塞调用取消 |
 | `SPEC-DEPLOY-001` | P0 | pending | harness, backend, frontend, migration | high_risk | 发布验收修复并验证 132 与本地 |
 | `SPEC-VERIFY-001` | P0 | pending | harness, backend, frontend, migration, runtime, eval | reversible_write | 执行全功能矩阵并修复发现的问题 |
 | `CHAT-DEMO-001` | P1 | completed | backend, frontend, runtime | reversible_write | 修复 Demo 时间问句回显而不调用工具 |

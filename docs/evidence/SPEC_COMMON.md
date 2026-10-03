@@ -19,6 +19,10 @@
 
 最终结果以任务runner的command.log与verification.json为准。主命令 `mvn -B -f backend/pom.xml -pl hify-common -am test`，之后执行Harness门禁。
 
+2026-10-03 最终原子门禁：代码 `5a36569`，common **30/30通过、0跳过**，Maven退出0；含HTTP7、取消/重试6、HTTP/SSE12、基础契约与饱和5。证据目录 `harness/evidence/SPEC-COMMON-001/SPEC-COMMON-001-20261003T151103Z-4fbdb81c/`。耗时3m42s，不作为线上性能数据。
+
+已按协作review技能把固定提交 `d03c02a + 5a36569` 交给 mymacclaude 只读复核（消息 `om_x100b6325a7cb50a0debc4ed438b1436`）。未收到结论前不称独立验收通过。
+
 ## 边界
 
 - 中断底层HTTP不能撤销供应商已经完成的操作；不宣称外部副作用回滚。

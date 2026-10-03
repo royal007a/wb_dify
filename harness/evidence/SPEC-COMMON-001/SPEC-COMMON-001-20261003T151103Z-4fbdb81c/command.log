@@ -1,0 +1,101 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] hify-parent                                                        [pom]
+[INFO] hify-common                                                        [jar]
+[INFO] 
+[INFO] ------------------------< com.hify:hify-parent >------------------------
+[INFO] Building hify-parent 0.1.0-SNAPSHOT                                [1/2]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] ------------------------< com.hify:hify-common >------------------------
+[INFO] Building hify-common 0.1.0-SNAPSHOT                                [2/2]
+[INFO]   from hify-common/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /Users/weberzhao/hify/backend/hify-common/src/main/resources
+[INFO] skip non existing resourceDirectory /Users/weberzhao/hify/backend/hify-common/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-common ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 21 source files with javac [debug parameters release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /Users/weberzhao/hify/backend/hify-common/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-common ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 4 source files with javac [debug parameters release 17] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-common ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.hify.common.CommonContractsTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.101 s -- in com.hify.common.CommonContractsTest
+[INFO] Running com.hify.common.CircuitBreakerServiceTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.622 s -- in com.hify.common.CircuitBreakerServiceTest
+[INFO] Running com.hify.common.LlmHttpClientTest
+23:26:43.736 [OkHttp http://localhost:58754/...] WARN com.hify.common.LlmHttpClient -- llm.stream.failed target=http://localhost:58754/cancel-stream type=REQUEST_FAILED latencyMs=201
+Oct 03, 2026 11:26:43 PM okhttp3.mockwebserver.MockWebServer$SocketHandler handle
+WARNING: MockWebServer[58754] connection from /127.0.0.1 didn't make a request
+23:26:43.874 [OkHttp http://localhost:58854/...] WARN com.hify.common.LlmHttpClient -- llm.stream.failed target=http://localhost:58854/stream-401 type=AUTH_FAILED latencyMs=22
+23:26:43.879 [OkHttp http://localhost:58854/...] WARN com.hify.common.LlmHttpClient -- llm.stream.failed target=http://localhost:58854/stream-429 type=RATE_LIMITED latencyMs=3
+23:26:43.883 [OkHttp http://localhost:58854/...] WARN com.hify.common.LlmHttpClient -- llm.stream.failed target=http://localhost:58854/stream-503 type=PROVIDER_UNAVAILABLE latencyMs=3
+Oct 03, 2026 11:26:44 PM okhttp3.mockwebserver.MockWebServer$SocketHandler handle
+WARNING: MockWebServer[58858] connection from /127.0.0.1 didn't make a request
+23:26:44.526 [pool-8-thread-1] WARN com.hify.common.LlmHttpClient -- llm.http.failed target=http://localhost:58858/wait-until-cancelled type=REQUEST_FAILED latencyMs=632
+23:26:44.590 [OkHttp http://localhost:58868/...] WARN com.hify.common.LlmHttpClient -- llm.stream.failed target=http://localhost:58868/redirect-stream type=REQUEST_FAILED latencyMs=6
+23:26:44.611 [OkHttp http://localhost:58872/...] INFO com.hify.common.LlmHttpClient -- llm.stream.open target=http://localhost:58872/stream status=200 latencyMs=4
+23:26:44.612 [OkHttp http://localhost:58872/...] INFO com.hify.common.LlmHttpClient -- llm.stream.closed target=http://localhost:58872/stream latencyMs=5
+23:26:44.954 [pool-14-thread-1] WARN com.hify.common.LlmHttpClient -- llm.http.failed target=http://localhost:58875/slow type=REQUEST_FAILED latencyMs=289
+23:26:46.096 [OkHttp http://localhost:58885/...] INFO com.hify.common.LlmHttpClient -- llm.stream.open target=http://localhost:58885/half-stream status=200 latencyMs=17
+23:26:46.096 [OkHttp http://localhost:58885/...] WARN com.hify.common.LlmHttpClient -- llm.stream.failed target=http://localhost:58885/half-stream type=REQUEST_FAILED latencyMs=18
+23:26:46.127 [pool-18-thread-1] INFO com.hify.common.LlmHttpClient -- llm.http target=http://localhost:58887/chat/completions status=200 latencyMs=18
+23:26:46.148 [pool-18-thread-1] WARN com.hify.common.LlmHttpClient -- llm.http.failed target=http://localhost:58887/chat/completions status=401 type=AUTH_FAILED latencyMs=20
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.631 s -- in com.hify.common.LlmHttpClientTest
+[INFO] Running com.hify.common.HttpErrorContractTest
+23:26:48.525 [main] INFO org.hibernate.validator.internal.util.Version -- HV000001: Hibernate Validator 8.0.2.Final
+23:26:50.542 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+23:26:50.543 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+23:26:50.545 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 2 ms
+23:26:51.492 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+23:26:51.493 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+23:26:51.493 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+23:26:51.512 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+23:26:51.512 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+23:26:51.512 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+23:26:51.529 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+23:26:51.529 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+23:26:51.529 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+23:26:51.535 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+23:26:51.536 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+23:26:51.536 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+23:26:51.555 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+23:26:51.556 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+23:26:51.556 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+23:26:51.588 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+23:26:51.588 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+23:26:51.588 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.429 s -- in com.hify.common.HttpErrorContractTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 30, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for hify-parent 0.1.0-SNAPSHOT:
+[INFO] 
+[INFO] hify-parent ........................................ SUCCESS [  0.001 s]
+[INFO] hify-common ........................................ SUCCESS [03:38 min]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  03:42 min
+[INFO] Finished at: 2026-10-03T23:26:52+08:00
+[INFO] ------------------------------------------------------------------------
