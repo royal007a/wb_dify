@@ -1,6 +1,6 @@
 # Credential reference boundary (review A1)
 
-Task: SPEC-CREDENTIAL-BOUNDARY-001. Baseline 4955ca8, review target to be recorded after commit. Tests use fake properties, fake tokens and loopback upstreams only. No real process secret was resolved or sent, no hify-cc/shared deployment changes.
+Task: SPEC-CREDENTIAL-BOUNDARY-001. Baseline 4955ca8, code 70a5f33 / spec ebeb661. Tests use fake properties, fake tokens and loopback upstreams only. No real process secret was resolved or sent, no hify-cc/shared deployment changes.
 
 Evidence: `harness/evidence/SPEC-CREDENTIAL-BOUNDARY-001/SPEC-CREDENTIAL-BOUNDARY-001-20261003T175759Z-426f4174/`.
 
@@ -16,4 +16,8 @@ Evidence: `harness/evidence/SPEC-CREDENTIAL-BOUNDARY-001/SPEC-CREDENTIAL-BOUNDAR
 - `green-second.log`: 37 tests pass, zero failures/errors/skips (policy four, Provider boundary one, native adapters six; app 26). Includes real loopback MCP authorization and zero extra requests after attempting to retarget the reference.
 - `provider-http.log`: four HTTP/H2 tests pass, including new save/update/runtime legacy-row denial. Legal OpenAI/Anthropic/Gemini requests still carry only the approved fake credential.
 
-Atomic command and PostgreSQL migration gate are still pending; final result belongs in the Harness verification manifest. This does not claim deployment, real credential validation, all-system regression, login/RBAC, or DNS rebinding protection. Deployment must approve existing reference/destination pairs explicitly, not read/export values or automatically whitelist all database entries.
+## Final atomic gate: passed
+
+Atomic command: 34 tests pass, zero skip (policy four, Provider/native seven, app 23); the additional Provider HTTP contract is separately four pass in `provider-http.log`. Migration gate: 16 pass, zero skip (PostgreSQL concurrency six, MCP credentials seven, Workflow upgrade one, plus two H2 migrations). Harness state/generated progress/API spec/five Python tests/shell syntax all pass. See verification.json, finished 2026-10-03T18:10:13Z.
+
+This does not claim deployment, real credential validation, all-system regression, login/RBAC, or DNS rebinding protection. Deployment must approve existing reference/destination pairs explicitly, not read/export values or automatically whitelist all database entries.

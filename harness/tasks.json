@@ -1,16 +1,23 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T17:50:00Z",
+  "updatedAt": "2026-10-03T18:10:13Z",
   "tasks": [
     {
       "id": "SPEC-CREDENTIAL-BOUNDARY-001",
       "title": "凭据引用只允许管理员配置的引用与目标绑定",
       "description": "独立复核A1：MCP和Provider不得任意读取进程环境/系统属性，引用默认拒绝并绑定目标；修改MCP endpoint不得隐式沿用已存Token。",
       "priority": "P0",
-      "status": "pending",
-      "scopes": ["backend", "runtime", "harness"],
-      "verifyScopes": ["harness", "migration"],
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "migration"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
@@ -22,12 +29,22 @@
         "MCP带凭据修改endpoint必须显式换凭据或CLEAR，KEEP不能外送旧Token",
         "合法引用、TOKEN轮换、历史版本凭据和无鉴权Server兼容；HTTP/H2及真实PG回归通过"
       ],
-      "planPath": "exec-plans/active/SPEC-CREDENTIAL-BOUNDARY-001.md",
+      "planPath": "exec-plans/completed/SPEC-CREDENTIAL-BOUNDARY-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-CREDENTIAL-BOUNDARY-001-20261003T175759Z-426f4174",
+          "path": "harness/evidence/SPEC-CREDENTIAL-BOUNDARY-001/SPEC-CREDENTIAL-BOUNDARY-001-20261003T175759Z-426f4174",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "4955ca8ddde8e5f5deb644aa7b82975dab074442",
+          "headCommit": "ebeb661483cd4710567ddb1e2fae6b6f375244ef",
+          "recordedAt": "2026-10-03T18:10:13Z"
+        }
+      ],
       "createdAt": "2026-10-03T18:00:00Z",
-      "updatedAt": "2026-10-03T18:00:00Z"
+      "updatedAt": "2026-10-03T18:10:13Z"
     },
     {
       "id": "SPEC-WORKFLOW-KNOWLEDGE-001",

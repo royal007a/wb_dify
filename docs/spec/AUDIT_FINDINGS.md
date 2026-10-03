@@ -48,13 +48,11 @@
 要求：浏览器注入受控事件源，验证运行期间不能切新会话、离开后连接关闭且旧事件不写新页面、终态回读失败可恢复而非无限 loading、最终持久化文本能纠正重复/漏 delta。取消接口失败也必须显示明确错误并允许再次取消。
 前端修复 `73f8938`，测试隔离 `00a10dd`：8项受控浏览器回归、typecheck/build通过，见 `docs/evidence/SPEC_CHAT_UI.md`。不替代A07服务端事务修复或部署端真实Chat验收。
 
-## 文档漂移（本原子任务对齐）
-
 ## 独立静态复核增量（0975782，待逐项红灯验证）
 
 来源：mymacclaude 消息 `om_x100b63204ee2a8a0c2cced58d25ff1c`。对方明确本轮仅静态阅读；不能标成独立测试通过。后续提交需复查是否已消除相关路径。
 
-- A1：MCP任意env/system引用会读取进程主密钥；本地检查发现Provider有同源路径。优先做引用/目标白名单，禁止只有前端校验。
+- A1：MCP任意env/system引用会读取进程主密钥；本地检查发现Provider有同源路径。已用4个失败反例确认，70a5f33实现默认拒绝的引用/精确目标绑定，TOKEN换地址禁止KEEP；模块/HTTP与真实PG门禁通过，尚未部署，见SPEC_CREDENTIAL_BOUNDARY.md。
 - A2/A3/A4/A5：对应既有A01/A03，另需修正Claim为空的FINISH语义、Workflow未走FinishGate、归档后canonical引用回读矛盾。
 - B1/B2：取消/本地拒绝计入供应商熔断；runExecutor提交拒绝未收敛RUNNING。待故障注入验证。
 - C1/C2/C3/C4：新Run创建期间取消旧Run、失效resume、网络结果不明时新幂等键重复创建、无gapIds的NEEDS_INPUT；另有重连计数和终态补读竞争。C4可达性尚未确认。
@@ -63,6 +61,8 @@
 - 其余P2：multipart错误500、主密钥错误启动未检测、停用Server对历史能力语义、LLM与索引共池、IllegalArgumentException回显、standalone MockMvc表述、非法旧DSL分类、图测试缺项及模板字面量边界。
 
 以上是反例索引，不是完成状态；任务与验证进展仍只在Harness机器状态中记录。
+
+F切片独立复核（0975782..fc7bd51）仍为静态阅读：`RunEventBroker` 锁内同步send/afterCommit可能被慢客户端阻塞；跨Run/未知Last-Event-ID需归属检查；取消抢赢时Workflow终态投影及两表一致性仍有缺口。事务保护断言是裸对象单测，生产代理的REQUIRED会自动开事务；受控afterCommit交错测试不是实际多线程竞态。PG序号唯一/回滚投影测试已跑，但不能据此宣称慢客户端隔离和全部重连边界已完成。
 
 ## 已核对的文档漂移
 
