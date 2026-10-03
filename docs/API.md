@@ -120,6 +120,8 @@ GET    /api/v1/runs/{runId}/events/stream
 
 若本地 Run 执行器拒绝调度，已创建的 Run 收敛为 `FAILED / EXECUTOR_REJECTED`，与 `run.failed` 终态事件一起提交，不保存 assistant 消息，也不返回 JDK 线程池描述。首次请求仍是202，但 body 已为终态；同 key 重放200返回同一失败结果，不会重新调度或重复用户消息。需重新执行时使用新 key。持久化取消先提交时仍优先成为 `CANCELLED`；启动恢复中单条容量拒绝不会阻止其他 Run 继续收敛。此规则不等于已解决应用关闭中断的恢复语义。
 
+同一实例内 create 与启动恢复共用每个 Run 的调度所有权；重复扫描不会再次提交、拒绝或清理已有 owner 的状态。晚到的 create/恢复先读当前行，终态不再执行。worker 前复查持久取消，cancel 在 owner 清理之后返回不会重新生成本地标志。这是进程内互斥，不是数据库执行租约，不提供多副本或滚动重叠执行的 fencing 保证。
+
 Run 响应同时返回 `agentVersionId/agentSnapshotDigest/capabilityRevision/toolSchemaDigest`。前两项固定产品配置，后两项固定本轮实际暴露的工具定义；执行时不匹配会终止，不静默升级能力。
 
 SSE 示例：

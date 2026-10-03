@@ -87,6 +87,8 @@ public class RunApplicationService {
     private final int maxRetries;
     private final Map<String, AtomicBoolean> cancellations = new ConcurrentHashMap<>();
     private final Map<String, String> activeAttempts = new ConcurrentHashMap<>();
+    // Single-instance ownership only; not a distributed lease. Held through executor and worker exit.
+    private final Map<String, Object> dispatchOwners = new ConcurrentHashMap<>();
 
     public RunApplicationService(AgentQueryService agents, ProviderQueryService providers,
                                  ConversationRepository conversations, ChatMessageRepository messages,
@@ -166,29 +168,46 @@ public class RunApplicationService {
                         "resumedFromRunId", created.run().getResumedFromRunId(),
                         "resolvedGapIds", resume == null ? List.of() : resume.gapIds()));
             }
-            if (!dispatch(runId)) return new CreateResult(get(runId), false);
+            dispatch(runId);
+            return new CreateResult(get(runId), false);
         }
         return created;
     }
 
     /** A Run is durable before submission. Refusal must settle it, not leave a replayable zombie. */
-    private boolean dispatch(String runId) {
-        cancellations.putIfAbsent(runId, new AtomicBoolean(false));
+    private void dispatch(String runId) {
+        Object owner = new Object();
+        if (dispatchOwners.putIfAbsent(runId, owner) != null) return;
+        boolean submitted = false;
         try {
-            executor.execute(() -> execute(runId));
-            return true;
+            // A delayed create/recovery snapshot may now refer to an already completed Run.
+            AgentRun current = get(runId);
+            if (current.getState().terminal()) return;
+            AtomicBoolean cancelled = cancellations.computeIfAbsent(runId,
+                    ignored -> new AtomicBoolean(current.isCancelRequested()));
+            if (current.isCancelRequested()) cancelled.set(true);
+            executor.execute(() -> {
+                try { execute(runId); }
+                finally { releaseDispatch(runId, owner); }
+            });
+            submitted = true;
         } catch (RejectedExecutionException rejected) {
-            try {
-                AgentRun current = get(runId);
-                finishTerminal(runId, RunState.FAILED, TerminalReason.EXECUTOR_REJECTED.name(),
-                        "Run execution capacity exhausted; retry with a new idempotency key.",
-                        current.getTurns(), current.getToolCalls(), false);
-            } finally {
-                cancellations.remove(runId);
-                activeAttempts.remove(runId);
-            }
-            return false;
+            AgentRun current = get(runId);
+            finishTerminal(runId, RunState.FAILED, TerminalReason.EXECUTOR_REJECTED.name(),
+                    "Run execution capacity exhausted; retry with a new idempotency key.",
+                    current.getTurns(), current.getToolCalls(), false);
+        } finally {
+            if (!submitted) releaseDispatch(runId, owner);
         }
+    }
+
+    private void releaseDispatch(String runId, Object owner) {
+        dispatchOwners.computeIfPresent(runId, (id, actualOwner) -> {
+            if (actualOwner != owner) return actualOwner;
+            cancellations.remove(id);
+            activeAttempts.remove(id);
+            return null;
+        });
     }
 
     private CreateResult createInTransaction(String conversationId, String idempotencyKey,
@@ -270,13 +289,22 @@ public class RunApplicationService {
             }
             return updated;
         });
-        if (Integer.valueOf(1).equals(changed)) cancellations.computeIfAbsent(runId, ignored -> new AtomicBoolean()).set(true);
+        if (Integer.valueOf(1).equals(changed)) cancellations.computeIfPresent(runId, (id, flag) -> {
+            flag.set(true);
+            return flag;
+        }); // No owner yet/anymore: persisted cancelRequestedAt is authoritative; do not leak a flag.
         return get(runId);
     }
 
     private void execute(String runId) {
         try {
             AgentRun run = get(runId);
+            if (run.getState().terminal()) return;
+            if (run.isCancelRequested() || cancellations.computeIfAbsent(runId, ignored -> new AtomicBoolean()).get()) {
+                finishTerminal(runId, RunState.CANCELLED, TerminalReason.CANCELLED.name(),
+                        "Run cancelled before execution.", run.getTurns(), run.getToolCalls(), false);
+                return;
+            }
             Conversation conversation = conversations.findById(run.getConversationId())
                     .orElseThrow(() -> new IllegalArgumentException("Conversation not found"));
             AgentRuntimeSnapshot agent = run.getAgentVersionId() == null
@@ -323,9 +351,6 @@ public class RunApplicationService {
             finish(runId, result);
         } catch (RuntimeException exception) {
             finishFailure(runId, exception);
-        } finally {
-            cancellations.remove(runId);
-            activeAttempts.remove(runId);
         }
     }
 

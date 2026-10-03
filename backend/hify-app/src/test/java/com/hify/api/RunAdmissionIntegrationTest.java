@@ -114,7 +114,7 @@ class RunAdmissionIntegrationTest {
                 .andExpect(status().is(status)).andReturn().getResponse().getContentAsString());
     }
     private void assertNoLocalState(String id) {
-        for(String name:java.util.List.of("cancellations","activeAttempts")) {
+        for(String name:java.util.List.of("cancellations","activeAttempts","dispatchOwners")) {
             var state=(java.util.Map<?,?>)org.springframework.test.util.ReflectionTestUtils.getField(service,name);
             assertThat(state.containsKey(id)).isFalse();
         }
