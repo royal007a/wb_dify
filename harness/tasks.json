@@ -4,6 +4,49 @@
   "updatedAt": "2026-10-03T18:48:36Z",
   "tasks": [
     {
+      "id": "SPEC-PROVIDER-LOCAL-FAILURE-002",
+      "title": "区分用户取消与真实上游模型期限超时",
+      "description": "B1复验P1：本地model-timeout中断卡死HTTP导致误归用户取消，需记录真实Provider超时而不污染Run取消统计。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["backend", "runtime", "harness"],
+      "verifyScopes": ["harness"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-PROVIDER-LOCAL-FAILURE-001"],
+      "acceptance": [
+        "真实本地HTTP服务接收但不响应，模型期限结束后失败计入breaker并能OPEN",
+        "用户取消、Run期限、排队超时、本地容量拒绝不计Provider失败",
+        "HALF_OPEN超时/取消各自正确结算且无双计数/许可泄漏",
+        "保留旧红绿证据，common/provider完整回归与文档更新"
+      ],
+      "planPath": "exec-plans/active/SPEC-PROVIDER-LOCAL-FAILURE-002.md",
+      "checkpoint": null,"blockedReason": null,"evidence": [],
+      "createdAt": "2026-10-03T18:50:00Z","updatedAt": "2026-10-03T18:50:00Z"
+    },
+    {
+      "id": "SPEC-CREDENTIAL-BOUNDARY-003",
+      "title": "主密钥宽松配置绑定别名不得被误授权",
+      "description": "G复验P2：masterKey/MASTERKEY等别名不应绕过基础设施引用保护。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["backend", "harness"],
+      "verifyScopes": ["harness"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-CREDENTIAL-BOUNDARY-002"],
+      "acceptance": [
+        "env:HIFY_MCP_CREDENTIALS_MASTERKEY及system:hify.mcp.credentials.masterKey误授权红灯转绿",
+        "完整HIFY_MCP_/HIFY_CREDENTIAL_基础配置命名空间禁止外发，合法应用引用仍通过",
+        "不读取真实配置值，迁移文档明确保留命名空间"
+      ],
+      "planPath": "exec-plans/active/SPEC-CREDENTIAL-BOUNDARY-003.md",
+      "checkpoint": null,"blockedReason": null,"evidence": [],
+      "createdAt": "2026-10-03T18:50:00Z","updatedAt": "2026-10-03T18:50:00Z"
+    },
+    {
       "id": "SPEC-CREDENTIAL-BOUNDARY-002",
       "title": "补齐受保护配置命名空间与冻结凭据负向验收",
       "description": "G复核：HIFY_DB与JVM TLS凭据不得被运维误授权；规范Provider授权路径；冻结MCP快照未授权引用零外发。",

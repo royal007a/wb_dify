@@ -4,7 +4,7 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-10-03T18:48:36Z`
 - Current task: `none`
-- Counts: pending 9 · running 0 · blocked 1 · completed 38
+- Counts: pending 11 · running 0 · blocked 1 · completed 38
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -48,12 +48,14 @@
 | `SPEC-CHAT-LIFECYCLE-002` | P1 | pending | frontend, runtime, harness | reversible_write | 复核前端Run创建与恢复输入边界 |
 | `SPEC-KNOWLEDGE-FINISH-001` | P1 | pending | backend, runtime, harness | reversible_write | 知识缺口与完成门禁契约对齐 |
 | `SPEC-PROVIDER-LOCAL-FAILURE-001` | P1 | completed | backend, runtime, harness | reversible_write | 取消与本地拒绝不得污染供应商熔断 |
+| `SPEC-PROVIDER-LOCAL-FAILURE-002` | P1 | pending | backend, runtime, harness | reversible_write | 区分用户取消与真实上游模型期限超时 |
 | `SPEC-RUN-ADMISSION-001` | P1 | pending | backend, runtime, harness | reversible_write | 执行拒绝和关机中断的Run收敛 |
 | `SPEC-SSE-BACKPRESSURE-001` | P1 | completed | backend, runtime, harness | reversible_write | SSE慢客户端隔离及游标归属验证 |
 | `SPEC-WORKFLOW-GRAPH-002` | P1 | pending | backend, runtime, harness | reversible_write | 统一图步数限制与条件语法契约 |
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
 | `SPEC-CREDENTIAL-BOUNDARY-002` | P2 | completed | backend, runtime, harness | reversible_write | 补齐受保护配置命名空间与冻结凭据负向验收 |
+| `SPEC-CREDENTIAL-BOUNDARY-003` | P2 | pending | backend, harness | reversible_write | 主密钥宽松配置绑定别名不得被误授权 |
 | `SUBAGENT-001` | P2 | completed | backend, migration, runtime | reversible_write | 建立子 Agent 任务与延迟消费确认 |
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |
 
