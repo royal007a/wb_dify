@@ -12,6 +12,7 @@
 - [SPEC_WORKFLOW_SETTLEMENT.md](SPEC_WORKFLOW_SETTLEMENT.md)：Workflow 执行事实与父 Run 交付结果分开记录的 v2 投影。
 - [SPEC_HISTORY_RECOVERY.md](SPEC_HISTORY_RECOVERY.md)：已提交模型/工具操作重放、V23 迁移与旧工具历史的兼容边界。
 - [SPEC_WORKFLOW_KNOWLEDGE.md](SPEC_WORKFLOW_KNOWLEDGE.md)：Workflow 发布语料、冻结清单完整性、归档历史引用与旧 DSL 兼容边界。
+- [SPEC_KNOWLEDGE_FINISH.md](SPEC_KNOWLEDGE_FINISH.md)：知识空/失败的拒答、候选与最终引用来源校验、恢复映射；不宣称语义蕴含验证。
 - 本轮新鲜结果单独记在 `docs/evidence/SPEC_AUDIT.md` 和 Harness run manifest；旧 evidence 仅历史参考。
 
 “候选测试存在”不等于“该端点已完整测试”，“路由一致”不等于“67 个接口行为通过”，“H2/Mock 通过”不等于“真实 PostgreSQL/外部模型通过”。缺失、跳过、外部依赖不足必须单列，不能计入成功分母。

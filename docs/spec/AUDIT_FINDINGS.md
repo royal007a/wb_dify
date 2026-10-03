@@ -9,6 +9,8 @@
 `RunApplicationService.knowledgeContext` 捕获异常后继续、空 citations 返回空字符串。QueryLoop 得不到“知识证据不足”的结构化状态；`AgentApiIntegrationTest.publishesKnowledgeRevisionAndPreparesItBeforeQueryLoop` 只验证检索事件，不验证拒答/Claim grounding。这不能证明 SPEC 的“空命中不编造”。
 要求：隔离 fake retrieval 返回空/抛错，断言不生成自称有依据的完成；有证据时必须保存可验证来源；无知识绑定普通聊天不能被误伤。产品选择严格拒答/受限回答的契约需清晰，不把 prompt 当代码门禁。
 
+SPEC-KNOWLEDGE-FINISH-001 后续实现来源完整性门禁：空/部分读取失败模型零调用，缺/伪引用 NEEDS_INPUT；canonical 回读只把来源 Claim 标为 VERIFIED，模型语义保持 UNVERIFIED，明确不承诺蕴含/无答案准确率。新增向量候选 floor 不能替代语义充分性；关键词仍可能无关。恢复保留原引用映射，Workflow 空候选失败。见 `SPEC_KNOWLEDGE_FINISH.md` 与对应 evidence；不将这项局部交付称为完整 grounding。
+
 ### A02 Workflow 执行缺取消与全局截止时间传播
 
 `RunApplicationService.executeWorkflow` 只在执行前检查取消；`WorkflowEngine.execute(versionId,input)` 没有 cancellation/deadline 参数，只有50步上限。调用返回后可直接提交 COMPLETED，不经 QueryLoop FinishGate。TEMPLATE 快速通过的测试不能证明阻塞 KNOWLEDGE 节点取消可靠。

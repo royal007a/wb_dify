@@ -24,7 +24,7 @@
 | F10 | 并发同幂等键只建一条消息/Run；同体重放200、异体409 | 空/缺 key、同 key 跨会话、resume 内容不同 | A/P: RunFlowIntegrationTest、PostgresConcurrencyIntegrationTest |
 | F11 | 取消持久化并中断阻塞 Provider/MCP，终态单赢家 | 运行前/首包后/工具前取消；终态再次取消；2s SLA | U: ToolRuntimeTest、LlmHttpClientTest、RunWorkflowControlTest；A: McpProtocolClientReliabilityTest、WorkflowRunControlIntegrationTest；实际JDBC/远端副作用停止需独立证明 |
 | F12 | 事件有序持久、Last-Event-ID 只放游标后、终态关闭流 | 回滚不外发、提交回调乱序/订阅交错无重复、terminal写失败回滚success、断线≠取消 | U: RunEventBrokerTest；P: PostgresConcurrencyIntegrationTest；MCP A replay；B 真断线/取消需补 |
-| F13 | 六出口与 FinishGate：回答、required Claim VERIFIED、无 blocking Gap | 空回答/缺证据/未闭合工具调用/权限禁止 | U: ExecutionContextStateTest、QueryLoopTest；Knowledge 注入不自动提供 gate evidence |
+| F13 | 六出口与 FinishGate：回答、required Claim VERIFIED、无 blocking Gap | 空回答/缺证据/未闭合工具调用/权限禁止 | U: ExecutionContextStateTest、QueryLoopTest、KnowledgeCompletionVerifierTest；Knowledge 候选未验证，canonical 回读仅验证来源，答案语义仍未验证 |
 | F14 | 参数错误 LOCAL_REPLAN；超时有限 RETRY；缺参数 CLARIFY；拒权 INTERRUPT | budget 不重置、失败点≠根因点、无替代 ASK_HUMAN/no-progress | U: PlanStateMachineTest、QueryLoopTest |
 | F15 | checkpoint恢复不重放已完成尝试；重启 RUNNING 收敛 | 取消状态恢复；损坏快照；NEEDS_INPUT 通过新 Run resume | U: QueryLoopTest；A: ContextMemoryIntegrationTest；重启真实进程 O 待补 |
 | F16 | 固定 capability/schema revision、lease 执行前二次校验 | 取消/attempt 变化/审批后漂移不得执行 | U: ToolRuntimeTest；A: MCP immutable snapshot tests |
@@ -41,9 +41,9 @@
 |---|---|---|---|
 | F23 | KB CRUD→TXT/MD上传→持久索引→chunk/digest→检索→归档 | 空/超大/错误类型/重启/归档竞态；分页负值；非法 overlap | A: KnowledgeApiIntegrationTest；多条管理读取/更新/归档路径需补 |
 | F24 | FTS+向量/RRF 正确过滤，canonical chunk可回读；旧语料原文/成员快照稳定 | 空命中/库停用/失败；冻结归档引用需匹配摘要；H2 不测 PG SQL；向量重建排序未冻结 | A/P: KnowledgeApiIntegrationTest、WorkflowKnowledgeIntegrationTest/WorkflowKnowledgePostgresTest、PostgresConcurrencyIntegrationTest；embedding 为64维 hash bootstrap，不是真实模型 |
-| F25 | Agent 知识绑定发布固定 revision、注入来源事件 | 空命中/检索异常不得无依据宣称 grounded；最终引用需校验 | A: AgentApiIntegrationTest 目前只验证空库事件，grounding 闭环不足 |
+| F25 | Agent 知识绑定发布固定 revision、注入来源事件；最终引用来源门禁 | 空/失败模型零调用、缺/伪引用 NEEDS_INPUT；旧映射恢复、无未经验证正文 delta | U/A/P: KnowledgeCompletionVerifierTest、KnowledgeFinishIntegrationTest/KnowledgeFinishPostgresTest；不是答案语义 grounding 保证 |
 | F26 | Workflow 创建/修改/校验/发布/历史/归档/试跑/轨迹 | 无环可达不等于变量必经；死路/重复分支/END出边/未知变量 | U/A: SPEC_WORKFLOW_GRAPH 记录25项单测+5项HTTP通过；列表/归档等全覆盖仍需VERIFY，资源冻结/取消另验 |
-| F27 | Chat 固定已发布 Workflow 执行，图更新不变旧行为 | KNOWLEDGE 发布语料、归档后引用；取消中执行；超时/空输出 gate | A/P: WorkflowKnowledgeIntegrationTest/WorkflowKnowledgePostgresTest 覆盖旧新会话原文隔离；A: WorkflowRunControlIntegrationTest；空/无关证据 gate 仍未闭环 |
+| F27 | Chat 固定已发布 Workflow 执行，图更新不变旧行为 | KNOWLEDGE 发布语料、归档后引用；取消中执行；空候选不继续 END | A/P: WorkflowKnowledgeIntegrationTest/WorkflowKnowledgePostgresTest、KnowledgeFinishIntegrationTest/KnowledgeFinishPostgresTest；A: WorkflowRunControlIntegrationTest；无关候选的普遍识别/语义验证仍未实现 |
 | F28 | MCP Server CRUD、发现新 revision、READ工具调试、绑定 QueryLoop | 假工具/非READ、schema漂移、不可用/超时/取消/SSE replay | A: McpServerApiIntegrationTest、McpProtocolClientReliabilityTest |
 | F29 | MCP Token KEEP/TOKEN/REFERENCE/CLEAR；GCM随机nonce/所有者绑定；旧快照旧凭据；引用/目标默认拒绝 | 缺/错主密钥、篡改、跨Server、畸形JSON、回显、清除不等于全局撤销；换地址不得KEEP、历史引用运行时复查 | U: McpCredentialCipherTest、CredentialReferencePolicyTest；A/P: AbstractMcpCredentialContract 两环境；A: McpProtocolClientReliabilityTest；B: mcp-token-live.spec.ts（引用新策略尚未部署验证） |
 | F30 | 出站 URL/risk/headers/大小的安全边界 | DNS rebinding、协议重定向/元数据/用户信息、工具描述不可信 | U/A: ProviderUrlPolicyTest、McpServerApiIntegrationTest；完整 MCP session/SSE conformance 未实现 |

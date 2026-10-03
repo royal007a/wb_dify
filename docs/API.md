@@ -219,6 +219,8 @@ POST     /api/v1/knowledge-bases/{id}/retrieval-tests
 
 上传接受 TXT/Markdown，限制单文件大小、总量和 MIME。索引异步语义在单实例内可使用受控 executor，但任务和进度必须持久化；应用重启后可从数据库恢复待处理任务。检索返回 `chunkId/documentId/documentVersion/content/digest/score/rank`，客户端引用必须保存这些字段，不能只保存展示文本。
 
+绑定知识的 Chat 在零候选/任一来源失败时不调用模型，分别 FAILED / KNOWLEDGE_NO_EVIDENCE、KNOWLEDGE_RETRIEVAL_FAILED。候选不是已验证答案；最终至少有一个合法 `[K数字]` 且所有所引 canonical chunk/digest 校验成功，才通过来源完整性门禁，否则 NEEDS_INPUT 并保存 Gap。恢复沿用原 K 映射，不重新检索编号。该路径不发送正文 delta，成功终态后回读 Run；普通聊天不变。完成事件的 `answerVerification=SOURCE_REFERENCES_ONLY,semanticClaimsVerified=false` 仅表示引用来源完整，不保证答案属实。向量候选过滤默认 0.5（HIFY_KNOWLEDGE_MIN_VECTOR_SCORE），不作为充分性判定；关键词仍独立召回。Workflow KNOWLEDGE 零候选失败，不继续 END。详细边界见 `spec/SPEC_KNOWLEDGE_FINISH.md`。
+
 ## 7. Workflow（P1）
 
 ```text
