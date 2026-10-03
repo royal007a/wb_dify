@@ -18,4 +18,14 @@
 
 分层代码提交：`0ed58fe`（V21/状态与升级测试）、`40f90d2`（节点执行控制）、`3d867e7`（Chat终态控制与HTTP测试）。模块重跑 `/tmp/hify-workflow-control-green3.log`：Workflow 33项、Run控制5项通过，0错误/跳过；这不是HTTP或PostgreSQL结论。
 
-最终runner结果尚待执行，不能把源码/测试存在标成全绿，更未部署。
+## 第一轮门禁：保留失败
+
+`SPEC-WORKFLOW-CONTROL-001-20261003T162913Z-631e20c2`：模块33+5项及HTTP/H2 7项通过。普通Maven阶段的PG升级测试跳过1项，不能作为PG证据。
+
+随后Harness配置真实Docker的migration scope：PostgresConcurrencyIntegrationTest 3项、McpCredentialPostgresTest 4项、H2迁移2项通过；WorkflowTerminalPostgresTest在initdb阶段因`No space left on device`报1个环境错误，未进入迁移断言。因此整次门禁失败，机器状态blocked。证据完整保留在该run目录，不能写全绿。
+
+只读诊断：Colima `/var/lib/docker` 40G、99%使用、约430M可用；宿主机仍有57G。没有prune、删其他镜像/卷或重启Docker。后两组PG容器随后能正常启动，先按完全相同代码重跑；不先改变存储介质或放宽测试。
+
+首次独立HTTP取消与H2升级运行也2/2通过，日志`/tmp/hify-workflow-control-http.log`。Spring启动270.7秒属于当时宿主机资源压力，不是线上HTTP性能指标。
+
+最终验收待重跑，更未部署。

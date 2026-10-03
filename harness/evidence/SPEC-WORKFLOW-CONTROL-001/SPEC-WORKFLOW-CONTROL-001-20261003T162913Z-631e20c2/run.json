@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-WORKFLOW-CONTROL-001-20261003T162913Z-631e20c2",
+  "taskId": "SPEC-WORKFLOW-CONTROL-001",
+  "status": "blocked",
+  "baselineCommit": "3672150e28bd993a0704de8bf1b4ec9354650d49",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T16:29:13Z",
+  "exitCode": 1,
+  "reason": "verification failed",
+  "headCommit": "69e2227f080c98fb6198a9e679ddefba462ac1c0",
+  "finishedAt": "2026-10-03T17:14:43Z"
+}
