@@ -11,6 +11,7 @@
 - [SPEC_RUN_SHUTDOWN.md](SPEC_RUN_SHUTDOWN.md)：应用关闭、用户取消、Workflow 中断与单实例重启恢复契约。
 - [SPEC_WORKFLOW_SETTLEMENT.md](SPEC_WORKFLOW_SETTLEMENT.md)：Workflow 执行事实与父 Run 交付结果分开记录的 v2 投影。
 - [SPEC_WORKFLOW_GRAPH.md](SPEC_WORKFLOW_GRAPH.md)：最长路径 50 步、引号感知的条件语法及旧非法图拒绝。
+- [SPEC_CHAT_LIFECYCLE.md](SPEC_CHAT_LIFECYCLE.md)：创建结果不明的同key重试、创建中取消、恢复输入与终态补读。
 - [SPEC_HISTORY_RECOVERY.md](SPEC_HISTORY_RECOVERY.md)：已提交模型/工具操作重放、V23 迁移与旧工具历史的兼容边界。
 - [SPEC_WORKFLOW_KNOWLEDGE.md](SPEC_WORKFLOW_KNOWLEDGE.md)：Workflow 发布语料、冻结清单完整性、归档历史引用与旧 DSL 兼容边界。
 - [SPEC_KNOWLEDGE_FINISH.md](SPEC_KNOWLEDGE_FINISH.md)：知识空/失败的拒答、候选与最终引用来源校验、恢复映射；不宣称语义蕴含验证。

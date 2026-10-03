@@ -9,6 +9,7 @@ test.beforeEach(async ({ page }) => {
     class ControlledSource extends EventTarget {
       closed = false
       onerror: ((event: Event) => void) | null = null
+      onopen: ((event: Event) => void) | null = null
       constructor(public url: string) {
         super()
         ;(window as unknown as { __streams: ControlledSource[] }).__streams.push(this)
@@ -141,4 +142,172 @@ test('poll-based clarification recovers Gap references from persisted events', a
   const created = page.waitForRequest(req => req.method() === 'POST' && req.url().endsWith('/runs'))
   await page.getByRole('button', { name: '运行', exact: true }).click()
   expect((await created).postDataJSON().resume).toEqual({ runId: 'run-1', gapIds: ['gap-1'] })
+})
+
+test('cancel during the second creation targets only its late Run response', async ({ page }) => {
+  await begin(page)
+  await emit(page, 'run.completed', {}, '1')
+  await expect(page.locator('.chat-toolbar p')).toContainText('COMPLETED')
+  let creation: import('@playwright/test').Route | undefined
+  const cancelled: string[] = []
+  await page.route('**/api/v1/conversations/conversation-1/runs', route => { creation = route })
+  await page.route('**/api/v1/runs/*/cancellations', route => {
+    cancelled.push(route.request().url()); return route.fulfill({ status: 202, json: { ...run('RUNNING'), id: 'run-2' } })
+  })
+  await page.getByPlaceholder('输入消息；例如：计算 17 * 23').fill('second')
+  await page.getByRole('button', { name: '运行', exact: true }).click()
+  await expect.poll(() => Boolean(creation)).toBe(true)
+  await page.getByRole('button', { name: '取消', exact: true }).click()
+  expect(cancelled).toEqual([])
+  await creation!.fulfill({ status: 202, json: { ...run('RUNNING'), id: 'run-2', streamUrl: '/api/v1/runs/run-2/events/stream' } })
+  await expect.poll(() => cancelled.map(url => new URL(url).pathname)).toEqual(['/api/v1/runs/run-2/cancellations'])
+})
+
+for (const state of ['CANCELLED', 'TIMED_OUT']) test(`late ${state} clears provisional clarification before a new message`, async ({ page }) => {
+  await page.route('**/api/v1/runs/run-1', route => route.fulfill({ json: run(state) }))
+  await begin(page)
+  await emit(page, 'continuation.decided', { action: 'CLARIFY', gapIds: ['stale-gap'] }, '1')
+  await emit(page, 'run.cancelled', {}, '2')
+  await expect(page.locator('.chat-toolbar p')).toContainText(state)
+  await page.getByPlaceholder('输入消息；例如：计算 17 * 23').fill('new task')
+  const request = page.waitForRequest(req => req.method() === 'POST' && req.url().endsWith('/runs'))
+  await page.getByRole('button', { name: '运行', exact: true }).click()
+  expect((await request).postDataJSON()).not.toHaveProperty('resume')
+})
+
+test('unknown creation outcome retries the same request key and user message', async ({ page }) => {
+  const keys: string[] = [], bodies: unknown[] = []
+  await page.route('**/api/v1/conversations/conversation-1/runs', route => {
+    keys.push(route.request().headers()['idempotency-key']); bodies.push(route.request().postDataJSON())
+    return keys.length === 1 ? route.abort('failed') : route.fulfill({ status: 200, json: run('COMPLETED', '已恢复提交结果') })
+  })
+  await page.goto('./chat')
+  await page.getByRole('button', { name: '运行', exact: true }).click()
+  await expect(page.getByRole('button', { name: '重试提交结果', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: '新会话' })).toBeDisabled()
+  await page.getByPlaceholder('输入消息；例如：计算 17 * 23').fill('不能偷偷换成另一个问题')
+  await page.getByRole('button', { name: '重试提交结果', exact: true }).click()
+  await expect.poll(() => keys.length).toBe(2)
+  expect(keys[0]).toBeTruthy(); expect(keys[1]).toBe(keys[0]); expect(bodies[1]).toEqual(bodies[0])
+  await expect(page.locator('.message.user')).toHaveCount(1)
+})
+
+test('terminal event during the last inflight poll schedules another reread', async ({ page }) => {
+  let reads = 0, held: import('@playwright/test').Route | undefined
+  await page.route('**/api/v1/runs/run-1', route => {
+    reads++
+    if (reads === 3) { held = route; return }
+    return route.fulfill({ json: run(reads < 3 ? 'RUNNING' : 'COMPLETED', '最终结果') })
+  })
+  await begin(page)
+  await page.evaluate(() => (window as unknown as { __streams: Array<{onerror: (event: Event) => void}> }).__streams[0].onerror(new Event('error')))
+  await expect.poll(() => Boolean(held)).toBe(true)
+  await emit(page, 'run.completed', {}, '1')
+  await held!.fulfill({ json: run('RUNNING') })
+  await expect(page.locator('.chat-toolbar p')).toContainText('COMPLETED')
+  expect(reads).toBeGreaterThanOrEqual(4)
+})
+
+test('healthy SSE reconnects reset consecutive read retry allowance', async ({ page }) => {
+  let reads = 0
+  await page.route('**/api/v1/runs/run-1', route => { reads++; return route.fulfill({ json: run('RUNNING') }) })
+  await begin(page)
+  for (let i = 0; i < 4; i++) {
+    const previous = reads
+    await page.evaluate(() => (window as unknown as { __streams: Array<{onerror: (event: Event) => void}> }).__streams[0].onerror(new Event('error')))
+    await expect.poll(() => reads).toBeGreaterThan(previous)
+    await page.evaluate(() => (window as unknown as { __streams: Array<{onopen?: (event: Event) => void}> }).__streams[0].onopen?.(new Event('open')))
+  }
+  await expect(page.getByRole('button', { name: '重试同步' })).not.toBeVisible()
+})
+
+test('cancel before conversation creation completes never submits a Run', async ({ page }) => {
+  let held: import('@playwright/test').Route | undefined, runs = 0
+  await page.route('**/api/v1/conversations', route => { held = route })
+  page.on('request', req => { if (req.method() === 'POST' && req.url().endsWith('/runs')) runs++ })
+  await page.goto('./chat')
+  await page.getByRole('button', { name: '运行', exact: true }).click()
+  await expect.poll(() => Boolean(held)).toBe(true)
+  await page.getByRole('button', { name: '取消', exact: true }).click()
+  await held!.fulfill({ status: 201, json: { id: 'conversation-1', agentVersionId: 'version-1' } })
+  await expect(page.locator('.chat-toolbar p')).toContainText('尚未提交，已取消')
+  expect(runs).toBe(0)
+})
+
+test('cancel after an unknown creation resolves the same key then cancels that Run', async ({ page }) => {
+  const keys: string[] = []; let cancellations = 0
+  await page.route('**/api/v1/conversations/conversation-1/runs', route => {
+    keys.push(route.request().headers()['idempotency-key'])
+    return keys.length === 1 ? route.abort('failed') : route.fulfill({ status: 200, json: run('RUNNING') })
+  })
+  await page.route('**/api/v1/runs/run-1/cancellations', route => { cancellations++; return route.fulfill({ status: 202, json: run('RUNNING') }) })
+  await page.goto('./chat')
+  await page.getByRole('button', { name: '运行', exact: true }).click()
+  await expect(page.getByRole('button', { name: '重试提交结果', exact: true })).toBeVisible()
+  await page.getByRole('button', { name: '取消', exact: true }).click()
+  await expect.poll(() => cancellations).toBe(1)
+  expect(keys).toHaveLength(2); expect(keys[0]).toBe(keys[1])
+})
+
+test('persisted empty Gap clarification cannot silently start another task or loop sync', async ({ page }) => {
+  await page.route('**/api/v1/runs/run-1', route => route.fulfill({ json: run('NEEDS_INPUT', '请补充') }))
+  await page.route('**/api/v1/runs/run-1/events', route => route.fulfill({ json: [
+    { id: 2, type: 'continuation.decided', payload: JSON.stringify({ action: 'CLARIFY', gapIds: [] }) },
+  ] }))
+  await begin(page)
+  await emit(page, 'continuation.decided', { action: 'CLARIFY', gapIds: ['outdated-gap'] }, '1')
+  await emit(page, 'run.needs_input', {}, '2')
+  await expect(page.locator('.messages')).toContainText('缺少恢复所需的 Gap 标识')
+  await expect(page.getByRole('button', { name: '重试同步' })).not.toBeVisible()
+  await page.getByPlaceholder('输入消息；例如：计算 17 * 23').fill('cannot resume')
+  await expect(page.getByRole('button', { name: '运行', exact: true })).toBeDisabled()
+  await expect(page.getByRole('button', { name: '新会话' })).toBeEnabled()
+})
+
+test('persisted Gap ids supersede a provisional streaming clarification', async ({ page }) => {
+  await page.route('**/api/v1/runs/run-1', route => route.fulfill({ json: run('NEEDS_INPUT') }))
+  await page.route('**/api/v1/runs/run-1/events', route => route.fulfill({ json: [
+    { id: 2, type: 'continuation.decided', payload: JSON.stringify({ action: 'CLARIFY', gapIds: ['current-gap'] }) },
+  ] }))
+  await begin(page)
+  await emit(page, 'continuation.decided', { action: 'CLARIFY', gapIds: ['outdated-gap'] }, '1')
+  await emit(page, 'run.needs_input', {}, '2')
+  await expect(page.locator('.chat-toolbar p')).toContainText('NEEDS_INPUT')
+  await page.getByPlaceholder('输入消息；例如：计算 17 * 23').fill('answer')
+  const request = page.waitForRequest(req => req.method() === 'POST' && req.url().endsWith('/runs'))
+  await page.getByRole('button', { name: '运行', exact: true }).click()
+  expect((await request).postDataJSON().resume.gapIds).toEqual(['current-gap'])
+})
+
+test('an initial definite HTTP rejection allows corrected input', async ({ page }) => {
+  await page.route('**/api/v1/conversations/conversation-1/runs', route => route.fulfill({ status: 400, json: { message: '参数错误' } }))
+  await page.goto('./chat')
+  await page.getByRole('button', { name: '运行', exact: true }).click()
+  await expect(page.locator('.chat-toolbar p')).toContainText('提交被拒绝')
+  await expect(page.getByRole('button', { name: '重试提交结果' })).not.toBeVisible()
+  await page.getByPlaceholder('输入消息；例如：计算 17 * 23').fill('corrected')
+  await expect(page.getByRole('button', { name: '运行', exact: true })).toBeEnabled()
+})
+
+test('a later HTTP rejection does not erase an earlier ambiguous submission', async ({ page }) => {
+  const keys: string[] = []
+  await page.route('**/api/v1/conversations/conversation-1/runs', route => {
+    keys.push(route.request().headers()['idempotency-key'])
+    return route.fulfill({ status: keys.length === 1 ? 500 : 403, json: { message: 'temporarily unavailable' } })
+  })
+  await page.goto('./chat')
+  await page.getByRole('button', { name: '运行', exact: true }).click()
+  await expect(page.getByRole('button', { name: '重试提交结果' })).toBeVisible()
+  await page.getByRole('button', { name: '重试提交结果' }).click()
+  await expect.poll(() => keys.length).toBe(2)
+  await expect(page.getByRole('button', { name: '重试提交结果' })).toBeVisible()
+  await expect(page.getByRole('button', { name: '新会话' })).toBeDisabled()
+  expect(keys[0]).toBe(keys[1])
+})
+
+test('already terminal creation reconciles without a live terminal event', async ({ page }) => {
+  await page.route('**/api/v1/conversations/conversation-1/runs', route => route.fulfill({ status: 200, json: run('COMPLETED') }))
+  await begin(page)
+  await expect(page.locator('.chat-toolbar p')).toContainText('COMPLETED')
+  await expect(page.locator('.messages')).toContainText('完整的持久化答案')
 })
