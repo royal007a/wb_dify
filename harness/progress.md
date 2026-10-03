@@ -4,7 +4,7 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-10-03T17:50:00Z`
 - Current task: `none`
-- Counts: pending 5 · running 0 · blocked 1 · completed 34
+- Counts: pending 6 · running 0 · blocked 1 · completed 34
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -24,6 +24,7 @@
 | `SPEC-AUDIT-001` | P0 | blocked | harness, backend | reversible_write | 建立全接口与功能测试规格及覆盖门禁 |
 | `SPEC-CHAT-UI-001` | P0 | completed | frontend, harness | reversible_write | 修复流式会话生命周期与终态回读恢复 |
 | `SPEC-COMMON-001` | P0 | completed | backend, harness | reversible_write | 修复 HTTP 客户端错误映射与阻塞调用取消 |
+| `SPEC-CREDENTIAL-BOUNDARY-001` | P0 | pending | backend, runtime, harness | reversible_write | 凭据引用只允许管理员配置的引用与目标绑定 |
 | `SPEC-DEPLOY-001` | P0 | pending | harness, backend, frontend, migration | high_risk | 发布验收修复并验证 132 与本地 |
 | `SPEC-SSE-COMMIT-001` | P0 | completed | backend, runtime, harness | reversible_write | 修复SSE提交时序与Run终态事件原子性 |
 | `SPEC-VERIFY-001` | P0 | pending | harness, backend, frontend, migration, runtime, eval | reversible_write | 执行全功能矩阵并修复发现的问题 |

@@ -4,6 +4,32 @@
   "updatedAt": "2026-10-03T17:50:00Z",
   "tasks": [
     {
+      "id": "SPEC-CREDENTIAL-BOUNDARY-001",
+      "title": "凭据引用只允许管理员配置的引用与目标绑定",
+      "description": "独立复核A1：MCP和Provider不得任意读取进程环境/系统属性，引用默认拒绝并绑定目标；修改MCP endpoint不得隐式沿用已存Token。",
+      "priority": "P0",
+      "status": "pending",
+      "scopes": ["backend", "runtime", "harness"],
+      "verifyScopes": ["harness", "migration"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "假环境/系统属性凭据证明旧行为失败；不读取或外送真实凭据",
+        "MCP保存与运行时均拒绝未配置引用，历史数据库引用不能绕过，Provider同源读取漏洞一并封闭",
+        "引用与精确endpoint由管理员配置绑定；受保护进程密钥永不允许，错误不含输入或密钥",
+        "MCP带凭据修改endpoint必须显式换凭据或CLEAR，KEEP不能外送旧Token",
+        "合法引用、TOKEN轮换、历史版本凭据和无鉴权Server兼容；HTTP/H2及真实PG回归通过"
+      ],
+      "planPath": "exec-plans/active/SPEC-CREDENTIAL-BOUNDARY-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T18:00:00Z",
+      "updatedAt": "2026-10-03T18:00:00Z"
+    },
+    {
       "id": "SPEC-WORKFLOW-KNOWLEDGE-001",
       "title": "固定 Workflow 知识语料快照并保留历史引用",
       "description": "A03：发布时冻结KNOWLEDGE节点语料，运行仅使用冻结revision，归档不得破坏已发布引用；旧未冻结知识版本显式拒绝，不能改写历史DSL。",

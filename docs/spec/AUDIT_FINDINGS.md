@@ -50,6 +50,22 @@
 
 ## 文档漂移（本原子任务对齐）
 
+## 独立静态复核增量（0975782，待逐项红灯验证）
+
+来源：mymacclaude 消息 `om_x100b63204ee2a8a0c2cced58d25ff1c`。对方明确本轮仅静态阅读；不能标成独立测试通过。后续提交需复查是否已消除相关路径。
+
+- A1：MCP任意env/system引用会读取进程主密钥；本地检查发现Provider有同源路径。优先做引用/目标白名单，禁止只有前端校验。
+- A2/A3/A4/A5：对应既有A01/A03，另需修正Claim为空的FINISH语义、Workflow未走FinishGate、归档后canonical引用回读矛盾。
+- B1/B2：取消/本地拒绝计入供应商熔断；runExecutor提交拒绝未收敛RUNNING。待故障注入验证。
+- C1/C2/C3/C4：新Run创建期间取消旧Run、失效resume、网络结果不明时新幂等键重复创建、无gapIds的NEEDS_INPUT；另有重连计数和终态补读竞争。C4可达性尚未确认。
+- D1/D2：图校验与50步执行上限不一致、条件表达式解析未在发布校验，字面量含运算符歧义。
+- E1：线程池关闭中断可能误记用户取消而失去恢复；E-P2包括两张Run终态竞态、预取消重复事件、拒绝错误回显、取消标志被覆盖、跨实例取消非目标。事件相关先对照a1c2015复核。
+- 其余P2：multipart错误500、主密钥错误启动未检测、停用Server对历史能力语义、LLM与索引共池、IllegalArgumentException回显、standalone MockMvc表述、非法旧DSL分类、图测试缺项及模板字面量边界。
+
+以上是反例索引，不是完成状态；任务与验证进展仍只在Harness机器状态中记录。
+
+## 已核对的文档漂移
+
 - API.md 把未实现会话列表、v1 会话详情/消息、tool-definition/dry-run 写成可调用；Workflow更新写成不存在的PATCH。
 - API.md 泛称全写请求幂等键、默认cursor分页、UUIDv7/ULID，均不是当前实现。
 - CURRENT_STATE 仍声称三类能力未绑定 Agent/Chat、流式故障矩阵未做；AGENTS/SPEC仍把已交付画布列为非目标。
