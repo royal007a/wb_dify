@@ -27,4 +27,15 @@ final class WorkflowFixtures {
                 edge("start", "route"), branch("left", "true", false), branch("right", null, true),
                 edge("left", "end"), edge("right", "end"));
     }
+    static WorkflowDraftRequest chain(int count) {
+        var nodes=new ArrayList<WorkflowNodeSpec>();var edges=new ArrayList<WorkflowEdgeSpec>();
+        nodes.add(node("start","START"));String previous="start";
+        for(int i=1;i<count-1;i++){String key="n"+i;nodes.add(node(key,"TEMPLATE","template","x"));edges.add(edge(previous,key));previous=key;}
+        nodes.add(node("end","END","output","done"));edges.add(edge(previous,"end"));
+        return draft(nodes,edges.toArray(WorkflowEdgeSpec[]::new));
+    }
+    static WorkflowDraftRequest condition(String expression) {
+        return draft(List.of(node("start","START"),node("route","CONDITION","expression",expression),
+                node("end","END","output","{{route.result}}")),edge("start","route"),branch("end",null,true));
+    }
 }

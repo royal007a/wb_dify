@@ -22,6 +22,17 @@ class WorkflowEngineTest {
 
     @BeforeEach void saveReturnsPersistedRun() { when(runs.save(any())).thenAnswer(invocation -> invocation.getArgument(0)); }
 
+    @Test void fiftyStepGraphReallyCompletes() throws Exception {stored(chain(50));assertThat(engine.execute("v1","input").status()).isEqualTo("SUCCEEDED");}
+    @Test void quotedOperatorsAreLiteralData() throws Exception {
+        stored(condition("{{start.userMessage}} == 'a contains b'"));
+        assertThat(engine.execute("v1","a contains b").output()).isEqualTo("true");
+        assertThat(engine.execute("v1","a").output()).isEqualTo("false");
+    }
+    @Test void invalidOldConditionIsRejectedBeforeCreatingRun() throws Exception {
+        stored(condition("hello"));assertThatThrownBy(()->engine.execute("v1","input")).isInstanceOf(BizException.class);
+        verifyNoInteractions(runs,nodes,knowledge);
+    }
+
     @Test void rejectsOldInvalidPublishedGraphBeforeAnyExecutionOrWrite() throws Exception {
         stored(diamond("{{left.result}}"));
         assertThatThrownBy(() -> engine.execute("v1", "input")).isInstanceOf(BizException.class);

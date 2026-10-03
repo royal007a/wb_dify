@@ -236,6 +236,8 @@ GET      /api/v1/workflow-runs/{id}
 
 Workflow DSL 使用显式 `schemaVersion`。保存、发布和执行前共用结构校验：恰有一个START（无入边）、至少一个END（无出边）、全图可达无环；其他非条件节点恰有一条无条件出边，因此每条可走路径都终止于END。CONDITION恰有一个默认分支，其他标签只接受不重复的true/false。非法图返回参数错误，已存储的非法旧版本也在执行前拒绝，不改写其DSL/checksum。
 
+最长结构路径不得超过50步（含START/END），不是全图节点总数限制。CONDITION支持true/false、单布尔模板变量或单个contains/==/!=比较；含运算符的字面量必须加引号，解析发生在模板插值之前。配置中不支持字面量`{{`/`}}`。旧非法定义的Chat终态为WORKFLOW_ERROR。完整语法、兼容边界与用例见 `spec/SPEC_WORKFLOW_GRAPH.md`。
+
 节点/边key、输出变量名为1–128个字母、数字、下划线或连字符，不隐式裁剪空格。模板使用 `{{nodeKey.variable}}`（允许括号内首尾空格），只能引用严格必经上游已声明的变量。START输出为实际START key的userMessage；TEMPLATE/CONDITION默认result、KNOWLEDGE默认citations，可用outputVariable覆盖；END没有输出变量。运行缺值直接失败；插入的用户/工具文本只作为数据，不能二次展开为模板。结构安全不等于知识相关性或 FinishGate 已贯通，这些仍见 `spec/AUDIT_FINDINGS.md`。
 
 KNOWLEDGE 发布时在 config 中生成只读 `knowledgeSnapshot={corpusVersionId,manifestDigest,revisionNo,chunkCount}`，顶层另写服务端 `publication.knowledgeSnapshotFormat=1`，两者连同 knowledgeBaseId 固定到 DSL/checksum。草稿不能提交 config 保留字段（400），顶层发布标记不属于客户端 Draft DTO。旧未冻结/无标记 KNOWLEDGE 版本在 Agent 绑定/发布及直接执行时返回409；需依次重新发布 Workflow、Agent，并创建新会话，不重写旧版本。执行前校验整个 DSL checksum；纯模板/条件旧图 checksum/结构合法则不受影响。冻结运行验证清单及原文摘要，文档/库归档不改变历史语料；向量重建可能改变排序/topK。归档不是撤销历史访问或数据擦除。canonical application port 仅在提供准确摘要且有冻结成员引用时允许回读归档分块，没有新增 HTTP 回读路由。详见 `spec/SPEC_WORKFLOW_KNOWLEDGE.md`。

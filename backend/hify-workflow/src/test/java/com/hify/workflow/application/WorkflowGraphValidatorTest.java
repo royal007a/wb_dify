@@ -10,6 +10,26 @@ import static com.hify.workflow.application.WorkflowFixtures.*;
 class WorkflowGraphValidatorTest {
     private final WorkflowGraphValidator validator = new WorkflowGraphValidator();
 
+    @Test void rejectsPathOf51ButAllows50IncludingStartAndEnd(){validator.validate(chain(50));rejects(chain(51));}
+    @Test void wideGraphMayHaveMoreThan50NodesWhenEveryPathFits(){
+        var nodes=new ArrayList<WorkflowNodeSpec>(List.of(node("start","START"),node("route","CONDITION","expression","true"),node("end","END","output","done")));
+        var edges=new ArrayList<WorkflowEdgeSpec>();edges.add(edge("start","route"));
+        for(String side:List.of("left","right")){
+            edges.add(new WorkflowEdgeSpec("route-"+side,"route",side+"0",side.equals("left")?"true":null,side.equals("right")));
+            for(int i=0;i<47;i++){String key=side+i;nodes.add(node(key,"TEMPLATE","template","value"));edges.add(edge(key,i==46?"end":side+(i+1)));}
+        }
+        validator.validate(draft(nodes,edges.toArray(WorkflowEdgeSpec[]::new))); // 97 total, 50 per path
+    }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings={"hello","{{start.userMessage}} = 'a'","{{start.userMessage}} == ","'unterminated","'a' == 'a' == 'a'","{{start.userMessage}} contains \"unterminated"})
+    void rejectsInvalidExpressionBeforePublication(String expression){rejects(condition(expression));}
+    @Test void rejectsConditionReferencingItsOwnOutput(){rejects(condition("{{route.result}}"));}
+    @Test void rejectsCycleWithValidOutDegrees(){
+        rejects(draft(List.of(node("start","START"),node("route","CONDITION","expression","true"),node("loop","TEMPLATE","template","x"),node("end","END","output","x")),
+                edge("start","route"),branch("loop","true",false),branch("end",null,true),edge("loop","route")));
+    }
+    @Test void rejectsTwoStarts(){rejects(draft(List.of(node("start","START"),node("second","START"),node("end","END","output","x")),edge("start","end"),edge("second","end")));}
+
     @Test void rejectsReachableNonEndDeadEnd() {
         rejects(draft(List.of(node("start","START"), node("route","CONDITION","expression","true"),
                 node("dead","TEMPLATE","template","lost"), node("end","END","output","ok")),
