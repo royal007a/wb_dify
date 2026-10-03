@@ -13,7 +13,8 @@ public enum ErrorCode {
     IDEMPOTENCY_KEY_REUSED(40901, "幂等键已被不同请求使用", HttpStatus.CONFLICT),
     CONFLICT(40900, "资源状态冲突", HttpStatus.CONFLICT),
     UNSUPPORTED_MEDIA_TYPE(41500, "不支持此请求内容类型", HttpStatus.UNSUPPORTED_MEDIA_TYPE),
-    INTERNAL_ERROR(50000, "系统内部错误", HttpStatus.INTERNAL_SERVER_ERROR);
+    INTERNAL_ERROR(50000, "系统内部错误", HttpStatus.INTERNAL_SERVER_ERROR),
+    SERVICE_UNAVAILABLE(50300, "服务暂时不可用", HttpStatus.SERVICE_UNAVAILABLE);
 
     private final int code;
     private final String message;

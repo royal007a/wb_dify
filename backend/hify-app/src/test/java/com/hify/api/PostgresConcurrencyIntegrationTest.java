@@ -102,6 +102,8 @@ class PostgresConcurrencyIntegrationTest {
 
     @Test void concurrentEventPublishersHaveOrderedUniqueCommittedSequences() throws Exception {
         AgentRun run=dormantRun();
+        MvcResult stream=http.perform(get("/api/v1/runs/{id}/events/stream",run.getId()).accept(MediaType.TEXT_EVENT_STREAM))
+                .andExpect(request().asyncStarted()).andReturn();
         ExecutorService pool=Executors.newFixedThreadPool(6);
         CountDownLatch ready=new CountDownLatch(6),start=new CountDownLatch(1);
         List<Future<?>> jobs=new ArrayList<>();
@@ -113,6 +115,13 @@ class PostgresConcurrencyIntegrationTest {
             for(Future<?> job:jobs)job.get(10,java.util.concurrent.TimeUnit.SECONDS);
             assertThat(events.findByRunIdOrderByIdAsc(run.getId())).extracting(com.hify.domain.RunEvent::getSequenceNo)
                     .containsExactly(1L,2L,3L,4L,5L,6L);
+            broker.publish(run.getId(),"run.completed",java.util.Map.of("state","COMPLETED"));
+            String received=http.perform(asyncDispatch(stream)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+            List<Long> delivered=java.util.regex.Pattern.compile("(?m)^id:\\s*(\\d+)").matcher(received).results()
+                    .map(match->Long.valueOf(match.group(1))).toList();
+            assertThat(delivered).containsExactlyElementsOf(events.findByRunIdOrderByIdAsc(run.getId()).stream()
+                    .map(com.hify.domain.RunEvent::getId).toList());
+            assertThat(delivered).doesNotHaveDuplicates().hasSize(7);
         } finally {start.countDown();pool.shutdownNow();}
     }
 

@@ -63,6 +63,8 @@ include `deploy/nginx-path.conf`。该片段将静态资源隔离在 `/hify/`，
 
 ## 7. 告警
 
+SSE 投影独立于 Run 提交：`HIFY_SSE_MAX_SUBSCRIBERS` 默认 64（允许 1–256），饱和时返回 503，不排队无限增长。每个连接一个发送 worker，历史分页每页 32 条；慢连接不占用 Run 线程或持有数据库事务。`HIFY_HTTP_CONNECTION_TIMEOUT` 默认 10s，Tomcat NIO 将其用于 socket 阻塞写的无进展超时，也用于请求读取，不能设为无限。反向代理的发送超时/连接数应同步限制；持续缓慢读取不等于完全不读，10s 不是整条 SSE 的绝对寿命。客户端按 Last-Event-ID 重连，并回读持久 Run 结果。
+
 MCP 直接 Token 配置：部署时生成独立随机 32-byte Base64 `HIFY_MCP_MASTER_KEY`，放在仅服务用户可读的环境文件中，启动时注入；Compose 也从同名变量读取。不设置时只支持 env/system 引用。不要把主密钥复制进数据库、镜像、日志或 Git。数据库恢复必须同时恢复匹配主密钥；已有密文时禁止重新生成覆盖主密钥。首次配置需重启，后续页面更换 Token 无需重启。细节与回滚限制见 ADR-0020。
 
 引用授权（安全升级）：env/system 默认拒绝，管理员另外配置 `HIFY_CREDENTIAL_REFERENCE_BINDINGS` JSON，例如 `{"env:TEAM_LLM_KEY":["https://api.example.com/v1"],"env:MCP_TOKEN":["https://tools.example.com/mcp"]}`。只包含变量/属性名与目标地址，不包含密钥值；地址精确匹配（scheme、host、port、path），无通配、不允许query/userinfo/fragment。配置错误启动失败，不回显输入。参考 ADR-0021。

@@ -130,6 +130,10 @@ data: {"version":1,"runId":"run_...","toolCallId":"call_...","tool":"calculator"
 
 SSE 数据不包含供应商原始请求、API Key 或未裁剪 tool result。
 
+SSE 游标约定：`Last-Event-ID` 缺省或 `0` 从头 replay；正数必须是**本 Run 的已提交事件 ID**，其他 Run、未知或负数返回 HTTP 400 / `PARAM_ERROR`（JSON），不能跳过终态。订阅先发不带 ID 的 heartbeat，再按 ID 递增发送已提交事件；已消费终态游标会正常关闭且不重复发送终态。
+
+SSE 背压：每个订阅由独立的串行发送 worker 推进，提交回调和心跳调度线程仅唤醒，不做网络 IO。每次读取最多 32 条事件，数据库调用结束后再发送，无逐事件内存队列；默认最多 64 个订阅，满时新订阅 HTTP 503 / `SERVICE_UNAVAILABLE`，不影响 Run 落库。客户端保留最后已收到的 ID 重连；断开 SSE 不等于取消 Run。180s 流重连周期保持不变。Tomcat socket 不活动写超时默认 10s（`HIFY_HTTP_CONNECTION_TIMEOUT`，也影响请求读取），用于回收不读数据的客户端；这不是持续缓慢传输的全程硬超时。部署端代理也需配置相应超时和连接限制。
+
 真实 Provider 文本到达时逐块发送 `message.delta`；`model.completed` 表示该次模型流已闭合并可安全解析完整 tool call。流已经输出 delta 后不得自动重试整个请求。
 
 工具失败有两种语义：

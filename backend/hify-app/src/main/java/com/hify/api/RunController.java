@@ -93,8 +93,9 @@ public class RunController {
 
     @GetMapping(value = "/runs/{runId}/events/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream(@PathVariable String runId,
-                             @RequestHeader(value = "Last-Event-ID", required = false) Long lastEventId) {
-        return eventBroker.subscribe(runId, lastEventId);
+                             @RequestHeader(value = "Last-Event-ID", required = false) Long lastEventId,
+                             jakarta.servlet.http.HttpServletResponse response) {
+        return eventBroker.subscribe(runId, lastEventId, response::isCommitted);
     }
 
     public record CreateConversation(@NotBlank String agentId, String title) {}
