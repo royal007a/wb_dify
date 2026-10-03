@@ -28,15 +28,19 @@ public class MemoryController {
     private final ContextSummaryRepository summaries;
     private final HistoryDetailRefRepository details;
     private final HistoryRecallService recall;
+    private final com.hify.memory.MemoryDeliveryPolicy delivery;
 
     public MemoryController(AgentRunRepository runs, ContextSummaryRepository summaries,
-                            HistoryDetailRefRepository details, HistoryRecallService recall) {
+                            HistoryDetailRefRepository details, HistoryRecallService recall,
+                            com.hify.memory.MemoryDeliveryPolicy delivery) {
         this.runs = runs; this.summaries = summaries; this.details = details; this.recall = recall;
+        this.delivery = delivery;
     }
 
     @GetMapping
     public MemoryView memory(@PathVariable String runId) {
         requireRun(runId);
+        if(!delivery.rawMemoryVisible(runId))return new MemoryView(List.of(),List.of());
         List<ContextSummaryView> summaryViews = summaries.findByRunIdOrderBySummaryVersionAsc(runId)
                 .stream().map(ContextSummaryView::from).toList();
         List<DetailRefView> catalog = details.findByRunIdOrderBySourceMessageIndexAsc(runId)

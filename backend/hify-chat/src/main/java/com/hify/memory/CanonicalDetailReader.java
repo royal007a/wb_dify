@@ -15,15 +15,19 @@ public class CanonicalDetailReader {
     private final HistoryDetailRefRepository details;
     private final RunHistoryCommitRepository commits;
     private final ObjectMapper objectMapper;
+    private final MemoryDeliveryPolicy delivery;
 
     public CanonicalDetailReader(HistoryDetailRefRepository details,
-                                 RunHistoryCommitRepository commits, ObjectMapper objectMapper) {
+                                 RunHistoryCommitRepository commits, ObjectMapper objectMapper, MemoryDeliveryPolicy delivery) {
         this.details = details; this.commits = commits; this.objectMapper = objectMapper;
+        this.delivery = delivery;
     }
 
     public DetailContent read(String refId) {
         HistoryDetailRef ref = details.findById(refId)
                 .orElseThrow(() -> new IllegalArgumentException("History detail ref not found: " + refId));
+        if (!delivery.rawMemoryVisible(ref.getRunId())) throw new com.hify.common.BizException(
+                com.hify.common.ErrorCode.CONFLICT, "知识门禁运行的内部历史不作为记忆交付；请查看已完成的聊天回答。");
         RunHistoryCommit commit = commits.findByRunIdAndRevision(ref.getRunId(), ref.getSourceRevision())
                 .orElseThrow(() -> new IllegalStateException("Canonical history revision is missing"));
         List<RuntimeMessage> messages = readMessages(commit.getMessagesJson());

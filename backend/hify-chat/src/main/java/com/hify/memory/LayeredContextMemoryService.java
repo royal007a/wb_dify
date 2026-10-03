@@ -17,11 +17,13 @@ public class LayeredContextMemoryService implements ContextMemoryProjection {
     private final HistoryDetailRefRepository details;
     private final ContextSummaryRepository summaries;
     private final StructuredSummaryService summaryService;
+    private final MemoryDeliveryPolicy delivery;
 
     public LayeredContextMemoryService(HistoryDetailRefRepository details,
                                        ContextSummaryRepository summaries,
-                                       StructuredSummaryService summaryService) {
+                                       StructuredSummaryService summaryService, MemoryDeliveryPolicy delivery) {
         this.details = details; this.summaries = summaries; this.summaryService = summaryService;
+        this.delivery = delivery;
     }
 
     @Override
@@ -29,6 +31,7 @@ public class LayeredContextMemoryService implements ContextMemoryProjection {
         if (runId == null || runId.isBlank() || "local".equals(runId) || canonicalMessages.isEmpty()) {
             return ContextMemoryProjection.NOOP.project(runId, canonicalMessages, recentTurns);
         }
+        if(!delivery.rawMemoryVisible(runId))return ContextMemoryProjection.NOOP.project(runId,canonicalMessages,recentTurns);
         int cutoff = recentTurnCutoff(canonicalMessages, Math.max(1, recentTurns));
         if (cutoff <= 1) return ContextMemoryProjection.NOOP.project(runId, canonicalMessages, recentTurns);
 

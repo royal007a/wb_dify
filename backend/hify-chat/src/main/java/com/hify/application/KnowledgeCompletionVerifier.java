@@ -47,6 +47,7 @@ public final class KnowledgeCompletionVerifier implements CompletionVerifier {
                 knowledge.requireCanonicalChunk(item.sourceRef().split(":",3)[2],item.valueDigest());
             }
         }catch(RuntimeException unavailable){
+            if(unavailable instanceof com.hify.common.ExecutionSuspendedException)throw unavailable;
             control.throwIfCancelled();return gap(state,"知识引用原文已不可校验，不能将本回答判为来源完整。");
         }
         Set<String> verifiedIds=used.stream().map(label->byLabel.get(label).id()).collect(java.util.stream.Collectors.toSet());

@@ -31,10 +31,12 @@ public class HistoryRecallService {
     private final HistoryDetailRefRepository details;
     private final CanonicalDetailReader reader;
     private final DataSource dataSource;
+    private final MemoryDeliveryPolicy delivery;
 
     public HistoryRecallService(AgentRunRepository runs, HistoryDetailRefRepository details,
-                                CanonicalDetailReader reader, DataSource dataSource) {
+                                CanonicalDetailReader reader, DataSource dataSource, MemoryDeliveryPolicy delivery) {
         this.runs = runs; this.details = details; this.reader = reader; this.dataSource = dataSource;
+        this.delivery = delivery;
     }
 
     /** P0 lexical/time/entity retrieval. Scores are deterministic and independent of an embedding service. */
@@ -62,7 +64,9 @@ public class HistoryRecallService {
         } else {
             candidates = details.findByConversationIdOrderByOccurredAtAsc(run.getConversationId());
         }
+        Map<String,Boolean> visibleRuns=new LinkedHashMap<>();
         for (HistoryDetailRef ref : candidates) {
+            if(!visibleRuns.computeIfAbsent(ref.getRunId(),delivery::rawMemoryVisible))continue;
             if (query.kind() != null && ref.getKind() != query.kind()) continue;
             if (query.from() != null && ref.getOccurredAt().isBefore(query.from())) continue;
             if (query.to() != null && ref.getOccurredAt().isAfter(query.to())) continue;

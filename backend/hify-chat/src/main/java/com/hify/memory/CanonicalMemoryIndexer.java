@@ -28,16 +28,20 @@ public class CanonicalMemoryIndexer {
     private final ObjectMapper objectMapper;
     private final JdbcTemplate jdbc;
     private final DataSource dataSource;
+    private final MemoryDeliveryPolicy delivery;
 
     public CanonicalMemoryIndexer(HistoryDetailRefRepository details, AgentRunRepository runs,
-                                  ObjectMapper objectMapper, JdbcTemplate jdbc, DataSource dataSource) {
+                                  ObjectMapper objectMapper, JdbcTemplate jdbc, DataSource dataSource,
+                                  MemoryDeliveryPolicy delivery) {
         this.details = details; this.runs = runs; this.objectMapper = objectMapper;
         this.jdbc = jdbc; this.dataSource = dataSource;
+        this.delivery = delivery;
     }
 
     @Transactional
     public List<HistoryDetailRef> index(String runId, long revision,
                                         List<RuntimeMessage> messages, Instant occurredAt) {
+        if (!delivery.rawMemoryVisible(runId)) return List.of();
         AgentRun run = runs.findById(runId)
                 .orElseThrow(() -> new IllegalArgumentException("Run not found for memory index: " + runId));
         List<HistoryDetailRef> indexed = new ArrayList<>();
