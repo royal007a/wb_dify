@@ -40,6 +40,8 @@
 
 `RunEventBroker.publish` 在 @Transactional 方法内 saveAndFlush 后立即向 SSE emit，早于事务 commit；`subscribe` 又以 Run 终态决定直接 complete，而终态事件可能尚未投影。需验证回滚事件不外发、终态与最后事件间隙订阅不漏 terminal、并发序号与锁移除不产生双赢家。现有 PG 用例等待终态事件后订阅，不覆盖这些窗口。
 
+修复 `a1c2015`：Run行锁分配序号、提交后按订阅游标追赶、固定条带锁、Run终态/助手消息/terminal事件同事务。受控旧实现4项中2项失败，修复后初始9项通过；真实PG 6项和HTTP/H2取消1项通过、零跳过。首次独立PG命令因本机代理导致JDBC连接失败，记录保留。最终Harness与全应用门禁以 `docs/evidence/SPEC_SSE_COMMIT.md` 和机器任务证据为准，尚未部署。
+
 ### A08 Chat 页面会话切换与收尾异常没有隔离
 
 `ChatView.vue` 的“新会话”在执行时仍可点击，清空消息但不关闭局部 EventSource；旧 delta 按旧数组下标写入新会话，可能抛异常或污染消息。组件离开时也没有关闭连接。`finish` 先标记 settled 并关闭流，再 await getRun，缺少失败处理；回读失败会令 running 永远保持 true。已有 live happy-path 不能覆盖这些情况。

@@ -20,10 +20,10 @@
 
 | ID | 场景与必须断言 | 失败/边界 | 已有入口及核验层 |
 |---|---|---|---|
-| F09 | 发消息→Run202→SSE delta→工具→终态→事实回读 | 只合并当前消息；终态事件异步投影等待；streamUrl 前缀 | A: RunFlowIntegrationTest；P: PostgresConcurrencyIntegrationTest；B: chat.spec.ts |
+| F09 | 发消息→Run202→SSE delta→工具→终态→事实回读 | 只合并当前消息；终态/助手消息/最后事件同事务；提交后投影；streamUrl 前缀 | A: RunFlowIntegrationTest；P: PostgresConcurrencyIntegrationTest；B: chat.spec.ts |
 | F10 | 并发同幂等键只建一条消息/Run；同体重放200、异体409 | 空/缺 key、同 key 跨会话、resume 内容不同 | A/P: RunFlowIntegrationTest、PostgresConcurrencyIntegrationTest |
-| F11 | 取消持久化并中断阻塞 Provider/MCP，终态单赢家 | 运行前/首包后/工具前取消；终态再次取消；2s SLA | U: ToolRuntimeTest、LlmHttpClientTest；A: McpProtocolClientReliabilityTest；Workflow 贯穿取消缺口 |
-| F12 | 事件有序持久、Last-Event-ID 只放游标后、终态关闭流 | 空游标/非法游标、订阅与发布竞态、断线≠取消 | P: PostgresConcurrencyIntegrationTest；MCP A replay；B 真断线/取消需补 |
+| F11 | 取消持久化并中断阻塞 Provider/MCP，终态单赢家 | 运行前/首包后/工具前取消；终态再次取消；2s SLA | U: ToolRuntimeTest、LlmHttpClientTest、RunWorkflowControlTest；A: McpProtocolClientReliabilityTest、WorkflowRunControlIntegrationTest；实际JDBC/远端副作用停止需独立证明 |
+| F12 | 事件有序持久、Last-Event-ID 只放游标后、终态关闭流 | 回滚不外发、提交回调乱序/订阅交错无重复、terminal写失败回滚success、断线≠取消 | U: RunEventBrokerTest；P: PostgresConcurrencyIntegrationTest；MCP A replay；B 真断线/取消需补 |
 | F13 | 六出口与 FinishGate：回答、required Claim VERIFIED、无 blocking Gap | 空回答/缺证据/未闭合工具调用/权限禁止 | U: ExecutionContextStateTest、QueryLoopTest；Knowledge 注入不自动提供 gate evidence |
 | F14 | 参数错误 LOCAL_REPLAN；超时有限 RETRY；缺参数 CLARIFY；拒权 INTERRUPT | budget 不重置、失败点≠根因点、无替代 ASK_HUMAN/no-progress | U: PlanStateMachineTest、QueryLoopTest |
 | F15 | checkpoint恢复不重放已完成尝试；重启 RUNNING 收敛 | 取消状态恢复；损坏快照；NEEDS_INPUT 通过新 Run resume | U: QueryLoopTest；A: ContextMemoryIntegrationTest；重启真实进程 O 待补 |
