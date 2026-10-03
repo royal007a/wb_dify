@@ -1,8 +1,32 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T14:47:28Z",
+  "updatedAt": "2026-10-03T15:09:49Z",
   "tasks": [
+    {
+      "id": "SPEC-COMMON-001",
+      "title": "修复 HTTP 客户端错误映射与阻塞调用取消",
+      "description": "针对审计 A05/A06 先加入红灯用例，修复取消前提交、取消后后台继续和 HTTP 4xx 映射。此原子任务只验 common；全应用矩阵仍由 SPEC-AUDIT/VERIFY 验收。",
+      "priority": "P0",
+      "status": "pending",
+      "scopes": ["backend", "harness"],
+      "verifyScopes": ["harness"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "MockMvc 对缺 header/错误参数/405/415 返回稳定 Result 与正确 HTTP 状态，不回显输入秘密",
+        "预取消或过期请求不提交后台；取消/超时中断未完成 worker，重试前复查资格",
+        "原子任务命令 mvn -pl hify-common -am test 全通过，红灯和修复日志保留；不冒充全应用通过"
+      ],
+      "planPath": "exec-plans/active/SPEC-COMMON-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T15:11:00Z",
+      "updatedAt": "2026-10-03T15:11:00Z"
+    },
     {
       "id": "SPEC-AUDIT-001",
       "title": "建立全接口与功能测试规格及覆盖门禁",
@@ -26,9 +50,9 @@
         "功能场景区分已有测试与本轮结果，注明外部依赖、失败边界和残余风险",
         "修正 CURRENT_STATE/SPEC/AGENTS 的已实现能力漂移，独立只读 review 已发起"
       ],
-      "planPath": "exec-plans/active/SPEC-AUDIT-001.md",
+      "planPath": "exec-plans/blocked/SPEC-AUDIT-001.md",
       "checkpoint": null,
-      "blockedReason": "verification failed",
+      "blockedReason": "task interrupted",
       "evidence": [
         {
           "runId": "SPEC-AUDIT-001-20261003T142933Z-6a67ea8e",
@@ -38,10 +62,19 @@
           "baselineCommit": "269af92e2dfd182a94415f627c260f8b0dedccea",
           "headCommit": "f7e155c05ed0a5df6bd300a4d60de80097143467",
           "recordedAt": "2026-10-03T14:47:28Z"
+        },
+        {
+          "runId": "SPEC-AUDIT-001-20261003T145048Z-ab1cba79",
+          "path": "harness/evidence/SPEC-AUDIT-001/SPEC-AUDIT-001-20261003T145048Z-ab1cba79",
+          "result": "blocked",
+          "exitCode": 130,
+          "baselineCommit": "c39b935cba13e9e4048342f5d476184593bacde8",
+          "headCommit": "bf619e964ed30998302873a337324114af83cb59",
+          "recordedAt": "2026-10-03T15:09:49Z"
         }
       ],
       "createdAt": "2026-10-03T14:35:00Z",
-      "updatedAt": "2026-10-03T14:47:28Z"
+      "updatedAt": "2026-10-03T15:09:49Z"
     },
     {
       "id": "SPEC-VERIFY-001",

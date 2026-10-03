@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-AUDIT-001-20261003T145048Z-ab1cba79",
+  "taskId": "SPEC-AUDIT-001",
+  "status": "blocked",
+  "baselineCommit": "c39b935cba13e9e4048342f5d476184593bacde8",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T14:50:48Z",
+  "exitCode": 130,
+  "reason": "task interrupted",
+  "headCommit": "bf619e964ed30998302873a337324114af83cb59",
+  "finishedAt": "2026-10-03T15:09:49Z"
+}

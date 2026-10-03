@@ -26,6 +26,8 @@ HistoryRecallEvaluationTest 的12题单轮 P95=74,157μs，超过50,000μs。词
 
 计时协议修正后的窄测试退出0：冷启动P95=67,779μs；预热5轮、采样20轮共240样本，稳态P95=916μs、最大值8,760μs。质量仍为 lexicalTop1=0.5、hybridTop1=1.0、Precision@3=0.3333，无miss。50ms阈值、黄金标签、排序代码未变。冷启动仍高，**没有证明线上延迟优化**；只是避免把冷启动单个最大样本冒充稳态P95。命令：`mvn -q -f backend/pom.xml -pl hify-chat -am -Dtest=HistoryRecallEvaluationTest -Dsurefire.failIfNoSpecifiedTests=false test`。
 
+第二轮完整基线 `SPEC-AUDIT-001-20261003T145048Z-ab1cba79` 仍非通过：common13、provider22、tool6、chat55通过；app 的 RunFlowIntegrationTest 2项中1项 `demoConversationHandlesGreetingThenRepeatedTimeAndCalculatorTurns` 未及时达到终态。发现失败后主动中断剩余基线，runner记录 exit130，后续 app 测试不能算已执行。此次 Knowledge/RunFlow 上下文分别启动251s/144s，单个创建会话请求耗时27s；只证明本轮环境下失败，尚不能把环境压力认定为唯一根因。保留日志，转入独立修复任务，原完整门禁仍需重跑，未删除或降低它。
+
 ## 本次没有宣称的结果
 
 - 67是库存匹配数，不是67个接口行为测试全部通过；F01-F38也不是已全验收。
