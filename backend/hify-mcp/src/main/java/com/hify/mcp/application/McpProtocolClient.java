@@ -106,12 +106,13 @@ public class McpProtocolClient {
                           ExecutionControl control) {
         try {
             URI uri = guard.validate(server.getEndpointUrl());
+            String secret = credentials.resolve(server.getId(), server.getCredentialRef());
             ObjectNode rpc = json.createObjectNode();
             rpc.put("jsonrpc", "2.0");
             rpc.put("id", UUID.randomUUID().toString());
             rpc.put("method", method);
             rpc.set("params", params);
-            HttpRequest request = request(server, session, uri)
+            HttpRequest request = request(secret, session, uri)
                     .timeout(REQUEST_TIMEOUT)
                     .POST(HttpRequest.BodyPublishers.ofString(json.writeValueAsString(rpc), StandardCharsets.UTF_8))
                     .build();
@@ -120,7 +121,7 @@ public class McpProtocolClient {
             if (response.statusCode() / 100 != 2) {
                 throw new BizException(ErrorCode.CONFLICT, "MCP server returned HTTP " + response.statusCode());
             }
-            JsonNode body = parse(response);
+            JsonNode body = parse(response, secret);
             if (body.has("error")) {
                 throw new BizException(ErrorCode.CONFLICT,
                         "MCP error: " + body.path("error").path("message").asText("unknown"));
@@ -129,17 +130,16 @@ public class McpProtocolClient {
         } catch (BizException | ExecutionCancelledException exception) {
             throw exception;
         } catch (Exception exception) {
-            throw new BizException(ErrorCode.CONFLICT, "MCP request failed: " + rootMessage(exception));
+            throw new BizException(ErrorCode.CONFLICT, "MCP request failed (" + exception.getClass().getSimpleName() + ")");
         }
     }
 
-    private HttpRequest.Builder request(McpServer server, Session session, URI uri) {
+    private HttpRequest.Builder request(String secret, Session session, URI uri) {
         HttpRequest.Builder request = HttpRequest.newBuilder(uri)
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json, text/event-stream")
                 .header("MCP-Protocol-Version", PROTOCOL);
         if (session != null && session.id() != null) request.header("Mcp-Session-Id", session.id());
-        String secret = credentials.resolve(server.getCredentialRef());
         if (secret != null) request.header("Authorization", "Bearer " + secret);
         return request;
     }
@@ -147,10 +147,11 @@ public class McpProtocolClient {
     private void notifyInitialized(McpServer server, Session session, ExecutionControl control) {
         try {
             URI uri = guard.validate(server.getEndpointUrl());
+            String secret = credentials.resolve(server.getId(), server.getCredentialRef());
             ObjectNode rpc = json.createObjectNode();
             rpc.put("jsonrpc", "2.0");
             rpc.put("method", "notifications/initialized");
-            HttpRequest request = request(server, session, uri)
+            HttpRequest request = request(secret, session, uri)
                     .timeout(Duration.ofSeconds(10))
                     .POST(HttpRequest.BodyPublishers.ofString(json.writeValueAsString(rpc), StandardCharsets.UTF_8))
                     .build();
@@ -163,7 +164,7 @@ public class McpProtocolClient {
             throw exception;
         } catch (Exception exception) {
             throw new BizException(ErrorCode.CONFLICT,
-                    "MCP initialized notification failed: " + rootMessage(exception));
+                    "MCP initialized notification failed (" + exception.getClass().getSimpleName() + ")");
         }
     }
 
@@ -189,28 +190,40 @@ public class McpProtocolClient {
         } catch (ExecutionException exception) {
             Throwable cause = exception.getCause();
             if (cause instanceof RuntimeException runtime) throw runtime;
-            throw new BizException(ErrorCode.CONFLICT, "MCP request failed: " + rootMessage(cause));
+            throw new BizException(ErrorCode.CONFLICT, "MCP transport failed");
         }
     }
 
-    private JsonNode parse(HttpResponse<String> response) throws Exception {
+    private JsonNode parse(HttpResponse<String> response, String secret) throws Exception {
         String type = response.headers().firstValue("content-type").orElse("");
         String raw = response.body();
+        // An untrusted endpoint can echo Authorization in tool output or error text.
+        if (secret != null) raw = raw.replace(secret, "[REDACTED]");
         if (type.contains("text/event-stream")) {
             String last = null;
             for (String line : raw.split("\\R")) {
                 if (line.startsWith("data:")) last = line.substring(5).trim();
             }
             if (last == null) throw new BizException(ErrorCode.CONFLICT, "MCP SSE response has no data event");
-            return json.readTree(last);
+            return redact(json.readTree(last), secret);
         }
-        return json.readTree(raw);
+        return redact(json.readTree(raw), secret);
     }
 
-    private static String rootMessage(Throwable throwable) {
-        Throwable cursor = throwable;
-        while (cursor.getCause() != null) cursor = cursor.getCause();
-        return cursor.getMessage() == null ? cursor.getClass().getSimpleName() : cursor.getMessage();
+    private JsonNode redact(JsonNode node, String secret) {
+        if (node == null || secret == null) return node;
+        if (node.isTextual()) return json.getNodeFactory().textNode(node.asText().replace(secret, "[REDACTED]"));
+        if (node.isObject()) {
+            ObjectNode clean = json.createObjectNode();
+            node.fields().forEachRemaining(entry -> clean.set(entry.getKey().replace(secret, "[REDACTED]"), redact(entry.getValue(), secret)));
+            return clean;
+        }
+        if (node.isArray()) {
+            var clean = json.createArrayNode();
+            node.forEach(value -> clean.add(redact(value, secret)));
+            return clean;
+        }
+        return node;
     }
 
     public record RemoteTool(String name, String description, JsonNode inputSchema, String risk) {}

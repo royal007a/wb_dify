@@ -20,6 +20,12 @@ class McpServerApiIntegrationTest {
  }
 
  @Test void blocksPrivateEndpointsByDefault(){assertThatThrownBy(()->new McpEndpointGuard(false).validate("http://127.0.0.1:8080/mcp")).isInstanceOf(BizException.class);}
+ @Test void directTokenFailsClosedWithoutStorageKey()throws Exception{
+  var request=json.createObjectNode().put("name","unconfigured-"+UUID.randomUUID()).put("endpointUrl","http://127.0.0.1:"+port+"/mcp").put("enabled",true).put("credentialAction","TOKEN").put("credentialToken","fake-secret-without-master-key");
+  String error=http.perform(post("/api/v1/mcp-servers").contentType("application/json").content(request.toString())).andExpect(status().isConflict()).andReturn().getResponse().getContentAsString();
+  assertThat(error).contains("HIFY_MCP_MASTER_KEY").doesNotContain("fake-secret-without-master-key");
+  String list=http.perform(get("/api/v1/mcp-servers")).andReturn().getResponse().getContentAsString();assertThat(list).doesNotContain(request.path("name").asText());
+ }
  @Test void validatesCredentialReferencesOnBothCreateAndUpdate()throws Exception{
   var request=json.createObjectNode().put("name","edit-"+UUID.randomUUID()).put("endpointUrl","http://127.0.0.1:"+port+"/mcp").put("enabled",true);
   for(String invalid:List.of("plaintext-test-token","Bearer fake-token","env:","system:","env:BAD NAME","env:1INVALID")){

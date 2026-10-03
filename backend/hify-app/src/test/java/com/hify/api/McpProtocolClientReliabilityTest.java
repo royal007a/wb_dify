@@ -81,7 +81,7 @@ class McpProtocolClientReliabilityTest {
 
     private McpProtocolClient client() {
         return new McpProtocolClient(new ObjectMapper(), new McpEndpointGuard(true),
-                new McpCredentialResolver());
+                new McpCredentialResolver(null));
     }
 
     private McpServer server(String endpoint) {

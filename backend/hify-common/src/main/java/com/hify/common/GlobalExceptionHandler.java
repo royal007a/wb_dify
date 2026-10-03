@@ -8,10 +8,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Result<Void>> malformedJson(HttpMessageNotReadableException exception) {
+        // Jackson messages may contain submitted secrets: do not log or return them.
+        return fail(ErrorCode.PARAM_ERROR, "请求 JSON 格式或字段类型不正确");
+    }
 
     @ExceptionHandler(BizException.class)
     public ResponseEntity<Result<Void>> business(BizException exception) {
