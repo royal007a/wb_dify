@@ -42,7 +42,7 @@
 | F23 | KB CRUD→TXT/MD上传→持久索引→chunk/digest→检索→归档 | 空/超大/错误类型/重启/归档竞态；分页负值；非法 overlap | A: KnowledgeApiIntegrationTest；多条管理读取/更新/归档路径需补 |
 | F24 | FTS+向量/RRF 正确过滤，canonical chunk可回读；旧语料快照稳定 | 空命中/库停用/失败；H2 不测 PG SQL；中文分词限制 | A/P: KnowledgeApiIntegrationTest、PostgresConcurrencyIntegrationTest；embedding 为64维 hash bootstrap，不是真实模型 |
 | F25 | Agent 知识绑定发布固定 revision、注入来源事件 | 空命中/检索异常不得无依据宣称 grounded；最终引用需校验 | A: AgentApiIntegrationTest 目前只验证空库事件，grounding 闭环不足 |
-| F26 | Workflow 创建/修改/校验/发布/历史/归档/试跑/轨迹 | 无环可达不等于变量必经；死路/重复分支/END出边/未知变量 | A: WorkflowApiIntegrationTest；缺变量支配关系/资源冻结/取消测试 |
+| F26 | Workflow 创建/修改/校验/发布/历史/归档/试跑/轨迹 | 无环可达不等于变量必经；死路/重复分支/END出边/未知变量 | U/A: SPEC_WORKFLOW_GRAPH 记录25项单测+5项HTTP通过；列表/归档等全覆盖仍需VERIFY，资源冻结/取消另验 |
 | F27 | Chat 固定已发布 Workflow 执行，图更新不变旧行为 | KNOWLEDGE节点语料变化；取消中执行；超时/空输出 gate | A: AgentApiIntegrationTest 只覆盖 TEMPLATE 版本；需扩展 |
 | F28 | MCP Server CRUD、发现新 revision、READ工具调试、绑定 QueryLoop | 假工具/非READ、schema漂移、不可用/超时/取消/SSE replay | A: McpServerApiIntegrationTest、McpProtocolClientReliabilityTest |
 | F29 | MCP Token KEEP/TOKEN/REFERENCE/CLEAR；GCM随机nonce/所有者绑定；旧快照旧凭据 | 缺/错主密钥、篡改、跨Server、畸形JSON、回显、清除不等于全局撤销 | U: McpCredentialCipherTest；A/P: AbstractMcpCredentialContract 两环境；B: mcp-token-live.spec.ts |

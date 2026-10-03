@@ -21,6 +21,7 @@
 ### A04 Workflow 图校验没有变量可达/必经与所有路径终止门禁
 
 `WorkflowGraphValidator` 目前只查类型、START/END计数、边引用、默认分支、整体可达与环。未验证每条可走路径到 END、非条件多出边、模板变量是否来自必经节点；运行时能否 fail closed 还需反例测试。课程 hify-cc 的修复不能算本仓库已具备。
+本仓库修复 `73e73c0`：25项模块单测及5项独立H2/HTTP回归通过，见 `docs/evidence/SPEC_WORKFLOW_GRAPH.md`。执行前复查DSL，旧非法版本拒绝且不改写；已发布图的知识语料稳定性和取消另属A03/A02，不混记为完成。
 
 ### A05 HTTP 错误边界待补
 

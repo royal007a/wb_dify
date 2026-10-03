@@ -18,4 +18,6 @@
 - 执行前对存储DSL重新校验，旧非法版本不执行、不改写；不是自动修复旧配置。
 - HTTP回归新增：创建/更新拒绝分支汇合错误变量、发布有效汇合图可运行、旧非法版本运行拒绝且快照不变、自定义START和字面用户占位符通过完整发布执行链。
 
-最终命令和实际结果以Harness本任务runner为准；完成前不把HTTP集成测试写成通过。这里不覆盖A02取消、A03知识语料冻结、A07事件事务，仍需独立回归和部署验收。
+最终代码 `73e73c0`，说明 `6ebdabe`。Harness命令以 `-pl hify-app -am` 运行三个Workflow单测类和WorkflowApiIntegrationTest：25项模块测试、5项HTTP集成测试全部通过，0跳过；Harness 5项测试和规格生成校验通过。证据 `harness/evidence/SPEC-WORKFLOW-GRAPH-001/SPEC-WORKFLOW-GRAPH-001-20261003T160632Z-a99d5e7b/`，退出码0，4分41秒。测试库为独立H2，不能外推PostgreSQL并发。
+
+这里不覆盖A02取消、A03知识语料冻结、A07事件事务，仍需独立回归和部署验收。

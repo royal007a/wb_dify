@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-WORKFLOW-GRAPH-001-20261003T160632Z-a99d5e7b",
+  "taskId": "SPEC-WORKFLOW-GRAPH-001",
+  "status": "completed",
+  "baselineCommit": "0b425b8a1ad962257d85850cb99fd12fede22340",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T16:06:32Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "6ebdabeecade875ed50c517d65acbe1b47851cc7",
+  "finishedAt": "2026-10-03T16:27:01Z"
+}

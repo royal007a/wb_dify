@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness"
+  ],
+  "base": "working-tree",
+  "headCommit": "6ebdabeecade875ed50c517d65acbe1b47851cc7",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-GRAPH-001/SPEC-WORKFLOW-GRAPH-001-20261003T160632Z-a99d5e7b/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-GRAPH-001/SPEC-WORKFLOW-GRAPH-001-20261003T160632Z-a99d5e7b/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-GRAPH-001/SPEC-WORKFLOW-GRAPH-001-20261003T160632Z-a99d5e7b/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-GRAPH-001/SPEC-WORKFLOW-GRAPH-001-20261003T160632Z-a99d5e7b/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-WORKFLOW-GRAPH-001/SPEC-WORKFLOW-GRAPH-001-20261003T160632Z-a99d5e7b/harness-shell-syntax.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T16:27:01Z"
+}
