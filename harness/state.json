@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c",
-    "path": "harness/evidence/SPEC-WORKFLOW-KNOWLEDGE-002/SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c",
+    "runId": "SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8",
+    "path": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "a5f611cb0f5f8ac71776e0db2a9a247a5cddbcc0",
-    "headCommit": "356f9e68fc282acba4c24310d6e37ef3f93c53b7",
-    "recordedAt": "2026-10-03T21:52:28Z"
+    "baselineCommit": "74390d64fe5c2863769a6f652e7349ff7d268f6c",
+    "headCommit": "40a9238f517110738bda36a4a543c8611af5dc11",
+    "recordedAt": "2026-10-03T22:22:36Z"
   },
-  "lastCompletedTaskId": "SPEC-WORKFLOW-KNOWLEDGE-002",
-  "updatedAt": "2026-10-03T21:52:28Z"
+  "lastCompletedTaskId": "SPEC-KNOWLEDGE-FINISH-001",
+  "updatedAt": "2026-10-03T22:22:36Z"
 }

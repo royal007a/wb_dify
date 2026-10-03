@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "runtime",
+    "migration"
+  ],
+  "base": "working-tree",
+  "headCommit": "40a9238f517110738bda36a4a543c8611af5dc11",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/harness-shell-syntax.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/runtime-tests.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/migration-not-skipped.log"
+    },
+    {
+      "name": "migration-mcp-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/migration-mcp-not-skipped.log"
+    },
+    {
+      "name": "migration-workflow-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/migration-workflow-not-skipped.log"
+    },
+    {
+      "name": "migration-shutdown-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/migration-shutdown-not-skipped.log"
+    },
+    {
+      "name": "migration-settlement-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/migration-settlement-not-skipped.log"
+    },
+    {
+      "name": "migration-history-recovery-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/migration-history-recovery-not-skipped.log"
+    },
+    {
+      "name": "migration-workflow-knowledge-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/migration-workflow-knowledge-not-skipped.log"
+    },
+    {
+      "name": "migration-workflow-review-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/migration-workflow-review-not-skipped.log"
+    },
+    {
+      "name": "migration-knowledge-finish-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8/migration-knowledge-finish-not-skipped.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T22:22:36Z"
+}

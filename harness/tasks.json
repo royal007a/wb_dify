@@ -1,19 +1,51 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T21:52:28Z",
+  "updatedAt": "2026-10-03T22:22:36Z",
   "tasks": [
+    {
+      "id": "SPEC-KNOWLEDGE-FINISH-002",
+      "title": "保留知识入场失败中的应用关闭挂起信号",
+      "description": "门禁自查：读取来源的catch不能把关闭挂起转成永久KNOWLEDGE_RETRIEVAL_FAILED。",
+      "priority": "P1", "status": "pending",
+      "scopes": ["backend", "runtime", "harness"], "verifyScopes": ["harness", "runtime"],
+      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
+      "dependsOn": ["SPEC-KNOWLEDGE-FINISH-001"],
+      "acceptance": ["显式挂起及关闭期间检索异常均保留RUNNING并记录run.interrupted，模型零调用", "正常来源故障仍严格拒答；普通聊天、来源门禁和既有关闭回归通过"],
+      "planPath": "exec-plans/active/SPEC-KNOWLEDGE-FINISH-002.md", "checkpoint": null, "blockedReason": null, "evidence": [],
+      "createdAt": "2026-10-03T22:25:00Z", "updatedAt": "2026-10-03T22:25:00Z"
+    },
     {
       "id": "SPEC-KNOWLEDGE-INTEGRITY-003",
       "title": "补齐索引数据库类型检测及Agent固定Workflow校验和",
       "description": "知识复验新增P2：索引侧isPostgres额外借连接且失败降级，执行侧未比对Agent已固定checksum。",
-      "priority": "P2", "status": "pending",
-      "scopes": ["backend", "harness", "migration"], "verifyScopes": ["harness", "migration"],
-      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
-      "dependsOn": ["SPEC-WORKFLOW-KNOWLEDGE-002"],
-      "acceptance": ["索引产品类型检测复用事务连接且故障不伪装索引成功", "Agent固定checksum与实际执行版本匹配，不只验证行内DSL/checksum自洽"],
-      "planPath": null, "checkpoint": null, "blockedReason": null, "evidence": [],
-      "createdAt": "2026-10-03T22:00:00Z", "updatedAt": "2026-10-03T22:00:00Z"
+      "priority": "P2",
+      "status": "pending",
+      "scopes": [
+        "backend",
+        "harness",
+        "migration"
+      ],
+      "verifyScopes": [
+        "harness",
+        "migration"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [
+        "SPEC-WORKFLOW-KNOWLEDGE-002"
+      ],
+      "acceptance": [
+        "索引产品类型检测复用事务连接且故障不伪装索引成功",
+        "Agent固定checksum与实际执行版本匹配，不只验证行内DSL/checksum自洽"
+      ],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T22:00:00Z",
+      "updatedAt": "2026-10-03T22:00:00Z"
     },
     {
       "id": "SPEC-WORKFLOW-KNOWLEDGE-002",
@@ -838,14 +870,16 @@
       "title": "知识缺口与完成门禁契约对齐",
       "description": "A01/A3：知识空/错/无关候选不能被描述为已验证证据；分离可检索来源与答案语义正确性。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "runtime",
         "harness"
       ],
       "verifyScopes": [
-        "harness"
+        "harness",
+        "runtime",
+        "migration"
       ],
       "risk": "reversible_write",
       "operation": "workspace_write",
@@ -857,12 +891,22 @@
         "无工具普通聊天与受知识约束任务的成功标准明确且可测",
         "Workflow完成语义与QueryLoop证据门禁边界一致，文档不夸大"
       ],
-      "planPath": "exec-plans/active/SPEC-KNOWLEDGE-FINISH-001.md",
+      "planPath": "exec-plans/completed/SPEC-KNOWLEDGE-FINISH-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8",
+          "path": "harness/evidence/SPEC-KNOWLEDGE-FINISH-001/SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "74390d64fe5c2863769a6f652e7349ff7d268f6c",
+          "headCommit": "40a9238f517110738bda36a4a543c8611af5dc11",
+          "recordedAt": "2026-10-03T22:22:36Z"
+        }
+      ],
       "createdAt": "2026-10-03T18:13:15Z",
-      "updatedAt": "2026-10-03T18:13:15Z"
+      "updatedAt": "2026-10-03T22:22:36Z"
     },
     {
       "id": "SPEC-CREDENTIAL-BOUNDARY-001",

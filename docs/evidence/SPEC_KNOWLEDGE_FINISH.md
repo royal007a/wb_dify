@@ -19,3 +19,5 @@
 Resume 用 checkpoint K 映射；归档旧文档并新增十五天政策后，对旧 Run 的澄清仍引用七天原文，Spy 明确断言没有再次 searchRevision。最终正文校验前不推 delta；引用失败无 assistant 消息，普通聊天不变。无新增 migration，仅在现有 runtime 增加应用校验端口。
 
 上述为中间定向结果。最终 task command、harness/runtime/migration 门禁以同目录 command.log 和 verification.json 为准；独立 reviewer 结果另记，不将待复验写成通过。
+
+最终门禁（40a9238，2026-10-04 06:22 CST）：command 96 项、runtime 34 项、migration PG 71 项通过，所有 Skipped=0，Harness 和报告零跳过断言通过。阶段之间有重叠，不相加为独立用例。之后自查发现知识读取异常的 catch 可能吞掉关闭挂起信号，登记 SPEC-KNOWLEDGE-FINISH-002 补确定性反例；未因此将整体审计/部署标为完成。
