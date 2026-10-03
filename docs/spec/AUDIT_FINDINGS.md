@@ -2,7 +2,7 @@
 
 这是事实与待验证问题清单，不是任务状态板；实现状态看 harness/tasks.json。编号保留用于回归，不能以修改文档代替修复行为。
 
-## P1：需先复现再修复
+## 初始反例与后续修复证据
 
 ### A01 Knowledge 空命中/检索失败不形成显式缺口
 
@@ -71,6 +71,21 @@ F切片独立复核（0975782..fc7bd51）仍为静态阅读：`RunEventBroker` �
 F后续：两个旧实现反例红灯；改为有界订阅worker、提交/心跳只唤醒、历史分页与正数游标归属检查。真实Tomcat不读socket反例验证提交3ms、另一Run可达、无持有数据库连接、写超时清理后replay；见SPEC_SSE_BACKPRESSURE.md。Workflow两表终态竞态仍交SPEC-RUN-ADMISSION-001；不能据此标成已修。
 
 G切片独立复核：无P0/P1；P2-1指出受保护命名空间漏掉项目实际HIFY_DB_*及JVM TLS配置，已以误授权红灯证实。后续按命名空间补拦截，不全面禁止合法应用的SECRET/PASSWORD名称。P2-2不改变路径授权范围，OPERATIONS明确Provider去尾斜杠、MCP保持精确路径。P2-3新增已发布AgentVersion旧引用的真实ToolRuntime零外发测试，H2/PG证据见SPEC_CREDENTIAL_BOUNDARY.md的G补充。
+
+## 2026-10-04 对齐至 641fdcb（专项证据，不是全量验收）
+
+原始反例不删除。各专项的红灯、修复提交与门禁见以下 evidence；对方的复核都是静态阅读，不写成独立复跑。任务状态仍只由 tasks.json 维护。
+
+- A01：来源门禁后续封闭 memory/catalog/search/detail/summary 旧索引出口；知识 Run 不做 layered 压缩。KnowledgeShutdown H2/PG验证回读期间关闭保持RUNNING并写 interrupted。见 `../evidence/SPEC_KNOWLEDGE_MEMORY.md`。只核对引用来源，不验证回答语义；wrapped suspension/基础设施失败分类/界面范围说明另登记。
+- A03：服务端 publication 标记、原始 DSL checksum、Agent绑定前复检、KB排序加锁及真实PG检索交错见 `../evidence/SPEC_WORKFLOW_KNOWLEDGE.md`。H2只证明隔离级别设置，不证明交错读；向量未冻结。索引侧连接检测和Agent绑定checksum运行比对仍有P2。
+- A04/D：最长路径和运行计步一致、引号感知解析且插值不执行语法，见 `../evidence/SPEC_WORKFLOW_GRAPH_REVIEW.md`（50项模块/HTTP）。全角空格、旧字面量转义语义和旧裸标点兼容、错误定位/事件投影另登记，不宣称任意旧DSL完全兼容。
+- A06/B1：取消/本地拒绝释放熔断许可，模型期限先结算再中断worker；默认45s模型/60sRun的挂住路径已复验。Run先到期、共享执行器排队样本归属仍在 `SPEC-PROVIDER-SAMPLING-001`，不宣称完备网络采样。
+- A07/F：有界订阅worker和游标归属见 `../evidence/SPEC_SSE_BACKPRESSURE.md`；全局64名额、无按Run/IP限额和慢读硬期限仍有边界。Workflow执行事实/交付v2投影见 `SPEC_WORKFLOW_SETTLEMENT.md`，不能把取消后的workflow.completed当父Run成功。
+- B2/E1/history：本地dispatch owner消除单实例双调度，关闭不冒充用户取消，正常完成仍可提交；已提交 model/tool 可恢复，原始摘要先验后做JSON键序无关比较。见 `SPEC_RUN_SHUTDOWN.md`、`SPEC_HISTORY_RECOVERY.md`。跨实例lease、真实fork JVM、未提交副作用exactly-once未实现；工作流成功后进程崩溃可能重跑。
+- G：保留 HIFY_MCP/HIFY_CREDENTIAL 命名空间阻止宽松绑定别名，误授权也拒绝；详情见 `SPEC_CREDENTIAL_BOUNDARY.md`。禁止把“可引用env”写成任意读取进程配置。
+- A08/C：`18d2dee`、`496aae5`的21项受控浏览器回归修复创建中取消旧Run、过期resume、同key快照和终态补读竞争，见 `../evidence/SPEC_CHAT_LIFECYCLE_REVIEW.md`。对方随后指出**新P1**：后端先验证Provider/会话再查key，已提交但客户端未知时，Provider停用导致重试与取消都失败且页面无放弃出口。需真实后端红灯，不能用“500→403继续unknown”的浏览器测试当正确性证明。结果不明取消重POST可能创建任务、明确4xx丢输入、200即断无限补读为相关P2。
+
+这里的67项是接口集合，38项是行为验收场景；修复过某个场景不代表此组所有接口/负路径已经验收。SPEC-VERIFY-001须保留pass/fail/not-run以及证据版本。
 
 ## 已核对的文档漂移
 

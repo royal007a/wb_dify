@@ -33,7 +33,7 @@ HistoryRecallEvaluationTest 的12题单轮 P95=74,157μs，超过50,000μs。词
 - 67是库存匹配数，不是67个接口行为测试全部通过；F01-F38也不是已全验收。
 - API测试引用是候选入口，部分只测组合happy path，未覆盖该组每个路由。
 - `management.spec.ts` mock响应，不能证明真实管理CRUD；真实Provider/MCP/PG/浏览器矩阵由下一原子任务逐项执行。
-- A01-A08为审查发现；A05/A06 已由隔离诊断复现，代码和原始结果见 `spec-probes/README.md`，其余仍需故障回归；没有为通过门禁而删除这些要求。
+- A01-A08为初始审查发现；之后逐项做了独立故障修复，专项索引见 `../spec/AUDIT_FINDINGS.md` 的2026-10-04增量；没有为通过门禁而删除初始要求。专项通过不等于全功能通过。
 - 本任务不修改生产代码/迁移，不需要重新发布后端；前轮Token适配部署已在独立证据中记录，后续修复部署另有任务。
 
 ## 独立 review
@@ -43,3 +43,12 @@ HistoryRecallEvaluationTest 的12题单轮 P95=74,157μs，超过50,000μs。词
 ## 既有部署只读核对
 
 同日 SSH 只读检查：hify.service=active；localhost:28080/api/v1/health 返回 HTTP200 / code200 / Hify is running；已部署 JAR SHA256 为 `299838bdd9b7fddcb4d7554e2f06099aec6d14e38c49181829a152f69801a667`，与前轮Token部署记录一致。本次没有重新部署，未读取或输出密钥。
+
+## 2026-10-04 恢复审计（641fdcb）
+
+证据目录：`harness/evidence/SPEC-AUDIT-001/SPEC-AUDIT-001-20261003T230750Z-14ee53bf/`。
+
+- `api-inventory.log`：重新执行 `mvn -B -pl hify-app -am -Dtest=ApiContractInventoryTest -Dsurefire.failIfNoSpecifiedTests=false test`，退出0；1/1、零失败/错误/跳过，真实Spring/H2成功执行V1-V23，67项method/path/handler集合一致。本轮总7.857秒，不将上下文启动性能外推到生产。
+- CURRENT_STATE与F01-F38候选入口对齐新专项：SSE背压、关机/恢复、历史重放、知识memory隔离、Workflow语法与Chat生命周期。保留真实模型/完整浏览器/全行为未验收边界；补录最新Chat永久4xx的P1，不把前端受控21项当后端幂等证明。
+- 本轮完整backend/Harness门禁的结果，以此目录`verification.json`和下方收尾记录为准；上面两次失败基线保留，不能覆盖成通过。
+- reviewer已逐片返回静态复核及新反例；本次规格整理本身仍需抽查，不宣称全量独立复跑。
