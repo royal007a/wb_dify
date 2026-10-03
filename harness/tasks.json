@@ -4,6 +4,26 @@
   "updatedAt": "2026-10-03T11:57:48Z",
   "tasks": [
     {
+      "id": "CHAT-DEMO-001",
+      "title": "修复 Demo 时间问句回显而不调用工具",
+      "description": "补齐当前提示支持的中文几点/日期问句，明确模拟模型边界，验证单会话多轮时间/计算及权限约束。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["backend", "frontend", "runtime"],
+      "verifyScopes": ["harness", "backend", "frontend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": ["现在几点及标点变体进入 current_time 结构化调用", "无授权工具时不发调用也不推荐不可用工具", "同一会话问候→时间→计算→时间均正确，SSE 有工具事件", "Demo 仅本地规则，不宣称通用模型能力"],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T12:05:00Z",
+      "updatedAt": "2026-10-03T12:05:00Z"
+    },
+    {
       "id": "MCP-EDIT-DEPLOY-001",
       "title": "部署 MCP 编辑切片并验收 132 页面",
       "description": "只更新原 Hify 的 jar 和 /hify/ 静态资源，备份旧产物，健康检查及独立测试记录浏览器验收；不修改 teacher_mcp、凭证或 hify-cc。",

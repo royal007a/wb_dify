@@ -4,7 +4,7 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-10-03T11:57:48Z`
 - Current task: `none`
-- Counts: pending 2 · running 0 · blocked 0 · completed 25
+- Counts: pending 3 · running 0 · blocked 0 · completed 25
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -21,6 +21,7 @@
 | `MEMORY-002` | P0 | completed | backend, migration, runtime | reversible_write | 建立结构化摘要与统一细节目录 |
 | `RECALL-001` | P0 | completed | backend, migration, runtime, eval | reversible_write | 完成分层上下文与迭代式细节召回 |
 | `RUNTIME-001` | P0 | completed | backend, migration, runtime | reversible_write | 建立 Runtime 能力租约与历史提交协议 |
+| `CHAT-DEMO-001` | P1 | pending | backend, frontend, runtime | reversible_write | 修复 Demo 时间问句回显而不调用工具 |
 | `CONSOLE-002` | P1 | completed | frontend, runtime | reversible_write | 交付知识库工作流 MCP 管理台 |
 | `CONTEXT-001` | P1 | completed | backend, runtime, eval | reversible_write | 建立上下文预算归档与压缩评测 |
 | `DEPLOY-001` | P1 | completed | backend, frontend, migration, runtime, eval | high_risk | 部署摘要与细节召回纵向切片 |
