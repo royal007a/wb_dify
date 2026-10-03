@@ -489,7 +489,7 @@
         "harness"
       ],
       "verifyScopes": [
-        "harness"
+        "harness", "migration"
       ],
       "risk": "reversible_write",
       "operation": "workspace_write",
