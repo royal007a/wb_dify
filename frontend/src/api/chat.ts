@@ -58,7 +58,12 @@ export const createRun = (conversationId: string, message: string, resume?: Resu
     body: JSON.stringify({ message, ...(resume ? { resume } : {}) }),
   })
 
-export const getRun = (runId: string) => requestJson<Run>(`/v1/runs/${runId}`)
+export const getRun = (runId: string) => requestJson<Run>(`/v1/runs/${runId}`, { signal: AbortSignal.timeout(10_000) })
+
+export interface RunEvent { id: number; sequence: number; type: string; payload: string }
+export const getRunEvents = (runId: string) => requestJson<RunEvent[]>(`/v1/runs/${runId}/events`, {
+  signal: AbortSignal.timeout(10_000),
+})
 
 export const cancelRun = (runId: string) => requestJson<Run>(`/v1/runs/${runId}/cancellations`, {
   method: 'POST',
