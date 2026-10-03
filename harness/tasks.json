@@ -1,8 +1,34 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T23:30:01Z",
+  "updatedAt": "2026-10-03T23:38:14Z",
   "tasks": [
+    {
+      "id": "SPEC-AUDIT-003",
+      "title": "封闭验证报告与任务完成入口",
+      "description": "复现7f735fe审查六条P2，使用本轮独立XML和预期类清单，完成状态必须读取当前验证；修正skip口径和开放任务归属。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["harness"],
+      "verifyScopes": ["harness"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-AUDIT-002"],
+      "acceptance": [
+        "Flakes/未知格式不能隐去skip；缺预期类、旧XML、假stdout和fork无结果都不能绿",
+        "每个Maven步骤独立新报告目录并校验预期类集合，报告保存XML摘要和SHA",
+        "finish completed必须校验当前run的verification且partial/failed不得完成，validate检查新制完成记录",
+        "报告明确skip事件非预期方法分母，历史partial不改写为passed；三项恢复边界和started归属一致",
+        "隔离假命令红绿测试和真实窄Maven报告验证分别记录，不冒充全产品通过"
+      ],
+      "planPath": "exec-plans/active/SPEC-AUDIT-003.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T23:41:00Z",
+      "updatedAt": "2026-10-03T23:41:00Z"
+    },
     {
       "id": "SPEC-CHAT-LIFECYCLE-004",
       "title": "补人工重连、澄清放弃与建会话超时边界",
@@ -1647,7 +1673,7 @@
       "title": "执行全功能矩阵并修复发现的问题",
       "description": "按规格验证 Provider/Agent/Chat/Run/Memory/Knowledge/Workflow/MCP/Console，补缺失回归，真实 PostgreSQL 与浏览器验证；真实外部模型与 mock 结果分开。",
       "priority": "P0",
-      "status": "pending",
+      "status": "blocked",
       "scopes": [
         "harness",
         "backend",
@@ -1675,12 +1701,22 @@
         "失败先有可复现证据，再补回归修复；迁移门禁无跳过",
         "凭据、用户数据、旧发布版本和取消/replay 的安全边界不退化"
       ],
-      "planPath": "exec-plans/active/SPEC-VERIFY-001.md",
+      "planPath": "exec-plans/blocked/SPEC-VERIFY-001.md",
       "checkpoint": null,
-      "blockedReason": null,
-      "evidence": [],
+      "blockedReason": "task command failed",
+      "evidence": [
+        {
+          "runId": "SPEC-VERIFY-001-20261003T233040Z-36e1c946",
+          "path": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946",
+          "result": "blocked",
+          "exitCode": 1,
+          "baselineCommit": "7f735fe4716a0de06f531705df65e45a853287c4",
+          "headCommit": "7f735fe4716a0de06f531705df65e45a853287c4",
+          "recordedAt": "2026-10-03T23:38:14Z"
+        }
+      ],
       "createdAt": "2026-10-03T14:35:00Z",
-      "updatedAt": "2026-10-03T14:35:00Z"
+      "updatedAt": "2026-10-03T23:38:14Z"
     },
     {
       "id": "SPEC-DEPLOY-001",

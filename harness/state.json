@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-AUDIT-002-20261003T232617Z-bdeff028",
-    "path": "harness/evidence/SPEC-AUDIT-002/SPEC-AUDIT-002-20261003T232617Z-bdeff028",
-    "result": "completed",
-    "exitCode": 0,
-    "baselineCommit": "e43369be63427d34ab9cebf9b954ac5200b5ba14",
-    "headCommit": "1802587677acf740ded3d1d576e4bdbb3b4086d5",
-    "recordedAt": "2026-10-03T23:30:01Z"
+    "runId": "SPEC-VERIFY-001-20261003T233040Z-36e1c946",
+    "path": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946",
+    "result": "blocked",
+    "exitCode": 1,
+    "baselineCommit": "7f735fe4716a0de06f531705df65e45a853287c4",
+    "headCommit": "7f735fe4716a0de06f531705df65e45a853287c4",
+    "recordedAt": "2026-10-03T23:38:14Z"
   },
   "lastCompletedTaskId": "SPEC-AUDIT-002",
-  "updatedAt": "2026-10-03T23:30:01Z"
+  "updatedAt": "2026-10-03T23:38:14Z"
 }

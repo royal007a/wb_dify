@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-VERIFY-001-20261003T233040Z-36e1c946",
+  "taskId": "SPEC-VERIFY-001",
+  "status": "blocked",
+  "baselineCommit": "7f735fe4716a0de06f531705df65e45a853287c4",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T23:30:40Z",
+  "exitCode": 1,
+  "reason": "task command failed",
+  "headCommit": "7f735fe4716a0de06f531705df65e45a853287c4",
+  "finishedAt": "2026-10-03T23:38:14Z"
+}

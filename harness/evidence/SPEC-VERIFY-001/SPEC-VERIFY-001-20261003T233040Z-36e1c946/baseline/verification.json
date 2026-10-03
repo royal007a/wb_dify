@@ -1,0 +1,1172 @@
+{
+  "schemaVersion": 2,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "migration",
+    "backend",
+    "runtime",
+    "eval",
+    "frontend"
+  ],
+  "base": "working-tree",
+  "headCommit": "7f735fe4716a0de06f531705df65e45a853287c4",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/harness-state.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/harness.py",
+        "validate"
+      ],
+      "logSha256": "5a886e2bd4a5df5bed41a79dd9648c452f265eeed8878ac7d845088798b8d5df"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/harness-progress.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/harness.py",
+        "check-progress"
+      ],
+      "logSha256": "53a4a1b7863bea67045d82fe8a1bc53c8c30dd3740b7708ff332a9300796dc18"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/harness-api-spec.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/render-api-spec.py",
+        "--check"
+      ],
+      "logSha256": "0456d6551eef206c05217007f775b3b7e8fe918df66de019312f60508977f0f0"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/harness-python-tests.log",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/Users/weberzhao/hify/harness/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "logSha256": "7e6f7941967abdc1b625a56b44569c91863c66d0e07b303ae22e9fec7892c1de"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/harness-shell-syntax.log",
+      "command": [
+        "sh",
+        "-n",
+        "/Users/weberzhao/hify/harness/init.sh",
+        "/Users/weberzhao/hify/harness/verify.sh",
+        "/Users/weberzhao/hify/harness/run-task.sh"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/migration-docker.log",
+      "command": [
+        "docker",
+        "info"
+      ],
+      "logSha256": "104f6a7a79e0d9fdf46dae8b1209b491adbb6e034f3db0e6fb58ae354a43b2e0"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/migration-postgres.log",
+      "command": [
+        "sh",
+        "-c",
+        "cd '/Users/weberzhao/hify/backend' && mvn -Dapi.version='1.44' -pl hify-app -am -Dtest=AgentToolBindingMigrationTest,PostgresConcurrencyIntegrationTest,McpCredentialPostgresTest,WorkflowTerminalMigrationTest,WorkflowTerminalPostgresTest,RunShutdownPostgresTest,WorkflowSettlementPostgresTest,HistoryRecoveryMigrationTest,HistoryRecoveryPostgresTest,WorkflowKnowledgePostgresTest,WorkflowKnowledgeReviewPostgresTest,KnowledgeFinishPostgresTest,KnowledgeMemoryPostgresTest,KnowledgeShutdownPostgresTest -Dsurefire.failIfNoSpecifiedTests=false test"
+      ],
+      "logSha256": "be5fff571ef8b12c384b9a6da5ba710ea381c0f6db89a8d4324404c8a6b76c2b",
+      "mavenTests": {
+        "totals": {
+          "tests": 114,
+          "executed": 114,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "classes": [
+          {
+            "class": "com.hify.api.KnowledgeShutdownPostgresTest",
+            "tests": 22,
+            "executed": 22,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.HistoryRecoveryMigrationTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+            "tests": 16,
+            "executed": 16,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowTerminalPostgresTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.RunShutdownPostgresTest",
+            "tests": 2,
+            "executed": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.KnowledgeFinishPostgresTest",
+            "tests": 18,
+            "executed": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.PostgresConcurrencyIntegrationTest",
+            "tests": 6,
+            "executed": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.AgentToolBindingMigrationTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.McpCredentialPostgresTest",
+            "tests": 8,
+            "executed": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowKnowledgePostgresTest",
+            "tests": 10,
+            "executed": 10,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.HistoryRecoveryPostgresTest",
+            "tests": 3,
+            "executed": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowSettlementPostgresTest",
+            "tests": 4,
+            "executed": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowTerminalMigrationTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.KnowledgeMemoryPostgresTest",
+            "tests": 21,
+            "executed": 21,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/migration-not-skipped.log",
+      "command": [
+        "sh",
+        "-c",
+        "grep -Eq 'Tests run: [1-9][0-9]*, Failures: 0, Errors: 0, Skipped: 0' '/Users/weberzhao/hify/backend/hify-app/target/surefire-reports/com.hify.api.PostgresConcurrencyIntegrationTest.txt'"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "migration-mcp-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/migration-mcp-not-skipped.log",
+      "command": [
+        "sh",
+        "-c",
+        "grep -Eq 'Tests run: [1-9][0-9]*, Failures: 0, Errors: 0, Skipped: 0' '/Users/weberzhao/hify/backend/hify-app/target/surefire-reports/com.hify.api.McpCredentialPostgresTest.txt'"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "migration-workflow-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/migration-workflow-not-skipped.log",
+      "command": [
+        "sh",
+        "-c",
+        "grep -Eq 'Tests run: [1-9][0-9]*, Failures: 0, Errors: 0, Skipped: 0' '/Users/weberzhao/hify/backend/hify-app/target/surefire-reports/com.hify.api.WorkflowTerminalPostgresTest.txt'"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "migration-shutdown-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/migration-shutdown-not-skipped.log",
+      "command": [
+        "sh",
+        "-c",
+        "grep -Eq 'Tests run: [1-9][0-9]*, Failures: 0, Errors: 0, Skipped: 0' '/Users/weberzhao/hify/backend/hify-app/target/surefire-reports/com.hify.api.RunShutdownPostgresTest.txt'"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "migration-settlement-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/migration-settlement-not-skipped.log",
+      "command": [
+        "sh",
+        "-c",
+        "grep -Eq 'Tests run: 4, Failures: 0, Errors: 0, Skipped: 0' '/Users/weberzhao/hify/backend/hify-app/target/surefire-reports/com.hify.api.WorkflowSettlementPostgresTest.txt'"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "migration-history-recovery-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/migration-history-recovery-not-skipped.log",
+      "command": [
+        "sh",
+        "-c",
+        "grep -Eq 'Tests run: 3, Failures: 0, Errors: 0, Skipped: 0' '/Users/weberzhao/hify/backend/hify-app/target/surefire-reports/com.hify.api.HistoryRecoveryPostgresTest.txt'"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "migration-workflow-knowledge-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/migration-workflow-knowledge-not-skipped.log",
+      "command": [
+        "sh",
+        "-c",
+        "grep -Eq 'Tests run: 10, Failures: 0, Errors: 0, Skipped: 0' '/Users/weberzhao/hify/backend/hify-app/target/surefire-reports/com.hify.api.WorkflowKnowledgePostgresTest.txt'"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "migration-workflow-review-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/migration-workflow-review-not-skipped.log",
+      "command": [
+        "sh",
+        "-c",
+        "grep -Eq 'Tests run: 16, Failures: 0, Errors: 0, Skipped: 0' '/Users/weberzhao/hify/backend/hify-app/target/surefire-reports/com.hify.api.WorkflowKnowledgeReviewPostgresTest.txt'"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "migration-knowledge-finish-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/migration-knowledge-finish-not-skipped.log",
+      "command": [
+        "sh",
+        "-c",
+        "grep -Eq 'Tests run: 18, Failures: 0, Errors: 0, Skipped: 0' '/Users/weberzhao/hify/backend/hify-app/target/surefire-reports/com.hify.api.KnowledgeFinishPostgresTest.txt'"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "migration-knowledge-memory-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/migration-knowledge-memory-not-skipped.log",
+      "command": [
+        "sh",
+        "-c",
+        "grep -Eq 'Tests run: 21, Failures: 0, Errors: 0, Skipped: 0' '/Users/weberzhao/hify/backend/hify-app/target/surefire-reports/com.hify.api.KnowledgeMemoryPostgresTest.txt'"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "migration-knowledge-shutdown-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/migration-knowledge-shutdown-not-skipped.log",
+      "command": [
+        "sh",
+        "-c",
+        "grep -Eq 'Tests run: 22, Failures: 0, Errors: 0, Skipped: 0' '/Users/weberzhao/hify/backend/hify-app/target/surefire-reports/com.hify.api.KnowledgeShutdownPostgresTest.txt'"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "backend-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/backend-tests.log",
+      "command": [
+        "sh",
+        "-c",
+        "cd '/Users/weberzhao/hify/backend' && mvn -Dapi.version='1.44' -pl hify-app -am test"
+      ],
+      "logSha256": "4a583eedce6946ec37d19b877116a78a7132c7bdd449f75e3b8cb77fa96277aa",
+      "mavenTests": {
+        "totals": {
+          "tests": 520,
+          "executed": 520,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "classes": [
+          {
+            "class": "com.hify.common.CommonContractsTest",
+            "tests": 5,
+            "executed": 5,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.common.ProviderDeadlineTest",
+            "tests": 6,
+            "executed": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.common.ExecutionShutdownTest",
+            "tests": 4,
+            "executed": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.common.CircuitBreakerServiceTest",
+            "tests": 12,
+            "executed": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.common.LlmHttpClientTest",
+            "tests": 12,
+            "executed": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.common.HttpErrorContractTest",
+            "tests": 7,
+            "executed": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.common.CredentialReferencePolicyTest",
+            "tests": 6,
+            "executed": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.runtime.MockModelClientTest",
+            "tests": 13,
+            "executed": 13,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.runtime.NativeProviderModelClientTest",
+            "tests": 6,
+            "executed": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.provider.runtime.ProviderCredentialBoundaryTest",
+            "tests": 2,
+            "executed": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.provider.application.ProviderUrlPolicyTest",
+            "tests": 3,
+            "executed": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.runtime.ToolRuntimeTest",
+            "tests": 6,
+            "executed": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.workflow.application.WorkflowControlTest",
+            "tests": 11,
+            "executed": 11,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.workflow.application.WorkflowExpressionTest",
+            "tests": 4,
+            "executed": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.workflow.application.WorkflowGraphValidatorTest",
+            "tests": 28,
+            "executed": 28,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.workflow.application.WorkflowEngineTest",
+            "tests": 9,
+            "executed": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.workflow.application.WorkflowExecutionContextTest",
+            "tests": 5,
+            "executed": 5,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.memory.HistoryRecallEvaluationTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.runtime.QueryLoopTest",
+            "tests": 20,
+            "executed": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.runtime.context.ContextManagementEvaluationTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.runtime.context.ContextManagerTest",
+            "tests": 4,
+            "executed": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.runtime.plan.PlanStateMachineTest",
+            "tests": 3,
+            "executed": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.runtime.state.ExecutionContextStateTest",
+            "tests": 3,
+            "executed": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.intent.LayeredIntentRouterTest",
+            "tests": 8,
+            "executed": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.intent.DeterministicIntentRouterTest",
+            "tests": 6,
+            "executed": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.intent.IntentEvaluationDatasetTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.intent.IntentDecisionTest",
+            "tests": 4,
+            "executed": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.intent.StructuredModelIntentClassifierTest",
+            "tests": 3,
+            "executed": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.application.RunWorkflowControlTest",
+            "tests": 12,
+            "executed": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.application.RunEventBrokerBackpressureTest",
+            "tests": 3,
+            "executed": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.application.KnowledgeCompletionVerifierTest",
+            "tests": 10,
+            "executed": 10,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.application.RunEventBrokerTest",
+            "tests": 6,
+            "executed": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.domain.ChildAgentTaskTest",
+            "tests": 2,
+            "executed": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowKnowledgeIntegrationTest",
+            "tests": 10,
+            "executed": 10,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.KnowledgeApiIntegrationTest",
+            "tests": 2,
+            "executed": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowKnowledgeReviewTest",
+            "tests": 16,
+            "executed": 16,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.RunSubmissionIdentityTest",
+            "tests": 3,
+            "executed": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.KnowledgeAdmissionShutdownTest",
+            "tests": 22,
+            "executed": 22,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowSettlementIntegrationTest",
+            "tests": 4,
+            "executed": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.KnowledgeShutdownPostgresTest",
+            "tests": 22,
+            "executed": 22,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.HistoryRecoveryMigrationTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+            "tests": 16,
+            "executed": 16,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowTerminalPostgresTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.RunFlowIntegrationTest",
+            "tests": 2,
+            "executed": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.MavenStructureTest",
+            "tests": 2,
+            "executed": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.RunDispatchIntegrationTest",
+            "tests": 4,
+            "executed": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.KnowledgeFinishIntegrationTest",
+            "tests": 18,
+            "executed": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.McpCredentialIntegrationTest",
+            "tests": 8,
+            "executed": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowGraphBoundaryIntegrationTest",
+            "tests": 3,
+            "executed": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.McpServerApiIntegrationTest",
+            "tests": 7,
+            "executed": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.AgentCacheIntegrationTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.RunShutdownPostgresTest",
+            "tests": 2,
+            "executed": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.KnowledgeFinishPostgresTest",
+            "tests": 18,
+            "executed": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.PostgresConcurrencyIntegrationTest",
+            "tests": 6,
+            "executed": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.DemoItemApiIntegrationTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.ChildAgentTaskIntegrationTest",
+            "tests": 2,
+            "executed": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.IntentRoutingApiIntegrationTest",
+            "tests": 2,
+            "executed": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowRunControlIntegrationTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.RunAdmissionIntegrationTest",
+            "tests": 3,
+            "executed": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.HistoryReplayTest",
+            "tests": 9,
+            "executed": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.AgentToolBindingMigrationTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.AgentApiIntegrationTest",
+            "tests": 7,
+            "executed": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.ProviderApiIntegrationTest",
+            "tests": 4,
+            "executed": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowApiIntegrationTest",
+            "tests": 5,
+            "executed": 5,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.RunShutdownIntegrationTest",
+            "tests": 6,
+            "executed": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.ContextMemoryIntegrationTest",
+            "tests": 2,
+            "executed": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.SseNetworkIsolationTest",
+            "tests": 3,
+            "executed": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.McpCredentialPostgresTest",
+            "tests": 8,
+            "executed": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowKnowledgePostgresTest",
+            "tests": 10,
+            "executed": 10,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.McpProtocolClientReliabilityTest",
+            "tests": 4,
+            "executed": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.HistoryRecoveryPostgresTest",
+            "tests": 3,
+            "executed": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.HistoryRecoveryIntegrationTest",
+            "tests": 2,
+            "executed": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.ApiContractInventoryTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowSettlementPostgresTest",
+            "tests": 4,
+            "executed": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.WorkflowTerminalMigrationTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.KnowledgeMemoryBoundaryTest",
+            "tests": 21,
+            "executed": 21,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.KnowledgeMemoryPostgresTest",
+            "tests": 21,
+            "executed": 21,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.McpCredentialCipherTest",
+            "tests": 5,
+            "executed": 5,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/runtime-tests.log",
+      "command": [
+        "sh",
+        "-c",
+        "cd '/Users/weberzhao/hify/backend' && mvn -pl hify-app -am -Dtest=QueryLoopTest,PlanStateMachineTest,ExecutionContextStateTest,ChildAgentTaskTest,RunFlowIntegrationTest,ChildAgentTaskIntegrationTest,ContextMemoryIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test"
+      ],
+      "logSha256": "bff59ab361c3198f23aa8af79c2c63af5591666663074ec2421c8fe87e4b9862",
+      "mavenTests": {
+        "totals": {
+          "tests": 34,
+          "executed": 34,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "classes": [
+          {
+            "class": "com.hify.runtime.QueryLoopTest",
+            "tests": 20,
+            "executed": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.runtime.plan.PlanStateMachineTest",
+            "tests": 3,
+            "executed": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.runtime.state.ExecutionContextStateTest",
+            "tests": 3,
+            "executed": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.domain.ChildAgentTaskTest",
+            "tests": 2,
+            "executed": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.RunFlowIntegrationTest",
+            "tests": 2,
+            "executed": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.ChildAgentTaskIntegrationTest",
+            "tests": 2,
+            "executed": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.api.ContextMemoryIntegrationTest",
+            "tests": 2,
+            "executed": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "intent-context-recall-eval",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/intent-context-recall-eval.log",
+      "command": [
+        "sh",
+        "-c",
+        "cd '/Users/weberzhao/hify/backend' && mvn -pl hify-chat -am -Dtest=IntentDecisionTest,DeterministicIntentRouterTest,LayeredIntentRouterTest,StructuredModelIntentClassifierTest,IntentEvaluationDatasetTest,ContextManagementEvaluationTest,HistoryRecallEvaluationTest -Dsurefire.failIfNoSpecifiedTests=false test"
+      ],
+      "logSha256": "139db6675c80da321fe71f8c1421c498ec39eb437f1268d80644d76dca9c4f8f",
+      "mavenTests": {
+        "totals": {
+          "tests": 24,
+          "executed": 24,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "classes": [
+          {
+            "class": "com.hify.memory.HistoryRecallEvaluationTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.runtime.context.ContextManagementEvaluationTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.intent.LayeredIntentRouterTest",
+            "tests": 8,
+            "executed": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.intent.DeterministicIntentRouterTest",
+            "tests": 6,
+            "executed": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.intent.IntentEvaluationDatasetTest",
+            "tests": 1,
+            "executed": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.intent.IntentDecisionTest",
+            "tests": 4,
+            "executed": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          {
+            "class": "com.hify.intent.StructuredModelIntentClassifierTest",
+            "tests": 3,
+            "executed": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "frontend-typecheck",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/frontend-typecheck.log",
+      "command": [
+        "sh",
+        "-c",
+        "cd '/Users/weberzhao/hify/frontend' && npm run typecheck"
+      ],
+      "logSha256": "150b8f5e6954ae1ebc67a61220fd3b475d89a262b5f342b98838e3dc84fed489"
+    },
+    {
+      "name": "frontend-build",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/baseline/frontend-build.log",
+      "command": [
+        "sh",
+        "-c",
+        "cd '/Users/weberzhao/hify/frontend' && npm run build"
+      ],
+      "logSha256": "5424f5050a5be06ae0656e15b964406753bdeb811ac3b7b01c82b81b770da04e"
+    }
+  ],
+  "finishedAt": "2026-10-03T23:35:04Z",
+  "commandResult": "passed",
+  "testCoverage": "passed",
+  "resultMeaning": "Selected commands and observed test counts only; not full product or deployment acceptance. Repeated steps are not independent tests."
+}
