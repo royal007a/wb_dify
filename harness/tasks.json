@@ -4,6 +4,112 @@
   "updatedAt": "2026-10-03T13:38:20Z",
   "tasks": [
     {
+      "id": "SPEC-AUDIT-001",
+      "title": "建立全接口与功能测试规格及覆盖门禁",
+      "description": "按已注册 HTTP 路由、前端页面、领域状态机盘点功能；形成可机器核对的接口清单、测试证据和未验证项，不把旧 green 记录当作本轮验收。",
+      "priority": "P0",
+      "status": "pending",
+      "scopes": [
+        "harness",
+        "backend"
+      ],
+      "verifyScopes": [
+        "harness",
+        "backend"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "每个 /api HTTP 路由均有规格项，新增/遗漏接口由真实 Spring 映射门禁发现",
+        "功能场景区分已有测试与本轮结果，注明外部依赖、失败边界和残余风险",
+        "修正 CURRENT_STATE/SPEC/AGENTS 的已实现能力漂移，独立只读 review 已发起"
+      ],
+      "planPath": "exec-plans/active/SPEC-AUDIT-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T14:35:00Z",
+      "updatedAt": "2026-10-03T14:35:00Z"
+    },
+    {
+      "id": "SPEC-VERIFY-001",
+      "title": "执行全功能矩阵并修复发现的问题",
+      "description": "按规格验证 Provider/Agent/Chat/Run/Memory/Knowledge/Workflow/MCP/Console，补缺失回归，真实 PostgreSQL 与浏览器验证；真实外部模型与 mock 结果分开。",
+      "priority": "P0",
+      "status": "pending",
+      "scopes": [
+        "harness",
+        "backend",
+        "frontend",
+        "migration",
+        "runtime",
+        "eval"
+      ],
+      "verifyScopes": [
+        "harness",
+        "backend",
+        "frontend",
+        "migration",
+        "runtime",
+        "eval"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [
+        "SPEC-AUDIT-001"
+      ],
+      "acceptance": [
+        "所有规格用例均有 fresh pass/fail/not-run 分类，不允许以数量替代场景覆盖",
+        "失败先有可复现证据，再补回归修复；迁移门禁无跳过",
+        "凭据、用户数据、旧发布版本和取消/replay 的安全边界不退化"
+      ],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T14:35:00Z",
+      "updatedAt": "2026-10-03T14:35:00Z"
+    },
+    {
+      "id": "SPEC-DEPLOY-001",
+      "title": "发布验收修复并验证 132 与本地",
+      "description": "将通过矩阵的实现发布到原版 Hify；保留数据库和产物回滚基线，核验 sha、迁移、HTTP 与浏览器，禁止改 hify-cc。",
+      "priority": "P0",
+      "status": "pending",
+      "scopes": [
+        "harness",
+        "backend",
+        "frontend",
+        "migration"
+      ],
+      "verifyScopes": [
+        "harness",
+        "backend",
+        "frontend",
+        "migration"
+      ],
+      "risk": "high_risk",
+      "operation": "deployment",
+      "approvalRef": "goal:01a07e90-58c6-7f00-8ce1-fc659dd6c39c",
+      "dependsOn": [
+        "SPEC-VERIFY-001"
+      ],
+      "acceptance": [
+        "发布和回滚边界可追踪，不打印或重建加密主密钥",
+        "本地和 132 的入口、健康、关键纵向切片有运行证据",
+        "独立 review 的阻塞问题已关闭或明确向用户报告"
+      ],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T14:35:00Z",
+      "updatedAt": "2026-10-03T14:35:00Z"
+    },
+    {
       "id": "MCP-TOKEN-DEPLOY-001",
       "title": "部署 132 MCP 加密 Token 输入并验证",
       "description": "备份原 Hify PostgreSQL 与产物，配置独立加密主密钥，执行 V20 并发布页面，使用独立停用测试记录验收，不操作 teacher_mcp 密钥。",

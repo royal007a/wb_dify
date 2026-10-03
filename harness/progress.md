@@ -4,7 +4,7 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-10-03T13:38:20Z`
 - Current task: `none`
-- Counts: pending 2 · running 0 · blocked 0 · completed 29
+- Counts: pending 5 · running 0 · blocked 0 · completed 29
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -21,6 +21,9 @@
 | `MEMORY-002` | P0 | completed | backend, migration, runtime | reversible_write | 建立结构化摘要与统一细节目录 |
 | `RECALL-001` | P0 | completed | backend, migration, runtime, eval | reversible_write | 完成分层上下文与迭代式细节召回 |
 | `RUNTIME-001` | P0 | completed | backend, migration, runtime | reversible_write | 建立 Runtime 能力租约与历史提交协议 |
+| `SPEC-AUDIT-001` | P0 | pending | harness, backend | reversible_write | 建立全接口与功能测试规格及覆盖门禁 |
+| `SPEC-DEPLOY-001` | P0 | pending | harness, backend, frontend, migration | high_risk | 发布验收修复并验证 132 与本地 |
+| `SPEC-VERIFY-001` | P0 | pending | harness, backend, frontend, migration, runtime, eval | reversible_write | 执行全功能矩阵并修复发现的问题 |
 | `CHAT-DEMO-001` | P1 | completed | backend, frontend, runtime | reversible_write | 修复 Demo 时间问句回显而不调用工具 |
 | `CHAT-DEMO-DEPLOY-001` | P1 | completed | backend, frontend | high_risk | 部署并验证 132 Demo 会话时间修复 |
 | `CONSOLE-002` | P1 | completed | frontend, runtime | reversible_write | 交付知识库工作流 MCP 管理台 |
