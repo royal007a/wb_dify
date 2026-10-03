@@ -25,3 +25,5 @@
 ## 边界
 
 本门禁防漏测与误操作，不防有仓库写权限的人伪造XML或修改manifest；SHA也不是签名。期望最少数从新鲜已观察测试建立，增删测试须评审清单，不代表覆盖率或所有行为的分母。当前没有隐藏已发现的HTTP红灯：fixture与4条失败保存在SPEC-VERIFY-001，后续仍需恢复修复。没有部署。
+
+任务收尾：代码27b30d5/552e7f3、文档8850199；根目录verification.json按schema v3记录五个Harness步骤通过、31项Python测试通过，并由finish读取本run/scopes/HEAD后完成。根scope不含Maven，testCoverage=not-assessed；上述real-scopes是独立的新鲜Maven证据。validate/check-progress在完成后通过。待mymacclaude独立只读复验，不提前写“review通过”。
