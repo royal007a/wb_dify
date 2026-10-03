@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-RUN-ADMISSION-002-20261003T190736Z-c7c03d28",
-    "path": "harness/evidence/SPEC-RUN-ADMISSION-002/SPEC-RUN-ADMISSION-002-20261003T190736Z-c7c03d28",
+    "runId": "SPEC-RUN-DISPATCH-001-20261003T191810Z-fac85812",
+    "path": "harness/evidence/SPEC-RUN-DISPATCH-001/SPEC-RUN-DISPATCH-001-20261003T191810Z-fac85812",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "7af010e47fb7f7a6f6511c124c06dd047d0aede6",
-    "headCommit": "446688a47eae677c000640198dfaa06571a7648f",
-    "recordedAt": "2026-10-03T19:13:26Z"
+    "baselineCommit": "7bb2e3fc3e84d3818b2506a998850603410e0489",
+    "headCommit": "656b61a0f5bf8c193035e2e27c9c58716a65fa08",
+    "recordedAt": "2026-10-03T19:25:36Z"
   },
-  "lastCompletedTaskId": "SPEC-RUN-ADMISSION-002",
-  "updatedAt": "2026-10-03T19:13:26Z"
+  "lastCompletedTaskId": "SPEC-RUN-DISPATCH-001",
+  "updatedAt": "2026-10-03T19:25:36Z"
 }

@@ -1,32 +1,50 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T19:13:26Z",
+  "updatedAt": "2026-10-03T19:25:36Z",
   "tasks": [
     {
       "id": "SPEC-RUN-DISPATCH-001",
       "title": "同实例create与恢复扫描的调度所有权",
       "description": "B2复核P1：同一Run可能执行两次且拒绝的副本误杀活跃执行；以单实例产品边界修复并披露跨实例非目标。",
       "priority": "P1",
-      "status": "pending",
-      "scopes": ["backend", "runtime", "harness"],
-      "verifyScopes": ["harness"],
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-RUN-ADMISSION-002"],
+      "dependsOn": [
+        "SPEC-RUN-ADMISSION-002"
+      ],
       "acceptance": [
         "latch交错create提交/调度与恢复扫描，实际operation只提交执行一次",
         "重复调度拒绝不能终止活跃owner或删除其控制状态；清理仅归属本次owner",
         "取消晚于worker清理不能重新创建永久残留标志，持久取消执行前可见",
         "单实例与多实例保证分开描述，既有拒绝幂等/SSE/恢复回归通过"
       ],
-      "planPath": "exec-plans/active/SPEC-RUN-DISPATCH-001.md",
+      "planPath": "exec-plans/completed/SPEC-RUN-DISPATCH-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-RUN-DISPATCH-001-20261003T191810Z-fac85812",
+          "path": "harness/evidence/SPEC-RUN-DISPATCH-001/SPEC-RUN-DISPATCH-001-20261003T191810Z-fac85812",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "7bb2e3fc3e84d3818b2506a998850603410e0489",
+          "headCommit": "656b61a0f5bf8c193035e2e27c9c58716a65fa08",
+          "recordedAt": "2026-10-03T19:25:36Z"
+        }
+      ],
       "createdAt": "2026-10-03T19:20:00Z",
-      "updatedAt": "2026-10-03T19:20:00Z"
+      "updatedAt": "2026-10-03T19:25:36Z"
     },
     {
       "id": "SPEC-PROVIDER-SAMPLING-001",
@@ -34,12 +52,20 @@
       "description": "B1复验P2：Run先到期不计失败和operation边界包含内层排队均已披露；需明确传输阶段信号，不能通过一律计失败污染Provider健康。",
       "priority": "P2",
       "status": "pending",
-      "scopes": ["backend", "runtime", "harness"],
-      "verifyScopes": ["harness"],
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-PROVIDER-LOCAL-FAILURE-002"],
+      "dependsOn": [
+        "SPEC-PROVIDER-LOCAL-FAILURE-002"
+      ],
       "acceptance": [
         "以真实HTTP发起/内层排队及取消原因区分采样，测试Run短于model和多轮剩余预算",
         "不把未发送的本地排队、用户取消、关机中断算成Provider错误",

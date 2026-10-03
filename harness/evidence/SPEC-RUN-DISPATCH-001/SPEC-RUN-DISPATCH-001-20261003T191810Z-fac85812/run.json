@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-RUN-DISPATCH-001-20261003T191810Z-fac85812",
+  "taskId": "SPEC-RUN-DISPATCH-001",
+  "status": "completed",
+  "baselineCommit": "7bb2e3fc3e84d3818b2506a998850603410e0489",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T19:18:10Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "656b61a0f5bf8c193035e2e27c9c58716a65fa08",
+  "finishedAt": "2026-10-03T19:25:36Z"
+}

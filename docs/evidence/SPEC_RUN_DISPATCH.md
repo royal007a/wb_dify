@@ -18,3 +18,5 @@ This is a **single-instance** guarantee. No durable lease, multi-instance fencin
 ## Verification
 
 `green-final.log`: `mvn -B -f backend/pom.xml -pl hify-app -am -Dtest=RunAdmissionIntegrationTest,RunDispatchIntegrationTest,RunWorkflowControlTest,RunFlowIntegrationTest,WorkflowRunControlIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test`, exit 0, **16 pass, zero skipped**. Four dispatch interleavings (the three red cases plus persistent cancellation before any dispatch/model/tool event), three admission cases, six application workflow-control cases, two HTTP RunFlow cases and one HTTP Workflow cancellation case. All three local maps, including ownership, are checked empty after completion/refusal. No PostgreSQL/browser/deployment claim in this slice.
+
+The atomic runner repeats all **16 pass, zero skips** on code `656b61a`, with the explicit Harness gate passed (verification.json). No shared services changed; not deployed.
