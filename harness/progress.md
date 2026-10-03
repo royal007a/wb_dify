@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-03T18:10:13Z`
+- Generated from task state updated at: `2026-10-03T18:22:51Z`
 - Current task: `none`
-- Counts: pending 11 · running 0 · blocked 1 · completed 35
+- Counts: pending 10 · running 0 · blocked 1 · completed 36
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -47,7 +47,7 @@
 | `SECURITY-001` | P1 | completed | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |
 | `SPEC-CHAT-LIFECYCLE-002` | P1 | pending | frontend, runtime, harness | reversible_write | 复核前端Run创建与恢复输入边界 |
 | `SPEC-KNOWLEDGE-FINISH-001` | P1 | pending | backend, runtime, harness | reversible_write | 知识缺口与完成门禁契约对齐 |
-| `SPEC-PROVIDER-LOCAL-FAILURE-001` | P1 | pending | backend, runtime, harness | reversible_write | 取消与本地拒绝不得污染供应商熔断 |
+| `SPEC-PROVIDER-LOCAL-FAILURE-001` | P1 | completed | backend, runtime, harness | reversible_write | 取消与本地拒绝不得污染供应商熔断 |
 | `SPEC-RUN-ADMISSION-001` | P1 | pending | backend, runtime, harness | reversible_write | 执行拒绝和关机中断的Run收敛 |
 | `SPEC-SSE-BACKPRESSURE-001` | P1 | pending | backend, runtime, harness | reversible_write | SSE慢客户端隔离及游标归属验证 |
 | `SPEC-WORKFLOW-GRAPH-002` | P1 | pending | backend, runtime, harness | reversible_write | 统一图步数限制与条件语法契约 |

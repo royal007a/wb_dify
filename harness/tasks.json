@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T18:10:13Z",
+  "updatedAt": "2026-10-03T18:22:51Z",
   "tasks": [
     {
       "id": "SPEC-PROVIDER-LOCAL-FAILURE-001",
       "title": "取消与本地拒绝不得污染供应商熔断",
       "description": "B1：区分请求取消/本地执行容量与上游失败，保留真实上游失败熔断和重试。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "runtime",
@@ -27,12 +27,22 @@
         "真实TIMEOUT/5xx继续按阈值熔断；其他Provider相互隔离",
         "红灯反例与公共层/协议适配回归通过"
       ],
-      "planPath": "exec-plans/active/SPEC-PROVIDER-LOCAL-FAILURE-001.md",
+      "planPath": "exec-plans/completed/SPEC-PROVIDER-LOCAL-FAILURE-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-PROVIDER-LOCAL-FAILURE-001-20261003T181315Z-126518e8",
+          "path": "harness/evidence/SPEC-PROVIDER-LOCAL-FAILURE-001/SPEC-PROVIDER-LOCAL-FAILURE-001-20261003T181315Z-126518e8",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "370d22318aa98a274cf20e73902c0244b73412d6",
+          "headCommit": "03eafd6f48f0c7f5a105509521c56e46149a0310",
+          "recordedAt": "2026-10-03T18:22:51Z"
+        }
+      ],
       "createdAt": "2026-10-03T18:13:15Z",
-      "updatedAt": "2026-10-03T18:13:15Z"
+      "updatedAt": "2026-10-03T18:22:51Z"
     },
     {
       "id": "SPEC-SSE-BACKPRESSURE-001",

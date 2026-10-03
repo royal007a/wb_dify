@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness"
+  ],
+  "base": "working-tree",
+  "headCommit": "03eafd6f48f0c7f5a105509521c56e46149a0310",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-PROVIDER-LOCAL-FAILURE-001/SPEC-PROVIDER-LOCAL-FAILURE-001-20261003T181315Z-126518e8/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-PROVIDER-LOCAL-FAILURE-001/SPEC-PROVIDER-LOCAL-FAILURE-001-20261003T181315Z-126518e8/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-PROVIDER-LOCAL-FAILURE-001/SPEC-PROVIDER-LOCAL-FAILURE-001-20261003T181315Z-126518e8/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-PROVIDER-LOCAL-FAILURE-001/SPEC-PROVIDER-LOCAL-FAILURE-001-20261003T181315Z-126518e8/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-PROVIDER-LOCAL-FAILURE-001/SPEC-PROVIDER-LOCAL-FAILURE-001-20261003T181315Z-126518e8/harness-shell-syntax.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T18:22:51Z"
+}
