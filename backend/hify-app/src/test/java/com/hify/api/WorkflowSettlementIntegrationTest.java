@@ -46,15 +46,19 @@ class WorkflowSettlementIntegrationTest {
     @ParameterizedTest @CsvSource({"false,true","true,true","false,false","true,false"})
     void executionFactAndDeliveryDecisionAreBothProjected(boolean fail,boolean cancel) throws Exception {
         String suffix=UUID.randomUUID().toString();
-        // A missing knowledge base is a deterministic genuine execution failure, not a model error.
+        // Publish a valid corpus, then corrupt it only after publication to produce a real node failure.
+        // Missing bases are now rejected at publication, before this settlement path is reachable.
+        String base=fail?json.readTree(http.perform(post("/api/v1/knowledge-bases").contentType("application/json")
+                .content(json.writeValueAsString(Map.of("name","settlement-"+suffix,"chunkSize",256,"chunkOverlap",16))))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText():"";
         String dsl=fail?"""
                 {"name":"failure-%s","schemaVersion":1,"nodes":[
                 {"nodeKey":"start","name":"start","type":"START","config":{}},
-                {"nodeKey":"lookup","name":"lookup","type":"KNOWLEDGE","config":{"knowledgeBaseId":"missing-%s","query":"{{start.userMessage}}"}},
+                {"nodeKey":"lookup","name":"lookup","type":"KNOWLEDGE","config":{"knowledgeBaseId":"%s","query":"{{start.userMessage}}"}},
                 {"nodeKey":"end","name":"end","type":"END","config":{"output":"not reached"}}],
                 "edges":[{"edgeKey":"a","sourceNodeKey":"start","targetNodeKey":"lookup"},
                 {"edgeKey":"b","sourceNodeKey":"lookup","targetNodeKey":"end"}]}
-                """.formatted(suffix,suffix):"""
+                """.formatted(suffix,base):"""
                 {"name":"success-%s","schemaVersion":1,"nodes":[
                 {"nodeKey":"start","name":"start","type":"START","config":{}},
                 {"nodeKey":"end","name":"end","type":"END","config":{"output":"computed"}}],
@@ -64,6 +68,8 @@ class WorkflowSettlementIntegrationTest {
         String version=workflows.publish(workflow).id();
         String agent=agents.create(new AgentUpsertRequest("settlement-"+suffix,"","execute workflow","mock","hify-mock",0.2,2048,6,10,List.of(),true));
         agents.replaceWorkflow(agent,new AgentWorkflowBindingRequest(workflow));agents.publish(agent);
+        if(fail)assertThat(db.update("update knowledge_corpus_versions set manifest_digest=? where knowledge_base_id=?",
+                "b".repeat(64),base)).isEqualTo(1);
         String conversation=UUID.randomUUID().toString();
         conversations.saveAndFlush(new Conversation(conversation,agent,agentQueries.requirePublished(agent).versionId(),"settlement",Instant.now()));
         var returned=new CountDownLatch(1);var release=new CountDownLatch(1);
