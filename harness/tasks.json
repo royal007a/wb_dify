@@ -1,20 +1,60 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T23:38:14Z",
+  "updatedAt": "2026-10-03T23:45:18Z",
   "tasks": [
+    {
+      "id": "SPEC-RECOVERY-ADMISSION-001",
+      "title": "恢复扫描的写库故障与容量准入",
+      "description": "统一承接拒绝后终态写库失败、恢复超过104容量和WorkflowRecovery整体UPDATE失败三项开放边界；不归子任务监听器顺序。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "backend",
+        "migration"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [
+        "SPEC-RUN-ADMISSION-001"
+      ],
+      "acceptance": [
+        "执行器拒绝后get或finishTerminal写库失败不阻止其他恢复行；残留RUNNING有明确恢复机制和故障注入",
+        "启动积压超过104时逐项说明并测试准入/排队/失败策略，不以容量耗尽误作永久业务失败",
+        "WorkflowRecovery整体UPDATE失败的启动和重试策略明确，并有真实PG故障测试"
+      ],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T23:45:13Z",
+      "updatedAt": "2026-10-03T23:45:13Z"
+    },
     {
       "id": "SPEC-AUDIT-003",
       "title": "封闭验证报告与任务完成入口",
       "description": "复现7f735fe审查六条P2，使用本轮独立XML和预期类清单，完成状态必须读取当前验证；修正skip口径和开放任务归属。",
       "priority": "P2",
-      "status": "pending",
-      "scopes": ["harness"],
-      "verifyScopes": ["harness"],
+      "status": "running",
+      "scopes": [
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-AUDIT-002"],
+      "dependsOn": [
+        "SPEC-AUDIT-002"
+      ],
       "acceptance": [
         "Flakes/未知格式不能隐去skip；缺预期类、旧XML、假stdout和fork无结果都不能绿",
         "每个Maven步骤独立新报告目录并校验预期类集合，报告保存XML摘要和SHA",
@@ -23,11 +63,17 @@
         "隔离假命令红绿测试和真实窄Maven报告验证分别记录，不冒充全产品通过"
       ],
       "planPath": "exec-plans/active/SPEC-AUDIT-003.md",
-      "checkpoint": null,
+      "checkpoint": {
+        "summary": "实现27b30d5；隔离30项通过，真实API库存1项通过；真实四scope正在执行，尚不称全部通过",
+        "headCommit": "27b30d50e97d39c66be22964063e742ce116004a",
+        "workingTreeHash": "89b06a779bfe25019fa4d8b17ed994b67c096eabb112d99a509a9697d6c8717c",
+        "evidencePath": "harness/evidence/SPEC-AUDIT-003/SPEC-AUDIT-003-20261003T233839Z-7c2f0035",
+        "updatedAt": "2026-10-03T23:45:18Z"
+      },
       "blockedReason": null,
       "evidence": [],
-      "createdAt": "2026-10-03T23:41:00Z",
-      "updatedAt": "2026-10-03T23:41:00Z"
+      "createdAt": "2026-10-03T23:38:14Z",
+      "updatedAt": "2026-10-03T23:45:18Z"
     },
     {
       "id": "SPEC-CHAT-LIFECYCLE-004",
@@ -108,7 +154,7 @@
     {
       "id": "SPEC-CHAT-LIFECYCLE-003",
       "title": "结果不明提交的身份恢复与安全退出",
-      "description": "Chat复核新P1：查重晚于Provider校验导致永久4xx锁页；相关P2为取消重POST意外创建、拒绝丢输入、反复连接成功即断开无限补读。",
+      "description": "Chat复核新P1及相关P2修复。历史completed为旧制度记录：本次backend摘要为partial（89条skip记录，非方法总分母），不表示PG通过；完整复验由SPEC-VERIFY-001承接。原始证据不回写。",
       "priority": "P1",
       "status": "completed",
       "scopes": [
@@ -179,7 +225,7 @@
         "全角空白正确处理或明确拒绝，不静默走错分支",
         "旧带转义字面量语义有明确版本/迁移策略，反例回归且不改历史",
         "旧裸标点、模板关键词限制可诊断，错误定位节点并说明重新发布顺序",
-        "非法发布版本的列表展示与started/failed事件口径不误导"
+        "非法发布版本的列表展示与started/failed事件口径不误导；专门覆盖workflow.started早于定义校验而无failed投影"
       ],
       "planPath": null,
       "checkpoint": null,
@@ -1613,7 +1659,7 @@
     {
       "id": "SPEC-AUDIT-001",
       "title": "建立全接口与功能测试规格及覆盖门禁",
-      "description": "按已注册 HTTP 路由、前端页面、领域状态机盘点功能；形成可机器核对的接口清单、测试证据和未验证项，不把旧 green 记录当作本轮验收。",
+      "description": "建立HTTP库存与功能规格。历史completed为旧制度记录：本次backend摘要为partial（89条skip记录，非方法总分母），不表示PG验收；完整复验由SPEC-VERIFY-001承接。保留原始verification而非回写passed。",
       "priority": "P0",
       "status": "completed",
       "scopes": [

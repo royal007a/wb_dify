@@ -1,11 +1,17 @@
 {
   "schemaVersion": 1,
-  "currentTaskId": null,
-  "runId": null,
-  "baselineCommit": null,
-  "startedAt": null,
-  "evidencePath": null,
-  "lastCheckpoint": null,
+  "currentTaskId": "SPEC-AUDIT-003",
+  "runId": "SPEC-AUDIT-003-20261003T233839Z-7c2f0035",
+  "baselineCommit": "38afd9a92536300043713a4b34b1e247f94961c5",
+  "startedAt": "2026-10-03T23:38:39Z",
+  "evidencePath": "harness/evidence/SPEC-AUDIT-003/SPEC-AUDIT-003-20261003T233839Z-7c2f0035",
+  "lastCheckpoint": {
+    "summary": "实现27b30d5；隔离30项通过，真实API库存1项通过；真实四scope正在执行，尚不称全部通过",
+    "headCommit": "27b30d50e97d39c66be22964063e742ce116004a",
+    "workingTreeHash": "89b06a779bfe25019fa4d8b17ed994b67c096eabb112d99a509a9697d6c8717c",
+    "evidencePath": "harness/evidence/SPEC-AUDIT-003/SPEC-AUDIT-003-20261003T233839Z-7c2f0035",
+    "updatedAt": "2026-10-03T23:45:18Z"
+  },
   "lastVerification": {
     "runId": "SPEC-VERIFY-001-20261003T233040Z-36e1c946",
     "path": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946",
@@ -16,5 +22,5 @@
     "recordedAt": "2026-10-03T23:38:14Z"
   },
   "lastCompletedTaskId": "SPEC-AUDIT-002",
-  "updatedAt": "2026-10-03T23:38:14Z"
+  "updatedAt": "2026-10-03T23:45:18Z"
 }

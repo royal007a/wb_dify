@@ -20,6 +20,6 @@
 
 ## 新发现的红灯与暂停原因
 
-新增真实Tomcat的HttpErrorSurfaceTest，`mvn -B -pl hify-app -am -Dtest=HttpErrorSurfaceTest -Dsurefire.failIfNoSpecifiedTests=false test`退出1：5项中4失败、0错误/跳过。未知Run为400而非404，multipart格式错误与超限为500而非400/413，框架错误矩阵也未全部通过。fixture保存在本证据目录（不放入常规测试源集，待修复时原样恢复），完整失败日志为http-red.log。不能因旧520项绿而忽略新红灯。
+新增真实Tomcat的HttpErrorSurfaceTest，`mvn -B -pl hify-app -am -Dtest=HttpErrorSurfaceTest -Dsurefire.failIfNoSpecifiedTests=false test`退出1：5项中4失败、0错误/跳过。未知Run为400而非404，multipart格式错误与超限为500而非400/413，未知路由404正文反射请求路径。400/405/415及缺header的框架错误组合用例通过。fixture保存在本证据目录（不放入常规测试源集，待修复时原样恢复），完整失败日志为http-red.log。不能因旧520项绿而忽略新红灯。
 
 同时审查发现门禁的Flakes漏计、预期类遗漏/旧XML和finish绕过。SPEC-VERIFY-001暂停验收，先独立执行SPEC-AUDIT-003修复验证可信度，再恢复本任务修复HTTP红灯。未将本次任务标成完成。

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "step": "api-inventory",
+  "invocationId": "audit003-real-inventory",
+  "inventorySha256": "9394d2de2f5373b2921797764447484ae33c70e8d3d5c787b1f3af127b94b970",
+  "expectedSuites": {
+    "com.hify.api.ApiContractInventoryTest": 1
+  },
+  "reportDirectory": "api-inventory-8pny2but/reports",
+  "result": "failed",
+  "tests": {
+    "totals": {
+      "tests": 0,
+      "executed": 0,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "flakyAttempts": 0
+    },
+    "classes": []
+  },
+  "command": [
+    "mvn",
+    "-B",
+    "-Dapi.version=1.44",
+    "-pl",
+    "hify-app",
+    "-am",
+    "-Dtest=com.hify.api.ApiContractInventoryTest",
+    "-Dsurefire.failIfNoSpecifiedTests=false",
+    "-Dsurefire.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-AUDIT-003/SPEC-AUDIT-003-20261003T233839Z-7c2f0035/real-inventory/api-inventory-8pny2but/reports",
+    "test"
+  ],
+  "commandExitCode": 0,
+  "summaryError": "ValueError: missing, inconsistent or incomplete invocation evidence"
+}

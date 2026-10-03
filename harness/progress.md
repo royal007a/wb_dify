@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-03T23:38:14Z`
-- Current task: `none`
-- Counts: pending 16 · running 0 · blocked 1 · completed 57
+- Generated from task state updated at: `2026-10-03T23:45:18Z`
+- Current task: `SPEC-AUDIT-003`
+- Counts: pending 16 · running 1 · blocked 1 · completed 57
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -64,7 +64,7 @@
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
 | `SPEC-AUDIT-002` | P2 | completed | harness, backend | reversible_write | 规格复核补证据等级与可提交测试摘要 |
-| `SPEC-AUDIT-003` | P2 | pending | harness | reversible_write | 封闭验证报告与任务完成入口 |
+| `SPEC-AUDIT-003` | P2 | running | harness | reversible_write | 封闭验证报告与任务完成入口 |
 | `SPEC-CHAT-LIFECYCLE-004` | P2 | pending | backend, frontend, harness | reversible_write | 补人工重连、澄清放弃与建会话超时边界 |
 | `SPEC-CHILD-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 核验子任务孤儿扫描与父Run恢复时序 |
 | `SPEC-CREDENTIAL-BOUNDARY-002` | P2 | completed | backend, runtime, harness | reversible_write | 补齐受保护配置命名空间与冻结凭据负向验收 |
@@ -75,6 +75,7 @@
 | `SPEC-KNOWLEDGE-LEGACY-001` | P2 | pending | backend, runtime, harness | reversible_write | 旧未固定版本会话恢复不能移除知识门禁 |
 | `SPEC-MEMORY-FILTER-001` | P2 | pending | backend, runtime, harness | reversible_write | memory来源过滤召回与正向对照 |
 | `SPEC-PROVIDER-SAMPLING-001` | P2 | pending | backend, runtime, harness | reversible_write | 区分HTTP实际尝试与Run预算截断的健康采样 |
+| `SPEC-RECOVERY-ADMISSION-001` | P2 | pending | backend, runtime, harness | reversible_write | 恢复扫描的写库故障与容量准入 |
 | `SPEC-RUN-BUDGET-001` | P2 | pending | backend, runtime, harness | reversible_write | 统一聊天与Workflow跨重启的Run预算 |
 | `SPEC-SSE-BACKPRESSURE-002` | P2 | pending | backend, runtime, harness | reversible_write | SSE公平接入与慢读总时限的确定性验证 |
 | `SPEC-WORKFLOW-GRAPH-003` | P2 | pending | backend, frontend, runtime, harness | reversible_write | 条件空白、旧转义兼容与迁移诊断 |

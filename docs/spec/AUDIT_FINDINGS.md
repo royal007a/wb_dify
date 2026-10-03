@@ -100,10 +100,10 @@ G切片独立复核：无P0/P1；P2-1指出受保护命名空间漏掉项目实�
 | SPEC-MEMORY-FILTER-001 | PG前100候选先截断后按来源过滤，普通Run证据会被挤掉；缺同会话普通ref可见的正向端到端对照 |
 | SPEC-HISTORY-RECOVERY-003 | recallLatency/replanDecisions恢复归零；触发replan的末工具没有后续恢复记录时重建UUID；观察事件重放会重复 |
 | SPEC-RUN-BUDGET-001 | Chat重启重新分配完整runTimeout；Workflow按createdAt扣减，两条路径不一致 |
-| SPEC-WORKFLOW-RECOVERY-001 / 关闭与恢复边界 | 拒绝后get/finishTerminal数据库报错可留RUNNING；启动恢复超过104容量直接FAILED；WorkflowRecovery整体UPDATE失败会阻止启动，逐行catch不涵盖它 |
+| SPEC-RECOVERY-ADMISSION-001 | 拒绝后get/finishTerminal数据库报错可留RUNNING；启动恢复超过104容量直接FAILED；WorkflowRecovery整体UPDATE失败会阻止启动，逐行catch不涵盖它；tasks.json分别列出故障注入验收 |
 | SPEC-CHILD-RECOVERY-001 | ChildAgentTask恢复与Run恢复监听器缺确定顺序；新认领任务可能被convergeLost误标，尚需交错测试 |
-| SPEC-WORKFLOW-RECOVERY-001 | requireVersion/DSL校验/建run失败、成功后response读取失败仍可MODEL_ERROR且缺workflow投影；workflow.started早于校验；END SUCCEEDED与父CANCELLED不一致；已成功workflow落库后崩溃可能重跑、旧结果无投影 |
-| SPEC-WORKFLOW-GRAPH-003 | U3000 trim不一致；旧quoted反斜杠改按JSON转义；裸help!/A&B/退款(急)现拒绝，迁移提示未覆盖；错误无nodeKey/发布顺序 |
+| SPEC-WORKFLOW-RECOVERY-001 | requireVersion/DSL校验/建run失败、成功后response读取失败仍可MODEL_ERROR且缺workflow投影；END SUCCEEDED与父CANCELLED不一致；已成功workflow落库后崩溃可能重跑、旧结果无投影 |
+| SPEC-WORKFLOW-GRAPH-003 | workflow.started早于校验；U3000 trim不一致；旧quoted反斜杠改按JSON转义；裸help!/A&B/退款(急)现拒绝，迁移提示未覆盖；错误无nodeKey/发布顺序 |
 | SPEC-SSE-BACKPRESSURE-002 | 全局64独占线程可被空闲连接占满，无Run/IP配额；180秒只在send之间检查，慢读不等于硬总期限；缺丢唤醒/释放/慢读等确定性交错证据 |
 | SPEC-PROVIDER-SAMPLING-001 | Run期限先于model时只释放不计超时；beforeAttempt在本地排队前，故障样本可能错误归Provider；不宣称所有挂起都能熔断 |
 | OPERATIONS的凭据部署限制 | -D/JAVA_OPTS传密钥可能经sun.java.command等误授权外送；当前compose/env入口未用此方式，不能泛称所有JVM启动变量受保护 |

@@ -1,0 +1,19 @@
+{
+  "kind": "isolated-regression-evidence",
+  "baselineCommit": "38afd9a",
+  "productionChange": "27b30d5 plus historical-format strictness follow-up",
+  "red": {
+    "command": "PYTHONPATH=harness:harness/tests python3 -m unittest test_verification_report.VerificationReportTest.test_flakes_cannot_hide_a_skipped_class test_verification_report.VerificationReportTest.test_unrecognized_class_summary_cannot_disappear test_harness.HarnessStoreTest.test_completion_without_current_verification_is_rejected",
+    "log": "red-correct-entry.log",
+    "logSha256": "9a015cc9b50b14b5e16cf19db60a5271a85f52aa0ed8104feb0854c2c6a2ba62",
+    "tests": 3, "failures": 3, "errors": 0, "exitCode": 1
+  },
+  "green": {
+    "command": "python3 -m unittest discover -s harness/tests -p 'test_*.py'",
+    "log": "python-green-final.log",
+    "logSha256": "b9ad337bcd903b6f80b525fffd6ed89167fe79cb63036f5cd8df98f30a4dfbc5",
+    "tests": 31, "failures": 0, "errors": 0, "exitCode": 0
+  },
+  "scope": "Isolated temporary filesystem; fake Maven/Docker for shell-boundary tests. Real Maven results are separate. Test fixtures may print 'Maven evidence: failed' for expected rejection cases.",
+  "notClaimed": ["Product acceptance", "Production deployment", "Adversarial integrity against repository writers"]
+}

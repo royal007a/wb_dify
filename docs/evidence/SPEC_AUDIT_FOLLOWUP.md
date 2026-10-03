@@ -12,11 +12,13 @@
 
 历史verification.json原样保留，新增同目录test-summary.json。摘要包含源manifest SHA、源commit、各步骤日志SHA和各Java类的tests/executed/failures/errors/skipped；不提交可能含原始应用输出的整份日志。源码/命令可重跑验证，日志SHA用于原文件在场时校验，不意味着仅有摘要能重建原日志。
 
+计数更正：下面的tests/skipped是Surefire报告记录数，不是预期Java方法总分母。禁用整个测试容器时，多个方法可能只产生一条skip；因此“89”是89条skip记录，至少89项未执行，不能据此断言恰好89个测试未跑。保留原始计数字段，不虚构未执行方法数。新schema v3同时保留预期suite和最少报告数，遇skip仍为partial。
+
 | 原任务与目录尾缀 | 命令 | 按本次原日志计数 | 摘要结论 |
 |---|---|---|---|
-| SPEC-AUDIT-001 / 20261003T230750Z-14ee53bf | mvn -pl hify-app -am test | 495项，406实际运行，89跳过，失败/错误0 | partial；11个PG类未执行 |
+| SPEC-AUDIT-001 / 20261003T230750Z-14ee53bf | mvn -pl hify-app -am test | 495条报告记录，406执行记录，89条skip记录，失败/错误0 | partial；11个PG类未执行，未执行方法数至少89 |
 | 同目录api-inventory.log | mvn -B -pl hify-app -am -Dtest=ApiContractInventoryTest -Dsurefire.failIfNoSpecifiedTests=false test | 1/1、无跳过；67接口库存 | 窄库存测试，不是行为矩阵 |
-| SPEC-CHAT-LIFECYCLE-003 / 20261003T231505Z-3104ff49 | mvn -pl hify-app -am test | 498项，409实际运行，89跳过，失败/错误0 | partial；11个PG类未执行 |
+| SPEC-CHAT-LIFECYCLE-003 / 20261003T231505Z-3104ff49 | mvn -pl hify-app -am test | 498条报告记录，409执行记录，89条skip记录，失败/错误0 | partial；11个PG类未执行，未执行方法数至少89 |
 | 同目录runtime-tests.log | verify.sh的runtime scope窄选择 | 34项、零跳过 | 与backend用例有重叠，不相加冒充独立覆盖 |
 
 摘要生成命令（对两个目录分别执行）：
@@ -29,7 +31,7 @@ python3 harness/verification_report.py --verification <目录>/verification.json
 
 ## 新门禁与回归
 
-schema v2记录commandResult与result分开；任一跳过为partial并退出非0，任一步命令/测试失败或缺逐类结果为failed。backend自动配置已有Docker context供Testcontainers使用；Docker不可用不会用skip取得通过。migration原有独立零skip门禁不移除。
+schema v2记录commandResult与result分开；任一已识别跳过为partial并退出非0，任一步命令/测试失败或缺逐类结果为failed。backend配置Docker context这条仅是本任务源码实现；本任务假docker直接失败，未执行context分支，更未提供真实Docker运行证明。migration原有独立零skip门禁当时保留。后续review发现Flakes未识别、预期类和旧报告缺口，由SPEC-AUDIT-003用新鲜XML门禁替换，不能将v2表述为已封闭所有漏测入口。
 
 红灯：在隔离临时目录用e43369b的旧verify.sh，合成Maven退出0、2项中1项跳过；`test_shell_gate_rejects_successful_maven_with_skips`预期非0，实际0/passed而失败。无业务服务/真实库参与。修复后该用例和零skip正向用例通过；报告解析覆盖ANSI、重复reactor汇总不重算、空日志、测试失败、命令非0、缺日志、非Maven不编造计数；13项Harness Python测试通过。最初新增测试入口尚未实现时的5失败1错误仅属开发状态，不作为旧行为的红灯证据。
 

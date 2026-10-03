@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "step": "api-inventory",
+  "invocationId": "audit003-real-profile",
+  "inventorySha256": "9394d2de2f5373b2921797764447484ae33c70e8d3d5c787b1f3af127b94b970",
+  "expectedSuites": {
+    "com.hify.api.ApiContractInventoryTest": 1
+  },
+  "reportDirectory": "api-inventory-zlvmg1mp/reports",
+  "result": "passed",
+  "tests": {
+    "totals": {
+      "tests": 1,
+      "executed": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "flakyAttempts": 0
+    },
+    "classes": [
+      {
+        "class": "com.hify.api.ApiContractInventoryTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 1,
+        "flakyAttempts": 0,
+        "expectedMinimum": 1,
+        "xmlSha256": "e70ce5e50cd9904a6ff6d429132672da0ecd91bd799ebb82e982a62ad2378159"
+      }
+    ],
+    "underfilledSuites": [],
+    "countMeaning": "Reported testcase/skip records; disabled containers can hide additional intended methods."
+  },
+  "command": [
+    "mvn",
+    "-B",
+    "-Dapi.version=1.44",
+    "-pl",
+    "hify-app",
+    "-am",
+    "-Dtest=com.hify.api.ApiContractInventoryTest",
+    "-Dsurefire.failIfNoSpecifiedTests=false",
+    "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-AUDIT-003/SPEC-AUDIT-003-20261003T233839Z-7c2f0035/real-inventory-profile/api-inventory-zlvmg1mp/reports",
+    "test"
+  ],
+  "commandExitCode": 0
+}

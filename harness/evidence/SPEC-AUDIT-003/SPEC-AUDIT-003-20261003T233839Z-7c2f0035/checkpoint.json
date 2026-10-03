@@ -1,0 +1,7 @@
+{
+  "summary": "实现27b30d5；隔离30项通过，真实API库存1项通过；真实四scope正在执行，尚不称全部通过",
+  "headCommit": "27b30d50e97d39c66be22964063e742ce116004a",
+  "workingTreeHash": "89b06a779bfe25019fa4d8b17ed994b67c096eabb112d99a509a9697d6c8717c",
+  "evidencePath": "harness/evidence/SPEC-AUDIT-003/SPEC-AUDIT-003-20261003T233839Z-7c2f0035",
+  "updatedAt": "2026-10-03T23:45:18Z"
+}

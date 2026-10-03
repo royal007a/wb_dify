@@ -1,6 +1,6 @@
 # Hify 当前实现边界
 
-初始审计基线：2026-10-03，原版 `/Users/weberzhao/hify`，`973257c`；源码对齐至 `daec369`（2026-10-04）。下表区分源码存在、专项测试、历史运行，不代表全功能、真实模型或部署全部复验。审计001本轮backend为495项中406实际通过/89跳过；Chat003为498项中409通过/89跳过。两轮11个PG测试类均未执行，不得借历史PG专项代替。逐类摘要见 `evidence/SPEC_AUDIT_FOLLOWUP.md`。当前验收清单见 `spec/README.md`；反例索引见 `spec/AUDIT_FINDINGS.md`；任务状态只看Harness。2026-09-13初版证据不能当作新功能的运行结果。
+初始审计基线：2026-10-03，原版 `/Users/weberzhao/hify`，`973257c`；源码对齐至 `daec369`（2026-10-04）。下表区分源码存在、专项测试、历史运行，不代表全功能、真实模型或部署全部复验。审计001本轮backend为495项中406实际通过/89条skip记录（非精确未执行方法数）；Chat003为498项中409通过/89条skip记录（非精确未执行方法数）。两轮11个PG测试类均未执行，不得借历史PG专项代替。逐类摘要见 `evidence/SPEC_AUDIT_FOLLOWUP.md`。当前验收清单见 `spec/README.md`；反例索引见 `spec/AUDIT_FINDINGS.md`；任务状态只看Harness。2026-09-13初版证据不能当作新功能的运行结果。
 
 ## 已实现能力与验证边界
 
@@ -68,8 +68,8 @@
 
 - 知识：部分来源失败仍先发completed；wrapped suspension/数据库故障可能转Gap；索引isPostgres另借连接且失败当H2；Agent记录的Workflow checksum运行时未比对。分别见SPEC-KNOWLEDGE-FINISH-004、SPEC-KNOWLEDGE-INTEGRITY-003。
 - 恢复：Chat每次重启重置完整runTimeout（SPEC-RUN-BUDGET-001）；recallLatency/replanDecisions重置、轮末replan生成新UUID及重复观察事件（SPEC-HISTORY-RECOVERY-003）。
-- 调度/关闭：拒绝后终态写库失败可留RUNNING；恢复超过104容量可判FAILED；WorkflowRecovery整体UPDATE失败阻止启动；子任务监听器顺序未验（SPEC-CHILD-RECOVERY-001）。
-- Workflow：执行前异常/成功后读取失败仍可落MODEL_ERROR；started早于校验而无failed投影；END节点SUCCEEDED可与父CANCELLED不同；成功事实落盘后崩溃可重新执行（SPEC-WORKFLOW-RECOVERY-001）。
+- 调度/关闭：拒绝后终态写库失败可留RUNNING、恢复超过104容量可判FAILED、WorkflowRecovery整体UPDATE失败阻止启动，统一归SPEC-RECOVERY-ADMISSION-001，已有三项对应验收。子任务监听器顺序另归SPEC-CHILD-RECOVERY-001。
+- Workflow：执行前异常/成功后读取失败仍可落MODEL_ERROR；END节点SUCCEEDED可与父CANCELLED不同；成功事实落盘后崩溃可重新执行（SPEC-WORKFLOW-RECOVERY-001）。started早于校验而无failed投影归SPEC-WORKFLOW-GRAPH-003。
 - 表达式：全角空格、旧反斜杠解码、旧裸help!/A&B/半角括号版本兼容尚有问题（SPEC-WORKFLOW-GRAPH-003）。
 - 资源边界：SSE每连接独占线程，慢读可延长单次send，180秒不是硬总期限；Run先截止时breaker只释放、不计供应商超时（SPEC-SSE-BACKPRESSURE-002、SPEC-PROVIDER-SAMPLING-001）。
 - 凭据：禁止用-D/JAVA_OPTS传密钥；sun.java.command等进程启动配置不在引用名单保护范围，不能误授权；见OPERATIONS。新Chat P2见SPEC-CHAT-LIFECYCLE-004。
