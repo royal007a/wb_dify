@@ -1,0 +1,5 @@
+# SSE follow-up after independent static review
+
+Baseline F fix isolates blocking send and rejects foreign cursors. Reviewer confirmed those paths by static reading only. Remaining limits: 64 global worker slots remain occupied by idle subscriptions; there is no per-Run/client admission fairness. A slowly progressing reader can exceed nominal subscription lifetime inside one send; Tomcat's write timeout is inactivity, not absolute time. No authentication or IP identity should be invented as part of this slice.
+
+First add deterministic lost-wakeup/cleanup tests and actual idle SSE >20s, plus a slowly-reading socket experiment. Evaluate per-Run quota with reserved global capacity and bounded lifetime reclamation without shifting blocking writes back onto scheduler/commit threads. Any unsupported hard deadline must remain explicitly unclaimed. Record request-body/keep-alive timeout side effects and multi-instance heartbeat lag. Tests must use isolated loopback servers, not shared production.

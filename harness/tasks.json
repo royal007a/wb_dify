@@ -4,6 +4,56 @@
   "updatedAt": "2026-10-03T19:05:23Z",
   "tasks": [
     {
+      "id": "SPEC-RUN-ADMISSION-002",
+      "title": "Run 执行器容量拒绝的终态与幂等回放",
+      "description": "从B2/E大切片中独立出调度拒绝闭环，不混入关闭恢复及Workflow终态协调。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["backend", "runtime", "harness"],
+      "verifyScopes": ["harness"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "真实有界执行器拒绝后Run及终态事件提交为FAILED/EXECUTOR_REJECTED，错误不含executor描述",
+        "同幂等键重放同一终态，不重复用户消息、不再次调度；新键可以重试",
+        "恢复时单条拒绝不阻止其他Run收敛，清理本地取消标记且不会覆盖已置位标记",
+        "保留红绿证据，应用层与HTTP/H2回归通过"
+      ],
+      "planPath": "exec-plans/active/SPEC-RUN-ADMISSION-002.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T19:07:00Z",
+      "updatedAt": "2026-10-03T19:07:00Z"
+    },
+    {
+      "id": "SPEC-SSE-BACKPRESSURE-002",
+      "title": "SSE公平接入与慢读总时限的确定性验证",
+      "description": "F复核P2及测试缺口：全局64名额可被同Run占满，10s为写空闲期限而非总发送期限；先复现实测再设计收敛。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["backend", "runtime", "harness"],
+      "verifyScopes": ["harness"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-SSE-BACKPRESSURE-001"],
+      "acceptance": [
+        "补drain与awaitSignal间发布不丢唤醒的latch用例",
+        "验证到期/onError/初始化失败后订阅和worker均释放",
+        "验证按Run公平接入与慢读总期限，不把全局有界等同抗滥用",
+        "真实闲置SSE跨20s保持及弱网请求体超时副作用有证据；不能实现的硬期限必须明确披露"
+      ],
+      "planPath": "exec-plans/active/SPEC-SSE-BACKPRESSURE-002.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T19:07:00Z",
+      "updatedAt": "2026-10-03T19:07:00Z"
+    },
+    {
       "id": "SPEC-PROVIDER-LOCAL-FAILURE-002",
       "title": "区分用户取消与真实上游模型期限超时",
       "description": "B1复验P1：本地model-timeout中断卡死HTTP导致误归用户取消，需记录真实Provider超时而不污染Run取消统计。",
@@ -231,7 +281,7 @@
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": [],
+      "dependsOn": ["SPEC-RUN-ADMISSION-002"],
       "acceptance": [
         "executor拒绝持久化明确安全终态且相同幂等键可重放",
         "没有cancelRequestedAt的应用关闭中断不伪造用户取消，重启恢复有证据",
