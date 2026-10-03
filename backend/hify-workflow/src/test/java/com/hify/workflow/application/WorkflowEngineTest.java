@@ -34,6 +34,15 @@ class WorkflowEngineTest {
         assertThat(result.output()).isEqualTo("actual input");
         assertThat(result.context()).containsEntry("entry.userMessage", "actual input").doesNotContainKey("start.userMessage");
     }
+    @Test void shutdownAfterEndComputedDoesNotRewriteSucceededAsInterrupted() throws Exception {
+        stored(draft(List.of(node("start","START"),node("end","END","output","done")),edge("start","end")));
+        var saved=new java.util.concurrent.atomic.AtomicReference<com.hify.workflow.domain.WorkflowRun>();
+        when(runs.save(any())).thenAnswer(invocation->{saved.set(invocation.getArgument(0));return saved.get();});
+        var lifecycle=mock(com.hify.common.ExecutionLifecycle.class);
+        when(lifecycle.isStopping()).thenAnswer(invocation->saved.get()!=null && "SUCCEEDED".equals(saved.get().getStatus()));
+        var engine=new WorkflowEngine(app,runs,nodes,knowledge,JSON,new WorkflowGraphValidator(),Runnable::run,java.time.Duration.ofSeconds(60),lifecycle);
+        assertThat(engine.execute("v1","input").status()).isEqualTo("SUCCEEDED");
+    }
     @Test void conditionTreatsUserSuppliedOperatorsAsData() throws Exception {
         stored(draft(List.of(node("start","START"),
                 node("route","CONDITION","expression","{{start.userMessage}} contains refund"),

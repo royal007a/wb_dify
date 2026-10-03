@@ -21,6 +21,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 class QueryLoopTest {
     private final QueryLoop loop = new QueryLoop(new ToolRuntime());
 
+    @Test void returnedFinalAnswerCanFinishDuringShutdownButNewToolsCannotStart() {
+        var lifecycle=org.mockito.Mockito.mock(com.hify.common.ExecutionLifecycle.class);
+        var loop=new QueryLoop(new ToolRuntime(),new com.hify.runtime.context.ContextManager(),lifecycle);
+        ModelClient answer=request->{
+            org.mockito.Mockito.when(lifecycle.isStopping()).thenReturn(true);
+            return RuntimeMessage.assistant("computed");
+        };
+        var policy=new QueryLoop.RunPolicy(3,3,4096,Duration.ofSeconds(5),()->false);
+        assertThat(loop.run(List.of(RuntimeMessage.user("hi")),answer,"mock",0,Set.of(),policy,QueryLoop.RunObserver.NOOP).reason())
+                .isEqualTo(TerminalReason.COMPLETED);
+        org.mockito.Mockito.when(lifecycle.isStopping()).thenReturn(false);
+        ModelClient tool=request->{
+            org.mockito.Mockito.when(lifecycle.isStopping()).thenReturn(true);
+            return RuntimeMessage.toolCalls(List.of(new RuntimeMessage.ToolCall("shutdown-call","calculator",Map.of("expression","2+2"))));
+        };
+        AtomicInteger attempts=new AtomicInteger();
+        org.assertj.core.api.Assertions.assertThatThrownBy(()->loop.run(List.of(RuntimeMessage.user("calc")),tool,"mock",0,
+                Set.of("calculator"),policy,new QueryLoop.RunObserver(){
+                    @Override public void onToolStarted(int turn,RuntimeMessage.ToolCall call){attempts.incrementAndGet();}
+                })).isInstanceOf(com.hify.common.ExecutionSuspendedException.class);
+        assertThat(attempts).hasValue(0);
+    }
+
     @Test
     void completesMockToolRoundTripWithPairedResult() {
         QueryLoop.Result result = loop.run(

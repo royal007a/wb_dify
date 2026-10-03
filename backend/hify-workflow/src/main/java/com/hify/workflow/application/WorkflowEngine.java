@@ -82,9 +82,10 @@ public class WorkflowEngine {
    if (stopped == null) run.fail(safe(failure), write(context.snapshot()), millis(started));
    else run.stop(stopped, safe(failure), write(context.snapshot()), millis(started));
   }
-  if (control.isSuspended()) run.stop("INTERRUPTED", "Application shutdown; execution can be retried", write(context.snapshot()), millis(started));
-  else if (control.isCancelled()) run.stop("CANCELLED", "Workflow cancelled", write(context.snapshot()), millis(started));
-  else if (control.isExpired()) run.stop("TIMED_OUT", "Workflow deadline exceeded", write(context.snapshot()), millis(started));
+  // Suspension is classified where an operation is stopped. Do not discard an END
+  // result (or other computed outcome) merely because shutdown began before this save.
+  if (control.isCancelled()) run.stop("CANCELLED", "Workflow cancelled", write(context.snapshot()), millis(started));
+  else if (control.isExpired() && !"INTERRUPTED".equals(run.getStatus())) run.stop("TIMED_OUT", "Workflow deadline exceeded", write(context.snapshot()), millis(started));
   // Projection/read failure must not rewrite an already committed successful execution as FAILED.
   return response(runs.save(run));
  }

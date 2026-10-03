@@ -15,4 +15,10 @@ class RunShutdownPostgresTest {
     @Test @Timeout(60) void realContextShutdownAndRestartOnPostgres() throws Exception {
         RunShutdownIntegrationTest.verifyModelShutdownRecovery(POSTGRES.getJdbcUrl());
     }
+    @Test @Timeout(60) void computedResultIsCommittedOnShutdownWithoutReplayOnPostgres() throws Exception {
+        // Different database: the assertions count this fixture's messages only.
+        try(var connection=java.sql.DriverManager.getConnection(POSTGRES.getJdbcUrl(),"hify","hify");
+            var statement=connection.createStatement()) {statement.execute("CREATE DATABASE shutdown_completed");}
+        RunShutdownIntegrationTest.verifyComputedResultShutdown(POSTGRES.getJdbcUrl().replace("/shutdown_test","/shutdown_completed"));
+    }
 }

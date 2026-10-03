@@ -35,6 +35,59 @@ import static org.mockito.Mockito.*;
 /** Real context.close(), real runExecutor, fresh context on the same isolated database. */
 @org.junit.jupiter.api.Timeout(45)
 class RunShutdownIntegrationTest {
+    @Test void computedModelResultCommitsDuringRealShutdownAndIsNotReplayed() throws Exception {
+        verifyComputedResultShutdown(database());
+    }
+    @Test void computedClarificationCommitsDuringShutdownWithoutRestartingTheLoop() throws Exception {
+        verifyComputedResultShutdown(database(),true);
+    }
+
+    static void verifyComputedResultShutdown(String url) throws Exception {
+        verifyComputedResultShutdown(url,false);
+    }
+    private static void verifyComputedResultShutdown(String url,boolean clarify) throws Exception {
+        var computed=new CountDownLatch(1); var release=new CountDownLatch(1);
+        var calls=new java.util.concurrent.atomic.AtomicInteger();
+        String run; int completedCalls;
+        RunState expected=clarify?RunState.NEEDS_INPUT:RunState.COMPLETED;
+        String terminalEvent=clarify?"run.needs_input":"run.completed";
+        try(var first=start(url,request->{
+            int call=calls.incrementAndGet();
+            return clarify?RuntimeMessage.toolCalls(List.of(new RuntimeMessage.ToolCall("missing-"+call,"calculator",java.util.Map.of())))
+                    :RuntimeMessage.assistant("already computed");
+        },null,computed,release)) {
+            var service=first.getBean(RunApplicationService.class);
+            run=service.create(conversation(first),"completed-before-close","hello").run().getId();
+            assertThat(computed.await(10,TimeUnit.SECONDS)).isTrue();
+            completedCalls=calls.get();
+            String id=run;
+            // Only hold destruction until the worker returns; do not replace executor shutdown.
+            var pool=first.getBean("runExecutor",org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor.class);
+            first.addApplicationListener(event->{
+                if(event instanceof org.springframework.context.event.ContextClosedEvent) {
+                    assertThat(first.getBean(com.hify.common.ExecutionLifecycle.class).isStopping()).isTrue();
+                    release.countDown();
+                    long end=System.nanoTime()+TimeUnit.SECONDS.toNanos(5);
+                    while(pool.getActiveCount()>0 && System.nanoTime()<end) {
+                        try {Thread.sleep(10);} catch(InterruptedException failure){throw new AssertionError(failure);}
+                    }
+                    assertThat(pool.getActiveCount()).as("computed result returned before persistence destruction: %s",id).isZero();
+                }
+            });
+        } finally {release.countDown();}
+        JdbcTemplate db=database(url);
+        assertThat(db.queryForObject("select state from agent_runs where id=?",String.class,run)).isEqualTo(expected.name());
+        assertThat(db.queryForList("select event_type from run_events where run_id=?",String.class,run))
+                .contains(terminalEvent).doesNotContain("run.interrupted");
+        if(!clarify)assertThat(db.queryForList("select event_type from run_events where run_id=?",String.class,run)).contains("message.delta");
+        try(var second=start(url,request->{calls.incrementAndGet();return RuntimeMessage.assistant("duplicate");})) {
+            assertThat(second.getBean(RunApplicationService.class).get(run).getState()).isEqualTo(expected);
+            assertThat(calls).hasValue(completedCalls);
+            assertThat(db.queryForObject("select count(*) from chat_messages where role='assistant'",Integer.class)).isEqualTo(clarify?0:1);
+            assertThat(db.queryForObject("select count(*) from run_events where run_id=? and event_type=?",Integer.class,run,terminalEvent)).isEqualTo(1);
+        }
+    }
+
     @Test void startupInterruptsOldWorkflowRowsButNeverNewlyAcceptedExecutions() throws Exception {
         String url=database(),oldRun=UUID.randomUUID().toString();
         try(var first=start(url,request->new RuntimeMessage("assistant","unused",null,List.of()))){
@@ -115,6 +168,8 @@ class RunShutdownIntegrationTest {
             run=service.create(conversation(first),"cancel-before-close","hello").run().getId();
             assertThat(entered.await(10,TimeUnit.SECONDS)).isTrue();service.cancel(run);
         }
+        assertThat(database(url).queryForObject("select terminal_reason from agent_runs where id=?",String.class,run))
+                .as("must commit before restarting; recovery must not hide a shutdown DB failure").isEqualTo("CANCELLED");
         var calls=new java.util.concurrent.atomic.AtomicInteger();
         try(var second=start(url,request->{calls.incrementAndGet();return new RuntimeMessage("assistant","unexpected",null,List.of());})){
             assertThat(second.getBean(RunApplicationService.class).get(run).getState()).isEqualTo(RunState.CANCELLED);
@@ -142,22 +197,14 @@ class RunShutdownIntegrationTest {
             var service = first.getBean(RunApplicationService.class);
             run = service.create(conversation(first), "shutdown-model", "hello").run().getId();
             assertThat(entered.await(10, TimeUnit.SECONDS)).isTrue();
-            // Force the valid shutdown ordering where the interrupted worker can still commit.
-            // Without this interleaving the old code can accidentally pass by failing its DB write.
-            first.addApplicationListener(event -> {
-                if (event instanceof org.springframework.context.event.ContextClosedEvent) {
-                    var pool=first.getBean("runExecutor",org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor.class);
-                    pool.setAwaitTerminationSeconds(5);
-                    pool.shutdown();
-                }
-            });
+            // Unmodified production destruction: no listener invokes pool.shutdown().
         }
         assertThat(interrupted.await(5, TimeUnit.SECONDS)).isTrue();
         JdbcTemplate db = database(url);
         assertThat(db.queryForObject("select state from agent_runs where id=?", String.class, run)).isEqualTo("RUNNING");
         assertThat(db.queryForObject("select cancel_requested_at from agent_runs where id=?", Object.class, run)).isNull();
         assertThat(db.queryForList("select event_type from run_events where run_id=?", String.class, run))
-                .doesNotContain("run.cancelled", "run.failed", "run.completed");
+                .contains("run.interrupted").doesNotContain("run.cancelled", "run.failed", "run.completed");
         try (var second = start(url, request -> new RuntimeMessage("assistant", "recovered", null, List.of()))) {
             var service = second.getBean(RunApplicationService.class);
             awaitTerminal(service, run);
@@ -172,6 +219,10 @@ class RunShutdownIntegrationTest {
         return start(url,client,null);
     }
     private static ConfigurableApplicationContext start(String url, ModelClient client,KnowledgeRetrievalPort knowledge) {
+        return start(url,client,knowledge,null,null);
+    }
+    private static ConfigurableApplicationContext start(String url, ModelClient client,KnowledgeRetrievalPort knowledge,
+                                                        CountDownLatch computed,CountDownLatch release) {
         ModelClientFactory factory = mock(ModelClientFactory.class);
         when(factory.create(any())).thenReturn(client);
         return new SpringApplicationBuilder(HifyApplication.class).web(WebApplicationType.NONE)
@@ -179,6 +230,16 @@ class RunShutdownIntegrationTest {
                     var beans=(GenericApplicationContext)context;
                     beans.registerBean("shutdownTestModelFactory",ModelClientFactory.class,()->factory,definition->definition.setPrimary(true));
                     if(knowledge!=null)beans.registerBean("shutdownTestKnowledge",KnowledgeRetrievalPort.class,()->knowledge,definition->definition.setPrimary(true));
+                    if(computed!=null)beans.registerBean("shutdownTestQueryLoop",com.hify.runtime.QueryLoop.class,()->{
+                        var loop=spy(new com.hify.runtime.QueryLoop(context.getBean(com.hify.runtime.ToolRuntime.class),
+                                context.getBean(com.hify.runtime.context.ContextManager.class),context.getBean(com.hify.common.ExecutionLifecycle.class)));
+                        doAnswer(invocation->{
+                            Object result=invocation.callRealMethod();computed.countDown();
+                            assertThat(release.await(10,TimeUnit.SECONDS)).isTrue();return result;
+                        }).when(loop).run(org.mockito.ArgumentMatchers.anyList(),any(),any(),org.mockito.ArgumentMatchers.anyDouble(),
+                                any(com.hify.runtime.CapabilitySnapshot.class),any(),any(),any());
+                        return loop;
+                    },definition->definition.setPrimary(true));
                 })
                 .run("--spring.datasource.url="+url, "--spring.datasource.username="+username(url), "--spring.datasource.password="+password(url),
                         "--hify.run-timeout=120s", "--spring.main.banner-mode=off", "--logging.level.root=WARN");

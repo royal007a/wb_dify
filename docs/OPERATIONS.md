@@ -53,7 +53,9 @@ include `deploy/nginx-path.conf`。该片段将静态资源隔离在 `/hify/`，
 
 启动恢复沿用当前有界 Run 池（core2/max4/queue100）。瞬时提交超过可用执行/队列容量的 Run 会落为 FAILED / EXECUTOR_REJECTED，而非持久待调度队列；管理员/用户须检查终态并用新幂等键重新发起。扫描得到列表后按行隔离异常：一行数据库操作失败会记录 runId/异常类型并继续，不打印 SQL/异常正文；该行留待后续启动处理，目前没有定时重扫。最初读取列表失败仍可能导致启动失败，不能声称数据库不可用时也能恢复。
 
-关闭流程：ContextClosedEvent 先标记本实例 stopping，停止新调度/执行资格；runExecutor 在持久层销毁前中断并等待最多5秒。停止信号传入模型/工具/Workflow 控制，不能当成用户取消或 Provider 健康失败。无持久取消的 AgentRun 保留 RUNNING，可写库时留 run.interrupted；下次启动按 checkpoint 接续。Workflow 旧执行留下 INTERRUPTED，新的执行保留原 workflowVersionId。启动先把本实例启动时间之前遗留的 Workflow RUNNING 行收敛为 INTERRUPTED，再进行 AgentRun 恢复（兼容 kill -9 无法留痕的情况）。
+关闭流程：ContextClosedEvent 先标记本实例 stopping，停止新调度/执行资格；runExecutor 在持久层销毁前中断并等待最多5秒。停止信号传入模型/工具/Workflow 控制，不能当成用户取消或 Provider 健康失败。只有被关闭中断的未完成 AgentRun 保留 RUNNING，可写库时留 run.interrupted；已计算结果照常提交，不因 stopping 重复生成。下次启动按 checkpoint 接续未终态 Run。Workflow 中断执行留下 INTERRUPTED，新的执行保留原 workflowVersionId；已完成的 END 不因关闭标志被改写。启动先把本实例启动时间之前遗留的 Workflow RUNNING 行收敛为 INTERRUPTED，再进行 AgentRun 恢复（兼容 kill -9 无法留痕的情况）。Workflow 孤儿整表 UPDATE 失败也可能导致启动失败，并非按行容错。
+
+预算限制尚有差异：Workflow 恢复按 createdAt 扣减，而 Chat 的 QueryLoop 恢复仍重新获得完整 runTimeout，不能将其表述为跨重启总耗时上限。子任务恢复监听与父 Run 扫描尚无显式顺序，后续需要单独验证。时钟回拨及非合作驱动/连接池在中断中的行为不在当前恢复保证内。
 
 V22 仅扩展 Workflow Run/Node CHECK 约束，保留已有版本/记录。回滚应用不得删除已写出的 INTERRUPTED 记录或收紧约束；旧应用/UI未验证对此状态的兼容性，回滚前需评估。关闭等待不是不合作驱动的强制终止，也不保证外部副作用恰好一次；模型的未闭合响应可能重新调用，Workflow 从头重跑当前确定性/只读节点。数据库写失败会让中断事件缺失，但不因此伪造取消。跨实例并行恢复、持久 lease，以及 Workflow/AgentRun 最终提交竞争的投影协调仍属独立边界。
 

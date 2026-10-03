@@ -120,7 +120,7 @@ GET    /api/v1/runs/{runId}/events/stream
 
 若本地 Run 执行器因容量拒绝调度，已创建的 Run 收敛为 `FAILED / EXECUTOR_REJECTED`，与 `run.failed` 终态事件一起提交，不保存 assistant 消息，也不返回 JDK 线程池描述。首次请求仍是202，但 body 已为终态；同 key 重放200返回同一失败结果，不会重新调度或重复用户消息。需重新执行时使用新 key。持久化取消先提交时仍优先成为 `CANCELLED`；启动恢复中单条容量拒绝或单条数据库操作失败不会阻止其余 Run 继续收敛，数据库操作失败的行保持未结算，需后续启动恢复，不假报成功。
 
-应用上下文关闭与用户取消分开：关闭后不再调度新工作，关闭造成的拒绝不是容量失败。未持久化用户取消的 Run 保留 `RUNNING`，可写库时追加非终态事件 `run.interrupted`（`reason=APPLICATION_SHUTDOWN,recoverable=true`），不写助手消息/成功终态。下次启动尝试接续同一个 Run 的 checkpoint；不是新用户输入或重放 HTTP 请求。事件只表示具备启动恢复资格，不保证恢复必定成功。已提交的用户取消仍优先成为 CANCELLED。
+应用上下文关闭与用户取消分开：关闭后不再调度新工作，关闭造成的拒绝不是容量失败。明确被关闭中断、且未持久化用户取消的执行保留 `RUNNING`，可写库时追加非终态事件 `run.interrupted`（`reason=APPLICATION_SHUTDOWN,recoverable=true`），不伪造终态。已经计算出的终态仍正常提交；COMPLETED 可保存助手消息，不因 stopping 本身丢弃结果。下次启动只尝试接续未终态 Run 的 checkpoint；不是新用户输入或重放 HTTP 请求。事件只表示具备启动恢复资格，不保证恢复必定成功。已提交的用户取消仍优先成为 CANCELLED。
 
 Workflow 的一次执行/在途节点用 `INTERRUPTED` 记录进程中断，与 CANCELLED/TIMED_OUT 区分；重启只收敛旧进程留下的 RUNNING 执行，不改启动期间新接入的执行。父 AgentRun 的恢复会从同一不可变 WorkflowVersion 创建新的 Workflow 执行记录，不从任意节点断点继续，也不回滚已发生的外部操作。数据库不可用、kill -9 或执行器无法在关闭等待期限内退出时，中断事件可能缺失，原 RUNNING 行仍是下次恢复依据。详见 `docs/spec/SPEC_RUN_SHUTDOWN.md`。
 

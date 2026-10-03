@@ -88,6 +88,17 @@ class RunWorkflowControlTest {
         assertThat(run.getState()).isEqualTo(RunState.TIMED_OUT);
         assertThat(run.getTerminalReason()).isEqualTo("TIMEOUT");
     }
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.CsvSource({"SUCCEEDED,COMPLETED","TIMED_OUT,TIMED_OUT","FAILED,FAILED"})
+    void computedWorkflowOutcomeIsNotDiscardedWhenShutdownStartsBeforeReturn(String workflowState,RunState expected) {
+        prepare(run);
+        when(workflows.execute(eq("wv1"),eq("input"),any())).thenAnswer(invocation->{
+            when(lifecycle.isStopping()).thenReturn(true);return result(workflowState);
+        });
+        service.convergeInterruptedRuns();
+        assertThat(run.getState()).isEqualTo(expected);
+        verify(events,never()).publish(eq("run"),eq("run.interrupted"),anyMap());
+    }
     @Test void persistentCancellationBeforeCommitWinsOverSuccessfulWorkflowResult() {
         prepare(run);
         when(workflows.execute(eq("wv1"),eq("input"),any())).thenAnswer(invocation -> { run.requestCancel();return result("SUCCEEDED"); });

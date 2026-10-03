@@ -165,7 +165,9 @@ public class QueryLoop {
                         "模型调用失败：" + exception.getMessage(), messages, turn, toolCalls,
                         plan, replanDecisions, checkpoint);
             }
-            control.throwIfSuspended();
+            // A complete final response may still pass the normal finish/cancel/budget gates.
+            // Tool-bearing responses need further work and remain subject to shutdown admission.
+            if (response.toolCalls() != null && !response.toolCalls().isEmpty()) control.throwIfSuspended();
             messages.add(response);
             commitHistory(identity, "model:" + turn, messages, observer);
             observer.onModelCompleted(turn, response);

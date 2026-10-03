@@ -9,7 +9,7 @@ The first uncoordinated context-close test (`red-model.log`) **passed on the old
 
 An isolated `git archive 22e9d77` at `/tmp/hify-e1-baseline-CUUadD` received only the test fixture retained in `docs/evidence/fixtures/RunShutdownBaselineTest.java.txt` (as `backend/hify-app/src/test/java/com/hify/api/RunShutdownIntegrationTest.java`). The fixture uses actual context.close, with a shutdown listener making the interrupted executor finish while persistence is still available. `mvn -f backend/pom.xml -pl hify-app -am -Dtest=RunShutdownIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test` then fails **1 assertion, 0 errors/skips**, exit 1: expected RUNNING, actual CANCELLED. `red-isolated-baseline.log` records this reproducible old-code failure. No shared worktree was reset.
 
-## Implementation
+## Implementation at 5e37fff (terminal suppression superseded by review fix)
 
 - Context-scoped ExecutionLifecycle marks stopping before executor shutdown, ignores child-context close, and is fresh after restart. ExecutionControl preserves the original deadline, differentiates suspension from interruption/user cancellation, and gives explicit cancellation precedence. QueryLoop and Workflow receive this signal; tool lease validation stops new execution. Provider probes ignore shutdown samples and release HALF_OPEN permission.
 - Terminal commit checks stopping under the Run row lock: without persisted cancellation, leave RUNNING, append non-terminal run.interrupted when DB is available, and do not save assistant/ack children. Shutdown rejection is deferred, not EXECUTOR_REJECTED capacity failure. Ordinary capacity refusal retains B2 behavior.
@@ -34,3 +34,5 @@ Atomic runner on **5e37fff** repeated **23 Run/application tests, zero skips**; 
 ## Remaining boundaries
 
 Single instance, old process fully stopped before new startup. Neither dispatch owner nor lifecycle flag is a distributed lease. No arbitrary write-tool replay, external rollback or exactly-once side effect claim. A hard kill is represented by orphan-row fixtures, not an actual kill -9 test. Non-cooperative drivers can outlive the 5-second wait; DB unavailability can prevent interruption evidence. Run budget may expire before recovery succeeds. Workflow/AgentRun final-commit cancellation races are a separate pending slice; deployment and full product verification remain pending.
+
+Review correction: the blanket stopping guard above discarded already-computed outcomes; the model fixture also forced executor shutdown rather than proving production destruction order. See `SPEC_RUN_SHUTDOWN_REVIEW.md` for the counterexamples, replacement assertions and fix. The budget statement applies to Workflow: Chat currently resets its QueryLoop timeout on restart. WorkflowRecovery bulk UPDATE failure can also prevent startup, and child-task recovery listener order remains unverified.

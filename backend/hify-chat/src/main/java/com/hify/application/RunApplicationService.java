@@ -20,6 +20,7 @@ import com.hify.workflow.api.WorkflowCapabilityPort;
 import com.hify.workflow.api.WorkflowRunResponse;
 import com.hify.common.ExecutionControl;
 import com.hify.common.ExecutionLifecycle;
+import com.hify.common.ExecutionSuspendedException;
 import com.hify.infra.RunCheckpointRepository;
 import com.hify.runtime.ModelClient;
 import com.hify.runtime.ModelClientFactory;
@@ -385,7 +386,8 @@ public class RunApplicationService {
                 "version",1,"runId",run.getId(),"workflowId",binding.workflowId(),
                 "workflowVersionId",binding.workflowVersionId(),"workflowChecksum",binding.checksum()));
         WorkflowRunResponse result = workflows.execute(binding.workflowVersionId(), run.getInputMessage(), control);
-        control.throwIfSuspended();
+        // A returned outcome is already computed. Shutdown closes admission, not its commit.
+        if ("INTERRUPTED".equals(result.status())) throw new ExecutionSuspendedException();
         if ("CANCELLED".equals(result.status()) || control.isCancelled()) {
             finishWorkflowStopped(run, result, RunState.CANCELLED, TerminalReason.CANCELLED, "Workflow cancelled.");
             return;
@@ -599,12 +601,26 @@ public class RunApplicationService {
     }
 
     private void finishFailure(String runId, RuntimeException exception) {
+        if (shutdownInterruption(exception)) {
+            finishTerminal(runId, RunState.FAILED, "APPLICATION_SHUTDOWN", null, 0, 0, false);
+            return;
+        }
         TerminalReason reason = exception instanceof CapabilityMismatchException
                 ? TerminalReason.CAPABILITY_MISMATCH
                 : exception instanceof HistoryOperationConflictException
                 ? TerminalReason.HISTORY_COMMIT_FAILED : TerminalReason.MODEL_ERROR;
         finishTerminal(runId, RunState.FAILED, reason.name(),
                 "Run failed: " + exception.getMessage(), 0, 0, false);
+    }
+
+    private boolean shutdownInterruption(Throwable failure) {
+        var seen=java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<Throwable,Boolean>());
+        for (Throwable cause=failure; cause!=null && seen.add(cause); cause=cause.getCause()) {
+            if (cause instanceof ExecutionSuspendedException) return true;
+            if (lifecycle.isStopping() && (cause instanceof InterruptedException
+                    || cause instanceof com.hify.common.ExecutionCancelledException)) return true;
+        }
+        return false;
     }
 
     private boolean finishTerminal(String runId, RunState state, String terminalReason,
@@ -621,10 +637,10 @@ public class RunApplicationService {
             AgentRun current = runs.findByIdForUpdate(runId)
                     .orElseThrow(() -> new IllegalArgumentException("Run not found: " + runId));
             if (current.getState().terminal()) return null;
-            if (lifecycle.isStopping() && !current.isCancelRequested()) {
+            if ("APPLICATION_SHUTDOWN".equals(terminalReason) && !current.isCancelRequested()) {
                 eventBroker.publish(runId,"run.interrupted",Map.of("version",1,"runId",runId,
                         "reason","APPLICATION_SHUTDOWN","recoverable",true));
-                return null; // No fabricated terminal, assistant message or child acknowledgement.
+                return null; // Only unfinished/suspended work: computed outcomes still commit.
             }
             RunState actual = current.isCancelRequested() ? RunState.CANCELLED : state;
             String reason = actual != state ? TerminalReason.CANCELLED.name() : terminalReason;
