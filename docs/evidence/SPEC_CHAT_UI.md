@@ -19,4 +19,6 @@
 
 `npm run typecheck` 已通过。8项浏览器矩阵及最终typecheck/build结果以本任务runner证据为准；在执行结束前不能写成通过。
 
+首次修复回归 `/tmp/hify-chat-lifecycle-green.log`：首条通过，第二条触发测试总120s超时，snapshot已显示COMPLETED和完整持久化答案；trace分阶段为Create page47.27s、Navigate58.06s、功能断言约1s。停止余下运行，不能把第二条算通过。改用已安装的Playwright chromium-headless-shell，关闭trace录制，显式1440宽视口；8个场景和10s断言保持不变。无需安装新浏览器或改动已有Chrome用户会话。
+
 这些受控测试证明前端状态管理，不证明后端事务/SSE提交顺序正确，也不替代真实Provider、PostgreSQL、部署端到端验证。

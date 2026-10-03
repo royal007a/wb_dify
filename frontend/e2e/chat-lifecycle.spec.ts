@@ -3,6 +3,7 @@ import { expect, test, type Page } from '@playwright/test'
 // UI contract tests only: HTTP and EventSource are controlled, not a backend SSE acceptance test.
 // Allow browser startup on shared developer machines; individual UI assertions retain the 10s limit.
 test.setTimeout(120_000)
+test.use({ channel: 'chromium-headless-shell', trace: 'off', viewport: { width: 1440, height: 900 } })
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     class ControlledSource extends EventTarget {
