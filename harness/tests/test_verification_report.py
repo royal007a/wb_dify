@@ -70,6 +70,12 @@ class VerificationReportTest(unittest.TestCase):
             "Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1 s -- in example.GoodTest\n")
         self.assertNotEqual(0, code)
 
+    def test_mixed_old_surefire_format_cannot_hide_a_class(self):
+        code, report = self.run_report(
+            "Tests run: 2, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 1 s - in example.OldTest\n"
+            "Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1 s -- in example.GoodTest\n")
+        self.assertNotEqual(0, code)
+
     def test_test_failure_wins_even_when_command_claims_zero(self):
         code, report = self.run_report("Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 1 s -- in X\n")
         self.assertNotEqual(0, code)

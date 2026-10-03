@@ -17,6 +17,7 @@ from pathlib import Path
 MAVEN_STEPS = {"backend-tests", "runtime-tests", "migration-postgres", "intent-context-recall-eval", "api-inventory"}
 ANSI = re.compile(r"\x1b\[[0-9;]*m")
 CLASS = re.compile(r"Tests run: (\d+), Failures: (\d+), Errors: (\d+), Skipped: (\d+), (?:Flakes: \d+, )?Time elapsed: [^\n]*? -- in (\S+)")
+AGGREGATE = re.compile(r"Tests run: \d+, Failures: \d+, Errors: \d+, Skipped: \d+(?:, Flakes: \d+)?")
 
 
 def summarize_maven(text):
@@ -26,11 +27,14 @@ def summarize_maven(text):
     if re.search(r"Flakes: [1-9][0-9]*", text):
         raise ValueError("flaky reruns are not a clean pass")
     for line in text.splitlines():
-        if "Tests run:" not in line or "-- in " not in line:
+        line = re.sub(r"^\[(?:INFO|WARNING|ERROR)\]\s*", "", line.strip())
+        if not line.startswith("Tests run:"):
             continue
-        match = CLASS.search(line)
+        match = CLASS.fullmatch(line)
         if not match:
-            raise ValueError("unrecognized per-class summary")
+            if AGGREGATE.fullmatch(line):
+                continue
+            raise ValueError("unrecognized test summary")
         tests, failures, errors, skipped = map(int, match.groups()[:4])
         name = match[5]
         if name in seen or failures + errors + skipped > tests:
