@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T20:20:45Z",
+  "updatedAt": "2026-10-03T20:37:57Z",
   "tasks": [
     {
       "id": "SPEC-HISTORY-RECOVERY-001",
@@ -9,12 +9,20 @@
       "description": "E1复验新P1假设：model:N先于轮末checkpoint提交，恢复重新生成可能造成语义摘要冲突；先红灯复现，不放宽冲突保护。",
       "priority": "P1",
       "status": "pending",
-      "scopes": ["backend", "runtime", "harness"],
-      "verifyScopes": ["harness"],
+      "scopes": [
+        "backend",
+        "runtime",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-RUN-SHUTDOWN-002"],
+      "dependsOn": [
+        "SPEC-RUN-SHUTDOWN-002"
+      ],
       "acceptance": [
         "不同响应模型在model:N提交后工具阶段挂起，重启恢复不因重新生成而HISTORY_COMMIT_FAILED",
         "已提交响应和工具结果按canonical历史恢复，不重复模型调用或delta；冲突保护仍fail-closed",
@@ -546,7 +554,7 @@
       "title": "Workflow与AgentRun最终提交竞争的投影一致性",
       "description": "原B2/E拆分后的剩余原子切片：容量拒绝、调度所有权和关闭恢复分别由关联任务验收；本任务聚焦最终状态及事件投影。",
       "priority": "P1",
-      "status": "running",
+      "status": "completed",
       "scopes": [
         "backend",
         "runtime",
@@ -570,18 +578,22 @@
         "终态不重复发布，workflow投影不可因父Run实际状态改变而无声丢弃",
         "保留红绿证据，既有取消、关闭恢复、拒绝与事务SSE回归通过"
       ],
-      "planPath": "exec-plans/active/SPEC-RUN-ADMISSION-001.md",
-      "checkpoint": {
-        "summary": "task command started",
-        "headCommit": "830e0be62f2d2970dc8a7c5ce5a1755a8b4fab58",
-        "workingTreeHash": "893e6154a7ad3875b35d29fc53ef9084879c594c421a455fe9272af8e991c3e2",
-        "evidencePath": "harness/evidence/SPEC-RUN-ADMISSION-001/SPEC-RUN-ADMISSION-001-20261003T202045Z-26dafb80",
-        "updatedAt": "2026-10-03T20:20:45Z"
-      },
+      "planPath": "exec-plans/completed/SPEC-RUN-ADMISSION-001.md",
+      "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-RUN-ADMISSION-001-20261003T202045Z-26dafb80",
+          "path": "harness/evidence/SPEC-RUN-ADMISSION-001/SPEC-RUN-ADMISSION-001-20261003T202045Z-26dafb80",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "830e0be62f2d2970dc8a7c5ce5a1755a8b4fab58",
+          "headCommit": "1d79393adcb494c9c622a247f562f30d7c780687",
+          "recordedAt": "2026-10-03T20:37:57Z"
+        }
+      ],
       "createdAt": "2026-10-03T18:13:15Z",
-      "updatedAt": "2026-10-03T20:20:45Z"
+      "updatedAt": "2026-10-03T20:37:57Z"
     },
     {
       "id": "SPEC-CHAT-LIFECYCLE-002",

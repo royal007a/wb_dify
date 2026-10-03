@@ -2,8 +2,12 @@
   "schemaVersion": 1,
   "runId": "SPEC-RUN-ADMISSION-001-20261003T202045Z-26dafb80",
   "taskId": "SPEC-RUN-ADMISSION-001",
-  "status": "running",
+  "status": "completed",
   "baselineCommit": "830e0be62f2d2970dc8a7c5ce5a1755a8b4fab58",
   "approvalRef": null,
-  "startedAt": "2026-10-03T20:20:45Z"
+  "startedAt": "2026-10-03T20:20:45Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "1d79393adcb494c9c622a247f562f30d7c780687",
+  "finishedAt": "2026-10-03T20:37:57Z"
 }

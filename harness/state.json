@@ -1,26 +1,20 @@
 {
   "schemaVersion": 1,
-  "currentTaskId": "SPEC-RUN-ADMISSION-001",
-  "runId": "SPEC-RUN-ADMISSION-001-20261003T202045Z-26dafb80",
-  "baselineCommit": "830e0be62f2d2970dc8a7c5ce5a1755a8b4fab58",
-  "startedAt": "2026-10-03T20:20:45Z",
-  "evidencePath": "harness/evidence/SPEC-RUN-ADMISSION-001/SPEC-RUN-ADMISSION-001-20261003T202045Z-26dafb80",
-  "lastCheckpoint": {
-    "summary": "task command started",
-    "headCommit": "830e0be62f2d2970dc8a7c5ce5a1755a8b4fab58",
-    "workingTreeHash": "893e6154a7ad3875b35d29fc53ef9084879c594c421a455fe9272af8e991c3e2",
-    "evidencePath": "harness/evidence/SPEC-RUN-ADMISSION-001/SPEC-RUN-ADMISSION-001-20261003T202045Z-26dafb80",
-    "updatedAt": "2026-10-03T20:20:45Z"
-  },
+  "currentTaskId": null,
+  "runId": null,
+  "baselineCommit": null,
+  "startedAt": null,
+  "evidencePath": null,
+  "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-RUN-SHUTDOWN-002-20261003T200338Z-6fd9d532",
-    "path": "harness/evidence/SPEC-RUN-SHUTDOWN-002/SPEC-RUN-SHUTDOWN-002-20261003T200338Z-6fd9d532",
+    "runId": "SPEC-RUN-ADMISSION-001-20261003T202045Z-26dafb80",
+    "path": "harness/evidence/SPEC-RUN-ADMISSION-001/SPEC-RUN-ADMISSION-001-20261003T202045Z-26dafb80",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "1a4b4189cb7479f7150b281dab4aa5cd29d97f75",
-    "headCommit": "6191211a70f7a1ec23158a1bb6d40fc0a7c7fe4d",
-    "recordedAt": "2026-10-03T20:15:18Z"
+    "baselineCommit": "830e0be62f2d2970dc8a7c5ce5a1755a8b4fab58",
+    "headCommit": "1d79393adcb494c9c622a247f562f30d7c780687",
+    "recordedAt": "2026-10-03T20:37:57Z"
   },
-  "lastCompletedTaskId": "SPEC-RUN-SHUTDOWN-002",
-  "updatedAt": "2026-10-03T20:20:45Z"
+  "lastCompletedTaskId": "SPEC-RUN-ADMISSION-001",
+  "updatedAt": "2026-10-03T20:37:57Z"
 }

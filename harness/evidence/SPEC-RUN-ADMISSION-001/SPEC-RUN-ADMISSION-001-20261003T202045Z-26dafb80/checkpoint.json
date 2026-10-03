@@ -1,7 +1,7 @@
 {
-  "summary": "task command started",
-  "headCommit": "830e0be62f2d2970dc8a7c5ce5a1755a8b4fab58",
-  "workingTreeHash": "893e6154a7ad3875b35d29fc53ef9084879c594c421a455fe9272af8e991c3e2",
+  "summary": "task command completed; verification starting",
+  "headCommit": "1d79393adcb494c9c622a247f562f30d7c780687",
+  "workingTreeHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "evidencePath": "harness/evidence/SPEC-RUN-ADMISSION-001/SPEC-RUN-ADMISSION-001-20261003T202045Z-26dafb80",
-  "updatedAt": "2026-10-03T20:20:45Z"
+  "updatedAt": "2026-10-03T20:37:29Z"
 }

@@ -9,6 +9,8 @@
 - green-pg-settlement.log：43 项通过、0 skip：WorkflowControl 11、WorkflowEngine 6、RunWorkflowControl 12、H2 结算 4、真实 PG16 结算 4、关闭上下文 6。此次在 Testcontainers 独立数据库运行，不用共享服务；SELECT version() 断言防止误用 H2。
 - 最终原子门禁另见本目录 command.log / verification.json，包含后续 v2 payload 断言与 migration 非跳过门禁。
 
+最终代码 1d79393，原子门禁退出 0：定向命令 47 项通过、0 skip；harness 校验及 5 项 Python 自测通过；migration 矩阵 23 项通过、0 skip（包含 PG 结算 4 项与关闭/恢复 PG 2 项）。源码后的 v2 payload 断言已实际重跑。本次没有新增迁移，现有 V1–V22 回归。
+
 测试在真实执行结果保存之后用 latch 注入取消；正常/取消的成功路径还在 projection 写入后暂停事务，用第二连接验证父状态、助手消息、两类事件尚不可见。之后释放事务并验证 HTTP SSE 重放与数据库一致。不是只对 mock 调用次数作断言。
 
 本片区分执行事实与交付：SUCCEEDED + CANCELLED 是可解释的组合，不是把两张表强行写成同一个值。正常失败现为 WORKFLOW_ERROR；投影 v2 同时写两处状态。首次观察时已存在的停止仍按原控制分类；不宣称每一种异常都比取消优先。
