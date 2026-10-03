@@ -5,8 +5,8 @@ test('Demo session calls the clock after greeting and on repeated time questions
   await page.goto('./chat')
   await expect(page.getByRole('heading', { name: '对话' })).toBeVisible()
   await expect(page.locator('.chat-toolbar .el-select')).not.toHaveClass(/is-disabled/)
-  await page.locator('.chat-toolbar .el-select').click()
-  await page.getByRole('option', { name: /^Demo Agent · v/ }).click()
+  // The seeded deployment defaults to Demo; wait for its label instead of clicking the select container.
+  await expect(page.locator('.chat-toolbar .el-select')).toContainText('Demo Agent · v')
   await expect(page.locator('.message.assistant').first()).toContainText('本地规则模拟')
   let conversationId: string | undefined
   for (const input of ['hi', '现在几点', '现在几点？', '现在几点?']) {
@@ -28,5 +28,5 @@ test('Demo session calls the clock after greeting and on repeated time questions
       await expect(page.locator('.message.assistant').last()).not.toContainText('已收到')
     }
   }
-  if (process.env.E2E_SCREENSHOT) await page.screenshot({ path: process.env.E2E_SCREENSHOT, fullPage: true })
+  if (process.env.E2E_TIME_SCREENSHOT) await page.screenshot({ path: process.env.E2E_TIME_SCREENSHOT, fullPage: true })
 })

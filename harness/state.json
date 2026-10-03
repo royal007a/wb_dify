@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "CHAT-DEMO-001-20261003T122751Z-e8cc6970",
-    "path": "harness/evidence/CHAT-DEMO-001/CHAT-DEMO-001-20261003T122751Z-e8cc6970",
+    "runId": "CHAT-DEMO-DEPLOY-001-20261003T123143Z-2bb8d4ed",
+    "path": "harness/evidence/CHAT-DEMO-DEPLOY-001/CHAT-DEMO-DEPLOY-001-20261003T123143Z-2bb8d4ed",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "8cc29fad66acfd1a8cc7a6d4914a1c725098da06",
-    "headCommit": "8cc29fad66acfd1a8cc7a6d4914a1c725098da06",
-    "recordedAt": "2026-10-03T12:30:36Z"
+    "baselineCommit": "208bdc381876c778d461f62c1192c4876773cbd2",
+    "headCommit": "208bdc381876c778d461f62c1192c4876773cbd2",
+    "recordedAt": "2026-10-03T12:36:17Z"
   },
-  "lastCompletedTaskId": "CHAT-DEMO-001",
-  "updatedAt": "2026-10-03T12:30:36Z"
+  "lastCompletedTaskId": "CHAT-DEMO-DEPLOY-001",
+  "updatedAt": "2026-10-03T12:36:17Z"
 }

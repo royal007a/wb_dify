@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "CHAT-DEMO-DEPLOY-001-20261003T123143Z-2bb8d4ed",
+  "taskId": "CHAT-DEMO-DEPLOY-001",
+  "status": "completed",
+  "baselineCommit": "208bdc381876c778d461f62c1192c4876773cbd2",
+  "approvalRef": "lark:om_x100b633b0e70b0a0b257a783089a8e3",
+  "startedAt": "2026-10-03T12:31:43Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "208bdc381876c778d461f62c1192c4876773cbd2",
+  "finishedAt": "2026-10-03T12:36:17Z"
+}
