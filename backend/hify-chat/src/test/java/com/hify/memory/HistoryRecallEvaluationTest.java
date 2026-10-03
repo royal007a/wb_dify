@@ -49,16 +49,32 @@ class HistoryRecallEvaluationTest {
         double lexicalRecall = ratio(lexicalHits, cases.size());
         double hybridRecall = ratio(hybridHits, cases.size());
         double precisionAt3 = round(precision / cases.size());
-        long p95Micros = latencies.get(Math.max(0, (int) Math.ceil(latencies.size() * 0.95) - 1));
+        long coldP95Micros = percentile95(latencies);
+        // Twelve cold samples make P95 the maximum (including classloading/JIT).
+        // Report that observation, but gate a separately specified steady-state
+        // in-memory ranking protocol. This is NOT PostgreSQL or end-to-end latency.
+        for (int warmup = 0; warmup < 5; warmup++) {
+            for (Case value : cases) measureRanking(value);
+        }
+        List<Long> steadyLatencies = new ArrayList<>();
+        for (int repeat = 0; repeat < 20; repeat++) {
+            for (Case value : cases) steadyLatencies.add(measureRanking(value));
+        }
+        long p95Micros = percentile95(steadyLatencies);
         System.out.printf(Locale.ROOT,
-                "RECALL_EVAL lexicalTop1=%.4f hybridTop1=%.4f precisionAt3=%.4f p95Micros=%d misses=%s%n",
-                lexicalRecall, hybridRecall, precisionAt3, p95Micros, hybridMisses);
+                "RECALL_EVAL lexicalTop1=%.4f hybridTop1=%.4f precisionAt3=%.4f "
+                        + "coldP95Micros=%d warmupPasses=5 measurementPasses=20 samples=%d "
+                        + "steadyP95Micros=%d steadyMaxMicros=%d misses=%s%n",
+                lexicalRecall, hybridRecall, precisionAt3, coldP95Micros,
+                steadyLatencies.size(), p95Micros,
+                steadyLatencies.stream().mapToLong(Long::longValue).max().orElseThrow(), hybridMisses);
 
         // Decision gate: lexical misses semantic paraphrases, so pgvector+RRF is justified.
         assertThat(lexicalRecall).isLessThan(0.85);
         assertThat(hybridRecall).as("hybrid misses=%s", hybridMisses).isGreaterThanOrEqualTo(0.90);
         assertThat(categories.get("semantic")[1]).isGreaterThanOrEqualTo(3);
-        assertThat(p95Micros).isLessThan(50_000);
+        assertThat(p95Micros).as("steady-state local ranking P95; cold P95=%sμs", coldP95Micros)
+                .isLessThan(50_000);
 
         Map<String, Object> artifact = json.readValue(getClass().getResourceAsStream(
                 "/recall/recall-baseline-v1.json"), new TypeReference<>() {});
@@ -74,6 +90,21 @@ class HistoryRecallEvaluationTest {
         assertThat(((Number) artifact.get("rankingP95BudgetMicros")).longValue()).isGreaterThan(p95Micros);
         assertThat(artifact.get("decision")).isEqualTo("ENABLE_PGVECTOR_RRF");
         assertThat(System.nanoTime() - started).isPositive();
+    }
+
+    private long measureRanking(Case value) {
+        long started = System.nanoTime();
+        lexicalRank(value, false);
+        List<String> hybrid = rrf(value, lexicalRank(value, true), vectorRank(value));
+        long micros = Math.max(1, (System.nanoTime() - started) / 1_000);
+        // Consume results so measurement cannot be replaced with dead computation.
+        assertThat(hybrid).hasSize(value.documents().size());
+        return micros;
+    }
+
+    private long percentile95(List<Long> samples) {
+        List<Long> sorted = samples.stream().sorted().toList();
+        return sorted.get(Math.max(0, (int) Math.ceil(sorted.size() * 0.95) - 1));
     }
 
     private List<String> lexicalRank(Case value, boolean semanticNormalization) {

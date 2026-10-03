@@ -24,6 +24,8 @@ mvn -q -f backend/pom.xml -pl hify-app -am \
 HistoryRecallEvaluationTest 的12题单轮 P95=74,157μs，超过50,000μs。词法/混合召回与相关性断言未失败；Maven在hify-chat停止，hify-app及hify-demo未执行，不能沿用旧报告算通过。Harness原始 failed verification/run保留。
 该测试未预热且只有12个耗时样本（P95实际上取最大值）；后续需要分别记录冷启动与预热稳态，用相同50ms门禁评估明确的稳态协议，不直接提高上限。
 
+计时协议修正后的窄测试退出0：冷启动P95=67,779μs；预热5轮、采样20轮共240样本，稳态P95=916μs、最大值8,760μs。质量仍为 lexicalTop1=0.5、hybridTop1=1.0、Precision@3=0.3333，无miss。50ms阈值、黄金标签、排序代码未变。冷启动仍高，**没有证明线上延迟优化**；只是避免把冷启动单个最大样本冒充稳态P95。命令：`mvn -q -f backend/pom.xml -pl hify-chat -am -Dtest=HistoryRecallEvaluationTest -Dsurefire.failIfNoSpecifiedTests=false test`。
+
 ## 本次没有宣称的结果
 
 - 67是库存匹配数，不是67个接口行为测试全部通过；F01-F38也不是已全验收。

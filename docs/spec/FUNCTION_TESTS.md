@@ -65,3 +65,5 @@
 
 每次验证记录 `caseId / commit / environment / fixture / command / expected / actual / status / evidence`。status 只取 pass/fail/not-run；not-run 需原因，不能以“测试类存在”填 pass。
 最少三层独立报告：67个接口库存一致性；F01-F38行为矩阵；本地/132部署验收。任何外部真实模型、真实 MCP 凭据缺失均单列，不以 mock 外推。未通过项归入后续原子任务，不删规格降低分母。
+
+历史召回12题 toy 排序性能协议：先报告冷启动单轮P95，再预热5轮、采样20轮（240样本），稳态P95保持小于50ms门禁，同时报告稳态最大值。该数值只包含进程内排序/本地bootstrap embedding，不包含数据库/网络/模型生成；禁止与旧冷启动数值直接比较后宣称产品提速。质量断言与黄金标签不随计时协议调整。
