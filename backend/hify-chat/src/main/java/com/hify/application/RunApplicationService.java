@@ -18,6 +18,7 @@ import com.hify.knowledge.api.KnowledgeCitation;
 import com.hify.knowledge.api.KnowledgeRetrievalPort;
 import com.hify.workflow.api.WorkflowCapabilityPort;
 import com.hify.workflow.api.WorkflowRunResponse;
+import com.hify.common.ExecutionControl;
 import com.hify.infra.RunCheckpointRepository;
 import com.hify.runtime.ModelClient;
 import com.hify.runtime.ModelClientFactory;
@@ -316,10 +317,27 @@ public class RunApplicationService {
             eventBroker.publish(run.getId(), "run.cancelled", Map.of("version",1,"runId",run.getId(),"state","CANCELLED"));
             return;
         }
+        Duration remaining = runTimeout.minus(Duration.between(run.getCreatedAt(), Instant.now()));
+        if (remaining.isNegative() || remaining.isZero()) {
+            finishWorkflowStopped(run, null, RunState.TIMED_OUT, TerminalReason.TIMEOUT,
+                    "Run deadline expired before Workflow execution.");
+            return;
+        }
+        AtomicBoolean cancelled = cancellations.computeIfAbsent(run.getId(), ignored -> new AtomicBoolean());
+        ExecutionControl control = ExecutionControl.withTimeout(remaining.compareTo(runTimeout) > 0 ? runTimeout : remaining,
+                () -> cancelled.get() || run.isCancelRequested());
         eventBroker.publish(run.getId(), "workflow.started", Map.of(
                 "version",1,"runId",run.getId(),"workflowId",binding.workflowId(),
                 "workflowVersionId",binding.workflowVersionId(),"workflowChecksum",binding.checksum()));
-        WorkflowRunResponse result = workflows.execute(binding.workflowVersionId(), run.getInputMessage());
+        WorkflowRunResponse result = workflows.execute(binding.workflowVersionId(), run.getInputMessage(), control);
+        if ("CANCELLED".equals(result.status()) || control.isCancelled()) {
+            finishWorkflowStopped(run, result, RunState.CANCELLED, TerminalReason.CANCELLED, "Workflow cancelled.");
+            return;
+        }
+        if ("TIMED_OUT".equals(result.status()) || control.isExpired()) {
+            finishWorkflowStopped(run, result, RunState.TIMED_OUT, TerminalReason.TIMEOUT, "Workflow deadline exceeded.");
+            return;
+        }
         if (!"SUCCEEDED".equals(result.status())) {
             throw new IllegalStateException("Workflow failed: " + result.errorMessage());
         }
@@ -334,6 +352,16 @@ public class RunApplicationService {
         eventBroker.publish(run.getId(), "run.completed", Map.of(
                 "version",1,"runId",run.getId(),"state","COMPLETED",
                 "terminalReason",TerminalReason.COMPLETED.name(),"turns",result.nodes().size(),"toolCalls",0));
+    }
+
+    private void finishWorkflowStopped(AgentRun run, WorkflowRunResponse result, RunState state,
+                                       TerminalReason reason, String message) {
+        int nodes = result == null ? 0 : result.nodes().size();
+        if (!finishTerminal(run.getId(), state, reason.name(), message, nodes, 0, false)) return;
+        if (result != null) eventBroker.publish(run.getId(), state == RunState.CANCELLED ? "workflow.cancelled" : "workflow.timed_out",
+                Map.of("version", 1, "runId", run.getId(), "workflowRunId", result.id(), "state", state.name()));
+        eventBroker.publish(run.getId(), state == RunState.CANCELLED ? "run.cancelled" : "run.failed",
+                Map.of("version", 1, "runId", run.getId(), "state", state.name(), "terminalReason", reason.name(), "turns", nodes, "toolCalls", 0));
     }
 
     private QueryLoop.RunObserver observer(String runId) {
@@ -545,16 +573,29 @@ public class RunApplicationService {
     private boolean finishTerminal(String runId, RunState state, String terminalReason,
                                    String outputMessage, int turns, int toolCalls,
                                    boolean persistAssistantMessage) {
-        Boolean won = transactions.execute(status -> {
-            AgentRun current = get(runId);
-            int updated = runs.finishTerminal(runId, RunState.RUNNING, current.getVersion(), state,
-                    terminalReason, outputMessage, turns, toolCalls, Instant.now());
-            if (updated == 1 && persistAssistantMessage && outputMessage != null) {
+        RunState committed = transactions.execute(status -> {
+            // Serialize with requestCancel's row UPDATE; a persisted cancellation wins if committed first.
+            AgentRun current = runs.findByIdForUpdate(runId)
+                    .orElseThrow(() -> new IllegalArgumentException("Run not found: " + runId));
+            if (current.getState().terminal()) return null;
+            RunState actual = current.isCancelRequested() ? RunState.CANCELLED : state;
+            String reason = actual != state ? TerminalReason.CANCELLED.name() : terminalReason;
+            String output = actual != state ? "Run cancelled before final commit." : outputMessage;
+            int updated = runs.finishTerminal(runId, RunState.RUNNING, current.getVersion(), actual,
+                    reason, output, turns, toolCalls, Instant.now());
+            if (updated == 1 && actual == RunState.COMPLETED && persistAssistantMessage && outputMessage != null) {
                 messages.save(new ChatMessage(current.getConversationId(), "assistant", outputMessage));
             }
-            return updated == 1;
+            return updated == 1 ? actual : null;
         });
-        return Boolean.TRUE.equals(won);
+        if (committed == null) return false;
+        if (committed != state) {
+            eventBroker.publish(runId, "run.cancelled", Map.of("version", 1, "runId", runId,
+                    "state", RunState.CANCELLED.name(), "terminalReason", TerminalReason.CANCELLED.name(),
+                    "turns", turns, "toolCalls", toolCalls));
+            return false; // Caller must not publish its now-stale success/failure projection.
+        }
+        return true;
     }
 
     @EventListener(ApplicationReadyEvent.class)
