@@ -17,7 +17,7 @@
 - NEEDS_INPUT缺失continuation事件时，从已有events端点恢复gapIds；缺恢复信息不能无声发送全新任务。
 - 取消失败可见；晚到的取消响应不得覆盖已经确认的终态。
 
-`npm run typecheck` 已通过。8项浏览器矩阵及最终typecheck/build结果以本任务runner证据为准；在执行结束前不能写成通过。
+最终固定代码 `00a10dd`：8项浏览器矩阵全部通过（1.3分钟），Harness 5项测试、typecheck、生产构建全部通过。runner证据：`harness/evidence/SPEC-CHAT-UI-001/SPEC-CHAT-UI-001-20261003T152908Z-8fad96f4/`，退出码0。临时Vite端口5197已停止并确认无监听。构建仍有大chunk提示，不是错误，未通过提高警告阈值掩盖。
 
 首次修复回归 `/tmp/hify-chat-lifecycle-green.log`：首条通过，第二条触发测试总120s超时，snapshot已显示COMPLETED和完整持久化答案；trace分阶段为Create page47.27s、Navigate58.06s、功能断言约1s。停止余下运行，不能把第二条算通过。改用已安装的Playwright chromium-headless-shell，关闭trace录制，显式1440宽视口；8个场景和10s断言保持不变。无需安装新浏览器或改动已有Chrome用户会话。
 

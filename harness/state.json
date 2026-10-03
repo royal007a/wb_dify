@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-COMMON-001-20261003T151103Z-4fbdb81c",
-    "path": "harness/evidence/SPEC-COMMON-001/SPEC-COMMON-001-20261003T151103Z-4fbdb81c",
+    "runId": "SPEC-CHAT-UI-001-20261003T152908Z-8fad96f4",
+    "path": "harness/evidence/SPEC-CHAT-UI-001/SPEC-CHAT-UI-001-20261003T152908Z-8fad96f4",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "09ab1077dbc0c23efdf2675a954f12c7ce093a14",
-    "headCommit": "5a36569a215586aa2548113d7d9eacc07ff22b39",
-    "recordedAt": "2026-10-03T15:26:57Z"
+    "baselineCommit": "37bb4625731826a425d852a63b6cf89ecb52aae5",
+    "headCommit": "00a10dd64a19aa61d6a73a24c562961f4470e909",
+    "recordedAt": "2026-10-03T16:01:08Z"
   },
-  "lastCompletedTaskId": "SPEC-COMMON-001",
-  "updatedAt": "2026-10-03T15:26:57Z"
+  "lastCompletedTaskId": "SPEC-CHAT-UI-001",
+  "updatedAt": "2026-10-03T16:01:08Z"
 }

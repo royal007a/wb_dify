@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-CHAT-UI-001-20261003T152908Z-8fad96f4",
+  "taskId": "SPEC-CHAT-UI-001",
+  "status": "completed",
+  "baselineCommit": "37bb4625731826a425d852a63b6cf89ecb52aae5",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T15:29:08Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "00a10dd64a19aa61d6a73a24c562961f4470e909",
+  "finishedAt": "2026-10-03T16:01:08Z"
+}

@@ -1,32 +1,75 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T15:26:57Z",
+  "updatedAt": "2026-10-03T16:01:08Z",
   "tasks": [
+    {
+      "id": "SPEC-WORKFLOW-GRAPH-001",
+      "title": "验证 Workflow 路径终止与模板必经变量",
+      "description": "针对A04建立非法图和缺失变量反例；保存/发布/执行统一验证，保留原DSL有效图和旧不可变版本，拒绝旧非法图执行。取消与语料快照分别验收。",
+      "priority": "P0",
+      "status": "pending",
+      "scopes": ["backend", "harness"],
+      "verifyScopes": ["harness"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "所有路径终止于END，非条件出边唯一，分支布尔标签与默认分支明确",
+        "模板只能引用已声明且必经的上游输出；运行缺值fail closed，不递归解释用户文本",
+        "执行前复查已发布DSL，不改写旧版本；自定义START key可用",
+        "纯单测先红后绿并有真实HTTP反例；局部门禁不冒充全应用回归"
+      ],
+      "planPath": "exec-plans/active/SPEC-WORKFLOW-GRAPH-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T16:06:00Z",
+      "updatedAt": "2026-10-03T16:06:00Z"
+    },
     {
       "id": "SPEC-CHAT-UI-001",
       "title": "修复流式会话生命周期与终态回读恢复",
       "description": "针对 A08：受控浏览器事件源验证新会话隔离、离页清理、重复事件、终态回读失败/重试和取消失败提示。保持后端协议不变。",
       "priority": "P0",
-      "status": "pending",
-      "scopes": ["frontend", "harness"],
-      "verifyScopes": ["harness", "frontend"],
+      "status": "completed",
+      "scopes": [
+        "frontend",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "frontend"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-COMMON-001"],
+      "dependsOn": [
+        "SPEC-COMMON-001"
+      ],
       "acceptance": [
         "流式执行期间不可切换会话；组件退出时关闭连接并使旧回调失效",
         "终态回读失败有明确恢复操作，持久化输出可纠正漏delta/重复delta",
         "受控浏览器回归先红后绿；取消失败不产生未处理Promise；typecheck/build通过",
         "明确受控浏览器结果不是后端SSE事务或真实模型端到端证明"
       ],
-      "planPath": "exec-plans/active/SPEC-CHAT-UI-001.md",
+      "planPath": "exec-plans/completed/SPEC-CHAT-UI-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-CHAT-UI-001-20261003T152908Z-8fad96f4",
+          "path": "harness/evidence/SPEC-CHAT-UI-001/SPEC-CHAT-UI-001-20261003T152908Z-8fad96f4",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "37bb4625731826a425d852a63b6cf89ecb52aae5",
+          "headCommit": "00a10dd64a19aa61d6a73a24c562961f4470e909",
+          "recordedAt": "2026-10-03T16:01:08Z"
+        }
+      ],
       "createdAt": "2026-10-03T15:28:00Z",
-      "updatedAt": "2026-10-03T15:28:00Z"
+      "updatedAt": "2026-10-03T16:01:08Z"
     },
     {
       "id": "SPEC-COMMON-001",
