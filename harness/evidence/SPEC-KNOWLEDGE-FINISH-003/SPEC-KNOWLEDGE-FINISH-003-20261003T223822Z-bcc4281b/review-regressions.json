@@ -1,0 +1,14 @@
+{
+  "baselineCommit": "21f04f0",
+  "sourceCommit": "57b4ec5",
+  "testCommit": "8b6d503",
+  "red": {"log": "red-memory.log", "tests": 43, "failures": 4, "errors": 0, "skipped": 0},
+  "intermediateFailures": [
+    {"log": "green-memory.log", "tests": 54, "errors": 54, "cause": "bean initialization cycle; deferred read-only Agent port lookup"},
+    {"log": "green-memory-2.log", "tests": 54, "errors": 1, "cause": "fixture inserted duplicate summary version; no production assertion weakened"}
+  ],
+  "targetedGreen": {"log": "green-memory-3.log", "tests": 54, "failures": 0, "errors": 0, "skipped": 0},
+  "postgresGreen": {"log": "green-postgres.log", "tests": 43, "failures": 0, "errors": 0, "skipped": 0},
+  "final": {"commandTests": 78, "runtimeTests": 34, "migrationTests": 114, "allExitCodes": 0, "skipped": 0},
+  "scopeLimitations": ["Inherited and H2/PG tests overlap", "Shutdown signal simulation is not process destruction-order proof", "No semantic entailment verification", "No browser or deployment in this task", "Raw memory for knowledge-gated runs deliberately withheld even after completion; final chat delivery remains"]
+}

@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-03T22:29:37Z`
+- Generated from task state updated at: `2026-10-03T22:49:32Z`
 - Current task: `none`
-- Counts: pending 14 · running 0 · blocked 1 · completed 51
+- Counts: pending 15 · running 0 · blocked 1 · completed 52
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -50,7 +50,7 @@
 | `SPEC-HISTORY-RECOVERY-002` | P1 | completed | backend, runtime, harness | reversible_write | 恢复元数据按JSON语义比较，兼容跨JVM键顺序 |
 | `SPEC-KNOWLEDGE-FINISH-001` | P1 | completed | backend, runtime, harness | reversible_write | 知识缺口与完成门禁契约对齐 |
 | `SPEC-KNOWLEDGE-FINISH-002` | P1 | completed | backend, runtime, harness | reversible_write | 保留知识入场失败中的应用关闭挂起信号 |
-| `SPEC-KNOWLEDGE-FINISH-003` | P1 | pending | backend, runtime, migration, harness | reversible_write | 隔离知识门禁内部历史与可交付记忆并补回读关闭验证 |
+| `SPEC-KNOWLEDGE-FINISH-003` | P1 | completed | backend, runtime, migration, harness | reversible_write | 隔离知识门禁内部历史与可交付记忆并补回读关闭验证 |
 | `SPEC-PROVIDER-LOCAL-FAILURE-001` | P1 | completed | backend, runtime, harness | reversible_write | 取消与本地拒绝不得污染供应商熔断 |
 | `SPEC-PROVIDER-LOCAL-FAILURE-002` | P1 | completed | backend, runtime, harness | reversible_write | 区分用户取消与真实上游模型期限超时 |
 | `SPEC-RUN-ADMISSION-001` | P1 | completed | backend, runtime, harness | reversible_write | Workflow与AgentRun最终提交竞争的投影一致性 |
@@ -66,7 +66,9 @@
 | `SPEC-CREDENTIAL-BOUNDARY-002` | P2 | completed | backend, runtime, harness | reversible_write | 补齐受保护配置命名空间与冻结凭据负向验收 |
 | `SPEC-CREDENTIAL-BOUNDARY-003` | P2 | completed | backend, harness | reversible_write | 主密钥宽松配置绑定别名不得被误授权 |
 | `SPEC-HISTORY-RECOVERY-003` | P2 | pending | backend, runtime, harness | reversible_write | 补齐恢复后的计划投影和预算边界 |
+| `SPEC-KNOWLEDGE-FINISH-004` | P2 | pending | backend, frontend, runtime, harness | reversible_write | 对齐知识门禁故障分类、检索事件和核验范围展示 |
 | `SPEC-KNOWLEDGE-INTEGRITY-003` | P2 | pending | backend, harness, migration | reversible_write | 补齐索引数据库类型检测及Agent固定Workflow校验和 |
+| `SPEC-KNOWLEDGE-LEGACY-001` | P2 | pending | backend, runtime, harness | reversible_write | 旧未固定版本会话恢复不能移除知识门禁 |
 | `SPEC-PROVIDER-SAMPLING-001` | P2 | pending | backend, runtime, harness | reversible_write | 区分HTTP实际尝试与Run预算截断的健康采样 |
 | `SPEC-RUN-BUDGET-001` | P2 | pending | backend, runtime, harness | reversible_write | 统一聊天与Workflow跨重启的Run预算 |
 | `SPEC-SSE-BACKPRESSURE-002` | P2 | pending | backend, runtime, harness | reversible_write | SSE公平接入与慢读总时限的确定性验证 |

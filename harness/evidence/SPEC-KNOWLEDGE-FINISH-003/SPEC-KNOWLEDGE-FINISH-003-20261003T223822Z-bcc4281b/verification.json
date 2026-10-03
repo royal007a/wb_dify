@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "runtime",
+    "migration"
+  ],
+  "base": "working-tree",
+  "headCommit": "8b6d5038ad26711960a3171f466aa20e2dac8ed0",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/harness-state.log"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/harness-progress.log"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/harness-api-spec.log"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/harness-python-tests.log"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/harness-shell-syntax.log"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/runtime-tests.log"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/migration-docker.log"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/migration-postgres.log"
+    },
+    {
+      "name": "migration-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/migration-not-skipped.log"
+    },
+    {
+      "name": "migration-mcp-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/migration-mcp-not-skipped.log"
+    },
+    {
+      "name": "migration-workflow-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/migration-workflow-not-skipped.log"
+    },
+    {
+      "name": "migration-shutdown-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/migration-shutdown-not-skipped.log"
+    },
+    {
+      "name": "migration-settlement-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/migration-settlement-not-skipped.log"
+    },
+    {
+      "name": "migration-history-recovery-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/migration-history-recovery-not-skipped.log"
+    },
+    {
+      "name": "migration-workflow-knowledge-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/migration-workflow-knowledge-not-skipped.log"
+    },
+    {
+      "name": "migration-workflow-review-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/migration-workflow-review-not-skipped.log"
+    },
+    {
+      "name": "migration-knowledge-finish-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/migration-knowledge-finish-not-skipped.log"
+    },
+    {
+      "name": "migration-knowledge-memory-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/migration-knowledge-memory-not-skipped.log"
+    },
+    {
+      "name": "migration-knowledge-shutdown-not-skipped",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b/migration-knowledge-shutdown-not-skipped.log"
+    }
+  ],
+  "finishedAt": "2026-10-03T22:49:32Z"
+}

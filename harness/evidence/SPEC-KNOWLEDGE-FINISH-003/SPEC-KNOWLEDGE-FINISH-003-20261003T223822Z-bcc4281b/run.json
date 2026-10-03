@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b",
+  "taskId": "SPEC-KNOWLEDGE-FINISH-003",
+  "status": "completed",
+  "baselineCommit": "21f04f07b1e5dce91d7ee388b6701b5c7446c1dd",
+  "approvalRef": null,
+  "startedAt": "2026-10-03T22:38:22Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "8b6d5038ad26711960a3171f466aa20e2dac8ed0",
+  "finishedAt": "2026-10-03T22:49:32Z"
+}

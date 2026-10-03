@@ -1,31 +1,92 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T22:29:37Z",
+  "updatedAt": "2026-10-03T22:49:32Z",
   "tasks": [
+    {
+      "id": "SPEC-KNOWLEDGE-FINISH-004",
+      "title": "对齐知识门禁故障分类、检索事件和核验范围展示",
+      "description": "来源门禁复核剩余P2：DataAccessException不应成为用户澄清，部分失败不先报completed，UI提示只验证来源不保证语义。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["backend", "frontend", "runtime", "harness"],
+      "verifyScopes": ["harness", "runtime", "frontend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-KNOWLEDGE-FINISH-003"],
+      "acceptance": ["来源回读基础设施失败与证据缺口分开处理且不泄露错误原文", "检索事件不自相矛盾；UI明确来源核验非语义验证"],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T22:50:00Z",
+      "updatedAt": "2026-10-03T22:50:00Z"
+    },
+    {
+      "id": "SPEC-KNOWLEDGE-LEGACY-001",
+      "title": "旧未固定版本会话恢复不能移除知识门禁",
+      "description": "复核P2：旧agentVersionId为空且Agent重新发布成无知识绑定时，checkpoint中的门禁必须仍然复检，不能降成NONE。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["backend", "runtime", "harness"],
+      "verifyScopes": ["harness", "runtime"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-KNOWLEDGE-FINISH-003"],
+      "acceptance": ["旧未固定会话有知识checkpoint时重新发布无知识Agent也不能无引用完成", "未知旧映射fail-closed，错误提示说明恢复或新会话路径"],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-03T22:50:00Z",
+      "updatedAt": "2026-10-03T22:50:00Z"
+    },
     {
       "id": "SPEC-KNOWLEDGE-FINISH-003",
       "title": "隔离知识门禁内部历史与可交付记忆并补回读关闭验证",
       "description": "复核P1：memory预览/详情旁路及canonical回读关闭测试；保留重放历史但不向知识Run开放原始memory投影。",
       "priority": "P1",
-      "status": "pending",
-      "scopes": ["backend", "runtime", "migration", "harness"],
-      "verifyScopes": ["harness", "runtime", "migration"],
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "runtime",
+        "migration",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "runtime",
+        "migration"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-KNOWLEDGE-FINISH-002"],
+      "dependsOn": [
+        "SPEC-KNOWLEDGE-FINISH-002"
+      ],
       "acceptance": [
         "知识Run在RUNNING/NEEDS_INPUT/完成后均不泄露原始memory投影，旧索引和同会话搜索无旁路；普通聊天兼容",
         "canonical历史保持可重放，合格最终回答仍正常交付",
         "canonical回读期间关闭保留RUNNING并有run.interrupted；PG门禁无跳过"
       ],
-      "planPath": "exec-plans/active/SPEC-KNOWLEDGE-FINISH-003.md",
+      "planPath": "exec-plans/completed/SPEC-KNOWLEDGE-FINISH-003.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b",
+          "path": "harness/evidence/SPEC-KNOWLEDGE-FINISH-003/SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "21f04f07b1e5dce91d7ee388b6701b5c7446c1dd",
+          "headCommit": "8b6d5038ad26711960a3171f466aa20e2dac8ed0",
+          "recordedAt": "2026-10-03T22:49:32Z"
+        }
+      ],
       "createdAt": "2026-10-03T22:41:00Z",
-      "updatedAt": "2026-10-03T22:41:00Z"
+      "updatedAt": "2026-10-03T22:49:32Z"
     },
     {
       "id": "SPEC-KNOWLEDGE-FINISH-002",

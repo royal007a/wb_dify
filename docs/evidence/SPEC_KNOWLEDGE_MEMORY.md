@@ -26,3 +26,7 @@ memory 测试通过 latch 卡住真实 canonical 校验时，确认 model:1 已�
 ## 未保证
 
 未做浏览器/付费模型/部署，不新增迁移；不是语义真实性核验。已知 P2：基础设施故障被解释成澄清、部分检索事件口径、UI 核验范围提示、旧未固定 Agent 的恢复门禁，另行登记。PG 源码与最终命令/head 以本目录 verification.json 为准，最终门禁后补结论。
+
+## 最终门禁（2026-10-04 06:49 CST）
+
+源码 57b4ec5，测试/契约 8b6d503。verification.json 的 headCommit 为 8b6d503：定向 command.log 78 项、runtime 34 项、migration PG 矩阵 114 项，全部失败/错误/跳过为 0；harness 所有步骤退出 0。PG 矩阵包含两组新加入的 memory 21 / shutdown 22 项，不能把 H2/PG 或继承重复项计作独立新增场景。最终状态 completed 只代表本原子任务验收，不代表全仓库和部署完成；独立复核待回。
