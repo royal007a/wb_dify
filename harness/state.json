@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-PROVIDER-LOCAL-FAILURE-001-20261003T181315Z-126518e8",
-    "path": "harness/evidence/SPEC-PROVIDER-LOCAL-FAILURE-001/SPEC-PROVIDER-LOCAL-FAILURE-001-20261003T181315Z-126518e8",
+    "runId": "SPEC-CREDENTIAL-BOUNDARY-002-20261003T182421Z-0778be20",
+    "path": "harness/evidence/SPEC-CREDENTIAL-BOUNDARY-002/SPEC-CREDENTIAL-BOUNDARY-002-20261003T182421Z-0778be20",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "370d22318aa98a274cf20e73902c0244b73412d6",
-    "headCommit": "03eafd6f48f0c7f5a105509521c56e46149a0310",
-    "recordedAt": "2026-10-03T18:22:51Z"
+    "baselineCommit": "a92c2732cfe005e5357557ffc11ae367e0b2c8cb",
+    "headCommit": "5f4566ce2cc2fa2c52e4c544c39341760e082743",
+    "recordedAt": "2026-10-03T18:28:40Z"
   },
-  "lastCompletedTaskId": "SPEC-PROVIDER-LOCAL-FAILURE-001",
-  "updatedAt": "2026-10-03T18:22:51Z"
+  "lastCompletedTaskId": "SPEC-CREDENTIAL-BOUNDARY-002",
+  "updatedAt": "2026-10-03T18:28:40Z"
 }
