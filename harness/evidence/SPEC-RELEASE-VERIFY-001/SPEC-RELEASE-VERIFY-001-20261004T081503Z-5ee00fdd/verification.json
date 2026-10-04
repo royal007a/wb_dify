@@ -1,0 +1,1515 @@
+{
+  "schemaVersion": 3,
+  "strictEvidence": true,
+  "invocationId": "80aa9da5-d7c6-40d0-9acc-9ffb2f303c41",
+  "runId": "SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd",
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "migration",
+    "backend",
+    "runtime",
+    "eval",
+    "frontend"
+  ],
+  "base": "working-tree",
+  "headCommit": "42db7278c61f9dcd49f505654341b7f1fceeafc9",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd/harness-state.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/harness.py",
+        "validate"
+      ],
+      "logSha256": "6b88b9a6057606024a1bf285377c7371051f61b28a1e81d6b68a3fd12bf6cb7b"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd/harness-progress.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/harness.py",
+        "check-progress"
+      ],
+      "logSha256": "53a4a1b7863bea67045d82fe8a1bc53c8c30dd3740b7708ff332a9300796dc18"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd/harness-api-spec.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/render-api-spec.py",
+        "--check"
+      ],
+      "logSha256": "0456d6551eef206c05217007f775b3b7e8fe918df66de019312f60508977f0f0"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd/harness-python-tests.log",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/Users/weberzhao/hify/harness/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "logSha256": "19ade0127c892d11f95b10e1e488f8c4b84e034d926400d7dc6bd4af378ce407"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd/harness-shell-syntax.log",
+      "command": [
+        "sh",
+        "-n",
+        "/Users/weberzhao/hify/harness/init.sh",
+        "/Users/weberzhao/hify/harness/verify.sh",
+        "/Users/weberzhao/hify/harness/run-task.sh"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "migration-docker",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd/migration-docker.log",
+      "command": [
+        "docker",
+        "info"
+      ],
+      "logSha256": "8abe1f94056f4cb40a4da099b3f668d50a489d2087dad0f0b0d3e980fa29c895"
+    },
+    {
+      "name": "migration-postgres",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd/migration-postgres.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/maven_step.py",
+        "--root",
+        "/Users/weberzhao/hify",
+        "--evidence-dir",
+        "/Users/weberzhao/hify/harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd",
+        "--step",
+        "migration-postgres",
+        "--invocation-id",
+        "80aa9da5-d7c6-40d0-9acc-9ffb2f303c41"
+      ],
+      "logSha256": "1c227c44fe462c7810e7579548214998e5df01ca4d9ac3eb2aeb905f7178b671",
+      "mavenTests": {
+        "totals": {
+          "tests": 118,
+          "executed": 118,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "flakyAttempts": 0
+        },
+        "classes": [
+          {
+            "class": "com.hify.api.AgentToolBindingMigrationTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "2c6c7e848da799f8545ee9661066f207ee018095c2cc199466e559695a319525"
+          },
+          {
+            "class": "com.hify.api.HistoryRecoveryMigrationTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "a0f797060df586682468d2d5abcac829b136952a17cea2a0f03e086b5a6d194c"
+          },
+          {
+            "class": "com.hify.api.HistoryRecoveryPostgresTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "f4625c8d0d5fcc65aba90e0b0f7d07c7962b662cfabafa66e73c70f79d03dc68"
+          },
+          {
+            "class": "com.hify.api.KnowledgeFinishPostgresTest",
+            "tests": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 18,
+            "flakyAttempts": 0,
+            "expectedMinimum": 18,
+            "xmlSha256": "5d8ac10267e55abb4e354b7f8cab48bad84db603dd14b141f340052fab31e7d3"
+          },
+          {
+            "class": "com.hify.api.KnowledgeMemoryPostgresTest",
+            "tests": 21,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 21,
+            "flakyAttempts": 0,
+            "expectedMinimum": 21,
+            "xmlSha256": "458f47afe8b291da6df2c2f10460bb9dbc5ca0dca0ad487b58a9fbf03b8a12ce"
+          },
+          {
+            "class": "com.hify.api.KnowledgeShutdownPostgresTest",
+            "tests": 22,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 22,
+            "flakyAttempts": 0,
+            "expectedMinimum": 22,
+            "xmlSha256": "da2c927d93a4d388dad019dd63ad6a8c14d43ed1992fc1e4dd0e361f36f572d0"
+          },
+          {
+            "class": "com.hify.api.McpCredentialPostgresTest",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 8,
+            "flakyAttempts": 0,
+            "expectedMinimum": 8,
+            "xmlSha256": "3a6387baa2fa256d6a27fafb17c27f1392a275c806503a4e7ae4845f5c2cab4b"
+          },
+          {
+            "class": "com.hify.api.PostgresConcurrencyIntegrationTest",
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 7,
+            "flakyAttempts": 0,
+            "expectedMinimum": 7,
+            "xmlSha256": "1c39f8b551870fa24d51cbcc5bb716fefbcaf1656b8b2889f2811d9833401210"
+          },
+          {
+            "class": "com.hify.api.RunShutdownPostgresTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "d8b6d92147b5e3599077e48f9d394ec2a964c629d9d7eb274f62355c43a32e40"
+          },
+          {
+            "class": "com.hify.api.WorkflowKnowledgePostgresTest",
+            "tests": 10,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 10,
+            "flakyAttempts": 0,
+            "expectedMinimum": 10,
+            "xmlSha256": "a32aaf70d726e20d8ada41f52dcd908b2b81c6eea4d372738376f82a7d6449c8"
+          },
+          {
+            "class": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+            "tests": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 19,
+            "flakyAttempts": 0,
+            "expectedMinimum": 19,
+            "xmlSha256": "eab7a7675370f0f1fea4da40457e013e8df6d038df5065c0ccbaeeb1d5655718"
+          },
+          {
+            "class": "com.hify.api.WorkflowSettlementPostgresTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 4,
+            "flakyAttempts": 0,
+            "expectedMinimum": 4,
+            "xmlSha256": "e2b0a4a911c173feefb6fd64546105203b193df1f71937c7c01540cb5e764192"
+          },
+          {
+            "class": "com.hify.api.WorkflowTerminalMigrationTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "472276e2bf7953e36a4a790915802f37e92f89d657685aa0362e313f6c580648"
+          },
+          {
+            "class": "com.hify.api.WorkflowTerminalPostgresTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "34237ad7b3c8068bb026f48d671f545faa933b64983f1ca9d45a603f94b7eaf9"
+          }
+        ],
+        "underfilledSuites": [],
+        "countMeaning": "Reported testcase/skip records; disabled containers can hide additional intended methods."
+      },
+      "testSummarySha256": "be53ca2ca8516d051b7e24d14d5a5f915e025cb966759972720967689e1d4c01"
+    },
+    {
+      "name": "backend-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd/backend-tests.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/maven_step.py",
+        "--root",
+        "/Users/weberzhao/hify",
+        "--evidence-dir",
+        "/Users/weberzhao/hify/harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd",
+        "--step",
+        "backend-tests",
+        "--invocation-id",
+        "80aa9da5-d7c6-40d0-9acc-9ffb2f303c41"
+      ],
+      "logSha256": "cdc033bfc620c38b6a0413ccd21a40ae9b64ed1d6dfc77636bb8ca3088842f74",
+      "mavenTests": {
+        "totals": {
+          "tests": 602,
+          "executed": 602,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "flakyAttempts": 0
+        },
+        "classes": [
+          {
+            "class": "com.hify.api.AgentApiIntegrationTest",
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 7,
+            "flakyAttempts": 0,
+            "expectedMinimum": 7,
+            "xmlSha256": "eb6b2860a240b4571bb5a7b669fcbddbac3a97e92e876074d8fb95b28ef1da7d"
+          },
+          {
+            "class": "com.hify.api.AgentCacheIntegrationTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "3ec96f68ea357c4aeef52b331f4ddd553ec75cfc14055b306f7d2b64f98ae072"
+          },
+          {
+            "class": "com.hify.api.AgentToolBindingMigrationTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "ea526ecbee03afad6a815acd63ae7f70162db3e3fa301fe8edfe3ed0852b40af"
+          },
+          {
+            "class": "com.hify.api.ApiContractInventoryTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "904cb0d34c61f8df2bd9fdb77ad7b049ce28731cf03d5ba086a46da0d714ca31"
+          },
+          {
+            "class": "com.hify.api.ChildAgentTaskIntegrationTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "0d335123ec67065456ffe174d1c042ca8df43f759f1b5c8e59f8e2e9ce94da36"
+          },
+          {
+            "class": "com.hify.api.ContextMemoryIntegrationTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "f1955fecea1d96f65ec801d5c4fcf68ababbedc0053b94c120dd0883af99ec41"
+          },
+          {
+            "class": "com.hify.api.DemoItemApiIntegrationTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "d581e426ccc3e1e24b7855933d61d25e1bf898987c522da8b50555a81298fa48"
+          },
+          {
+            "class": "com.hify.api.HistoryRecoveryIntegrationTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "62a0bf2e7d525d45ce9999643aa8609d8c143c799a154def5a394923634c13ea"
+          },
+          {
+            "class": "com.hify.api.HistoryRecoveryMigrationTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "3ce0b675db68fed552c715777382a1e8ecb3217dd0e24ca67e70af6ccaab4b98"
+          },
+          {
+            "class": "com.hify.api.HistoryRecoveryPostgresTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "607b64ab913344e0670fb7857113fbe92e67b3743601b3dcbb199d10c06aaddb"
+          },
+          {
+            "class": "com.hify.api.HistoryReplayTest",
+            "tests": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 9,
+            "flakyAttempts": 0,
+            "expectedMinimum": 9,
+            "xmlSha256": "cc0218b837b0d769d330f0268d72632554ac3b4420085431e388123e67db61b7"
+          },
+          {
+            "class": "com.hify.api.HttpErrorSurfaceTest",
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 7,
+            "flakyAttempts": 0,
+            "expectedMinimum": 7,
+            "xmlSha256": "908189aa8ab539ee5769064431c6d1a0781ead1d4e886b43b89dab3d250305eb"
+          },
+          {
+            "class": "com.hify.api.InputHygieneIntegrationTest",
+            "tests": 14,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 14,
+            "flakyAttempts": 0,
+            "expectedMinimum": 14,
+            "xmlSha256": "1584013969e3e905a8b56a93605e9d16b4257cca4d6baea007fa7b73eafbf9a9"
+          },
+          {
+            "class": "com.hify.api.InputHygienePostgresTest",
+            "tests": 14,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 14,
+            "flakyAttempts": 0,
+            "expectedMinimum": 14,
+            "xmlSha256": "ad5d52b6b46f27ad652a1a3be17e3004bba3fc6bd7e6e98ec5f61dfe5b81ec54"
+          },
+          {
+            "class": "com.hify.api.IntentRoutingApiIntegrationTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "3f765d41ae6581947d29edc336b4f7cc6b9a4e51120eda0008a357167324506e"
+          },
+          {
+            "class": "com.hify.api.KnowledgeAdmissionShutdownTest",
+            "tests": 22,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 22,
+            "flakyAttempts": 0,
+            "expectedMinimum": 22,
+            "xmlSha256": "59fdd12d0a9175854c3fe59340a2ad288109369acee8ee3a551712e365da07be"
+          },
+          {
+            "class": "com.hify.api.KnowledgeApiIntegrationTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "f9ba1a7904b90222dad826112bc7f00645bab7b7e8c48d12d0e4eca3daea42b0"
+          },
+          {
+            "class": "com.hify.api.KnowledgeFinishIntegrationTest",
+            "tests": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 18,
+            "flakyAttempts": 0,
+            "expectedMinimum": 18,
+            "xmlSha256": "f28be801535340fa27313f30fc7ef50378fa1dbeb3bb05dd5530b770cb20daaa"
+          },
+          {
+            "class": "com.hify.api.KnowledgeFinishPostgresTest",
+            "tests": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 18,
+            "flakyAttempts": 0,
+            "expectedMinimum": 18,
+            "xmlSha256": "ce86f5f444f26b37f4c2aa00ebac145d94965e351e33b5671aad53827e467f53"
+          },
+          {
+            "class": "com.hify.api.KnowledgeMemoryBoundaryTest",
+            "tests": 21,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 21,
+            "flakyAttempts": 0,
+            "expectedMinimum": 21,
+            "xmlSha256": "18cc64d0d24ffa628f11618cc6e6e546e52b98e0f43faf4afd31efbf61c0240c"
+          },
+          {
+            "class": "com.hify.api.KnowledgeMemoryPostgresTest",
+            "tests": 21,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 21,
+            "flakyAttempts": 0,
+            "expectedMinimum": 21,
+            "xmlSha256": "e5d701e5274821caaa0cf06a3c5b59d105fe33ba082782179b6f6816fbb1b607"
+          },
+          {
+            "class": "com.hify.api.KnowledgeShutdownPostgresTest",
+            "tests": 22,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 22,
+            "flakyAttempts": 0,
+            "expectedMinimum": 22,
+            "xmlSha256": "0d7ff15fb251fed2667f78463abc86cdeb69998b297c0bd420b6a4260051603b"
+          },
+          {
+            "class": "com.hify.api.ManagementReadbackIntegrationTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 4,
+            "flakyAttempts": 0,
+            "expectedMinimum": 4,
+            "xmlSha256": "df8133458a8cd71438bd5997c518ec74962e4650553cfec29efbe7d10e5f39f1"
+          },
+          {
+            "class": "com.hify.api.MavenStructureTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "b6dfda693504339826ddaadfe93d6fd3d22a24ffe7fb4d2612da98bad431066d"
+          },
+          {
+            "class": "com.hify.api.McpCredentialCipherTest",
+            "tests": 5,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 5,
+            "flakyAttempts": 0,
+            "expectedMinimum": 5,
+            "xmlSha256": "a52bcaa5921db72a6cb26f811565d3ce266d18f9f5af329ffa3f79dc44ad5d00"
+          },
+          {
+            "class": "com.hify.api.McpCredentialIntegrationTest",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 8,
+            "flakyAttempts": 0,
+            "expectedMinimum": 8,
+            "xmlSha256": "b45826de9719b43e80d1319cbfa9ffc8dc4fdd3d832a291d294fa977872f3082"
+          },
+          {
+            "class": "com.hify.api.McpCredentialPostgresTest",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 8,
+            "flakyAttempts": 0,
+            "expectedMinimum": 8,
+            "xmlSha256": "ad2b13a81aecdc5f6325e3dcc3a6eaa9dcae40ed83b427460ffb4626d02f5946"
+          },
+          {
+            "class": "com.hify.api.McpProtocolClientReliabilityTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 4,
+            "flakyAttempts": 0,
+            "expectedMinimum": 4,
+            "xmlSha256": "b1d3c781de100c6a89828e1e3fbe49746d9de4f28046e8480552cb7e6986d041"
+          },
+          {
+            "class": "com.hify.api.McpServerApiIntegrationTest",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 8,
+            "flakyAttempts": 0,
+            "expectedMinimum": 8,
+            "xmlSha256": "4d68f7b6ef82cddc6001f2f7a00450ed6a68a685d987ac74689da98c25c818f2"
+          },
+          {
+            "class": "com.hify.api.PostgresConcurrencyIntegrationTest",
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 7,
+            "flakyAttempts": 0,
+            "expectedMinimum": 7,
+            "xmlSha256": "ce8d671289707dcb1d7736e9cd662b3d926658ae9a43ac4316be69d422cbbade"
+          },
+          {
+            "class": "com.hify.api.ProviderApiIntegrationTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 4,
+            "flakyAttempts": 0,
+            "expectedMinimum": 4,
+            "xmlSha256": "6a616256e9881a6292cb07c3d37632819acbfca4d61c3f6e97b05e67445fa9dd"
+          },
+          {
+            "class": "com.hify.api.ReadInputHygieneIntegrationTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 4,
+            "flakyAttempts": 0,
+            "expectedMinimum": 4,
+            "xmlSha256": "e6839c1aac5b2b414b4be34a8fc236770c2ab1b0ccbb32964581585dffb475df"
+          },
+          {
+            "class": "com.hify.api.ReadInputHygienePostgresTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 4,
+            "flakyAttempts": 0,
+            "expectedMinimum": 4,
+            "xmlSha256": "2c5db6c48442021c3be5f55e4ee9fc2b2a071f6e75730cfa90a7b5edd4adf392"
+          },
+          {
+            "class": "com.hify.api.RunAdmissionIntegrationTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "776505034ecceea545bf3a7db03bc377e1e18295da9cf9714da7639e4e22ddbd"
+          },
+          {
+            "class": "com.hify.api.RunDispatchIntegrationTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 4,
+            "flakyAttempts": 0,
+            "expectedMinimum": 4,
+            "xmlSha256": "e3f911f2edb1c8add523a31f21de7f53655b66b5991239d128b64248fa98b965"
+          },
+          {
+            "class": "com.hify.api.RunFlowIntegrationTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "4a7b5eff1655d8c944590d08a776e2de65f6bf89493cac97ad7db465266f89a5"
+          },
+          {
+            "class": "com.hify.api.RunShutdownIntegrationTest",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 6,
+            "flakyAttempts": 0,
+            "expectedMinimum": 6,
+            "xmlSha256": "46ed15ca3f223dea3aa413a9f8e6c2329109508699f453bb21d94f38ac7ef927"
+          },
+          {
+            "class": "com.hify.api.RunShutdownPostgresTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "2f47d36e5c6ca26d4e6c5fd89ceda424c0bb0008853548c1ed117e282736f505"
+          },
+          {
+            "class": "com.hify.api.RunSubmissionIdentityTest",
+            "tests": 15,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 15,
+            "flakyAttempts": 0,
+            "expectedMinimum": 15,
+            "xmlSha256": "c61ad03e3087b2ee8db727ae8e307cffead49ec93640ea83a09332608131cc12"
+          },
+          {
+            "class": "com.hify.api.SseNetworkIsolationTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "86d90e8c807f4dcfb7a6df49a7e369dad6060269a7ab0c8bb7ff10bd3a888b01"
+          },
+          {
+            "class": "com.hify.api.UploadBoundaryNetworkTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "50f2d7d659b84c690ee9d6f999e16a030cf4a22d73bccfb5599a7af4f146b904"
+          },
+          {
+            "class": "com.hify.api.WorkflowApiIntegrationTest",
+            "tests": 5,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 5,
+            "flakyAttempts": 0,
+            "expectedMinimum": 5,
+            "xmlSha256": "820a30d4872fa1892e4572dd3e96295a3dc23cb602709f47539438b35d1a20f4"
+          },
+          {
+            "class": "com.hify.api.WorkflowGraphBoundaryIntegrationTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "d73f6c18c719f12c54dc47214fa32e5069cc019163d416661e50ca6f2dbdbc6e"
+          },
+          {
+            "class": "com.hify.api.WorkflowKnowledgeIntegrationTest",
+            "tests": 10,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 10,
+            "flakyAttempts": 0,
+            "expectedMinimum": 10,
+            "xmlSha256": "bbd136b5aa23e7d78f0b58f7ea21e39afade33663887eb78c669d492127ed417"
+          },
+          {
+            "class": "com.hify.api.WorkflowKnowledgePostgresTest",
+            "tests": 10,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 10,
+            "flakyAttempts": 0,
+            "expectedMinimum": 10,
+            "xmlSha256": "700daddaada45c6346c1bb3e9ceb485cd3b35c9a38d7cd6531ad3c2787565917"
+          },
+          {
+            "class": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+            "tests": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 19,
+            "flakyAttempts": 0,
+            "expectedMinimum": 19,
+            "xmlSha256": "9b16cc468d6b7d5aaab723483186f813e8c1001874635b3bf8f1dbc5e2de9ebc"
+          },
+          {
+            "class": "com.hify.api.WorkflowKnowledgeReviewTest",
+            "tests": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 19,
+            "flakyAttempts": 0,
+            "expectedMinimum": 19,
+            "xmlSha256": "9d286b978adf0a4328e621a7984cd3899321972228eb50f2909048fb7443a74a"
+          },
+          {
+            "class": "com.hify.api.WorkflowRunControlIntegrationTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "d7c833f6ef8cc28f7705957cfbb2660952e2c954efcadc0792aef5dab5321e50"
+          },
+          {
+            "class": "com.hify.api.WorkflowSettlementIntegrationTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 4,
+            "flakyAttempts": 0,
+            "expectedMinimum": 4,
+            "xmlSha256": "6486752b28e7a6f9229d8f9d69db0d31f201f99d96866286188adf828a914793"
+          },
+          {
+            "class": "com.hify.api.WorkflowSettlementPostgresTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 4,
+            "flakyAttempts": 0,
+            "expectedMinimum": 4,
+            "xmlSha256": "15300c19b56baf9f6d69e13395c4f5dbb047dda19e49e32b5bab545e7e17bd00"
+          },
+          {
+            "class": "com.hify.api.WorkflowTerminalMigrationTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "3a5210571369678b291c0dc0819f24841c7472cf174f520ec8163b02710da405"
+          },
+          {
+            "class": "com.hify.api.WorkflowTerminalPostgresTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "b7561b2f6f2c1c9c2db9f4053144ae9d5efa2c4bfc369a739919fb4760e3a9ed"
+          },
+          {
+            "class": "com.hify.application.KnowledgeCompletionVerifierTest",
+            "tests": 10,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 10,
+            "flakyAttempts": 0,
+            "expectedMinimum": 10,
+            "xmlSha256": "4a9af43006e2e038239f33112c68e3b4870c3344c763223aae485efdcdf73391"
+          },
+          {
+            "class": "com.hify.application.RunEventBrokerBackpressureTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "abb470b99661527716448e55c0e91ad012ef42c0629c84d21b01b0382f4fbf2f"
+          },
+          {
+            "class": "com.hify.application.RunEventBrokerTest",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 6,
+            "flakyAttempts": 0,
+            "expectedMinimum": 6,
+            "xmlSha256": "84df7f998820c676d817d3b7729c1cf2382a38a0a4bef5ff84691c3472c0bf76"
+          },
+          {
+            "class": "com.hify.application.RunWorkflowControlTest",
+            "tests": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 12,
+            "flakyAttempts": 0,
+            "expectedMinimum": 12,
+            "xmlSha256": "1ee4ffb92d17ccd0465a40fd2025fa473a167deeea510a69fe01b16fa81abe8a"
+          },
+          {
+            "class": "com.hify.common.CircuitBreakerServiceTest",
+            "tests": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 12,
+            "flakyAttempts": 0,
+            "expectedMinimum": 12,
+            "xmlSha256": "d65db57fb0e3470e6fe66fec1dfe7b004cadc0b8c9bf2f510473efcc062236a0"
+          },
+          {
+            "class": "com.hify.common.CommonContractsTest",
+            "tests": 5,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 5,
+            "flakyAttempts": 0,
+            "expectedMinimum": 5,
+            "xmlSha256": "a84238deb02c9501d2de419c89d060f7b54f02aaa46781d11eaf8c8be2447a0f"
+          },
+          {
+            "class": "com.hify.common.CredentialReferencePolicyTest",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 6,
+            "flakyAttempts": 0,
+            "expectedMinimum": 6,
+            "xmlSha256": "7a5edf9aa6f5faaff8b1eafe9e3d289c08914fcbee7975376bcfe04683469e73"
+          },
+          {
+            "class": "com.hify.common.ExecutionShutdownTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 4,
+            "flakyAttempts": 0,
+            "expectedMinimum": 4,
+            "xmlSha256": "1f7ac9effb88e1fff4175401ab8d3af078446b96fc608627529f7e2e54942115"
+          },
+          {
+            "class": "com.hify.common.HttpErrorContractTest",
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 7,
+            "flakyAttempts": 0,
+            "expectedMinimum": 7,
+            "xmlSha256": "0258311e0193229766f146a0b52f0c9c753ecb19f3ae5a4b812d655cd463c581"
+          },
+          {
+            "class": "com.hify.common.LlmHttpClientTest",
+            "tests": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 12,
+            "flakyAttempts": 0,
+            "expectedMinimum": 12,
+            "xmlSha256": "2e01e68c3956aae6808d7950c397fd482f7a2bfe5c40f38705cc477f77ead8a7"
+          },
+          {
+            "class": "com.hify.common.ProviderDeadlineTest",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 6,
+            "flakyAttempts": 0,
+            "expectedMinimum": 6,
+            "xmlSha256": "6ab94768ce60365eb3a709ff4228f693cdf6adffa14dbae153dc26eea3321ecc"
+          },
+          {
+            "class": "com.hify.common.TextInputTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "4c55d1a458f88c8b0fd6d62dd1662f99ce32ed294b90259dfc9c69335f2a7181"
+          },
+          {
+            "class": "com.hify.domain.ChildAgentTaskTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "4ee60835fa8f34bb569f821495bb9909419f5280b0c564f47538befdd7146c0d"
+          },
+          {
+            "class": "com.hify.intent.DeterministicIntentRouterTest",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 6,
+            "flakyAttempts": 0,
+            "expectedMinimum": 6,
+            "xmlSha256": "30acc7d02edbe168f7c85fa485bb9cd4f00e9f34478a0ab8575f85745d5df591"
+          },
+          {
+            "class": "com.hify.intent.IntentDecisionTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 4,
+            "flakyAttempts": 0,
+            "expectedMinimum": 4,
+            "xmlSha256": "893afaa223ead581ccb82f6d746d31f17d54424b41590d18c643db600e4ff1ea"
+          },
+          {
+            "class": "com.hify.intent.IntentEvaluationDatasetTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "572041848921e0372e75ca7424f1adbe331c3bf1db50eac2d59b9fc269384480"
+          },
+          {
+            "class": "com.hify.intent.LayeredIntentRouterTest",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 8,
+            "flakyAttempts": 0,
+            "expectedMinimum": 8,
+            "xmlSha256": "dbbb9efd1721374a04025792a30cbc881c5209f56e992e94579e0964c29ef991"
+          },
+          {
+            "class": "com.hify.intent.StructuredModelIntentClassifierTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "c3d781e95b0e973b889d2b907ba159fd4d22e50ba45bef363f6f452d996e3d0b"
+          },
+          {
+            "class": "com.hify.knowledge.application.DocumentIndexingServiceTest",
+            "tests": 5,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 5,
+            "flakyAttempts": 0,
+            "expectedMinimum": 5,
+            "xmlSha256": "ca971a06d28848a0bfa3d3180bccf6c946bf00240f4095d5286926137bdc3d91"
+          },
+          {
+            "class": "com.hify.memory.HistoryRecallEvaluationTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "a3464000d930ba08c3569750852af94163575487aa91d2e672991c2b14e4d9c7"
+          },
+          {
+            "class": "com.hify.provider.application.ProviderUrlPolicyTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "6ff10cc64284a5aaa2c825071a37e94098aa73419313c182e2781205f7acaeea"
+          },
+          {
+            "class": "com.hify.provider.runtime.ProviderCredentialBoundaryTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "92d14ba81de4b96e195c67bc26a6074b848f795734908f562bd6188ab54304f4"
+          },
+          {
+            "class": "com.hify.runtime.MockModelClientTest",
+            "tests": 13,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 13,
+            "flakyAttempts": 0,
+            "expectedMinimum": 13,
+            "xmlSha256": "4f02b7a26573b2fa6502ed3f62925c06d4d9219973d09f96b957a55602061020"
+          },
+          {
+            "class": "com.hify.runtime.NativeProviderModelClientTest",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 6,
+            "flakyAttempts": 0,
+            "expectedMinimum": 6,
+            "xmlSha256": "e36caf31317784660497b349645e4e1cde698472e2d5bf710c2adc023c777313"
+          },
+          {
+            "class": "com.hify.runtime.QueryLoopTest",
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 20,
+            "flakyAttempts": 0,
+            "expectedMinimum": 20,
+            "xmlSha256": "27cb4ade069cdec8ca2487736656d7df2315e1ad7bc9f606f3df3b3a87209abe"
+          },
+          {
+            "class": "com.hify.runtime.ToolRuntimeTest",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 6,
+            "flakyAttempts": 0,
+            "expectedMinimum": 6,
+            "xmlSha256": "0e1bf01087376e45c12564f50342d0f3a075c331be85abfa75ce1254f7b9ac2f"
+          },
+          {
+            "class": "com.hify.runtime.context.ContextManagementEvaluationTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "3b7b8ed109e24c8b0f3dd53a17451e607a60b19c48a082ccfd11905a6b74ca90"
+          },
+          {
+            "class": "com.hify.runtime.context.ContextManagerTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 4,
+            "flakyAttempts": 0,
+            "expectedMinimum": 4,
+            "xmlSha256": "3594d00afc792778b08b60b6352ee25e56776aa42c72a10b69832661286e2669"
+          },
+          {
+            "class": "com.hify.runtime.plan.PlanStateMachineTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "41d1b73e85b15fab6de99d722b8b87761a5d89a156e282e2e36218805add0687"
+          },
+          {
+            "class": "com.hify.runtime.state.ExecutionContextStateTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "4b77177bef1c1109bf9e47358710291bc7bfa9c53cbc079725f482f9858b1891"
+          },
+          {
+            "class": "com.hify.workflow.application.WorkflowControlTest",
+            "tests": 11,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 11,
+            "flakyAttempts": 0,
+            "expectedMinimum": 11,
+            "xmlSha256": "e91a947c495ff60212e3435d8f74fa9ba4d628a77f8cf80fe896304c6ae1bea6"
+          },
+          {
+            "class": "com.hify.workflow.application.WorkflowEngineTest",
+            "tests": 14,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 14,
+            "flakyAttempts": 0,
+            "expectedMinimum": 14,
+            "xmlSha256": "85015e33b538a65a2813498b51deaa5f1d7f48e1ccf947276c5ec23ae5b6d45e"
+          },
+          {
+            "class": "com.hify.workflow.application.WorkflowExecutionContextTest",
+            "tests": 5,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 5,
+            "flakyAttempts": 0,
+            "expectedMinimum": 5,
+            "xmlSha256": "5c8f8dbb5754d9916d0eac8db3facd163496fc4d15467fed31a82407570fb871"
+          },
+          {
+            "class": "com.hify.workflow.application.WorkflowExpressionTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 4,
+            "flakyAttempts": 0,
+            "expectedMinimum": 4,
+            "xmlSha256": "ddd4d55542ca3dd6acc9bc94e1db2201b6216d542343d75ecc101f04d698e5d3"
+          },
+          {
+            "class": "com.hify.workflow.application.WorkflowGraphValidatorTest",
+            "tests": 28,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 28,
+            "flakyAttempts": 0,
+            "expectedMinimum": 28,
+            "xmlSha256": "ba32fb4158a129bf9e579f57707849ea87ebaddb0d2970508e2ee54030cf6e89"
+          }
+        ],
+        "underfilledSuites": [],
+        "countMeaning": "Reported testcase/skip records; disabled containers can hide additional intended methods."
+      },
+      "testSummarySha256": "7bb7f167f18cdacbdf7245e4549496c6a8a932725bdf35626072ad452fd65458"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd/runtime-tests.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/maven_step.py",
+        "--root",
+        "/Users/weberzhao/hify",
+        "--evidence-dir",
+        "/Users/weberzhao/hify/harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd",
+        "--step",
+        "runtime-tests",
+        "--invocation-id",
+        "80aa9da5-d7c6-40d0-9acc-9ffb2f303c41"
+      ],
+      "logSha256": "87d8a1facffba39c35268a0673020b3aa1a283ace141315abd17ae332f31e952",
+      "mavenTests": {
+        "totals": {
+          "tests": 34,
+          "executed": 34,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "flakyAttempts": 0
+        },
+        "classes": [
+          {
+            "class": "com.hify.api.ChildAgentTaskIntegrationTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "53aff6714f43ce4871828daf70bb3996ce5d160c1a970ae4e66e005449588cf2"
+          },
+          {
+            "class": "com.hify.api.ContextMemoryIntegrationTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "a7e7581a126c16b64c0b6dd2d14bdfecb25689defb70a943a1555b8609657f60"
+          },
+          {
+            "class": "com.hify.api.RunFlowIntegrationTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "bf448c8affea5e9f2099a210e0d2dc56c6a264469d49be243326a5bd2a6110ea"
+          },
+          {
+            "class": "com.hify.domain.ChildAgentTaskTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "87ca3d91e169e03c3f1a89a3ef84c560507b17857dfece2a8f9b31ef74e2104d"
+          },
+          {
+            "class": "com.hify.runtime.QueryLoopTest",
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 20,
+            "flakyAttempts": 0,
+            "expectedMinimum": 20,
+            "xmlSha256": "7de78624b85afb5f1e67b0ce968d0c7782057c85db7ae5913ce87a18a7be5e01"
+          },
+          {
+            "class": "com.hify.runtime.plan.PlanStateMachineTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "9283f15efdc220c493b24933cf6b75816a53a925701d88f1f4794dbcb547aa0c"
+          },
+          {
+            "class": "com.hify.runtime.state.ExecutionContextStateTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "8d435aeeb4aed690ff612faab4f42975ac116f35f3e91f7569a3c06f7421225d"
+          }
+        ],
+        "underfilledSuites": [],
+        "countMeaning": "Reported testcase/skip records; disabled containers can hide additional intended methods."
+      },
+      "testSummarySha256": "792a9f6452fe508349093b3783c1927d5260faf1c318ee8d740f377dc21906fd"
+    },
+    {
+      "name": "intent-context-recall-eval",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd/intent-context-recall-eval.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/maven_step.py",
+        "--root",
+        "/Users/weberzhao/hify",
+        "--evidence-dir",
+        "/Users/weberzhao/hify/harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd",
+        "--step",
+        "intent-context-recall-eval",
+        "--invocation-id",
+        "80aa9da5-d7c6-40d0-9acc-9ffb2f303c41"
+      ],
+      "logSha256": "4c7482a6d0d42ed6f47a0f766e1469f835b4c84c4377010e082d9a16ddee584a",
+      "mavenTests": {
+        "totals": {
+          "tests": 24,
+          "executed": 24,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "flakyAttempts": 0
+        },
+        "classes": [
+          {
+            "class": "com.hify.intent.DeterministicIntentRouterTest",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 6,
+            "flakyAttempts": 0,
+            "expectedMinimum": 6,
+            "xmlSha256": "fe48789c2dc4986a960aaeeef73140670dd133ed3fd7568b934ee99a779478b1"
+          },
+          {
+            "class": "com.hify.intent.IntentDecisionTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 4,
+            "flakyAttempts": 0,
+            "expectedMinimum": 4,
+            "xmlSha256": "4c107a83b6ebef7850ca0914f9fdb30314b43276a61be4cd4b5a8218d1a6a73e"
+          },
+          {
+            "class": "com.hify.intent.IntentEvaluationDatasetTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "ab23ab30527b00c50fef5c4ed752b802547a9f2d27cbd91412db9ca292156a09"
+          },
+          {
+            "class": "com.hify.intent.LayeredIntentRouterTest",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 8,
+            "flakyAttempts": 0,
+            "expectedMinimum": 8,
+            "xmlSha256": "827b4d36872fa512077112b97b19b95feabbc645b74732007946fdf8b3d86ed6"
+          },
+          {
+            "class": "com.hify.intent.StructuredModelIntentClassifierTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "71b12215c4c8806688871149f6fb3a76322b08eeb323df7285502e1c31bc96ea"
+          },
+          {
+            "class": "com.hify.memory.HistoryRecallEvaluationTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "7f391720818c221796677718345ced936c9196d1b85f08fcc2b2908cb63f25f1"
+          },
+          {
+            "class": "com.hify.runtime.context.ContextManagementEvaluationTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "0229a85e54147d2baf7dabab0ffdd2dd19aacb4beb0427d741299b686aaff1b9"
+          }
+        ],
+        "underfilledSuites": [],
+        "countMeaning": "Reported testcase/skip records; disabled containers can hide additional intended methods."
+      },
+      "testSummarySha256": "9d19cc258ddc898b933fd24d105278f964773ade4cf7e25397ee03c073286882"
+    },
+    {
+      "name": "frontend-typecheck",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd/frontend-typecheck.log",
+      "command": [
+        "sh",
+        "-c",
+        "cd '/Users/weberzhao/hify/frontend' && npm run typecheck"
+      ],
+      "logSha256": "150b8f5e6954ae1ebc67a61220fd3b475d89a262b5f342b98838e3dc84fed489"
+    },
+    {
+      "name": "frontend-build",
+      "exitCode": 0,
+      "log": "harness/evidence/SPEC-RELEASE-VERIFY-001/SPEC-RELEASE-VERIFY-001-20261004T081503Z-5ee00fdd/frontend-build.log",
+      "command": [
+        "sh",
+        "-c",
+        "cd '/Users/weberzhao/hify/frontend' && npm run build"
+      ],
+      "logSha256": "dcd12711ef9d4f5f83d97422bd97ac792f41a09ce3d8265b70739e1d4db1672e"
+    }
+  ],
+  "finishedAt": "2026-10-04T08:26:10Z",
+  "commandResult": "passed",
+  "testCoverage": "passed",
+  "resultMeaning": "Selected commands and observed test counts only; not full product or deployment acceptance. Repeated steps are not independent tests."
+}

@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T05:08:35Z`
+- Generated from task state updated at: `2026-10-04T08:26:10Z`
 - Current task: `none`
-- Counts: pending 17 · running 0 · blocked 2 · completed 77
+- Counts: pending 16 · running 0 · blocked 2 · completed 78
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -59,7 +59,7 @@
 | `SPEC-KNOWLEDGE-FINISH-003` | P1 | completed | backend, runtime, migration, harness | reversible_write | 隔离知识门禁内部历史与可交付记忆并补回读关闭验证 |
 | `SPEC-PROVIDER-LOCAL-FAILURE-001` | P1 | completed | backend, runtime, harness | reversible_write | 取消与本地拒绝不得污染供应商熔断 |
 | `SPEC-PROVIDER-LOCAL-FAILURE-002` | P1 | completed | backend, runtime, harness | reversible_write | 区分用户取消与真实上游模型期限超时 |
-| `SPEC-RELEASE-VERIFY-001` | P1 | pending | harness, backend, migration, runtime, eval, frontend | reversible_write | 最新业务代码重新部署前全量验收 |
+| `SPEC-RELEASE-VERIFY-001` | P1 | completed | harness, backend, migration, runtime, eval, frontend | reversible_write | 最新业务代码重新部署前全量验收 |
 | `SPEC-RUN-ADMISSION-001` | P1 | completed | backend, runtime, harness | reversible_write | Workflow与AgentRun最终提交竞争的投影一致性 |
 | `SPEC-RUN-ADMISSION-002` | P1 | completed | backend, runtime, harness | reversible_write | Run 执行器容量拒绝的终态与幂等回放 |
 | `SPEC-RUN-DISPATCH-001` | P1 | completed | backend, runtime, harness | reversible_write | 同实例create与恢复扫描的调度所有权 |

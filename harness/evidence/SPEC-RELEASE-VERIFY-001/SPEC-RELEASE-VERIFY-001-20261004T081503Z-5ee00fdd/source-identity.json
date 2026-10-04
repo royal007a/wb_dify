@@ -1,0 +1,11 @@
+{
+  "headCommit": "42db7278c61f9dcd49f505654341b7f1fceeafc9",
+  "backendTree": "85586d8cfe5ce35a3224e51b4c6020a6327a0977",
+  "frontendTree": "1e257aae35618d3175c8d2897070d90c456a9060",
+  "deployTree": "fd72f546c5559303e9722b220a1839e87fab72dc",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "status": "M harness/progress.md\n M harness/state.json\n M harness/tasks.json\n?? harness/evidence/SPEC-RELEASE-VERIFY-001/",
+  "dockerProfile": "hify-verify-20261004",
+  "defaultProfileChanged": false,
+  "meaning": "Identity only; verification results recorded separately. Pending DEPLOY-004 test-only changes saved in git stash, not deployed."
+}

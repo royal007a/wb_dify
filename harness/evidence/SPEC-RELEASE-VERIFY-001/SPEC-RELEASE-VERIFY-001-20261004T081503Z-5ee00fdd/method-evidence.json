@@ -1,0 +1,1762 @@
+{
+  "schemaVersion": 1,
+  "invocationId": "80aa9da5-d7c6-40d0-9acc-9ffb2f303c41",
+  "testSummarySha256": "7bb7f167f18cdacbdf7245e4549496c6a8a932725bdf35626072ad452fd65458",
+  "sourceXmlSha256": {
+    "com.hify.api.AgentApiIntegrationTest": "eb6b2860a240b4571bb5a7b669fcbddbac3a97e92e876074d8fb95b28ef1da7d",
+    "com.hify.api.AgentCacheIntegrationTest": "3ec96f68ea357c4aeef52b331f4ddd553ec75cfc14055b306f7d2b64f98ae072",
+    "com.hify.api.AgentToolBindingMigrationTest": "ea526ecbee03afad6a815acd63ae7f70162db3e3fa301fe8edfe3ed0852b40af",
+    "com.hify.api.ApiContractInventoryTest": "904cb0d34c61f8df2bd9fdb77ad7b049ce28731cf03d5ba086a46da0d714ca31",
+    "com.hify.api.ChildAgentTaskIntegrationTest": "0d335123ec67065456ffe174d1c042ca8df43f759f1b5c8e59f8e2e9ce94da36",
+    "com.hify.api.ContextMemoryIntegrationTest": "f1955fecea1d96f65ec801d5c4fcf68ababbedc0053b94c120dd0883af99ec41",
+    "com.hify.api.DemoItemApiIntegrationTest": "d581e426ccc3e1e24b7855933d61d25e1bf898987c522da8b50555a81298fa48",
+    "com.hify.api.HistoryRecoveryIntegrationTest": "62a0bf2e7d525d45ce9999643aa8609d8c143c799a154def5a394923634c13ea",
+    "com.hify.api.HistoryRecoveryMigrationTest": "3ce0b675db68fed552c715777382a1e8ecb3217dd0e24ca67e70af6ccaab4b98",
+    "com.hify.api.HistoryRecoveryPostgresTest": "607b64ab913344e0670fb7857113fbe92e67b3743601b3dcbb199d10c06aaddb",
+    "com.hify.api.HistoryReplayTest": "cc0218b837b0d769d330f0268d72632554ac3b4420085431e388123e67db61b7",
+    "com.hify.api.HttpErrorSurfaceTest": "908189aa8ab539ee5769064431c6d1a0781ead1d4e886b43b89dab3d250305eb",
+    "com.hify.api.InputHygieneIntegrationTest": "1584013969e3e905a8b56a93605e9d16b4257cca4d6baea007fa7b73eafbf9a9",
+    "com.hify.api.InputHygienePostgresTest": "ad5d52b6b46f27ad652a1a3be17e3004bba3fc6bd7e6e98ec5f61dfe5b81ec54",
+    "com.hify.api.IntentRoutingApiIntegrationTest": "3f765d41ae6581947d29edc336b4f7cc6b9a4e51120eda0008a357167324506e",
+    "com.hify.api.KnowledgeAdmissionShutdownTest": "59fdd12d0a9175854c3fe59340a2ad288109369acee8ee3a551712e365da07be",
+    "com.hify.api.KnowledgeApiIntegrationTest": "f9ba1a7904b90222dad826112bc7f00645bab7b7e8c48d12d0e4eca3daea42b0",
+    "com.hify.api.KnowledgeFinishIntegrationTest": "f28be801535340fa27313f30fc7ef50378fa1dbeb3bb05dd5530b770cb20daaa",
+    "com.hify.api.KnowledgeFinishPostgresTest": "ce86f5f444f26b37f4c2aa00ebac145d94965e351e33b5671aad53827e467f53",
+    "com.hify.api.KnowledgeMemoryBoundaryTest": "18cc64d0d24ffa628f11618cc6e6e546e52b98e0f43faf4afd31efbf61c0240c",
+    "com.hify.api.KnowledgeMemoryPostgresTest": "e5d701e5274821caaa0cf06a3c5b59d105fe33ba082782179b6f6816fbb1b607",
+    "com.hify.api.KnowledgeShutdownPostgresTest": "0d7ff15fb251fed2667f78463abc86cdeb69998b297c0bd420b6a4260051603b",
+    "com.hify.api.ManagementReadbackIntegrationTest": "df8133458a8cd71438bd5997c518ec74962e4650553cfec29efbe7d10e5f39f1",
+    "com.hify.api.MavenStructureTest": "b6dfda693504339826ddaadfe93d6fd3d22a24ffe7fb4d2612da98bad431066d",
+    "com.hify.api.McpCredentialCipherTest": "a52bcaa5921db72a6cb26f811565d3ce266d18f9f5af329ffa3f79dc44ad5d00",
+    "com.hify.api.McpCredentialIntegrationTest": "b45826de9719b43e80d1319cbfa9ffc8dc4fdd3d832a291d294fa977872f3082",
+    "com.hify.api.McpCredentialPostgresTest": "ad2b13a81aecdc5f6325e3dcc3a6eaa9dcae40ed83b427460ffb4626d02f5946",
+    "com.hify.api.McpProtocolClientReliabilityTest": "b1d3c781de100c6a89828e1e3fbe49746d9de4f28046e8480552cb7e6986d041",
+    "com.hify.api.McpServerApiIntegrationTest": "4d68f7b6ef82cddc6001f2f7a00450ed6a68a685d987ac74689da98c25c818f2",
+    "com.hify.api.PostgresConcurrencyIntegrationTest": "ce8d671289707dcb1d7736e9cd662b3d926658ae9a43ac4316be69d422cbbade",
+    "com.hify.api.ProviderApiIntegrationTest": "6a616256e9881a6292cb07c3d37632819acbfca4d61c3f6e97b05e67445fa9dd",
+    "com.hify.api.ReadInputHygieneIntegrationTest": "e6839c1aac5b2b414b4be34a8fc236770c2ab1b0ccbb32964581585dffb475df",
+    "com.hify.api.ReadInputHygienePostgresTest": "2c5db6c48442021c3be5f55e4ee9fc2b2a071f6e75730cfa90a7b5edd4adf392",
+    "com.hify.api.RunAdmissionIntegrationTest": "776505034ecceea545bf3a7db03bc377e1e18295da9cf9714da7639e4e22ddbd",
+    "com.hify.api.RunDispatchIntegrationTest": "e3f911f2edb1c8add523a31f21de7f53655b66b5991239d128b64248fa98b965",
+    "com.hify.api.RunFlowIntegrationTest": "4a7b5eff1655d8c944590d08a776e2de65f6bf89493cac97ad7db465266f89a5",
+    "com.hify.api.RunShutdownIntegrationTest": "46ed15ca3f223dea3aa413a9f8e6c2329109508699f453bb21d94f38ac7ef927",
+    "com.hify.api.RunShutdownPostgresTest": "2f47d36e5c6ca26d4e6c5fd89ceda424c0bb0008853548c1ed117e282736f505",
+    "com.hify.api.RunSubmissionIdentityTest": "c61ad03e3087b2ee8db727ae8e307cffead49ec93640ea83a09332608131cc12",
+    "com.hify.api.SseNetworkIsolationTest": "86d90e8c807f4dcfb7a6df49a7e369dad6060269a7ab0c8bb7ff10bd3a888b01",
+    "com.hify.api.UploadBoundaryNetworkTest": "50f2d7d659b84c690ee9d6f999e16a030cf4a22d73bccfb5599a7af4f146b904",
+    "com.hify.api.WorkflowApiIntegrationTest": "820a30d4872fa1892e4572dd3e96295a3dc23cb602709f47539438b35d1a20f4",
+    "com.hify.api.WorkflowGraphBoundaryIntegrationTest": "d73f6c18c719f12c54dc47214fa32e5069cc019163d416661e50ca6f2dbdbc6e",
+    "com.hify.api.WorkflowKnowledgeIntegrationTest": "bbd136b5aa23e7d78f0b58f7ea21e39afade33663887eb78c669d492127ed417",
+    "com.hify.api.WorkflowKnowledgePostgresTest": "700daddaada45c6346c1bb3e9ceb485cd3b35c9a38d7cd6531ad3c2787565917",
+    "com.hify.api.WorkflowKnowledgeReviewPostgresTest": "9b16cc468d6b7d5aaab723483186f813e8c1001874635b3bf8f1dbc5e2de9ebc",
+    "com.hify.api.WorkflowKnowledgeReviewTest": "9d286b978adf0a4328e621a7984cd3899321972228eb50f2909048fb7443a74a",
+    "com.hify.api.WorkflowRunControlIntegrationTest": "d7c833f6ef8cc28f7705957cfbb2660952e2c954efcadc0792aef5dab5321e50",
+    "com.hify.api.WorkflowSettlementIntegrationTest": "6486752b28e7a6f9229d8f9d69db0d31f201f99d96866286188adf828a914793",
+    "com.hify.api.WorkflowSettlementPostgresTest": "15300c19b56baf9f6d69e13395c4f5dbb047dda19e49e32b5bab545e7e17bd00",
+    "com.hify.api.WorkflowTerminalMigrationTest": "3a5210571369678b291c0dc0819f24841c7472cf174f520ec8163b02710da405",
+    "com.hify.api.WorkflowTerminalPostgresTest": "b7561b2f6f2c1c9c2db9f4053144ae9d5efa2c4bfc369a739919fb4760e3a9ed",
+    "com.hify.application.KnowledgeCompletionVerifierTest": "4a9af43006e2e038239f33112c68e3b4870c3344c763223aae485efdcdf73391",
+    "com.hify.application.RunEventBrokerBackpressureTest": "abb470b99661527716448e55c0e91ad012ef42c0629c84d21b01b0382f4fbf2f",
+    "com.hify.application.RunEventBrokerTest": "84df7f998820c676d817d3b7729c1cf2382a38a0a4bef5ff84691c3472c0bf76",
+    "com.hify.application.RunWorkflowControlTest": "1ee4ffb92d17ccd0465a40fd2025fa473a167deeea510a69fe01b16fa81abe8a",
+    "com.hify.common.CircuitBreakerServiceTest": "d65db57fb0e3470e6fe66fec1dfe7b004cadc0b8c9bf2f510473efcc062236a0",
+    "com.hify.common.CommonContractsTest": "a84238deb02c9501d2de419c89d060f7b54f02aaa46781d11eaf8c8be2447a0f",
+    "com.hify.common.CredentialReferencePolicyTest": "7a5edf9aa6f5faaff8b1eafe9e3d289c08914fcbee7975376bcfe04683469e73",
+    "com.hify.common.ExecutionShutdownTest": "1f7ac9effb88e1fff4175401ab8d3af078446b96fc608627529f7e2e54942115",
+    "com.hify.common.HttpErrorContractTest": "0258311e0193229766f146a0b52f0c9c753ecb19f3ae5a4b812d655cd463c581",
+    "com.hify.common.LlmHttpClientTest": "2e01e68c3956aae6808d7950c397fd482f7a2bfe5c40f38705cc477f77ead8a7",
+    "com.hify.common.ProviderDeadlineTest": "6ab94768ce60365eb3a709ff4228f693cdf6adffa14dbae153dc26eea3321ecc",
+    "com.hify.common.TextInputTest": "4c55d1a458f88c8b0fd6d62dd1662f99ce32ed294b90259dfc9c69335f2a7181",
+    "com.hify.domain.ChildAgentTaskTest": "4ee60835fa8f34bb569f821495bb9909419f5280b0c564f47538befdd7146c0d",
+    "com.hify.intent.DeterministicIntentRouterTest": "30acc7d02edbe168f7c85fa485bb9cd4f00e9f34478a0ab8575f85745d5df591",
+    "com.hify.intent.IntentDecisionTest": "893afaa223ead581ccb82f6d746d31f17d54424b41590d18c643db600e4ff1ea",
+    "com.hify.intent.IntentEvaluationDatasetTest": "572041848921e0372e75ca7424f1adbe331c3bf1db50eac2d59b9fc269384480",
+    "com.hify.intent.LayeredIntentRouterTest": "dbbb9efd1721374a04025792a30cbc881c5209f56e992e94579e0964c29ef991",
+    "com.hify.intent.StructuredModelIntentClassifierTest": "c3d781e95b0e973b889d2b907ba159fd4d22e50ba45bef363f6f452d996e3d0b",
+    "com.hify.knowledge.application.DocumentIndexingServiceTest": "ca971a06d28848a0bfa3d3180bccf6c946bf00240f4095d5286926137bdc3d91",
+    "com.hify.memory.HistoryRecallEvaluationTest": "a3464000d930ba08c3569750852af94163575487aa91d2e672991c2b14e4d9c7",
+    "com.hify.provider.application.ProviderUrlPolicyTest": "6ff10cc64284a5aaa2c825071a37e94098aa73419313c182e2781205f7acaeea",
+    "com.hify.provider.runtime.ProviderCredentialBoundaryTest": "92d14ba81de4b96e195c67bc26a6074b848f795734908f562bd6188ab54304f4",
+    "com.hify.runtime.MockModelClientTest": "4f02b7a26573b2fa6502ed3f62925c06d4d9219973d09f96b957a55602061020",
+    "com.hify.runtime.NativeProviderModelClientTest": "e36caf31317784660497b349645e4e1cde698472e2d5bf710c2adc023c777313",
+    "com.hify.runtime.QueryLoopTest": "27cb4ade069cdec8ca2487736656d7df2315e1ad7bc9f606f3df3b3a87209abe",
+    "com.hify.runtime.ToolRuntimeTest": "0e1bf01087376e45c12564f50342d0f3a075c331be85abfa75ce1254f7b9ac2f",
+    "com.hify.runtime.context.ContextManagementEvaluationTest": "3b7b8ed109e24c8b0f3dd53a17451e607a60b19c48a082ccfd11905a6b74ca90",
+    "com.hify.runtime.context.ContextManagerTest": "3594d00afc792778b08b60b6352ee25e56776aa42c72a10b69832661286e2669",
+    "com.hify.runtime.plan.PlanStateMachineTest": "41d1b73e85b15fab6de99d722b8b87761a5d89a156e282e2e36218805add0687",
+    "com.hify.runtime.state.ExecutionContextStateTest": "4b77177bef1c1109bf9e47358710291bc7bfa9c53cbc079725f482f9858b1891",
+    "com.hify.workflow.application.WorkflowControlTest": "e91a947c495ff60212e3435d8f74fa9ba4d628a77f8cf80fe896304c6ae1bea6",
+    "com.hify.workflow.application.WorkflowEngineTest": "85015e33b538a65a2813498b51deaa5f1d7f48e1ccf947276c5ec23ae5b6d45e",
+    "com.hify.workflow.application.WorkflowExecutionContextTest": "5c8f8dbb5754d9916d0eac8db3facd163496fc4d15467fed31a82407570fb871",
+    "com.hify.workflow.application.WorkflowExpressionTest": "ddd4d55542ca3dd6acc9bc94e1db2201b6216d542343d75ecc101f04d698e5d3",
+    "com.hify.workflow.application.WorkflowGraphValidatorTest": "ba32fb4158a129bf9e579f57707849ea87ebaddb0d2970508e2ee54030cf6e89"
+  },
+  "observed": {
+    "ProviderApiIntegrationTest#deliversCrudModelCatalogAndIndependentHealthCheck": [
+      "pass"
+    ],
+    "ProviderApiIntegrationTest#rejectsMockAndMultipleDefaultModels": [
+      "pass"
+    ],
+    "ProviderApiIntegrationTest#processSecretReferencesAndUnapprovedDestinationsAreRejected": [
+      "pass"
+    ],
+    "ProviderApiIntegrationTest#supportsTheThreeNativeProtocols": [
+      "pass"
+    ],
+    "WorkflowControlTest#queuedCancellationPreventsLaterExecution": [
+      "pass"
+    ],
+    "WorkflowControlTest#cancelledBlockingNodeInterruptsWorkerAndNeverStartsNextNode": [
+      "pass"
+    ],
+    "WorkflowControlTest#wallClockBudgetIncludesQueueWait": [
+      "pass"
+    ],
+    "WorkflowControlTest#saturatedPoolFailsWithoutRunningRetrievalOnCaller": [
+      "pass"
+    ],
+    "WorkflowControlTest#ioPoolIsBoundedAndNeverUsesCallerRuns": [
+      "pass"
+    ],
+    "WorkflowControlTest#observedBusinessFailureIsNotRewrittenByLaterCancellationOrDeadline": [
+      "pass",
+      "pass"
+    ],
+    "WorkflowControlTest#preCancelledAndExpiredCallsDoNotSubmitAnything": [
+      "pass"
+    ],
+    "WorkflowControlTest#cancelAfterEndNodeStillPreventsWorkflowSuccessCommit": [
+      "pass"
+    ],
+    "WorkflowControlTest#alreadyFailedFutureIsObservedBeforeALaterCancelSignal": [
+      "pass"
+    ],
+    "WorkflowControlTest#expiryDuringBlockedNodeInterruptsWorkerAndDoesNotResetBudget": [
+      "pass"
+    ],
+    "RunWorkflowControlTest#rejectionRacingWithShutdownLeavesRunRecoverable": [
+      "pass"
+    ],
+    "RunWorkflowControlTest#cancellationCommittedJustBeforeTerminalLockPreventsAssistantAndSuccessEvent": [
+      "pass"
+    ],
+    "RunWorkflowControlTest#dispatchPreservesCancellationFlagSetBeforeSubmission": [
+      "pass"
+    ],
+    "RunWorkflowControlTest#restartedWorkflowDoesNotResetExpiredRunBudget": [
+      "pass"
+    ],
+    "RunWorkflowControlTest#computedWorkflowOutcomeIsNotDiscardedWhenShutdownStartsBeforeReturn": [
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "RunWorkflowControlTest#cancelledWorkflowIsNotMisreportedAsModelFailure": [
+      "pass"
+    ],
+    "RunWorkflowControlTest#recoveryDatabaseFailureForOneRunDoesNotPreventTheNextOne": [
+      "pass",
+      "pass"
+    ],
+    "RunWorkflowControlTest#timedOutWorkflowHasTimeoutTerminalReason": [
+      "pass"
+    ],
+    "RunWorkflowControlTest#persistentCancellationBeforeCommitWinsOverSuccessfulWorkflowResult": [
+      "pass"
+    ],
+    "RunAdmissionIntegrationTest#capacityRejectionIsTerminalAndIdempotentlyReplayableWithoutLeakingExecutorDetails": [
+      "pass"
+    ],
+    "RunAdmissionIntegrationTest#recoveryRejectionDoesNotAbortTheRestOfThePendingRuns": [
+      "pass"
+    ],
+    "RunAdmissionIntegrationTest#persistedCancellationRacingAdmissionWinsTheRejection": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#emptyCorpusCanBeFrozenWithPortableTimestampBindings": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#clientCannotChooseSnapshotAndLegacyKnowledgeVersionRequiresRepublish": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#archivedUnpublishedChunkIsNotAnHistoricalCitation": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#publishedWorkflowAndOldConversationKeepArchivedCorpusAndReadableCitations": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#frozenCorpusRejectsIncompleteOrMismatchedManifest": [
+      "pass",
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#failedPublicationRollsBackAllNewCorporaAndVersionRows": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#frozenCorpusRejectsChangedCanonicalContentEvenWhenStoredDigestIsUnchanged": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#workflowEmptyKnowledgeDoesNotReachEnd": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#missingOrInventedFinalReferencesRequireClarification": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#unboundOrdinaryChatDoesNotRequireKnowledgeCitations": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#emptyBoundCorpusNeverCallsModelOrStoresAssistant": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#validReferenceChecksSourcesNotSemanticTruth": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#unrelatedVectorTopKDoesNotBecomeEvidence": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#partialRetrievalFailureDoesNotSilentlyFallBackToOtherSources": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#historyCommittedBeforeVerificationIsNotReadableWhileRunIsRunning": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#knowledgeRunDoesNotCreateNewRawMemoryIndex": [
+      "pass"
+    ],
+    "KnowledgeMemoryPostgresTest#withheldFinalTextIsNotPublishedThroughAnyMemorySurface": [
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#emptyCorpusCanBeFrozenWithPortableTimestampBindings": [
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#clientCannotChooseSnapshotAndLegacyKnowledgeVersionRequiresRepublish": [
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#archivedUnpublishedChunkIsNotAnHistoricalCitation": [
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#publishedWorkflowAndOldConversationKeepArchivedCorpusAndReadableCitations": [
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#frozenCorpusRejectsIncompleteOrMismatchedManifest": [
+      "pass",
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#failedPublicationRollsBackAllNewCorporaAndVersionRows": [
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#frozenCorpusRejectsChangedCanonicalContentEvenWhenStoredDigestIsUnchanged": [
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain": [
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#workflowEmptyKnowledgeDoesNotReachEnd": [
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#missingOrInventedFinalReferencesRequireClarification": [
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#unboundOrdinaryChatDoesNotRequireKnowledgeCitations": [
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#emptyBoundCorpusNeverCallsModelOrStoresAssistant": [
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#validReferenceChecksSourcesNotSemanticTruth": [
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#unrelatedVectorTopKDoesNotBecomeEvidence": [
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#partialRetrievalFailureDoesNotSilentlyFallBackToOtherSources": [
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#canonicalReadShutdownRetainsRecoverableRun": [
+      "pass",
+      "pass"
+    ],
+    "KnowledgeAdmissionShutdownTest#retrievalShutdownSignalIsNotPermanentSourceFailure": [
+      "pass",
+      "pass"
+    ],
+    "ContextManagerTest#rejectsContextThatStillExceedsBudgetAfterCompaction": [
+      "pass"
+    ],
+    "ContextManagerTest#compactsOnlyAfterArchivingAndRemeasuresTheResult": [
+      "pass"
+    ],
+    "ContextManagerTest#archivesLargeToolResultsBeforeCompactionAndKeepsRecoveryPointer": [
+      "pass"
+    ],
+    "ContextManagerTest#computesIndependentInputOutputReserveAndSafetyBudget": [
+      "pass"
+    ],
+    "McpCredentialCipherTest#missingOrMalformedKeyFailsClosedWithoutEcho": [
+      "pass"
+    ],
+    "McpCredentialCipherTest#roundTripUsesRandomNoncesAndIsRestartStable": [
+      "pass"
+    ],
+    "McpCredentialCipherTest#rejectsTamperingWrongKeyAndWrongOwner": [
+      "pass"
+    ],
+    "McpCredentialCipherTest#systemReferenceStillWorksAndInvalidHeadersAreRejected": [
+      "pass"
+    ],
+    "McpCredentialCipherTest#dtoDoesNotSerializeOrPrintToken": [
+      "pass"
+    ],
+    "InputHygieneIntegrationTest#conversationTitleIsRejectedAndPlainBackslashTextIsPreserved": [
+      "pass"
+    ],
+    "InputHygieneIntegrationTest#agentTextCreateAndUpdateRejectWithoutChangingRows": [
+      "pass"
+    ],
+    "InputHygieneIntegrationTest#agentToolBindingRejectsNulWithoutReplacingExistingBinding": [
+      "pass"
+    ],
+    "InputHygieneIntegrationTest#agentKnowledgeBindingRejectsNulWithoutReplacingExistingBinding": [
+      "pass"
+    ],
+    "InputHygieneIntegrationTest#knowledgeTextCreateAndUpdateRejectWithoutChangingRows": [
+      "pass"
+    ],
+    "InputHygieneIntegrationTest#mcpTextCreateAndUpdateRejectBeforeSavingServerOrCredential": [
+      "pass"
+    ],
+    "InputHygieneIntegrationTest#agentMcpBindingRejectsNulWithoutReplacingExistingBinding": [
+      "pass"
+    ],
+    "InputHygieneIntegrationTest#agentWorkflowBindingRejectsNulWithoutReplacingExistingBinding": [
+      "pass"
+    ],
+    "InputHygieneIntegrationTest#workflowExecutionInputIsRejectedBeforeAnExecutionRowExists": [
+      "pass"
+    ],
+    "InputHygieneIntegrationTest#workflowNestedTextCreateAndUpdateRejectWithoutChangingGraph": [
+      "pass"
+    ],
+    "InputHygieneIntegrationTest#agentCreateEnabledToolsRejectsNulBeforeWritingAndKeepsValidTools": [
+      "pass"
+    ],
+    "InputHygieneIntegrationTest#workflowDeepConfigKeysAndArraysRejectNulWithoutChangingStoredGraph": [
+      "pass"
+    ],
+    "InputHygieneIntegrationTest#uploadRejectsContentAndMetadataBeforeDocumentsOrIndexTasksExist": [
+      "pass"
+    ],
+    "InputHygieneIntegrationTest#providerAndModelTextCreateAndUpdateRejectBeforeReplacingModels": [
+      "pass"
+    ],
+    "WorkflowApiIntegrationTest#publishesImmutableVersionAndExecutesBothBranchesWithTrace": [
+      "pass"
+    ],
+    "WorkflowApiIntegrationTest#rejectsBranchLocalVariablesOnSaveAndUpdate": [
+      "pass"
+    ],
+    "WorkflowApiIntegrationTest#customStartKeyWorksThroughPublishedHttpExecution": [
+      "pass"
+    ],
+    "WorkflowApiIntegrationTest#rejectsOldInvalidPublishedGraphWithoutRewritingSnapshot": [
+      "pass"
+    ],
+    "WorkflowApiIntegrationTest#rejectsMissingDefaultDanglingEdgeAndCycle": [
+      "pass"
+    ],
+    "DemoItemApiIntegrationTest#validatesCreatesPagesUpdatesAndLogicallyDeletes": [
+      "pass"
+    ],
+    "QueryLoopTest#suggestsKnownReadOnlyAlternativeForUnavailableTool": [
+      "pass"
+    ],
+    "QueryLoopTest#clarifiesMissingCalculatorInputWithoutUsingReplanWhenBudgetIsZero": [
+      "pass"
+    ],
+    "QueryLoopTest#retriesTransientCalculatorFailureWithoutReplanning": [
+      "pass"
+    ],
+    "QueryLoopTest#asksHumanWhenUnavailableToolHasNoSafeAlternative": [
+      "pass"
+    ],
+    "QueryLoopTest#stopsBeforeExecutingToolPastBudget": [
+      "pass"
+    ],
+    "QueryLoopTest#interruptsWhenTransientRetryBudgetIsExhausted": [
+      "pass"
+    ],
+    "QueryLoopTest#enforcesDedicatedRecallBudgetBeforeRepeatedInvestigation": [
+      "pass"
+    ],
+    "QueryLoopTest#archivesLargeToolResultBeforeTheNextModelRequestWithoutChangingCanonicalHistory": [
+      "pass"
+    ],
+    "QueryLoopTest#stopsWhenCancelledBeforeModelCall": [
+      "pass"
+    ],
+    "QueryLoopTest#clarifiesAfterRepeatedInvalidActionMakesNoProgress": [
+      "pass"
+    ],
+    "QueryLoopTest#completesMockToolRoundTripWithPairedResult": [
+      "pass"
+    ],
+    "QueryLoopTest#rejectsDuplicateToolCallIdentity": [
+      "pass"
+    ],
+    "QueryLoopTest#searchIsNavigationOnlyAndCannotFinishWithoutCanonicalDetail": [
+      "pass"
+    ],
+    "QueryLoopTest#enforcesEstimatedTokenBudgetBeforeModelCall": [
+      "pass"
+    ],
+    "QueryLoopTest#locallyReplansInvalidCalculatorArgumentsAndTracksDistinctCauseCoordinates": [
+      "pass"
+    ],
+    "QueryLoopTest#resumesAfterCheckpointWithoutReplayingCompletedToolAttempt": [
+      "pass"
+    ],
+    "QueryLoopTest#rejectsModelRequestedToolOutsideAgentPolicy": [
+      "pass"
+    ],
+    "QueryLoopTest#permissionDenialUsesInterruptExitAndKeepsEvidence": [
+      "pass"
+    ],
+    "QueryLoopTest#returnedFinalAnswerCanFinishDuringShutdownButNewToolsCannotStart": [
+      "pass"
+    ],
+    "QueryLoopTest#commitsCanonicalHistoryBeforeTheNextModelRequest": [
+      "pass"
+    ],
+    "DocumentIndexingServiceTest#unrecognizedDatabaseCannotSilentlyUseH2Storage": [
+      "pass"
+    ],
+    "DocumentIndexingServiceTest#recognizedDatabaseWritesItsExpectedEmbeddingColumns": [
+      "pass",
+      "pass"
+    ],
+    "DocumentIndexingServiceTest#metadataFailureCannotDeleteChunksOrMarkIndexSuccessful": [
+      "pass"
+    ],
+    "DocumentIndexingServiceTest#dialectDetectionDoesNotBorrowOrCloseAnExtraConnection": [
+      "pass"
+    ],
+    "RunFlowIntegrationTest#demoConversationHandlesGreetingThenRepeatedTimeAndCalculatorTurns": [
+      "pass"
+    ],
+    "RunFlowIntegrationTest#createsIdempotentRunAndPersistsToolEvents": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewPostgresTest#emptyCorpusCanBeFrozenWithPortableTimestampBindings": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewPostgresTest#clientCannotChooseSnapshotAndLegacyKnowledgeVersionRequiresRepublish": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewPostgresTest#archivedUnpublishedChunkIsNotAnHistoricalCitation": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewPostgresTest#publishedWorkflowAndOldConversationKeepArchivedCorpusAndReadableCitations": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewPostgresTest#frozenCorpusRejectsIncompleteOrMismatchedManifest": [
+      "pass",
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewPostgresTest#failedPublicationRollsBackAllNewCorporaAndVersionRows": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewPostgresTest#frozenCorpusRejectsChangedCanonicalContentEvenWhenStoredDigestIsUnchanged": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewPostgresTest#legacyGraphCannotPublishAgentEvenWithARealClientChosenCorpus": [
+      "pass",
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewPostgresTest#storedDslChecksumIsCheckedBeforeBindingOrExecution": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewPostgresTest#agentAndWorkflowPublishAcquireBasesInTheSameOrder": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewPostgresTest#agentPinnedChecksumRejectsAChangedButInternallyValidWorkflow": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewPostgresTest#indexingMetadataFailurePersistsFailureWithoutDeletingExistingChunks": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewPostgresTest#indexingSuccessIncludesTheActualVectorStorage": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewPostgresTest#dialectLookupReusesTheTransactionConnection": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewPostgresTest#verificationAndRankingUseOneRepeatableReadSnapshot": [
+      "pass"
+    ],
+    "NativeProviderModelClientTest#mapsAnthropicToolUseAndResult": [
+      "pass"
+    ],
+    "NativeProviderModelClientTest#streamsAnthropicTextDeltas": [
+      "pass"
+    ],
+    "NativeProviderModelClientTest#streamsGeminiTextDeltas": [
+      "pass"
+    ],
+    "NativeProviderModelClientTest#recordsFirstTokenP95AndUsageEvidence": [
+      "pass"
+    ],
+    "NativeProviderModelClientTest#streamsOpenAiTextAndReassemblesToolArguments": [
+      "pass"
+    ],
+    "NativeProviderModelClientTest#mapsGeminiFunctionCallAndResponse": [
+      "pass"
+    ],
+    "HistoryReplayTest#legacyToolHistoryIsNotSilentlyExecutedAgain": [
+      "pass"
+    ],
+    "HistoryReplayTest#navigationEvidenceAndOriginalIdsSurviveToolReplay": [
+      "pass"
+    ],
+    "HistoryReplayTest#replayChecksCanonicalDigestPrefixAndAppendShape": [
+      "pass"
+    ],
+    "HistoryReplayTest#recoveryMetadataIsBoundToCanonicalDigestAndCannotBeChanged": [
+      "pass"
+    ],
+    "HistoryReplayTest#recoverySemanticChangesStillConflict": [
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "HistoryReplayTest#replayAcrossLocalReplanKeepsOriginalStepAndDoesNotExecuteToolsAgain": [
+      "pass",
+      "pass"
+    ],
+    "IntentDecisionTest#rejectsConfidenceOutsideContract": [
+      "pass"
+    ],
+    "IntentDecisionTest#requiresToolAndWorkflowRoutingKeys": [
+      "pass"
+    ],
+    "IntentDecisionTest#rejectsExecutableRouteWithMissingSlots": [
+      "pass"
+    ],
+    "IntentDecisionTest#unknownRouteCannotMasqueradeAsKnownIntent": [
+      "pass"
+    ],
+    "IntentRoutingApiIntegrationTest#exposesDeterministicDecisionWithoutInvokingTheConfiguredModel": [
+      "pass"
+    ],
+    "IntentRoutingApiIntegrationTest#rejectsBlankInputBeforeRouting": [
+      "pass"
+    ],
+    "ChildAgentTaskTest#lostIsExplicitAndDoesNotPretendTheWorkFailedOrSucceeded": [
+      "pass"
+    ],
+    "ChildAgentTaskTest#enforcesDeliveredClaimedConsumedOrder": [
+      "pass"
+    ],
+    "WorkflowTerminalMigrationTest#h2UpgradePreservesHistoryAndAllowsOnlyDefinedStates": [
+      "pass"
+    ],
+    "ProviderUrlPolicyTest#revalidatesDnsAtRuntimeAndRejectsRebinding": [
+      "pass"
+    ],
+    "ProviderUrlPolicyTest#exactAndWildcardAllowlistKeepPrivateEnterpriseGatewaysCompatible": [
+      "pass"
+    ],
+    "ProviderUrlPolicyTest#rejectsEveryPrivateOrLocalDnsAnswer": [
+      "pass"
+    ],
+    "WorkflowRunControlIntegrationTest#publicCancellationStopsBlockedWorkflowAndProducesOnlyCancelledRun": [
+      "pass"
+    ],
+    "ReadInputHygienePostgresTest#activeKnowledgeQueryRejectsNulBeforeRetrievalWithPositiveMatch": [
+      "pass"
+    ],
+    "ReadInputHygienePostgresTest#frozenKnowledgeQueryRejectsNulOnBothPublicSearchEntrypoints": [
+      "pass"
+    ],
+    "ReadInputHygienePostgresTest#memoryQueryAndEntityRejectNulWithoutHidingValidHistory": [
+      "pass"
+    ],
+    "ReadInputHygienePostgresTest#intentAgentAndInputRejectNulBeforeModelFactory": [
+      "pass"
+    ],
+    "WorkflowSettlementPostgresTest#executionFactAndDeliveryDecisionAreBothProjected": [
+      "pass",
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "WorkflowKnowledgePostgresTest#emptyCorpusCanBeFrozenWithPortableTimestampBindings": [
+      "pass"
+    ],
+    "WorkflowKnowledgePostgresTest#clientCannotChooseSnapshotAndLegacyKnowledgeVersionRequiresRepublish": [
+      "pass"
+    ],
+    "WorkflowKnowledgePostgresTest#archivedUnpublishedChunkIsNotAnHistoricalCitation": [
+      "pass"
+    ],
+    "WorkflowKnowledgePostgresTest#publishedWorkflowAndOldConversationKeepArchivedCorpusAndReadableCitations": [
+      "pass"
+    ],
+    "WorkflowKnowledgePostgresTest#frozenCorpusRejectsIncompleteOrMismatchedManifest": [
+      "pass",
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "WorkflowKnowledgePostgresTest#failedPublicationRollsBackAllNewCorporaAndVersionRows": [
+      "pass"
+    ],
+    "WorkflowKnowledgePostgresTest#frozenCorpusRejectsChangedCanonicalContentEvenWhenStoredDigestIsUnchanged": [
+      "pass"
+    ],
+    "WorkflowGraphBoundaryIntegrationTest#quotedKeywordRunsCorrectlyAndOldInvalidDraftCannotPublish": [
+      "pass"
+    ],
+    "WorkflowGraphBoundaryIntegrationTest#pathLimitIsEnforcedBeforeSaveAndTheBoundaryActuallyExecutes": [
+      "pass"
+    ],
+    "WorkflowGraphBoundaryIntegrationTest#legacyInvalidConditionIsAWorkflowErrorNotModelErrorAndCannotBeBound": [
+      "pass"
+    ],
+    "HistoryRecoveryPostgresTest#realRestartReplaysCanonicalOperations": [
+      "pass",
+      "pass"
+    ],
+    "HistoryRecoveryPostgresTest#v22HistorySurvivesV23Upgrade": [
+      "pass"
+    ],
+    "WorkflowSettlementIntegrationTest#executionFactAndDeliveryDecisionAreBothProjected": [
+      "pass",
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewTest#emptyCorpusCanBeFrozenWithPortableTimestampBindings": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewTest#clientCannotChooseSnapshotAndLegacyKnowledgeVersionRequiresRepublish": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewTest#archivedUnpublishedChunkIsNotAnHistoricalCitation": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewTest#publishedWorkflowAndOldConversationKeepArchivedCorpusAndReadableCitations": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewTest#frozenCorpusRejectsIncompleteOrMismatchedManifest": [
+      "pass",
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewTest#failedPublicationRollsBackAllNewCorporaAndVersionRows": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewTest#frozenCorpusRejectsChangedCanonicalContentEvenWhenStoredDigestIsUnchanged": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewTest#legacyGraphCannotPublishAgentEvenWithARealClientChosenCorpus": [
+      "pass",
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewTest#storedDslChecksumIsCheckedBeforeBindingOrExecution": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewTest#agentAndWorkflowPublishAcquireBasesInTheSameOrder": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewTest#agentPinnedChecksumRejectsAChangedButInternallyValidWorkflow": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewTest#indexingMetadataFailurePersistsFailureWithoutDeletingExistingChunks": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewTest#indexingSuccessIncludesTheActualVectorStorage": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewTest#dialectLookupReusesTheTransactionConnection": [
+      "pass"
+    ],
+    "WorkflowKnowledgeReviewTest#verificationAndRankingUseOneRepeatableReadSnapshot": [
+      "pass"
+    ],
+    "WorkflowExpressionTest#dynamicBooleanIsDataAndMustBeBoolean": [
+      "pass"
+    ],
+    "WorkflowExpressionTest#encodedTemplateReferencesCannotBypassDominators": [
+      "pass"
+    ],
+    "WorkflowExpressionTest#allOperatorsUseDecodedQuotedLiteralsNotInjectedSyntax": [
+      "pass"
+    ],
+    "WorkflowExpressionTest#rejectsUnbalancedQuotesMultipleOperatorsAndTrailingSyntax": [
+      "pass"
+    ],
+    "AgentApiIntegrationTest#draftPublicationAndConversationUseImmutableVersion": [
+      "pass"
+    ],
+    "AgentApiIntegrationTest#publishesKnowledgeRevisionAndPreparesItBeforeQueryLoop": [
+      "pass"
+    ],
+    "AgentApiIntegrationTest#validatesParametersAndToolBindings": [
+      "pass"
+    ],
+    "AgentApiIntegrationTest#freezesWorkflowVersionAndRoutesChatThroughDeterministicExecutor": [
+      "pass"
+    ],
+    "AgentApiIntegrationTest#listUsesBoundedBatchQueries": [
+      "pass"
+    ],
+    "AgentApiIntegrationTest#archiveRemovesDraftBindingsButPreservesPublishedSnapshot": [
+      "pass"
+    ],
+    "AgentApiIntegrationTest#exposesStableReadOnlyToolCatalog": [
+      "pass"
+    ],
+    "PlanStateMachineTest#supportsDiagnoseAndReplanFlow": [
+      "pass"
+    ],
+    "PlanStateMachineTest#supportsTryConfirmExecuteCheckpointFlow": [
+      "pass"
+    ],
+    "PlanStateMachineTest#rejectsSkippingConfirmation": [
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#emptyCorpusCanBeFrozenWithPortableTimestampBindings": [
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#clientCannotChooseSnapshotAndLegacyKnowledgeVersionRequiresRepublish": [
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#archivedUnpublishedChunkIsNotAnHistoricalCitation": [
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#publishedWorkflowAndOldConversationKeepArchivedCorpusAndReadableCitations": [
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#frozenCorpusRejectsIncompleteOrMismatchedManifest": [
+      "pass",
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#failedPublicationRollsBackAllNewCorporaAndVersionRows": [
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#frozenCorpusRejectsChangedCanonicalContentEvenWhenStoredDigestIsUnchanged": [
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain": [
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#workflowEmptyKnowledgeDoesNotReachEnd": [
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#missingOrInventedFinalReferencesRequireClarification": [
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#unboundOrdinaryChatDoesNotRequireKnowledgeCitations": [
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#emptyBoundCorpusNeverCallsModelOrStoresAssistant": [
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#validReferenceChecksSourcesNotSemanticTruth": [
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#unrelatedVectorTopKDoesNotBecomeEvidence": [
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#partialRetrievalFailureDoesNotSilentlyFallBackToOtherSources": [
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#canonicalReadShutdownRetainsRecoverableRun": [
+      "pass",
+      "pass"
+    ],
+    "KnowledgeShutdownPostgresTest#retrievalShutdownSignalIsNotPermanentSourceFailure": [
+      "pass",
+      "pass"
+    ],
+    "ExecutionContextStateTest#deduplicatesGapsAndDetectsRepeatedStateWithoutNewEvidence": [
+      "pass"
+    ],
+    "ExecutionContextStateTest#finishGateEvaluatesExecutablePlanCriteria": [
+      "pass"
+    ],
+    "ExecutionContextStateTest#finishGateRejectsOpenGapAndMissingEvidenceCoverage": [
+      "pass"
+    ],
+    "RunEventBrokerTest#reconnectAfterConsumedTerminalClosesWithoutReplayingIt": [
+      "pass"
+    ],
+    "RunEventBrokerTest#bareUnproxiedPublicationWithoutTransactionIsRejectedBeforeWriting": [
+      "pass"
+    ],
+    "RunEventBrokerTest#committedEventIsDeliveredOnceEvenWhenReplayPrecedesCommitCallback": [
+      "pass"
+    ],
+    "RunEventBrokerTest#outOfOrderCommitCallbacksDrainCommittedEventsInOrderWithoutDuplicates": [
+      "pass"
+    ],
+    "RunEventBrokerTest#terminalRowWithoutTerminalEventKeepsSubscriptionOpenUntilProjection": [
+      "pass"
+    ],
+    "RunEventBrokerTest#rollbackMustNeverLeakAVisibleEvent": [
+      "pass"
+    ],
+    "WorkflowTerminalPostgresTest#postgresUpgradePreservesHistoryAndConstrainsStates": [
+      "pass"
+    ],
+    "MavenStructureTest#businessModulePackageSkeletonsAreConsistent": [
+      "pass"
+    ],
+    "MavenStructureTest#parentModulesMatchDirectoriesAndDependencies": [
+      "pass"
+    ],
+    "ApiContractInventoryTest#everyRegisteredApiRouteHasExactlyOneDocumentedContract": [
+      "pass"
+    ],
+    "RunDispatchIntegrationTest#recoveryCannotRejectOrCleanUpAnAlreadyOwnedDispatch": [
+      "pass"
+    ],
+    "RunDispatchIntegrationTest#cancelReturningAfterRejectedOwnerCleanupDoesNotRecreateALeakedFlag": [
+      "pass"
+    ],
+    "RunDispatchIntegrationTest#recoveryBetweenCreateCommitAndDispatchDoesNotExecuteTerminalRunAgain": [
+      "pass"
+    ],
+    "RunDispatchIntegrationTest#cancellationBeforeAnyDispatchIsReadBeforeModelOrToolExecution": [
+      "pass"
+    ],
+    "HttpErrorSurfaceTest#missingStreamAndCancellationReturnSafeNotFound": [
+      "pass"
+    ],
+    "HttpErrorSurfaceTest#unknownRouteDoesNotReflectItsPath": [
+      "pass"
+    ],
+    "HttpErrorSurfaceTest#multipartParsingPrecedesRouteAndMediaTypeResolution": [
+      "pass"
+    ],
+    "HttpErrorSurfaceTest#missingRunAndEventsReturnSafeNotFound": [
+      "pass"
+    ],
+    "HttpErrorSurfaceTest#malformedMultipartReturnsSafe400": [
+      "pass"
+    ],
+    "HttpErrorSurfaceTest#multipartParserRejectsOversizeWith413": [
+      "pass"
+    ],
+    "HttpErrorSurfaceTest#frameworkErrorsHaveExactSafeJsonContracts": [
+      "pass"
+    ],
+    "ContextManagementEvaluationTest#meetsSemanticSafetyThresholdsInAdditionToReducingTokens": [
+      "pass"
+    ],
+    "DeterministicIntentRouterTest#normalizesWidthAndWhitespaceBeforeMatching": [
+      "pass"
+    ],
+    "DeterministicIntentRouterTest#clarifiesWhenCalculatorExpressionIsMissing": [
+      "pass"
+    ],
+    "DeterministicIntentRouterTest#leavesBusinessLanguageForTheModelLayer": [
+      "pass"
+    ],
+    "DeterministicIntentRouterTest#extractsCalculatorExpressionAsARequiredSlot": [
+      "pass"
+    ],
+    "DeterministicIntentRouterTest#exactWorkflowCommandRequiresWorkflowId": [
+      "pass"
+    ],
+    "DeterministicIntentRouterTest#dangerousActionNeverGoesDirectlyToExecution": [
+      "pass"
+    ],
+    "WorkflowEngineTest#shutdownAfterEndComputedDoesNotRewriteSucceededAsInterrupted": [
+      "pass"
+    ],
+    "WorkflowEngineTest#quotedOperatorsAreLiteralData": [
+      "pass"
+    ],
+    "WorkflowEngineTest#invalidOldConditionIsRejectedBeforeCreatingRun": [
+      "pass"
+    ],
+    "WorkflowEngineTest#pinnedExecutionValidatesAndUsesTheSameLoadedVersion": [
+      "pass"
+    ],
+    "WorkflowEngineTest#startVariableUsesActualStartKey": [
+      "pass"
+    ],
+    "WorkflowEngineTest#rejectsOldInvalidPublishedGraphBeforeAnyExecutionOrWrite": [
+      "pass"
+    ],
+    "WorkflowEngineTest#matchingPinnedChecksumStillRequiresRawDslIntegrity": [
+      "pass"
+    ],
+    "WorkflowEngineTest#signalAfterFinalCalculationCannotRewriteExecutionHistory": [
+      "pass",
+      "pass"
+    ],
+    "WorkflowEngineTest#conditionTreatsUserSuppliedOperatorsAsData": [
+      "pass"
+    ],
+    "WorkflowEngineTest#missingOrChangedPinnedChecksumCannotStartExecution": [
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "WorkflowEngineTest#fiftyStepGraphReallyCompletes": [
+      "pass"
+    ],
+    "CircuitBreakerServiceTest#outerExecutorRejectionIsLocalAndSanitized": [
+      "pass"
+    ],
+    "CircuitBreakerServiceTest#checksCancellationInsideQueuedWorkerBeforeExecutingOperation": [
+      "pass"
+    ],
+    "CircuitBreakerServiceTest#genuineUpstreamTimeoutAndUnavailableStillOpenOnlyTheirOwnBreaker": [
+      "pass"
+    ],
+    "CircuitBreakerServiceTest#fiveCancelledOperationsMustNotOpenTheProviderBreaker": [
+      "pass"
+    ],
+    "CircuitBreakerServiceTest#stopsAttemptChainAtOverallDeadlineAndInterruptsTheWorker": [
+      "pass"
+    ],
+    "CircuitBreakerServiceTest#cancelledHalfOpenProbesReleasePermissionWithoutSuccessCredit": [
+      "pass"
+    ],
+    "CircuitBreakerServiceTest#cancellationDuringTimeoutFailureAlsoDoesNotPoisonTheBreaker": [
+      "pass"
+    ],
+    "CircuitBreakerServiceTest#doesNotRetryAfterCancellationDuringPreviousAttempt": [
+      "pass"
+    ],
+    "CircuitBreakerServiceTest#cancellationInterruptsWorkerBeforeTestCleanup": [
+      "pass"
+    ],
+    "CircuitBreakerServiceTest#retriesTimeoutButNeverRetriesAuthenticationFailure": [
+      "pass"
+    ],
+    "CircuitBreakerServiceTest#preCancelledCallDoesNotSubmitWorker": [
+      "pass"
+    ],
+    "CircuitBreakerServiceTest#nestedHttpPoolRejectionMustNotCountAsProviderFailureOrRetry": [
+      "pass"
+    ],
+    "IntentEvaluationDatasetTest#evaluatesRuleOnlyBaselineAgainstVersionedChineseDataset": [
+      "pass"
+    ],
+    "ProviderDeadlineTest#cancellationWhileWaitingForRetryIsNotAFailedSample": [
+      "pass"
+    ],
+    "ProviderDeadlineTest#runDeadlineReleasesHalfOpenEvenWhenTheWorkerIgnoresInterruption": [
+      "pass"
+    ],
+    "ProviderDeadlineTest#realStalledHttpCountsModelDeadlineAndEventuallyOpensBreaker": [
+      "pass"
+    ],
+    "ProviderDeadlineTest#wrappedCancellationIsIgnoredButInterruptedIoTimeoutStillCounts": [
+      "pass"
+    ],
+    "ProviderDeadlineTest#modelDeadlineSettlesHalfOpenBeforeAnUncooperativeOperationReturns": [
+      "pass"
+    ],
+    "ProviderDeadlineTest#queuedModelDeadlineIsNotAProviderSample": [
+      "pass"
+    ],
+    "LlmHttpClientTest#propagatesRunCancellationIntoStreamingCall": [
+      "pass"
+    ],
+    "LlmHttpClientTest#classifiesStreamingAuthenticationRateLimitAndProviderFailures": [
+      "pass"
+    ],
+    "LlmHttpClientTest#cancelledBlockingPostReleasesSingleWorkerBeforeCleanup": [
+      "pass"
+    ],
+    "LlmHttpClientTest#refusesRedirectsForBlockingAndStreamingRequests": [
+      "pass"
+    ],
+    "LlmHttpClientTest#expiredPostNeverSubmitsToExecutor": [
+      "pass"
+    ],
+    "LlmHttpClientTest#streamsSseEventsAndExposesCancelableHandle": [
+      "pass"
+    ],
+    "LlmHttpClientTest#saturatedExecutorFailsWithoutNetworkOrFallbackOnCaller": [
+      "pass"
+    ],
+    "LlmHttpClientTest#propagatesRunCancellationIntoBlockingPost": [
+      "pass"
+    ],
+    "LlmHttpClientTest#preCancelledStreamNeverOpensNetwork": [
+      "pass"
+    ],
+    "LlmHttpClientTest#preCancelledPostNeverSubmitsToExecutor": [
+      "pass"
+    ],
+    "LlmHttpClientTest#classifiesMidStreamDisconnectAsRequestFailure": [
+      "pass"
+    ],
+    "LlmHttpClientTest#postsJsonOnLlmExecutorAndClassifiesAuthenticationFailure": [
+      "pass"
+    ],
+    "AgentToolBindingMigrationTest#upgradesLegacyToolListsAndEnforcesAgentNameUniqueness": [
+      "pass"
+    ],
+    "WorkflowKnowledgeIntegrationTest#emptyCorpusCanBeFrozenWithPortableTimestampBindings": [
+      "pass"
+    ],
+    "WorkflowKnowledgeIntegrationTest#clientCannotChooseSnapshotAndLegacyKnowledgeVersionRequiresRepublish": [
+      "pass"
+    ],
+    "WorkflowKnowledgeIntegrationTest#archivedUnpublishedChunkIsNotAnHistoricalCitation": [
+      "pass"
+    ],
+    "WorkflowKnowledgeIntegrationTest#publishedWorkflowAndOldConversationKeepArchivedCorpusAndReadableCitations": [
+      "pass"
+    ],
+    "WorkflowKnowledgeIntegrationTest#frozenCorpusRejectsIncompleteOrMismatchedManifest": [
+      "pass",
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "WorkflowKnowledgeIntegrationTest#failedPublicationRollsBackAllNewCorporaAndVersionRows": [
+      "pass"
+    ],
+    "WorkflowKnowledgeIntegrationTest#frozenCorpusRejectsChangedCanonicalContentEvenWhenStoredDigestIsUnchanged": [
+      "pass"
+    ],
+    "TextInputTest#checksNestedValuesAndKeysWithoutChangingTheTree": [
+      "pass"
+    ],
+    "TextInputTest#rejectsOnlyActualNulWithoutEchoingOrNormalizingText": [
+      "pass"
+    ],
+    "LayeredIntentRouterTest#acceptsHighConfidenceStructuredCandidate": [
+      "pass"
+    ],
+    "LayeredIntentRouterTest#deterministicLayerShortCircuitsTheModelLayer": [
+      "pass"
+    ],
+    "LayeredIntentRouterTest#closeCandidatesBecomeClarification": [
+      "pass"
+    ],
+    "LayeredIntentRouterTest#lowConfidenceCandidateBecomesClarification": [
+      "pass"
+    ],
+    "LayeredIntentRouterTest#modelCannotInventIntentOrExecutableTarget": [
+      "pass"
+    ],
+    "LayeredIntentRouterTest#emptyModelResultBecomesUnknown": [
+      "pass"
+    ],
+    "LayeredIntentRouterTest#missingSlotsOverrideExecutableModelRoute": [
+      "pass"
+    ],
+    "LayeredIntentRouterTest#modelFailureFailsClosedWithoutLeakingItsMessage": [
+      "pass"
+    ],
+    "RunEventBrokerBackpressureTest#blockedSendCannotHoldCommitCallbackOrCollidingRunOrHeartbeat": [
+      "pass"
+    ],
+    "RunEventBrokerBackpressureTest#capacityIsBoundedAndHistoryIsNotReadBeforeMvcCommitsHandshake": [
+      "pass"
+    ],
+    "RunEventBrokerBackpressureTest#foreignAndUnknownCursorsAreRejectedBeforeSubscribing": [
+      "pass"
+    ],
+    "StructuredModelIntentClassifierTest#malformedModelOutputFailsClosed": [
+      "pass"
+    ],
+    "StructuredModelIntentClassifierTest#acceptsJsonFenceButRejectsInvalidCandidates": [
+      "pass"
+    ],
+    "StructuredModelIntentClassifierTest#parsesJsonCandidateAndPreservesSlots": [
+      "pass"
+    ],
+    "ExecutionShutdownTest#childContextCloseDoesNotStopParentContext": [
+      "pass"
+    ],
+    "ExecutionShutdownTest#explicitCancellationWinsAndDeadlineIsNotResetByShutdownBinding": [
+      "pass"
+    ],
+    "ExecutionShutdownTest#shutdownInterruptionIsNotUserCancellation": [
+      "pass"
+    ],
+    "ExecutionShutdownTest#shutdownReleasesHalfOpenPermitWithoutSuccessOrFailureSample": [
+      "pass"
+    ],
+    "CredentialReferencePolicyTest#reservedSecretsCannotBeEnabledEvenByMisconfiguredOperator": [
+      "pass"
+    ],
+    "CredentialReferencePolicyTest#malformedOrWildcardOperatorConfigFailsClosedWithoutEcho": [
+      "pass"
+    ],
+    "CredentialReferencePolicyTest#relaxedMasterKeyAliasesAndCredentialConfigNamespaceCannotBeGranted": [
+      "pass"
+    ],
+    "CredentialReferencePolicyTest#onlyExplicitReferenceAndExactDestinationCanReadFakeProperty": [
+      "pass"
+    ],
+    "CredentialReferencePolicyTest#deniesAllUnconfiguredReferencesWithoutLookingThemUp": [
+      "pass"
+    ],
+    "CredentialReferencePolicyTest#ordinaryApplicationSecretNamesRemainGrantableAndPathsRemainExact": [
+      "pass"
+    ],
+    "ManagementReadbackIntegrationTest#legacyConversationAndToolCatalogReturnActualFields": [
+      "pass"
+    ],
+    "ManagementReadbackIntegrationTest#agentWorkflowUnbindChangesOnlyDraftAndNewPublication": [
+      "pass"
+    ],
+    "ManagementReadbackIntegrationTest#knowledgeCrudAndDocumentPaginationHavePositiveAndArchivedControls": [
+      "pass"
+    ],
+    "ManagementReadbackIntegrationTest#workflowReadbackAndArchiveRetainTheExactPublishedVersion": [
+      "pass"
+    ],
+    "McpCredentialIntegrationTest#tokenIsEncryptedNeverReturnedAndKeepReplaceClearAreExplicit": [
+      "pass"
+    ],
+    "McpCredentialIntegrationTest#endpointChangeCannotKeepStoredCredentialImplicitly": [
+      "pass"
+    ],
+    "McpCredentialIntegrationTest#legacyUnlistedReferenceIsRejectedBeforeSendingAnyHttp": [
+      "pass"
+    ],
+    "McpCredentialIntegrationTest#rejectsProcessSecretReferencesAtSaveWithoutReadingTheirValues": [
+      "pass"
+    ],
+    "McpCredentialIntegrationTest#frozenPublishedRevisionWithUnapprovedLegacyReferenceSendsNoHttp": [
+      "pass"
+    ],
+    "McpCredentialIntegrationTest#legacyPlaintextIsNotProjectedToBrowser": [
+      "pass"
+    ],
+    "McpCredentialIntegrationTest#rejectsCrossServerReferencesAndMixedOperationsWithoutLeakingInputs": [
+      "pass"
+    ],
+    "McpCredentialIntegrationTest#frozenAgentVersionKeepsOldAuthorizationAndRemoteEchoIsRedacted": [
+      "pass"
+    ],
+    "UploadBoundaryNetworkTest#bothNginxEntrypointsPreserveUploadAndSafeJsonLimits": [
+      "pass",
+      "pass"
+    ],
+    "UploadBoundaryNetworkTest#directApplicationAcceptsUpToTenMibAndRejectsFileOrRequestOverflow": [
+      "pass"
+    ],
+    "KnowledgeFinishPostgresTest#emptyCorpusCanBeFrozenWithPortableTimestampBindings": [
+      "pass"
+    ],
+    "KnowledgeFinishPostgresTest#clientCannotChooseSnapshotAndLegacyKnowledgeVersionRequiresRepublish": [
+      "pass"
+    ],
+    "KnowledgeFinishPostgresTest#archivedUnpublishedChunkIsNotAnHistoricalCitation": [
+      "pass"
+    ],
+    "KnowledgeFinishPostgresTest#publishedWorkflowAndOldConversationKeepArchivedCorpusAndReadableCitations": [
+      "pass"
+    ],
+    "KnowledgeFinishPostgresTest#frozenCorpusRejectsIncompleteOrMismatchedManifest": [
+      "pass",
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "KnowledgeFinishPostgresTest#failedPublicationRollsBackAllNewCorporaAndVersionRows": [
+      "pass"
+    ],
+    "KnowledgeFinishPostgresTest#frozenCorpusRejectsChangedCanonicalContentEvenWhenStoredDigestIsUnchanged": [
+      "pass"
+    ],
+    "KnowledgeFinishPostgresTest#resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain": [
+      "pass"
+    ],
+    "KnowledgeFinishPostgresTest#workflowEmptyKnowledgeDoesNotReachEnd": [
+      "pass"
+    ],
+    "KnowledgeFinishPostgresTest#missingOrInventedFinalReferencesRequireClarification": [
+      "pass"
+    ],
+    "KnowledgeFinishPostgresTest#unboundOrdinaryChatDoesNotRequireKnowledgeCitations": [
+      "pass"
+    ],
+    "KnowledgeFinishPostgresTest#emptyBoundCorpusNeverCallsModelOrStoresAssistant": [
+      "pass"
+    ],
+    "KnowledgeFinishPostgresTest#validReferenceChecksSourcesNotSemanticTruth": [
+      "pass"
+    ],
+    "KnowledgeFinishPostgresTest#unrelatedVectorTopKDoesNotBecomeEvidence": [
+      "pass"
+    ],
+    "KnowledgeFinishPostgresTest#partialRetrievalFailureDoesNotSilentlyFallBackToOtherSources": [
+      "pass"
+    ],
+    "MockModelClientTest#unrelatedEnglishWordsDoNotTriggerTimeTool": [
+      "pass"
+    ],
+    "MockModelClientTest#unavailableClockDoesNotProduceCallOrMisleadingSuggestion": [
+      "pass"
+    ],
+    "MockModelClientTest#timePromptsProduceStructuredClockCalls": [
+      "pass",
+      "pass",
+      "pass",
+      "pass",
+      "pass",
+      "pass",
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "MockModelClientTest#aNewTurnDoesNotReusePreviousToolResults": [
+      "pass"
+    ],
+    "MockModelClientTest#toolResultCompletesWithoutCallingAgain": [
+      "pass"
+    ],
+    "McpServerApiIntegrationTest#keepsPublishedAgentVersionOnItsFrozenSchemaAfterServerDrift": [
+      "pass"
+    ],
+    "McpServerApiIntegrationTest#listsCurrentToolsAndArchiveRemovesOnlyTheActiveServer": [
+      "pass"
+    ],
+    "McpServerApiIntegrationTest#connectionEditsRequireDiscoveryButRenamingDoesNot": [
+      "pass"
+    ],
+    "McpServerApiIntegrationTest#freezesReadSchemaIntoAgentVersionAndExecutesThroughQueryLoopRuntime": [
+      "pass"
+    ],
+    "McpServerApiIntegrationTest#directTokenFailsClosedWithoutStorageKey": [
+      "pass"
+    ],
+    "McpServerApiIntegrationTest#discoversVersionedToolsAndOnlyExecutesReadTools": [
+      "pass"
+    ],
+    "McpServerApiIntegrationTest#validatesCredentialReferencesOnBothCreateAndUpdate": [
+      "pass"
+    ],
+    "McpServerApiIntegrationTest#blocksPrivateEndpointsByDefault": [
+      "pass"
+    ],
+    "KnowledgeFinishIntegrationTest#emptyCorpusCanBeFrozenWithPortableTimestampBindings": [
+      "pass"
+    ],
+    "KnowledgeFinishIntegrationTest#clientCannotChooseSnapshotAndLegacyKnowledgeVersionRequiresRepublish": [
+      "pass"
+    ],
+    "KnowledgeFinishIntegrationTest#archivedUnpublishedChunkIsNotAnHistoricalCitation": [
+      "pass"
+    ],
+    "KnowledgeFinishIntegrationTest#publishedWorkflowAndOldConversationKeepArchivedCorpusAndReadableCitations": [
+      "pass"
+    ],
+    "KnowledgeFinishIntegrationTest#frozenCorpusRejectsIncompleteOrMismatchedManifest": [
+      "pass",
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "KnowledgeFinishIntegrationTest#failedPublicationRollsBackAllNewCorporaAndVersionRows": [
+      "pass"
+    ],
+    "KnowledgeFinishIntegrationTest#frozenCorpusRejectsChangedCanonicalContentEvenWhenStoredDigestIsUnchanged": [
+      "pass"
+    ],
+    "KnowledgeFinishIntegrationTest#resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain": [
+      "pass"
+    ],
+    "KnowledgeFinishIntegrationTest#workflowEmptyKnowledgeDoesNotReachEnd": [
+      "pass"
+    ],
+    "KnowledgeFinishIntegrationTest#missingOrInventedFinalReferencesRequireClarification": [
+      "pass"
+    ],
+    "KnowledgeFinishIntegrationTest#unboundOrdinaryChatDoesNotRequireKnowledgeCitations": [
+      "pass"
+    ],
+    "KnowledgeFinishIntegrationTest#emptyBoundCorpusNeverCallsModelOrStoresAssistant": [
+      "pass"
+    ],
+    "KnowledgeFinishIntegrationTest#validReferenceChecksSourcesNotSemanticTruth": [
+      "pass"
+    ],
+    "KnowledgeFinishIntegrationTest#unrelatedVectorTopKDoesNotBecomeEvidence": [
+      "pass"
+    ],
+    "KnowledgeFinishIntegrationTest#partialRetrievalFailureDoesNotSilentlyFallBackToOtherSources": [
+      "pass"
+    ],
+    "CommonContractsTest#businessExceptionAllowsMessageOverrideWithoutChangingCode": [
+      "pass"
+    ],
+    "CommonContractsTest#resultAndPageResultUseOneErrorCodeContract": [
+      "pass"
+    ],
+    "CommonContractsTest#threadPoolsAreBoundedAndNamedByWorkload": [
+      "pass"
+    ],
+    "CommonContractsTest#saturatedLlmPoolNeverRunsBlockingWorkOnCaller": [
+      "pass"
+    ],
+    "CommonContractsTest#pageHelperNormalizesUnsafeClientInput": [
+      "pass"
+    ],
+    "ReadInputHygieneIntegrationTest#activeKnowledgeQueryRejectsNulBeforeRetrievalWithPositiveMatch": [
+      "pass"
+    ],
+    "ReadInputHygieneIntegrationTest#frozenKnowledgeQueryRejectsNulOnBothPublicSearchEntrypoints": [
+      "pass"
+    ],
+    "ReadInputHygieneIntegrationTest#memoryQueryAndEntityRejectNulWithoutHidingValidHistory": [
+      "pass"
+    ],
+    "ReadInputHygieneIntegrationTest#intentAgentAndInputRejectNulBeforeModelFactory": [
+      "pass"
+    ],
+    "ProviderCredentialBoundaryTest#unlistedProcessPropertyCannotBeUsedAsProviderCredential": [
+      "pass"
+    ],
+    "ProviderCredentialBoundaryTest#providerGrantsUseBaseUrlWithTrailingSlashRemoved": [
+      "pass"
+    ],
+    "HttpErrorContractTest#malformedJsonDoesNotEchoSubmittedValue": [
+      "pass"
+    ],
+    "HttpErrorContractTest#unsupportedMediaUses415": [
+      "pass"
+    ],
+    "HttpErrorContractTest#missingRequiredQueryIsBadRequest": [
+      "pass"
+    ],
+    "HttpErrorContractTest#unsupportedAcceptUses406AndStillHasSafeErrorEnvelope": [
+      "pass"
+    ],
+    "HttpErrorContractTest#unsupportedMethodUses405AndPreservesAllow": [
+      "pass"
+    ],
+    "HttpErrorContractTest#invalidQueryAndPathTypesDoNotEchoSubmittedValue": [
+      "pass"
+    ],
+    "HttpErrorContractTest#missingRequiredHeaderIsBadRequest": [
+      "pass"
+    ],
+    "PostgresConcurrencyIntegrationTest#rollbackNeverEmitsAndCommittedTerminalClosesTheLiveStream": [
+      "pass"
+    ],
+    "PostgresConcurrencyIntegrationTest#chatSlicePinsPublishedVersionAndReplaysTerminalSseOnPostgres": [
+      "pass"
+    ],
+    "PostgresConcurrencyIntegrationTest#concurrentEventPublishersHaveOrderedUniqueCommittedSequences": [
+      "pass"
+    ],
+    "PostgresConcurrencyIntegrationTest#concurrentIdempotentCreatesConvergeAndTerminalCasHasOneWinner": [
+      "pass"
+    ],
+    "PostgresConcurrencyIntegrationTest#terminalEventFailureRollsBackSuccessAndAssistantMessage": [
+      "pass"
+    ],
+    "PostgresConcurrencyIntegrationTest#concurrentAgentCreatesUsePostgresUniqueConstraintAsFinalGuard": [
+      "pass"
+    ],
+    "PostgresConcurrencyIntegrationTest#postgresNulIsRejectedAtAdmissionWithoutCreatingRunOrMessages": [
+      "pass"
+    ],
+    "HistoryRecoveryIntegrationTest#committedModelAndEarlierToolAreReplayedAfterRestart": [
+      "pass",
+      "pass"
+    ],
+    "McpCredentialPostgresTest#tokenIsEncryptedNeverReturnedAndKeepReplaceClearAreExplicit": [
+      "pass"
+    ],
+    "McpCredentialPostgresTest#endpointChangeCannotKeepStoredCredentialImplicitly": [
+      "pass"
+    ],
+    "McpCredentialPostgresTest#legacyUnlistedReferenceIsRejectedBeforeSendingAnyHttp": [
+      "pass"
+    ],
+    "McpCredentialPostgresTest#rejectsProcessSecretReferencesAtSaveWithoutReadingTheirValues": [
+      "pass"
+    ],
+    "McpCredentialPostgresTest#frozenPublishedRevisionWithUnapprovedLegacyReferenceSendsNoHttp": [
+      "pass"
+    ],
+    "McpCredentialPostgresTest#legacyPlaintextIsNotProjectedToBrowser": [
+      "pass"
+    ],
+    "McpCredentialPostgresTest#rejectsCrossServerReferencesAndMixedOperationsWithoutLeakingInputs": [
+      "pass"
+    ],
+    "McpCredentialPostgresTest#frozenAgentVersionKeepsOldAuthorizationAndRemoteEchoIsRedacted": [
+      "pass"
+    ],
+    "RunShutdownPostgresTest#realContextShutdownAndRestartOnPostgres": [
+      "pass"
+    ],
+    "RunShutdownPostgresTest#computedResultIsCommittedOnShutdownWithoutReplayOnPostgres": [
+      "pass"
+    ],
+    "KnowledgeApiIntegrationTest#uploadsIndexesRetrievesAndArchivesCanonicalEvidence": [
+      "pass"
+    ],
+    "KnowledgeApiIntegrationTest#rejectsUnsupportedFilesAndInvalidChunkPolicy": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#emptyCorpusCanBeFrozenWithPortableTimestampBindings": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#clientCannotChooseSnapshotAndLegacyKnowledgeVersionRequiresRepublish": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#archivedUnpublishedChunkIsNotAnHistoricalCitation": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#publishedWorkflowAndOldConversationKeepArchivedCorpusAndReadableCitations": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#frozenCorpusRejectsIncompleteOrMismatchedManifest": [
+      "pass",
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#failedPublicationRollsBackAllNewCorporaAndVersionRows": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#frozenCorpusRejectsChangedCanonicalContentEvenWhenStoredDigestIsUnchanged": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#workflowEmptyKnowledgeDoesNotReachEnd": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#missingOrInventedFinalReferencesRequireClarification": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#unboundOrdinaryChatDoesNotRequireKnowledgeCitations": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#emptyBoundCorpusNeverCallsModelOrStoresAssistant": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#validReferenceChecksSourcesNotSemanticTruth": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#unrelatedVectorTopKDoesNotBecomeEvidence": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#partialRetrievalFailureDoesNotSilentlyFallBackToOtherSources": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#historyCommittedBeforeVerificationIsNotReadableWhileRunIsRunning": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#knowledgeRunDoesNotCreateNewRawMemoryIndex": [
+      "pass"
+    ],
+    "KnowledgeMemoryBoundaryTest#withheldFinalTextIsNotPublishedThroughAnyMemorySurface": [
+      "pass"
+    ],
+    "ToolRuntimeTest#revalidatesLeaseAfterPermissionAndBeforeExecution": [
+      "pass"
+    ],
+    "ToolRuntimeTest#validatesRequiredCalculatorInput": [
+      "pass"
+    ],
+    "ToolRuntimeTest#deniesToolsOutsideAgentAllowList": [
+      "pass"
+    ],
+    "ToolRuntimeTest#capabilitySnapshotIsDeterministicAndOwnerRevisionIsPinned": [
+      "pass"
+    ],
+    "ToolRuntimeTest#distinguishesUnavailableToolAndKnownReadOnlyAlternative": [
+      "pass"
+    ],
+    "ToolRuntimeTest#rejectsWorkBeforeToolExecutionWhenRunIsCancelled": [
+      "pass"
+    ],
+    "ChildAgentTaskIntegrationTest#restartMarksMissingExecutorsLostAndRecordsARecoveryDecision": [
+      "pass"
+    ],
+    "ChildAgentTaskIntegrationTest#consumesOnlyAfterParentRunHasCommittedSuccessfully": [
+      "pass"
+    ],
+    "RunSubmissionIdentityTest#missingLookupNeverCreatesAndRejectsInvalidKeys": [
+      "pass"
+    ],
+    "RunSubmissionIdentityTest#anotherUniqueConstraintIsSafeFailureNotReplay": [
+      "pass"
+    ],
+    "RunSubmissionIdentityTest#deletingConversationAfterAdmissionReadIsNotAnIdempotencyConflict": [
+      "pass"
+    ],
+    "RunSubmissionIdentityTest#lookupIsReadOnlyScopedAndUncachedEvenWhenProviderDisabled": [
+      "pass"
+    ],
+    "RunSubmissionIdentityTest#committedSubmissionReplaysAfterProviderDisabledButDifferentBodyAndNewWorkDoNot": [
+      "pass"
+    ],
+    "RunSubmissionIdentityTest#structuredPostgresFieldsOverrideMisleadingHibernateConstraintNames": [
+      "pass"
+    ],
+    "RunSubmissionIdentityTest#h2SameKeyRaceStillConvergesWithOneUserMessageAndDispatch": [
+      "pass"
+    ],
+    "RunSubmissionIdentityTest#localizedPostgresConflictReplaysUsingStructuredConstraintNotHibernateMessageExtraction": [
+      "pass"
+    ],
+    "RunSubmissionIdentityTest#cancellationCannotRewriteAnExistingSuccessOrFailure": [
+      "pass",
+      "pass"
+    ],
+    "RunSubmissionIdentityTest#messageLimitRejectsBeforeWritesAndAcceptsTheExactBoundary": [
+      "pass"
+    ],
+    "RunSubmissionIdentityTest#nulInputIsRejectedBeforeWritesOnBothHttpAndService": [
+      "pass"
+    ],
+    "RunSubmissionIdentityTest#foreignAndMissingResumeSourcesHaveIdenticalSafeErrorsWithoutWrites": [
+      "pass"
+    ],
+    "RunSubmissionIdentityTest#sameKeyWithDifferentResumeIsConflictWithoutAdditionalWork": [
+      "pass"
+    ],
+    "RunSubmissionIdentityTest#repeatedAndTerminalCancellationAreIdempotentAndPreCancelDoesNoModelWork": [
+      "pass"
+    ],
+    "InputHygienePostgresTest#conversationTitleIsRejectedAndPlainBackslashTextIsPreserved": [
+      "pass"
+    ],
+    "InputHygienePostgresTest#agentTextCreateAndUpdateRejectWithoutChangingRows": [
+      "pass"
+    ],
+    "InputHygienePostgresTest#agentToolBindingRejectsNulWithoutReplacingExistingBinding": [
+      "pass"
+    ],
+    "InputHygienePostgresTest#agentKnowledgeBindingRejectsNulWithoutReplacingExistingBinding": [
+      "pass"
+    ],
+    "InputHygienePostgresTest#knowledgeTextCreateAndUpdateRejectWithoutChangingRows": [
+      "pass"
+    ],
+    "InputHygienePostgresTest#mcpTextCreateAndUpdateRejectBeforeSavingServerOrCredential": [
+      "pass"
+    ],
+    "InputHygienePostgresTest#agentMcpBindingRejectsNulWithoutReplacingExistingBinding": [
+      "pass"
+    ],
+    "InputHygienePostgresTest#agentWorkflowBindingRejectsNulWithoutReplacingExistingBinding": [
+      "pass"
+    ],
+    "InputHygienePostgresTest#workflowExecutionInputIsRejectedBeforeAnExecutionRowExists": [
+      "pass"
+    ],
+    "InputHygienePostgresTest#workflowNestedTextCreateAndUpdateRejectWithoutChangingGraph": [
+      "pass"
+    ],
+    "InputHygienePostgresTest#agentCreateEnabledToolsRejectsNulBeforeWritingAndKeepsValidTools": [
+      "pass"
+    ],
+    "InputHygienePostgresTest#workflowDeepConfigKeysAndArraysRejectNulWithoutChangingStoredGraph": [
+      "pass"
+    ],
+    "InputHygienePostgresTest#uploadRejectsContentAndMetadataBeforeDocumentsOrIndexTasksExist": [
+      "pass"
+    ],
+    "InputHygienePostgresTest#providerAndModelTextCreateAndUpdateRejectBeforeReplacingModels": [
+      "pass"
+    ],
+    "HistoryRecoveryMigrationTest#legacyCanonicalHistoryIsNotRewritten": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsReachableNonEndDeadEnd": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsEndOutgoingEdge": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsKeysWhoseWhitespaceWouldChangeAtPersistence": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#wideGraphMayHaveMoreThan50NodesWhenEveryPathFits": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsSelfReference": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsPathOf51ButAllows50IncludingStartAndEnd": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsUnknownNode": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsInvalidExpressionBeforePublication": [
+      "pass",
+      "pass",
+      "pass",
+      "pass",
+      "pass",
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsConditionOnOrdinaryEdge": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsMalformedPlaceholder": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsConditionReferencingItsOwnOutput": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsUndeclaredDefaultOutputWhenCustomVariableConfigured": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#acceptsRepeatedPredecessorEdges": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsTwoStarts": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsCycleWithValidOutDegrees": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsBranchLocalValueAtMerge": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#acceptsCustomOutputNameAndSpacedPlaceholder": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsMissingTemplateConfiguration": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsUnknownVariableOnKnownDominator": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsNonBooleanBranchAndDuplicatePredicate": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#rejectsMultipleNonConditionalSuccessors": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#invalidStoredNullGraphFailsWithBusinessErrorNotNullPointer": [
+      "pass"
+    ],
+    "WorkflowGraphValidatorTest#acceptsStrictDominatorAtMerge": [
+      "pass"
+    ],
+    "AgentCacheIntegrationTest#draftChangesDoNotEvictRuntimeSnapshotsButPublishAndArchiveEvictCurrentOnly": [
+      "pass"
+    ],
+    "RunShutdownIntegrationTest#startupInterruptsOldWorkflowRowsButNeverNewlyAcceptedExecutions": [
+      "pass"
+    ],
+    "RunShutdownIntegrationTest#computedClarificationCommitsDuringShutdownWithoutRestartingTheLoop": [
+      "pass"
+    ],
+    "RunShutdownIntegrationTest#interruptedModelIsRecoverableAfterActualApplicationRestart": [
+      "pass"
+    ],
+    "RunShutdownIntegrationTest#computedModelResultCommitsDuringRealShutdownAndIsNotReplayed": [
+      "pass"
+    ],
+    "RunShutdownIntegrationTest#explicitCancellationBeforeShutdownRemainsCancelledAndIsNotRecovered": [
+      "pass"
+    ],
+    "RunShutdownIntegrationTest#interruptedWorkflowLeavesAttemptTraceAndRestartsWithFreshAttempt": [
+      "pass"
+    ],
+    "ContextMemoryIntegrationTest#layersRecentTurnsAndRequiresSearchThenCanonicalDetailForVerifiedEvidence": [
+      "pass"
+    ],
+    "ContextMemoryIntegrationTest#derivesVerifiableDetailsAndSourceBoundStructuredSummaryFromCanonicalHistory": [
+      "pass"
+    ],
+    "SseNetworkIsolationTest#subscriptionLimitFailsFastAndDoesNotQueueMoreWorkers": [
+      "pass"
+    ],
+    "SseNetworkIsolationTest#foreignAndUnknownCursorReturnJson400AndZeroCursorReplays": [
+      "pass"
+    ],
+    "SseNetworkIsolationTest#nonReadingSocketCannotHoldTransactionsOrAnotherRunAndIsTimedOut": [
+      "pass"
+    ],
+    "HistoryRecallEvaluationTest#versionedRecallDatasetTriggersAndValidatesSemanticRrfUpgrade": [
+      "pass"
+    ],
+    "KnowledgeCompletionVerifierTest#cancellationAndExpiryStopCanonicalReads": [
+      "pass"
+    ],
+    "KnowledgeCompletionVerifierTest#resolvingUserGapCannotBypassFinalReferenceCheck": [
+      "pass"
+    ],
+    "KnowledgeCompletionVerifierTest#missingUnknownAndMixedReferencesOpenGapWithoutReadingSource": [
+      "pass"
+    ],
+    "KnowledgeCompletionVerifierTest#validSourceIsNotProofOfModelAnswerEntailment": [
+      "pass"
+    ],
+    "KnowledgeCompletionVerifierTest#oldCheckpointWithoutCandidateMappingCannotFinish": [
+      "pass"
+    ],
+    "KnowledgeCompletionVerifierTest#restoredLoopUsesCheckpointKMappingNotNewCandidateRanking": [
+      "pass"
+    ],
+    "KnowledgeCompletionVerifierTest#referenceFailurePersistsGapAndNeverStreamsUnverifiedAnswer": [
+      "pass"
+    ],
+    "KnowledgeCompletionVerifierTest#candidatesAreUnverifiedAndCannotSatisfyRequiredClaim": [
+      "pass"
+    ],
+    "KnowledgeCompletionVerifierTest#cancellationDuringCanonicalReadCannotBecomeCompleted": [
+      "pass"
+    ],
+    "KnowledgeCompletionVerifierTest#canonicalFailureIsGapAndDoesNotLeakException": [
+      "pass"
+    ],
+    "WorkflowExecutionContextTest#resolvesWhitespaceAndRegexCharactersLiterally": [
+      "pass"
+    ],
+    "WorkflowExecutionContextTest#missingVariableFailsClosed": [
+      "pass"
+    ],
+    "WorkflowExecutionContextTest#malformedTemplateFailsBeforeRendering": [
+      "pass"
+    ],
+    "WorkflowExecutionContextTest#valuesRemainWriteOnce": [
+      "pass"
+    ],
+    "WorkflowExecutionContextTest#replacementValuesAreDataNotNewTemplateSource": [
+      "pass"
+    ],
+    "McpProtocolClientReliabilityTest#propagatesRunCancellationDuringBlockingMcpCall": [
+      "pass"
+    ],
+    "McpProtocolClientReliabilityTest#explicitReferenceCanOnlyReachItsApprovedEndpoint": [
+      "pass"
+    ],
+    "McpProtocolClientReliabilityTest#enforcesRunDeadlineDuringBlockingMcpCall": [
+      "pass"
+    ],
+    "McpProtocolClientReliabilityTest#classifiesUnavailableServerWithoutFollowingRedirects": [
+      "pass"
+    ]
+  }
+}

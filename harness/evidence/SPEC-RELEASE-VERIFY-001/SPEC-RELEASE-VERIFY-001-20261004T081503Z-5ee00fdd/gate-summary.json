@@ -1,0 +1,84 @@
+{
+  "headCommit": "42db7278c61f9dcd49f505654341b7f1fceeafc9",
+  "finishedAt": "2026-10-04T08:26:10Z",
+  "result": "passed",
+  "scopes": [
+    "harness",
+    "migration",
+    "backend",
+    "runtime",
+    "eval",
+    "frontend"
+  ],
+  "verificationSha256": "e29e29c1ea16f6b2029f78a564ce4a0be1c46dbbdbfd9ce732ba0a6a3a25a968",
+  "steps": {
+    "backend-tests": {
+      "classes": 87,
+      "totals": {
+        "tests": 602,
+        "executed": 602,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "flakyAttempts": 0
+      },
+      "result": "passed",
+      "sha256": "7bb7f167f18cdacbdf7245e4549496c6a8a932725bdf35626072ad452fd65458"
+    },
+    "migration-postgres": {
+      "classes": 14,
+      "totals": {
+        "tests": 118,
+        "executed": 118,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "flakyAttempts": 0
+      },
+      "result": "passed",
+      "sha256": "be53ca2ca8516d051b7e24d14d5a5f915e025cb966759972720967689e1d4c01"
+    },
+    "runtime-tests": {
+      "classes": 7,
+      "totals": {
+        "tests": 34,
+        "executed": 34,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "flakyAttempts": 0
+      },
+      "result": "passed",
+      "sha256": "792a9f6452fe508349093b3783c1927d5260faf1c318ee8d740f377dc21906fd"
+    },
+    "intent-context-recall-eval": {
+      "classes": 7,
+      "totals": {
+        "tests": 24,
+        "executed": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "flakyAttempts": 0
+      },
+      "result": "passed",
+      "sha256": "9d19cc258ddc898b933fd24d105278f964773ade4cf7e25397ee03c073286882"
+    }
+  },
+  "harnessPython": 74,
+  "browserControlled": {
+    "tests": 38,
+    "result": "passed",
+    "logSha256": "5386ac79c5ae1b46b63904d315575adc42194acaf5de83f3a744e16a3ed29515",
+    "scope": "Chromium+Vue; HTTP/EventSource mocked; not live backend"
+  },
+  "portable": {
+    "subcases": 57,
+    "jsonSha256": "3f61009c9f4898ea6dbaa87c54074831589e22ed007c4eba08e577347bc07d9e",
+    "mdSha256": "dcc143bd5e90db571e2133a8164c0712e8e1dde8c77e1598428de1395e9d9c09",
+    "methodEvidenceSha256": "4d20e15434300d62650f237d64693ad9fea5841871cdb5df562265f6d76e8265",
+    "byteIdentical": true
+  },
+  "allLogAndSummaryHashesRecomputed": true,
+  "note": "Counts across scopes overlap. First behavior-report invocation was premature (verification.json did not yet exist), exit 1; rerun only after manifest existed. No product change/failure from that invocation. Default Colima unchanged; isolated profile has 11GiB free. Raw logs/XML excluded from Git."
+}
