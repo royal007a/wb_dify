@@ -7,16 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-INPUT-HYGIENE-003-20261004T025954Z-48c4e6fd",
-    "path": "harness/evidence/SPEC-INPUT-HYGIENE-003/SPEC-INPUT-HYGIENE-003-20261004T025954Z-48c4e6fd",
-    "result": "completed",
-    "exitCode": 0,
-    "baselineCommit": "065fc87d31b8b489e457781b7fd6fadabe9efb74",
-    "headCommit": "104af66ba28105a53a014d4cd42ee99a5a556178",
-    "recordedAt": "2026-10-04T03:11:56Z",
-    "verificationSchemaVersion": 3,
-    "verificationSha256": "919e32579dbb589bb57f4519221ce15971f9ec2d89998715b0b5c5a80cb46714"
+    "runId": "SPEC-KNOWLEDGE-INTEGRITY-003-20261004T032219Z-4e2d89c3",
+    "path": "harness/evidence/SPEC-KNOWLEDGE-INTEGRITY-003/SPEC-KNOWLEDGE-INTEGRITY-003-20261004T032219Z-4e2d89c3",
+    "result": "blocked",
+    "exitCode": 1,
+    "baselineCommit": "60bfe301f1fefe1f0826eae9b888e5265080d548",
+    "headCommit": "1388db6f96c39f80091a735e86c49d299ac0688c",
+    "recordedAt": "2026-10-04T03:41:54Z"
   },
   "lastCompletedTaskId": "SPEC-INPUT-HYGIENE-003",
-  "updatedAt": "2026-10-04T03:11:56Z"
+  "updatedAt": "2026-10-04T03:41:54Z"
 }

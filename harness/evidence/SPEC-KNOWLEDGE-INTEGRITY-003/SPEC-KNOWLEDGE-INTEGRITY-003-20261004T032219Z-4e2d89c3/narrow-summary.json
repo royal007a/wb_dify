@@ -1,0 +1,29 @@
+{
+  "runs": [
+    {
+      "log": "narrow-red.log",
+      "exitCode": 1,
+      "sha256": "5b9bde08e606bda297bc50436b44cb1e93e0619a0f1ba8c25a8ca60d5b81379a",
+      "meaning": "5 unit tests, 3 failures: metadata failure/unknown product falsely DONE; extra connection borrow. Later app modules not run."
+    },
+    {
+      "log": "narrow-red-workflow.log",
+      "exitCode": 1,
+      "sha256": "b5fd310f2fd7bdbb7ef2a93de91ea96b007d004767c83b9f443dc0b9a5d7de69",
+      "meaning": "36 H2/PG tests, 2 failures: internally self-consistent changed Workflow accepted by old Agent."
+    },
+    {
+      "log": "narrow-red-metadata.log",
+      "exitCode": 1,
+      "sha256": "f2e44136ea5d30d5bf2e661686efc8f8ff70cd1b2a3e36b0ec37a2c34707cf42",
+      "meaning": "2 H2/PG targeted tests, both fail: old code never reaches the transaction-aware callback injection. Not a real network failure."
+    },
+    {
+      "log": "narrow-green.log",
+      "exitCode": 0,
+      "sha256": "26994a4188df2fba754c360f12f1a54ee42baeb776a112a035e22de12fe81a6e",
+      "meaning": "77 tests across unit/H2/PG; no failure/error/skip."
+    }
+  ],
+  "boundary": "Local mocked JDBC and disposable H2/PG; no production services or deployment."
+}

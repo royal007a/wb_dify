@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T03:11:56Z",
+  "updatedAt": "2026-10-04T03:41:54Z",
   "tasks": [
     {
       "id": "SPEC-UPLOAD-BOUNDARY-001",
@@ -705,7 +705,7 @@
       "title": "补齐索引数据库类型检测及Agent固定Workflow校验和",
       "description": "知识复验新增P2：索引侧isPostgres额外借连接且失败降级，执行侧未比对Agent已固定checksum。",
       "priority": "P2",
-      "status": "pending",
+      "status": "blocked",
       "scopes": [
         "backend",
         "harness",
@@ -726,12 +726,22 @@
         "索引产品类型检测复用事务连接且故障不伪装索引成功",
         "Agent固定checksum与实际执行版本匹配，不只验证行内DSL/checksum自洽"
       ],
-      "planPath": "exec-plans/active/SPEC-KNOWLEDGE-INTEGRITY-003.md",
+      "planPath": "exec-plans/blocked/SPEC-KNOWLEDGE-INTEGRITY-003.md",
       "checkpoint": null,
-      "blockedReason": null,
-      "evidence": [],
+      "blockedReason": "verification failed",
+      "evidence": [
+        {
+          "runId": "SPEC-KNOWLEDGE-INTEGRITY-003-20261004T032219Z-4e2d89c3",
+          "path": "harness/evidence/SPEC-KNOWLEDGE-INTEGRITY-003/SPEC-KNOWLEDGE-INTEGRITY-003-20261004T032219Z-4e2d89c3",
+          "result": "blocked",
+          "exitCode": 1,
+          "baselineCommit": "60bfe301f1fefe1f0826eae9b888e5265080d548",
+          "headCommit": "1388db6f96c39f80091a735e86c49d299ac0688c",
+          "recordedAt": "2026-10-04T03:41:54Z"
+        }
+      ],
       "createdAt": "2026-10-03T22:00:00Z",
-      "updatedAt": "2026-10-03T22:00:00Z"
+      "updatedAt": "2026-10-04T03:41:54Z"
     },
     {
       "id": "SPEC-WORKFLOW-KNOWLEDGE-002",

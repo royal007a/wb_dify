@@ -7,3 +7,5 @@
 3. H2和真实PG：真实发布Agent/会话先成功执行；随后修改Workflow原始DSL并重算行内checksum，直接版本试跑可证明行内自洽，旧Agent会话必须拒绝且没有新增workflow/node或assistant。正常PG索引额外断言embedding非空，不能仅检查有分块。
 4. 先跑红灯，再修复和窄测；完整backend/harness/migration零skip，更新显式类/方法集合和行为映射，保存脱敏证据及源码身份，交独立复核。
 5. 这只是检测Workflow行与已冻结Agent快照不同，不是数据库写权限攻击者的安全边界；同时篡改两份数据仍超出范围。向量算法不冻结、workflow.started早于校验等已登记项不顺带扩入。
+
+6. 1388db6首轮完整backend因本地PG容器初始化磁盘不足失败，保留失败证据；独立migration118项通过不能抵消。复核要求追加合法Agent Chat的精确写入计数：恢复原DSL后workflow_runs+1、三个节点行+3、助手消息+1。先做H2/PG定向验证，再从blocked重跑同任务的新鲜完整门禁；不删除共享容器、镜像或卷来腾空间。

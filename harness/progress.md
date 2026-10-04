@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T03:11:56Z`
+- Generated from task state updated at: `2026-10-04T03:41:54Z`
 - Current task: `none`
-- Counts: pending 18 · running 0 · blocked 0 · completed 75
+- Counts: pending 17 · running 0 · blocked 1 · completed 75
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -86,7 +86,7 @@
 | `SPEC-INPUT-HYGIENE-002` | P2 | completed | backend, harness | reversible_write | 补齐Agent绑定文本准入与深层JSON集成反例 |
 | `SPEC-INPUT-HYGIENE-003` | P2 | completed | backend, harness | reversible_write | 检索记忆和意图读路径NUL输入策略 |
 | `SPEC-KNOWLEDGE-FINISH-004` | P2 | pending | backend, frontend, runtime, harness | reversible_write | 对齐知识门禁故障分类、检索事件和核验范围展示 |
-| `SPEC-KNOWLEDGE-INTEGRITY-003` | P2 | pending | backend, harness, migration | reversible_write | 补齐索引数据库类型检测及Agent固定Workflow校验和 |
+| `SPEC-KNOWLEDGE-INTEGRITY-003` | P2 | blocked | backend, harness, migration | reversible_write | 补齐索引数据库类型检测及Agent固定Workflow校验和 |
 | `SPEC-KNOWLEDGE-LEGACY-001` | P2 | pending | backend, runtime, harness | reversible_write | 旧未固定版本会话恢复不能移除知识门禁 |
 | `SPEC-MEMORY-FILTER-001` | P2 | pending | backend, runtime, harness | reversible_write | memory来源过滤召回与正向对照 |
 | `SPEC-PROVIDER-SAMPLING-001` | P2 | pending | backend, runtime, harness | reversible_write | 区分HTTP实际尝试与Run预算截断的健康采样 |
@@ -101,5 +101,8 @@
 | `SPEC-WORKFLOW-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 关联Workflow执行事实与父Run恢复及异常边界 |
 | `SUBAGENT-001` | P2 | completed | backend, migration, runtime | reversible_write | 建立子 Agent 任务与延迟消费确认 |
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |
+
+## Blocked
+- `SPEC-KNOWLEDGE-INTEGRITY-003`: verification failed
 
 Regenerate with `python3 harness/harness.py render-progress`; verify with `python3 harness/harness.py check-progress`.
