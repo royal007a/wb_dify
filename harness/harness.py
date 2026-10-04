@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -27,6 +28,46 @@ TASK_FIELDS = {
     "risk", "operation", "approvalRef", "dependsOn", "acceptance", "planPath",
     "checkpoint", "blockedReason", "evidence", "createdAt", "updatedAt",
 }
+# Fixed pre-enforcement inventory. Changing the compatibility list requires a
+# reviewed code change too; this is not a signature against repository writers.
+LEGACY_INVENTORY_SHA256 = "4ff93c4264edaeb7ada5e6cda2f20367b2f646f2495a6abd13e133e83071c648"
+COUNT_FIELDS = ("tests", "executed", "failures", "errors", "skipped", "flakyAttempts")
+
+
+def path_component(value: Any) -> bool:
+    return isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", value) is not None
+
+
+def check_maven_counts(tests: dict, expected: dict) -> None:
+    if (not isinstance(expected, dict) or not expected
+            or any(not isinstance(name, str) or not name or type(minimum) is not int or minimum < 1
+                   for name, minimum in expected.items())):
+        raise ValueError("invalid expected Maven suites")
+    totals, classes = tests.get("totals"), tests.get("classes")
+    if (not isinstance(totals, dict) or set(totals) != set(COUNT_FIELDS)
+            or not isinstance(classes, list) or not classes or tests.get("underfilledSuites") != []):
+        raise ValueError("missing complete Maven counts")
+    summed = dict.fromkeys(COUNT_FIELDS, 0)
+    seen = set()
+    for row in classes:
+        if not isinstance(row, dict) or not isinstance(row.get("class"), str):
+            raise ValueError("invalid Maven class record")
+        name = row["class"]
+        if name not in expected or name in seen:
+            raise ValueError("unexpected or duplicate Maven class")
+        seen.add(name)
+        if any(type(row.get(key)) is not int or row[key] < 0 for key in COUNT_FIELDS):
+            raise ValueError("Maven class counts must be nonnegative integers")
+        if (type(row.get("expectedMinimum")) is not int or row["expectedMinimum"] != expected[name]
+                or row["tests"] < expected[name] or row["executed"] != row["tests"] - row["skipped"]
+                or row["failures"] + row["errors"] + row["skipped"] > row["tests"]):
+            raise ValueError("Maven class counts disagree with its required minimum or execution")
+        for key in COUNT_FIELDS:
+            summed[key] += row[key]
+    if (seen != set(expected) or any(type(totals[key]) is not int or totals[key] < 0 for key in COUNT_FIELDS)
+            or totals != summed or totals["tests"] <= 0 or totals["executed"] <= 0
+            or any(totals[key] for key in ("failures", "errors", "skipped", "flakyAttempts"))):
+        raise ValueError("Maven totals must match all expected classes with positive clean execution")
 
 
 def utc_now() -> str:
@@ -132,8 +173,8 @@ class HarnessStore:
             if missing_task_fields:
                 errors.append(f"{prefix} is missing fields: {', '.join(sorted(missing_task_fields))}")
             task_id = task.get("id")
-            if not isinstance(task_id, str) or not task_id:
-                errors.append(f"{prefix}.id must be non-empty")
+            if not path_component(task_id):
+                errors.append(f"{prefix}.id must be a safe path component")
                 continue
             ids.append(task_id)
             if task.get("status") not in ALLOWED_STATUSES:
@@ -172,7 +213,8 @@ class HarnessStore:
             errors.append("task ids must be unique")
         known = set(ids)
         try:
-            legacy = self.read_json(self.harness_dir / "legacy-evidence.json")
+            legacy_bytes = self.check_file_digest(self.harness_dir / "legacy-evidence.json", LEGACY_INVENTORY_SHA256)
+            legacy = json.loads(legacy_bytes)
             if not isinstance(legacy, dict) or legacy.get("schemaVersion") != 1 or not isinstance(legacy.get("tasks"), dict):
                 raise ValueError("invalid legacy evidence inventory")
             legacy = legacy["tasks"]
@@ -468,7 +510,10 @@ class HarnessStore:
     def evidence_file(self, directory: Path, name: str) -> Path:
         if not isinstance(name, str) or not name:
             raise ValueError("missing evidence file path")
-        path = (self.root / name).resolve()
+        try:
+            path = (self.root / name).resolve()
+        except RuntimeError as exc:
+            raise ValueError("invalid evidence symlink") from exc
         if not path.is_relative_to(directory) or path == directory:
             raise ValueError("evidence file escapes its run directory")
         return path
@@ -487,11 +532,16 @@ class HarnessStore:
         return raw
 
     def check_verification(self, task, evidence_path, run_id, head, *, artifacts=True, require_logs=True):
-        directory = (self.root / evidence_path).resolve()
-        evidence_root = (self.harness_dir / "evidence").resolve()
-        if (not evidence_root.is_relative_to(self.root.resolve())
-                or not directory.is_relative_to(evidence_root) or directory == evidence_root):
-            raise ValueError("verification directory escapes harness evidence")
+        if not path_component(task.get("id")) or not path_component(run_id):
+            raise ValueError("invalid task or run path component")
+        canonical = self.root.resolve() / "harness" / "evidence" / task["id"] / run_id
+        declared = self.root.resolve() / evidence_path
+        try:
+            directory = declared.resolve()
+        except RuntimeError as exc:
+            raise ValueError("invalid verification directory symlink") from exc
+        if declared.absolute() != canonical or directory != canonical:
+            raise ValueError("verification directory must be the canonical task/run directory without redirection")
         path = self.evidence_file(directory, str(directory / "verification.json"))
         try:
             raw = path.read_bytes()
@@ -527,6 +577,8 @@ class HarnessStore:
                 raise ValueError("verification contains a failed or unverified step")
             if artifacts:
                 log = self.evidence_file(directory, step.get("log"))
+                if log != directory / (step["name"] + ".log"):
+                    raise ValueError("each step must use its own named log")
                 self.check_file_digest(log, step["logSha256"], required=require_logs)
             tests = step.get("mavenTests", {})
             if not isinstance(tests, dict) or not isinstance(tests.get("totals", {}), dict):
@@ -543,6 +595,16 @@ class HarnessStore:
                             or summary.get("invocationId") != report["invocationId"]
                             or summary.get("step") != step["name"] or summary.get("tests") != tests):
                         raise ValueError("test summary must pass and match invocation, step and embedded counts")
+                    expected = summary.get("expectedSuites")
+                    if require_logs:
+                        inventory = self.check_file_digest(self.harness_dir / "expected-maven-suites.json",
+                                                           summary.get("inventorySha256"))
+                        current_inventory = json.loads(inventory)
+                        if not isinstance(current_inventory, dict) or expected != current_inventory.get(step["name"]):
+                            raise ValueError("Maven expected suites differ from current invocation inventory")
+                    # Portable validation uses the digest-bound original snapshot,
+                    # not today's inventory, which can legitimately gain new tests.
+                    check_maven_counts(tests, expected)
             if any(totals.get(key, 0) for key in ("failures", "errors", "skipped", "flakyAttempts")) or tests.get("underfilledSuites"):
                 raise ValueError("verification contains failed, skipped or missing tests")
         return raw

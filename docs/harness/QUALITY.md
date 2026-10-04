@@ -41,3 +41,9 @@ verification schema v2保存每步command/exitCode/logSha256及Maven逐类tests/
 - `legacy-evidence.json`冻结ebee870时已有86条记录的task/run/顺序与规范JSON摘要，不能通过删证据、改schema或在末尾追加假历史获得兼容。历史前缀不可变，新记录永不自动纳入清单；所有新completed记录都要求v3与verification SHA，包含非末条以及当前任务已重新pending/blocked时的旧completed。completed任务必须有completed尾记录。历史v3仍核对manifest身份和摘要；历史非v3兼容绝不代表旧partial/skip通过。
 - `validate`是可提交证据的便携检查，不等同于重新完成任务：新记录的verification和Maven摘要必须存在并匹配；原始日志若在场则复算，git archive里缺失的gitignore日志明确标注未复验。不能用这个模式调用finish放行。不会要求上传含环境/正文的原始XML或日志以换取绿色状态。
 - 反例与具名测试见`../spec/SPEC_HARNESS_COMPLETION.md`；仍不防写者同时伪造日志、摘要和仓库，未声称签名、可信执行或完整产品覆盖。
+
+## SPEC-AUDIT-005：规范目录与计数交叉核对
+
+在004之上，完成证据必须位于规范task/runId目录，不能经同根符号链接借另一run的文件；步骤只用自己的step.log。legacy清单的原始字节SHA固定在代码，不接受只修改清单获得新历史豁免。
+
+新Maven finish将摘要的期望集合/清单SHA对照当前清单；从classes逐项重算完整非负整数totals，逐类最少数、集合及实际执行正数均须成立。validate便携回读使用已绑定的当次期望集合，不能拿当前测试增长要求追改历史证据。合成测试不证明真实Maven已执行；执行代码和所有证据同时被修改仍不在防御范围。任务状态手工回滚到曾合法完成状态并未被签名认证，保留为显式边界。
