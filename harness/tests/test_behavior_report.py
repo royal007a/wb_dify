@@ -19,6 +19,23 @@ class BehaviorReportTest(unittest.TestCase):
     def test_empty_selection_never_passes(self):
         self.assertEqual('not-run', report.outcome([], {})[0])
 
+    def test_route_status_does_not_hide_missing_or_failed_assertions(self):
+        self.assertEqual('not-run', report.route_status([], {}))
+        self.assertEqual('mapped-subcases-only', report.route_status(['A'], {'A': 'pass'}))
+        for status in ('fail', 'not-run'):
+            self.assertEqual('partial', report.route_status(['A', 'B'], {'A': 'pass', 'B': status}))
+
+    def test_portable_round_trip_and_binding_validation(self):
+        observed = {'A#foo': ['pass', 'not-run'], 'A#bar': ['fail']}
+        binding = {'p.A': {'xmlSha256': 'abc'}}
+        portable = report.portable_input(observed, binding, 'invocation', 'summary-sha')
+        self.assertEqual(observed, report.read_portable(portable, binding, 'invocation', 'summary-sha'))
+        for field, value in [('invocationId', 'other'), ('testSummarySha256', 'wrong'),
+                             ('sourceXmlSha256', {}), ('schemaVersion', 99),
+                             ('observed', {'A#foo': ['unknown']})]:
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                report.read_portable({**portable, field: value}, binding, 'invocation', 'summary-sha')
+
     def test_xml_parameters_and_flakes_are_preserved(self):
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / 'TEST-A.xml'
