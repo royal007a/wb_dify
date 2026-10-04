@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "DIFY-AUDIT-001-20261004T142052Z-5b509c15",
+  "taskId": "DIFY-AUDIT-001",
+  "status": "blocked",
+  "baselineCommit": "2c70105d23ccdcb283e2f3c0961bc412eab97cd7",
+  "approvalRef": null,
+  "startedAt": "2026-10-04T14:20:52Z",
+  "exitCode": 1,
+  "reason": "verification failed",
+  "headCommit": "2c70105d23ccdcb283e2f3c0961bc412eab97cd7",
+  "finishedAt": "2026-10-04T14:22:56Z"
+}

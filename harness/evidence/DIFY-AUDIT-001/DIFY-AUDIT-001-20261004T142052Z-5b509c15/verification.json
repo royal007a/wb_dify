@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 3,
+  "strictEvidence": true,
+  "invocationId": "be34f941-6c1b-46ef-a39c-44176e19f606",
+  "runId": "DIFY-AUDIT-001-20261004T142052Z-5b509c15",
+  "kind": "verification",
+  "scopes": [
+    "harness"
+  ],
+  "base": "working-tree",
+  "headCommit": "2c70105d23ccdcb283e2f3c0961bc412eab97cd7",
+  "result": "failed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/DIFY-AUDIT-001/DIFY-AUDIT-001-20261004T142052Z-5b509c15/harness-state.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/harness.py",
+        "validate"
+      ],
+      "logSha256": "6b88b9a6057606024a1bf285377c7371051f61b28a1e81d6b68a3fd12bf6cb7b"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/DIFY-AUDIT-001/DIFY-AUDIT-001-20261004T142052Z-5b509c15/harness-progress.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/harness.py",
+        "check-progress"
+      ],
+      "logSha256": "53a4a1b7863bea67045d82fe8a1bc53c8c30dd3740b7708ff332a9300796dc18"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/DIFY-AUDIT-001/DIFY-AUDIT-001-20261004T142052Z-5b509c15/harness-api-spec.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/render-api-spec.py",
+        "--check"
+      ],
+      "logSha256": "0456d6551eef206c05217007f775b3b7e8fe918df66de019312f60508977f0f0"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 1,
+      "log": "harness/evidence/DIFY-AUDIT-001/DIFY-AUDIT-001-20261004T142052Z-5b509c15/harness-python-tests.log",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/Users/weberzhao/hify/harness/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "logSha256": "a6ebee9cb8dabe19b2b35ced396b142b78a1523c7b29a71537b50af6254b866a"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/DIFY-AUDIT-001/DIFY-AUDIT-001-20261004T142052Z-5b509c15/harness-shell-syntax.log",
+      "command": [
+        "sh",
+        "-n",
+        "/Users/weberzhao/hify/harness/init.sh",
+        "/Users/weberzhao/hify/harness/verify.sh",
+        "/Users/weberzhao/hify/harness/run-task.sh"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "finishedAt": "2026-10-04T14:22:56Z",
+  "commandResult": "failed",
+  "testCoverage": "failed",
+  "resultMeaning": "Selected commands and observed test counts only; not full product or deployment acceptance. Repeated steps are not independent tests."
+}
