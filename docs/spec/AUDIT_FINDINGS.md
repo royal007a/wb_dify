@@ -128,6 +128,8 @@ SPEC-DEPLOY-002独立review在隔离archive用sh/dash实测9项与边界：新P1
 
 SPEC-AUDIT-004实现补证：cee737f增加完成时实文件哈希/摘要身份检查、86条精确历史前缀、逐条completed验证；本次64项Python回归和五步harness scope通过，首轮已有dash/HUP测试门闩超时失败仍保留。尚待独立复核，不把防误改描述成对仓库恶意写者的签名保障。便携validate缺ignored日志时不宣称复算过日志，finish不享受这项宽限；见SPEC_HARNESS_COMPLETION。
 
+004独立复核已关闭原两项P2，无P0/P1；四个新增CLI实测边界和一条静态状态边界登记SPEC-AUDIT-005：同根run目录符号链接、共用/错用日志、classes与totals自报不一致/零执行、可改历史清单、手工状态复用。详见SPEC_HARNESS_COMPLETION独立复核节，不宣称64项已由对方重跑。
+
 - API.md 把未实现会话列表、v1 会话详情/消息、tool-definition/dry-run 写成可调用；Workflow更新写成不存在的PATCH。
 - API.md 泛称全写请求幂等键、默认cursor分页、UUIDv7/ULID，均不是当前实现。
 - CURRENT_STATE 仍声称三类能力未绑定 Agent/Chat、流式故障矩阵未做；AGENTS/SPEC仍把已交付画布列为非目标。

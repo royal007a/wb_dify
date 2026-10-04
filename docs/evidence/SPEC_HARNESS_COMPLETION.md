@@ -27,3 +27,9 @@ finish在五份日志仍存在时复算并完成；完成后的validate/check-pr
 另把证据提交ef4b1e3用`git archive`导出到新临时目录，运行`harness.py --root <副本> validate`和`check-progress`均退出0；该副本没有本任务的任何*.log。此项实际验证便携元数据回读，不是重新运行测试，未复算不存在的原始日志。完成时缺日志必须拒绝仍由具名用例独立验证。
 
 不改变SPEC-KNOWLEDGE-INTEGRITY-003因Colima磁盘满未通过完整PG门禁的事实。任务状态只看tasks.json。
+
+## 独立复核
+
+mymacclaude在ef4b1e3的隔离archive上实际运行19项状态机测试、CLI反例、validate/check-progress，复算verification/实现文件及86条历史记录摘要，认可原P2-A/B关闭，无P0/P1。原始日志未提交，因此复核方没有重新运行或复算64项整轮结果，不将我方gate记录称为对方实测。
+
+新增四个隔离实测P2另归SPEC-AUDIT-005：run目录可指向同evidence根下另一run；日志未要求每步骤唯一命名（可共用或指向run.json）；classes与自报totals未交叉核对、零执行也可伪造passed；历史清单本身可被直接扩充。当前目录防护仅限制解析后的目录位于evidence根内，**尚未严格绑定规范task/runId路径**，不能泛称所有跨run复用都被拒绝。第五项手改状态属于静态观察，当前实际数据没有所需记录组合，后续先验证可达性。这些仍在恶意改写边界内，但目录承诺需补齐；本片不冒称已修。

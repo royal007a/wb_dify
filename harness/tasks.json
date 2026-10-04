@@ -4,6 +4,31 @@
   "updatedAt": "2026-10-04T04:27:21Z",
   "tasks": [
     {
+      "id": "SPEC-AUDIT-005",
+      "title": "绑定规范run目录、步骤日志与可信计数清单",
+      "description": "AUDIT-004独立隔离CLI复核剩余P2：run目录指向同根另一run、步骤共用或错用日志、自报totals不符classes、历史清单可直接扩充；另有手改任务状态的静态边界。原P2-A/B已收口，不宣称防仓库恶意写者。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["harness"],
+      "verifyScopes": ["harness"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-AUDIT-004"],
+      "acceptance": [
+        "规范evidence/task/runId目录不可经同根符号链接重用另一个run；逐步骤只读自己唯一命名的日志",
+        "按classes重算非负完整totals并要求实际执行大于0、匹配期望suite；伪造空/零/不一致计数拒绝",
+        "历史清单有固定身份，不可只修改清单扩大兼容；不重写旧测试记录或误称签名保障",
+        "验证手改completed状态的可达性，记录协议边界；原四个实测反例先红后绿并保留合法CLI和便携副本正例"
+      ],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-04T04:34:00Z",
+      "updatedAt": "2026-10-04T04:34:00Z"
+    },
+    {
       "id": "SPEC-UPLOAD-BOUNDARY-001",
       "title": "统一真实应用与两种代理入口的上传上限",
       "description": "复现HTTP复核P1：默认1MiB及nginx HTML 413与10MB文档契约冲突。显式配置文件10MiB、请求12MiB，代理固定JSON超限；通过真实Tomcat和独立nginx验证。",
