@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-DEPLOY-003-20261004T012841Z-fefe05f5",
+  "taskId": "SPEC-DEPLOY-003",
+  "status": "completed",
+  "baselineCommit": "9db4e348d0e2abc07d8fa40f7d1f4566c7a9005e",
+  "approvalRef": null,
+  "startedAt": "2026-10-04T01:28:41Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "d6d67c6200f2f621e3e6a39e5c711da4d691d7d8",
+  "finishedAt": "2026-10-04T01:34:55Z"
+}

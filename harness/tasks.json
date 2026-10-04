@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T01:21:41Z",
+  "updatedAt": "2026-10-04T01:34:55Z",
   "tasks": [
     {
       "id": "SPEC-UPLOAD-BOUNDARY-001",
@@ -3627,7 +3627,7 @@
       "title": "消除安装器stderr失败阻止恢复旧服务",
       "description": "独立复核P1：on_exit的set-e与先printf会在stderr关闭时跳过start。426de39禁止后续发布，先修此片并复验。附带确定性健康次数校验和成功后信号窗口。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "harness"
       ],
@@ -3645,12 +3645,24 @@
         "0/000/301和缺失旧产物在停服务前明确拒绝，不能由AND列表绕过",
         "越过健康/静态成功点后的诊断输出被信号中断不停止已健康服务；有隔离信号用例"
       ],
-      "planPath": "exec-plans/active/SPEC-DEPLOY-003.md",
+      "planPath": "exec-plans/completed/SPEC-DEPLOY-003.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-DEPLOY-003-20261004T012841Z-fefe05f5",
+          "path": "harness/evidence/SPEC-DEPLOY-003/SPEC-DEPLOY-003-20261004T012841Z-fefe05f5",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "9db4e348d0e2abc07d8fa40f7d1f4566c7a9005e",
+          "headCommit": "d6d67c6200f2f621e3e6a39e5c711da4d691d7d8",
+          "recordedAt": "2026-10-04T01:34:55Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "8315de7faa63dcdeacff0face58f31620c38c5e3421cd35ae866c37c31d6ca42"
+        }
+      ],
       "createdAt": "2026-10-04T01:18:00Z",
-      "updatedAt": "2026-10-04T01:18:00Z"
+      "updatedAt": "2026-10-04T01:34:55Z"
     },
     {
       "id": "SPEC-DEPLOY-004",
@@ -3679,6 +3691,38 @@
       "evidence": [],
       "createdAt": "2026-10-04T01:18:00Z",
       "updatedAt": "2026-10-04T01:18:00Z"
+    },
+    {
+      "id": "SPEC-RUN-INPUT-002",
+      "title": "消除PG本地化约束名及NUL输入500",
+      "description": "64bda57独立review剩余两条P2：Hibernate PG约束名提取依赖英文报文；NUL可触发PG22021使客户端进入未知结果。重复gapId反例已按构造器去重/50上限撤回，不列为缺陷。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": [
+        "backend",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "backend"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [
+        "SPEC-RUN-INPUT-001"
+      ],
+      "acceptance": [
+        "PG23505约束名使用结构化ServerErrorMessage字段，与lc_messages无关；H2兼容不回退",
+        "消息及resume标识中的NUL在写库前返回400且零写入/调度，真实PG回归",
+        "非幂等唯一约束仍返回固定安全500，不解析或回显任意数据库报文"
+      ],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-04T01:33:00Z",
+      "updatedAt": "2026-10-04T01:33:00Z"
     }
   ]
 }

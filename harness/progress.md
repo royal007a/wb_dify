@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T01:21:41Z`
+- Generated from task state updated at: `2026-10-04T01:34:55Z`
 - Current task: `none`
-- Counts: pending 20 · running 0 · blocked 0 · completed 67
+- Counts: pending 20 · running 0 · blocked 0 · completed 68
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -48,7 +48,7 @@
 | `SPEC-API-BEHAVIOR-001` | P1 | completed | backend, harness | reversible_write | 补齐管理读写与取消幂等的行为断言 |
 | `SPEC-CHAT-LIFECYCLE-002` | P1 | completed | frontend, runtime, harness | reversible_write | 复核前端Run创建与恢复输入边界 |
 | `SPEC-CHAT-LIFECYCLE-003` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 结果不明提交的身份恢复与安全退出 |
-| `SPEC-DEPLOY-003` | P1 | pending | harness | reversible_write | 消除安装器stderr失败阻止恢复旧服务 |
+| `SPEC-DEPLOY-003` | P1 | completed | harness | reversible_write | 消除安装器stderr失败阻止恢复旧服务 |
 | `SPEC-HISTORY-RECOVERY-001` | P1 | completed | backend, runtime, migration, harness | reversible_write | 恢复时重放已提交模型响应而非重新生成 |
 | `SPEC-HISTORY-RECOVERY-002` | P1 | completed | backend, runtime, harness | reversible_write | 恢复元数据按JSON语义比较，兼容跨JVM键顺序 |
 | `SPEC-HTTP-ERROR-001` | P1 | completed | backend, harness | reversible_write | 修复真实HTTP负路径的状态码与安全正文 |
@@ -88,6 +88,7 @@
 | `SPEC-RECOVERY-ADMISSION-001` | P2 | pending | backend, runtime, harness | reversible_write | 恢复扫描的写库故障与容量准入 |
 | `SPEC-RUN-BUDGET-001` | P2 | pending | backend, runtime, harness | reversible_write | 统一聊天与Workflow跨重启的Run预算 |
 | `SPEC-RUN-INPUT-001` | P2 | completed | backend, frontend, harness | reversible_write | 限定Run幂等竞争异常与输入长度 |
+| `SPEC-RUN-INPUT-002` | P2 | pending | backend, harness | reversible_write | 消除PG本地化约束名及NUL输入500 |
 | `SPEC-SSE-BACKPRESSURE-002` | P2 | pending | backend, runtime, harness | reversible_write | SSE公平接入与慢读总时限的确定性验证 |
 | `SPEC-VERIFY-002` | P2 | pending | backend, harness | reversible_write | 补强阻塞期间提交反例与报告传播 |
 | `SPEC-WORKFLOW-GRAPH-003` | P2 | pending | backend, frontend, runtime, harness | reversible_write | 条件空白、旧转义兼容与迁移诊断 |
