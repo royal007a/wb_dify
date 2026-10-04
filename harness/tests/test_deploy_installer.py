@@ -69,6 +69,16 @@ class DeployInstallerTest(unittest.TestCase):
     def shells(self):
         return ['sh'] + (['dash'] if shutil.which('dash') else [])
 
+    def wait_for_barrier(self, root, process):
+        # Starting each fake Python command can take >5s in total on a busy Mac.
+        # This is a fixture startup budget, not a production latency assertion.
+        deadline = time.monotonic()+30
+        while not (root / 'waiting').exists() and process.poll() is None and time.monotonic() < deadline:
+            time.sleep(.01)
+        calls = self.calls(root) if (root / 'calls.jsonl').exists() else []
+        self.assertTrue((root / 'waiting').exists(),
+                        f'Fixture barrier not reached; exit={process.poll()}, calls={calls}')
+
     def test_closed_stderr_cannot_skip_recovery_or_replace_original_exit(self):
         for shell in self.shells():
             for stage in ('late', 'health'):
@@ -160,16 +170,13 @@ class DeployInstallerTest(unittest.TestCase):
                     process = subprocess.Popen([shell, str(script), str(release)], env=env,
                                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     try:
-                        deadline = time.monotonic()+5
-                        while not (root / 'waiting').exists() and process.poll() is None and time.monotonic() < deadline:
-                            time.sleep(.01)
-                        self.assertTrue((root / 'waiting').exists())
+                        self.wait_for_barrier(root, process)
                         # The barrier is after actual health, key and static publication checks.
                         self.assertEqual((root / 'service').read_text(), 'active')
                         self.assertEqual((app / 'frontend/dist/index.html').read_text(), 'new index')
                         process.send_signal(sig)
                         (root / 'release-wait').touch()
-                        stdout, stderr = process.communicate(timeout=5)
+                        stdout, stderr = process.communicate(timeout=10)
                         # After trap removal, shells differ: sh can finish normally
                         # when only the parent receives INT while its child succeeds.
                         # The contract is no rollback, not an enforced signal exit.
@@ -180,6 +187,7 @@ class DeployInstallerTest(unittest.TestCase):
                         self.assertEqual(self.calls(root).count(['systemctl', ['stop', 'hify']]), 1)
                         self.assertNotIn(b'Upgrade halted.', stderr)
                     finally:
+                        (root / 'release-wait').touch()
                         if process.poll() is None:
                             process.kill()
                             process.communicate()
@@ -232,18 +240,16 @@ class DeployInstallerTest(unittest.TestCase):
                 process = subprocess.Popen(['sh', str(script), str(release)], env=env,
                                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 try:
-                    deadline = time.monotonic()+5
-                    while not (root / 'waiting').exists() and process.poll() is None and time.monotonic() < deadline:
-                        time.sleep(.01)
-                    self.assertTrue((root / 'waiting').exists())
+                    self.wait_for_barrier(root, process)
                     process.send_signal(sig)
                     (root / 'release-wait').touch()
-                    stdout, stderr = process.communicate(timeout=5)
+                    stdout, stderr = process.communicate(timeout=10)
                     self.assertEqual(process.returncode, 128+sig, stderr.decode())
                     self.assertEqual((root / 'service').read_text(), 'inactive')
                     self.assertEqual(stderr.count(b'Upgrade halted.'), 1)
                     self.assertEqual(self.calls(root).count(['systemctl', ['stop', 'hify']]), 2)
                 finally:
+                    (root / 'release-wait').touch()
                     if process.poll() is None:
                         process.kill()
                         process.communicate()

@@ -49,13 +49,13 @@ elif name == 'runuser':
 elif name == 'curl':
     if os.environ.get('DEPLOY_FIXTURE_WAIT') == '1':
         (root / 'waiting').touch()
-        deadline = time.monotonic()+8
+        deadline = time.monotonic()+60
         while not (root / 'release-wait').exists() and time.monotonic() < deadline:
             time.sleep(.01)
     sys.exit(int(os.environ.get('DEPLOY_FIXTURE_CURL_EXIT', '0')))
 elif name == 'sha256sum' and args[0] != '-c' and os.environ.get('DEPLOY_FIXTURE_FINAL_SHA_WAIT') == '1':
     (root / 'waiting').touch()
-    deadline = time.monotonic()+8
+    deadline = time.monotonic()+60
     while not (root / 'release-wait').exists() and time.monotonic() < deadline:
         time.sleep(.01)
 elif name in ('sha256sum', 'pg_restore', 'nginx', 'sleep'):
