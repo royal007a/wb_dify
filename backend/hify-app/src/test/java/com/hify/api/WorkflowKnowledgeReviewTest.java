@@ -31,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class WorkflowKnowledgeReviewTest extends WorkflowKnowledgeIntegrationTest {
     @Autowired AgentService agents;
     @Autowired WorkflowApplicationService workflows;
+    @Autowired com.hify.knowledge.application.DocumentIndexingService indexer;
     @SpyBean KnowledgeRetrievalService source;
     @SpyBean JdbcTemplate jdbcSpy;
 
@@ -56,6 +57,7 @@ class WorkflowKnowledgeReviewTest extends WorkflowKnowledgeIntegrationTest {
         int workflowCount=db.queryForObject("select count(*) from workflow_runs where workflow_version_id=?",Integer.class,version);
         int nodeCount=db.queryForObject("select count(*) from workflow_node_runs",Integer.class);
         int assistantCount=db.queryForObject("select count(*) from chat_messages where conversation_id=? and role='assistant'",Integer.class,cid);
+        assertThat(assistantCount).isPositive();
         var failed=runToTerminal(cid);
         assertThat(failed.path("state").asText()).isEqualTo("FAILED");
         assertThat(failed.path("terminalReason").asText()).isEqualTo("WORKFLOW_ERROR");
@@ -76,6 +78,36 @@ class WorkflowKnowledgeReviewTest extends WorkflowKnowledgeIntegrationTest {
         if(Boolean.TRUE.equals(db.execute((ConnectionCallback<Boolean>)c->c.getMetaData().getDatabaseProductName().equals("PostgreSQL"))))
             assertThat(db.queryForObject("select count(*) from document_chunks where document_id=? and embedding is not null",Integer.class,doc)).isEqualTo(count);
         assertThat(db.queryForObject("select state from document_index_tasks where document_id=?",String.class,doc)).isEqualTo("SUCCEEDED");
+    }
+
+    @Test void indexingMetadataFailurePersistsFailureWithoutDeletingExistingChunks() throws Exception {
+        String base=base(),doc=upload(base,"metadata-positive-fixture 七天退货");
+        var before=db.queryForList("select id,content,embedding_text from document_chunks where document_id=? order by ordinal",doc);
+        assertThat(before).isNotEmpty();
+        AtomicBoolean observed=new AtomicBoolean();
+        doAnswer(invocation->{
+            ConnectionCallback<?> callback=invocation.getArgument(0);
+            Connection bound=DataSourceUtils.getConnection(db.getDataSource());
+            try {
+                assertThat(DataSourceUtils.isConnectionTransactional(bound,db.getDataSource())).isTrue();
+                observed.set(true);
+                java.sql.DatabaseMetaData metadata=mock(java.sql.DatabaseMetaData.class);
+                when(metadata.getDatabaseProductName()).thenThrow(new java.sql.SQLException("private-metadata-fixture"));
+                Connection fault=(Connection)java.lang.reflect.Proxy.newProxyInstance(Connection.class.getClassLoader(),new Class<?>[]{Connection.class},(proxy,method,args)->{
+                    if(method.getName().equals("getMetaData"))return metadata;
+                    try{return method.invoke(bound,args);}catch(java.lang.reflect.InvocationTargetException failure){throw failure.getCause();}
+                });
+                return callback.doInConnection(fault);
+            } finally {DataSourceUtils.releaseConnection(bound,db.getDataSource());}
+        }).when(jdbcSpy).execute(any(ConnectionCallback.class));
+        indexer.onIndexRequested(new com.hify.knowledge.application.KnowledgeIndexRequested(doc));
+        long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(5);
+        while(System.nanoTime()<deadline && !"FAILED".equals(db.queryForObject("select state from document_index_tasks where document_id=?",String.class,doc)))Thread.sleep(10);
+        assertThat(observed).isTrue();
+        assertThat(db.queryForObject("select state from document_index_tasks where document_id=?",String.class,doc)).isEqualTo("FAILED");
+        assertThat(db.queryForObject("select indexing_state from knowledge_documents where id=?",String.class,doc)).isEqualTo("FAILED");
+        assertThat(db.queryForObject("select error_message from knowledge_documents where id=?",String.class,doc)).doesNotContain("private-metadata-fixture");
+        assertThat(db.queryForList("select id,content,embedding_text from document_chunks where document_id=? order by ordinal",doc)).isEqualTo(before);
     }
 
     private com.fasterxml.jackson.databind.JsonNode runToTerminal(String cid) throws Exception {
