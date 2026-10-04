@@ -52,7 +52,7 @@
 
 | ID | 场景与必须断言 | 失败/边界 | 已有入口及核验层 |
 |---|---|---|---|
-| F31 | 六个页面导航/表单/分页/空态；Chat代际/取消/同key/Gap/终态补读 | 窄屏/4xx恢复输入/未知提交退出/200即断重连；真实全CRUD未验收 | B: management.spec.ts是mock smoke；chat-lifecycle.spec.ts 28项受控HTTP/SSE。后端查重顺序另由F10真实HTTP/H2证明；人工SSE重连/resume放弃/建会话超时待补 |
+| F31 | 六个页面导航/表单/分页/空态；Chat代际/取消/同key/Gap/终态补读 | 窄屏/4xx恢复输入/未知提交退出/200即断重连；真实全CRUD未验收 | B: management.spec.ts是mock smoke；chat-lifecycle.spec.ts受控HTTP/SSE，含人工重连保留去重、resume放弃、建会话10秒期限；本轮结果见SPEC_CHAT_MANUAL_RECOVERY。后端查重顺序另由F10全应用MockMvc/H2证明，非网络SSE验收 |
 | F32 | Workflow 画布与 JSON 使用同一 DSL、校验/试跑/diff | 非法连线、编辑未保存、旧版本 diff | B: management.spec.ts 仅打开画布/diff；真实图编辑需补 |
 | F33 | MCP 编辑原ID、Token不回填、关闭清空、保存/替换/清除 | API失败保留本次输入；切换操作不误传 token | B: mcp-edit.spec.ts mock；mcp-edit-live/mcp-token-live opt-in 真实链路 |
 | F34 | Reactor依赖、统一Result/异常、线程池/分页/时间/Redis；饱和Run收敛 | 拒绝/关闭分开；breaker取消不计供应商失败、模型超时计失败；multipart超限413/畸形400 | U/A: CommonContractsTest、AgentCacheIntegrationTest、RunAdmissionIntegrationTest、RunDispatchIntegrationTest、CircuitBreakerServiceTest；HttpErrorSurfaceTest为真实Tomcat/HTTP与multipart解析的6项测试；SPEC_COMMON旧7项仅standalone MVC。两者都不是所有路由的全部4xx |

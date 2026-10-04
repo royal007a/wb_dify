@@ -51,6 +51,7 @@ export async function listRunnableAgents(): Promise<Agent[]> {
 
 export const createConversation = (agentId: string) => requestJson<Conversation>('/v1/conversations', {
   method: 'POST',
+  signal: AbortSignal.timeout(10_000),
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ agentId, title: 'Hify Playground' }),
 })

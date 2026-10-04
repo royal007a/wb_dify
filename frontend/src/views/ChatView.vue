@@ -130,7 +130,10 @@ async function submitPending(token = generation) {
       status.value = '提交被拒绝'
     } else {
       pending.unknown = true
-      status.value = '提交结果不明，请重试提交结果（沿用原请求，不重复创建）'
+      status.value = !pending.conversation
+        ? '会话创建结果不明，尚未提交 Run；可放弃等待'
+        : pending.cancelRequested ? '取消待确认，仅查询提交结果，不再重发'
+          : '提交结果不明，请重试提交结果（沿用原请求，不重复创建）'
     }
   } finally {
     if (isCurrent(token)) submitting.value = false
@@ -188,15 +191,17 @@ function abandonSubmission() {
   if (!pending?.unknown || submitting.value) return
   pendingSubmission.value = undefined
   running.value = false
-  if (!message.value.trim()) message.value = pending.text
+  if (!pending.resume && !message.value.trim()) message.value = pending.text
   newConversation() // Detach instead of letting a late unknown request share the new dialogue.
   status.value = '已放弃等待（未取消服务端）'
-  chat.value.push({ role: 'event', content: '已放弃本地等待；后台仍可能执行，未确认取消。再次运行将是新的提交。' })
+  chat.value.push({ role: 'event', content: pending.resume
+    ? '已放弃本地等待；后台仍可能执行，未确认取消。澄清上下文已断开，未恢复本次澄清回答；再次运行须提供完整的新任务。'
+    : '已放弃本地等待；后台仍可能执行，未确认取消。再次运行将是新的提交。' })
 }
 
 function listen(run: Run, token: number) {
   closeStream()
-  const source = new EventSource(runtimeUrl(run.streamUrl))
+  let source = new EventSource(runtimeUrl(run.streamUrl))
   stream = source
   let answerIndex = -1
   let settled = false
@@ -209,11 +214,12 @@ function listen(run: Run, token: number) {
   let openedAt: number | undefined
   let autoPaused = false
   const seen = new Set<string>()
+  const listeners: Array<[string, EventListener]> = []
   const current = () => isCurrent(token) && !settled
 
   function on(type: string, handler: (payload: Record<string, unknown>) => void) {
-    source.addEventListener(type, event => {
-      if (!current()) return
+    const listener: EventListener = event => {
+      if (!current() || autoPaused || terminalObserved || event.currentTarget !== source) return
       const messageEvent = event as MessageEvent
       if (messageEvent.lastEventId) {
         if (seen.has(messageEvent.lastEventId)) return
@@ -221,7 +227,9 @@ function listen(run: Run, token: number) {
       }
       shortDisconnects = 0 // New business progress, not merely another HTTP 200.
       handler(parsePayload(messageEvent.data))
-    })
+    }
+    listeners.push([type, listener])
+    source.addEventListener(type, listener)
   }
 
   function clarification(payload: Record<string, unknown>) {
@@ -315,9 +323,23 @@ function listen(run: Run, token: number) {
   }
 
   retryRead = async () => {
+    if (!current() || reading) return
     if (syncTimer) clearTimeout(syncTimer)
     syncTimer = undefined
     polls = 0
+    if (autoPaused && !terminalObserved) {
+      // Keep this Run's seen IDs and answer slot: a new EventSource replays from
+      // the beginning, but must not duplicate text or accept old-stream callbacks.
+      source.close()
+      autoPaused = false
+      shortDisconnects = 0
+      connected = false
+      openedAt = undefined
+      source = new EventSource(runtimeUrl(run.streamUrl))
+      stream = source
+      for (const [type, listener] of listeners) source.addEventListener(type, listener)
+      bindConnection(source)
+    }
     await reconcile()
   }
   const finish = () => {
@@ -327,33 +349,36 @@ function listen(run: Run, token: number) {
     void reconcile()
   }
   for (const type of ['run.completed', 'run.failed', 'run.cancelled', 'run.needs_input']) on(type, finish)
-  source.onerror = () => {
-    if (!current() || autoPaused) return
-    if (openedAt !== undefined && performance.now() - openedAt >= 15_000) shortDisconnects = 0
-    openedAt = undefined
-    connected = false
-    if (++shortDisconnects >= 6) {
-      autoPaused = true
-      source.close()
+  function bindConnection(boundSource: EventSource) {
+    boundSource.onerror = () => {
+      if (!current() || source !== boundSource || autoPaused || terminalObserved) return
+      if (openedAt !== undefined && performance.now() - openedAt >= 15_000) shortDisconnects = 0
+      openedAt = undefined
+      connected = false
+      if (++shortDisconnects >= 6) {
+        autoPaused = true
+        source.close()
+        if (syncTimer) clearTimeout(syncTimer)
+        syncTimer = undefined
+        syncIssue.value = true
+        status.value = '事件流反复中断，已暂停自动重连；请重试同步'
+        return
+      }
+      status.value = '事件流重连中…'
+      scheduleRead()
+    }
+    boundSource.onopen = () => {
+      if (!current() || source !== boundSource || terminalObserved || autoPaused) return
+      connected = true
+      openedAt = performance.now()
+      polls = 0
+      syncIssue.value = false
       if (syncTimer) clearTimeout(syncTimer)
       syncTimer = undefined
-      syncIssue.value = true
-      status.value = '事件流反复中断，已暂停自动重连；请重试同步'
-      return
+      status.value = `Run ${run.id.slice(0, 8)} 执行中`
     }
-    status.value = '事件流重连中…'
-    scheduleRead()
   }
-  source.onopen = () => {
-    if (!current() || terminalObserved || autoPaused) return
-    connected = true
-    openedAt = performance.now()
-    polls = 0
-    syncIssue.value = false
-    if (syncTimer) clearTimeout(syncTimer)
-    syncTimer = undefined
-    status.value = `Run ${run.id.slice(0, 8)} 执行中`
-  }
+  bindConnection(source)
   // Idempotent replay may already return a terminal row, without any future live event.
   if (terminalStates.has(run.state)) finish()
 }

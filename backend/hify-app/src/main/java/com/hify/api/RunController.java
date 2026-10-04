@@ -80,7 +80,7 @@ public class RunController {
 
     @GetMapping("/conversations/{conversationId}/runs/by-key")
     public RunView findSubmission(@PathVariable String conversationId,
-                                  @RequestHeader("Idempotency-Key") String idempotencyKey,
+                                  @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
                                   jakarta.servlet.http.HttpServletResponse response) {
         // Same URL serves different header identities; neither positive nor negative
         // lookup results should be cached by browsers or shared proxies.

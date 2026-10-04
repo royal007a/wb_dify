@@ -117,7 +117,7 @@ GET    /api/v1/runs/{runId}/events/stream
 
 恢复不会让旧 Run 从终态回退；服务创建一个带 `resumedFromRunId/resolvedGapIds` 的新 Run。源 Run 必须属于同一 Conversation、状态为 `NEEDS_INPUT` 且存在可恢复 checkpoint。未知、已关闭或跨会话 Gap 返回参数错误。
 
-Console按一次逻辑提交保留message/resume/Idempotency-Key；响应结果不明时显式同key重试，创建中取消不会误发给上一Run。未知提交的取消只用GET by-key找身份，不再创建Run；找不到不能宣称取消成功。允许明确“放弃等待（不取消服务端）”，解除页面等待但不自动重发，后台可能继续。非澄清终态清除resume，NEEDS_INPUT按持久事件取Gap；缺Gap时提示新建会话，不无限同步或暗中重发。页面内状态及跨页面/多标签边界见 `spec/SPEC_CHAT_LIFECYCLE.md`。
+Console按一次逻辑提交保留message/resume/Idempotency-Key；响应结果不明时显式同key重试，创建中取消不会误发给上一Run。未知提交的取消只用GET by-key找身份，不再创建Run；找不到不能宣称取消成功。允许明确“放弃等待（不取消服务端）”，解除页面等待但不自动重发，后台可能继续；带resume时不自动恢复失去上下文的澄清文本。创建会话和Run各有10秒客户端请求期限，不表示服务端取消。短断线暂停后的人工同步可为同一Run重连SSE，保留事件去重，不重发POST。非澄清终态清除resume，NEEDS_INPUT按持久事件取Gap；缺Gap时提示新建会话，不无限同步或暗中重发。页面内状态及跨页面/多标签边界见 `spec/SPEC_CHAT_LIFECYCLE.md`。
 
 创建 Run 必须提供 `Idempotency-Key`。服务先提交 user message 和 RUNNING run，再尝试调度，返回 `202 Accepted` 与 `runId`/stream URL。相同 `(conversationId, Idempotency-Key)` 只能创建一个 Run：第一次返回 `202`；请求体 checksum 相同的重复提交返回已有 Run、相同 stream URL 和 `200`；相同 key 但请求体不同返回 `409 IDEMPOTENCY_KEY_REUSED`。唯一约束与 user message/run 在同一事务中写入，初始 event 是随后独立事务，不宣称与创建整体原子。
 

@@ -249,16 +249,20 @@ public class RunApplicationService {
         run.bindAgentSnapshot(agent.versionId(), agent.snapshotDigest());
         CapabilitySnapshot capability = capability(agent);
         run.bindCapabilitySnapshot(capability.revision(), capability.toolSchemaDigest());
+        // Validate recovery before INSERT: an unknown resume id otherwise fails its
+        // foreign key first and gets mistaken for an idempotency-key race.
+        ExecutionCheckpoint restored = resume == null ? null
+                : prepareResolvedCheckpoint(conversationId, run.getId(), message, resume);
         messages.save(new ChatMessage(conversationId, "user", message));
         conversation.touch();
         conversations.save(conversation);
         runs.saveAndFlush(run);
-        if (resume != null) copyResolvedCheckpoint(conversationId, run.getId(), message, resume);
+        if (restored != null) persistCheckpoint(run.getId(), restored);
         return new CreateResult(run, false);
     }
 
-    private void copyResolvedCheckpoint(String conversationId, String newRunId, String input,
-                                        ResumeRequest resume) {
+    private ExecutionCheckpoint prepareResolvedCheckpoint(String conversationId, String newRunId, String input,
+                                                         ResumeRequest resume) {
         AgentRun source = runs.findById(resume.runId())
                 .orElseThrow(() -> new IllegalArgumentException("Resume Run not found: " + resume.runId()));
         if (!source.getConversationId().equals(conversationId)) {
@@ -274,10 +278,9 @@ public class RunApplicationService {
                         sourceCheckpoint.planVersion(), newRunId);
         List<RuntimeMessage> resumedMessages = new ArrayList<>(sourceCheckpoint.messages());
         resumedMessages.add(RuntimeMessage.user(input));
-        ExecutionCheckpoint copied = new ExecutionCheckpoint(UUID.randomUUID().toString(),
+        return new ExecutionCheckpoint(UUID.randomUUID().toString(),
                 sourceCheckpoint.turn(), sourceCheckpoint.toolCalls(), sourceCheckpoint.plan(), resolved,
                 resumedMessages, true, Instant.now());
-        persistCheckpoint(newRunId, copied);
     }
 
     private CreateResult replayExisting(String conversationId, String idempotencyKey, String hash) {

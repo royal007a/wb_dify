@@ -86,7 +86,9 @@ class RunSubmissionIdentityTest {
         long before=runs.count();
         http.perform(get("/api/v1/conversations/{id}/runs/by-key",conversation).header("Idempotency-Key","unknown"))
                 .andExpect(status().isNotFound()).andExpect(header().string("Cache-Control","no-store"));
-        http.perform(get("/api/v1/conversations/{id}/runs/by-key",conversation)).andExpect(status().isBadRequest());
+        http.perform(get("/api/v1/conversations/{id}/runs/by-key",conversation)).andExpect(status().isBadRequest())
+                .andExpect(header().string("Cache-Control","no-store"))
+                .andExpect(header().string("Vary","Idempotency-Key"));
         for(String key:java.util.List.of(" ","a".repeat(129))) {
             http.perform(get("/api/v1/conversations/{id}/runs/by-key",conversation).header("Idempotency-Key",key))
                     .andExpect(status().isBadRequest());
@@ -100,10 +102,14 @@ class RunSubmissionIdentityTest {
         String conversation=conversation(), key=UUID.randomUUID().toString();
         String id=create(conversation,key,"hello",202).path("id").asText();
         long runCount=runs.count(),messageCount=messages.count(),eventCount=events.count();
+        String changedBody=json.writeValueAsString(java.util.Map.of("message","hello","resume",
+                java.util.Map.of("runId",UUID.randomUUID().toString(),"gapIds",java.util.List.of("gap-1"))));
         http.perform(post("/api/v1/conversations/{id}/runs",conversation).header("Idempotency-Key",key)
-                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(java.util.Map.of(
-                        "message","hello","resume",java.util.Map.of("runId",UUID.randomUUID().toString(),"gapIds",java.util.List.of("gap-1"))))))
+                .contentType(MediaType.APPLICATION_JSON).content(changedBody))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.code").value(40901));
+        http.perform(post("/api/v1/conversations/{id}/runs",conversation).header("Idempotency-Key",UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON).content(changedBody))
+                .andExpect(status().isBadRequest()).andExpect(jsonPath("$.code").value(40000));
         assertThat(create(conversation,key,"hello",200).path("id").asText()).isEqualTo(id);
         assertThat(runs.count()).isEqualTo(runCount);
         assertThat(messages.count()).isEqualTo(messageCount);

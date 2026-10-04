@@ -351,9 +351,11 @@ test('an edited draft is not overwritten by a late definite rejection', async ({
 })
 
 test('repeated opens followed by errors have a finite automatic reconnect budget', async ({ page }) => {
-  let reads = 0
+  let reads = 0, creations = 0
+  page.on('request', req => { if (req.method() === 'POST' && req.url().endsWith('/runs')) creations++ })
   await page.route('**/api/v1/runs/run-1', route => { reads++; return route.fulfill({ json: run('RUNNING') }) })
   await begin(page)
+  await emit(page, 'message.delta', { content: '第一段' }, '11')
   await page.evaluate(() => {
     const source = (window as unknown as { __streams: Array<{onopen: (event: Event) => void; onerror: (event: Event) => void}> }).__streams[0]
     for (let i = 0; i < 6; i++) { source.onopen(new Event('open')); source.onerror(new Event('error')) }
@@ -363,7 +365,80 @@ test('repeated opens followed by errors have a finite automatic reconnect budget
   const before = reads
   await page.getByRole('button', { name: '重试同步' }).click()
   await expect.poll(() => reads).toBeGreaterThan(before)
+  await expect.poll(() => page.evaluate(() => (window as unknown as { __streams: unknown[] }).__streams.length)).toBe(2)
+  await page.evaluate(() => {
+    const streams = (window as unknown as { __streams: Array<EventTarget & {onerror: (e: Event) => void; onopen: (e: Event) => void}> }).__streams
+    streams[1].onopen(new Event('open'))
+    streams[0].onerror(new Event('error'))
+    streams[0].dispatchEvent(new MessageEvent('message.delta', {data: JSON.stringify({content: '旧流不得写入'}), lastEventId: '999'}))
+  })
+  await emit(page, 'message.delta', { content: '第一段' }, '11')
+  await emit(page, 'message.delta', { content: '第二段' }, '12')
+  await expect(page.locator('.message.assistant').last().locator('div')).toHaveText('第一段第二段')
+  await expect(page.getByRole('button', { name: '重试同步' })).not.toBeVisible()
+  await page.evaluate(() => {
+    const source = (window as unknown as { __streams: Array<{onopen: (e: Event) => void; onerror: (e: Event) => void}> }).__streams[1]
+    for (let i = 0; i < 6; i++) { source.onopen(new Event('open')); source.onerror(new Event('error')) }
+  })
   await expect(page.getByRole('button', { name: '重试同步' })).toBeVisible()
+  expect(creations).toBe(1)
+})
+
+test('abandoning an uncertain clarification does not restore it as a contextless new task', async ({ page }) => {
+  await page.route('**/api/v1/runs/run-1', route => route.fulfill({ json: run('NEEDS_INPUT', '请补充') }))
+  await page.route('**/api/v1/runs/run-1/events', route => route.fulfill({ json: [
+    { id: 1, type: 'continuation.decided', payload: JSON.stringify({ action: 'CLARIFY', gapIds: ['gap-1'] }) },
+  ] }))
+  await begin(page)
+  await emit(page, 'run.needs_input', {}, '1')
+  await expect(page.locator('.chat-toolbar p')).toContainText('NEEDS_INPUT')
+  let posts = 0
+  await page.route('**/api/v1/conversations/conversation-1/runs', route => {
+    posts++
+    expect(route.request().postDataJSON().resume).toEqual({ runId: 'run-1', gapIds: ['gap-1'] })
+    return route.abort('failed')
+  })
+  await page.getByPlaceholder('输入消息；例如：计算 17 * 23').fill('退款数量为2')
+  await page.getByRole('button', { name: '运行', exact: true }).click()
+  await page.getByRole('button', { name: '放弃等待（不取消服务端）' }).click()
+  await expect(page.getByPlaceholder('输入消息；例如：计算 17 * 23')).toHaveValue('')
+  await expect(page.locator('.messages')).toContainText('澄清上下文已断开')
+  await expect(page.getByRole('button', { name: '运行', exact: true })).toBeDisabled()
+  expect(posts).toBe(1)
+})
+
+test('cancel intent remains explicit after the pending POST has an unknown result', async ({ page }) => {
+  let held: import('@playwright/test').Route | undefined, posts = 0, lookups = 0
+  await page.route('**/api/v1/conversations/conversation-1/runs', route => { posts++; held = route })
+  await page.route('**/api/v1/conversations/conversation-1/runs/by-key', route => {
+    lookups++; return route.fulfill({status: 404, json: {message: 'not yet'}})
+  })
+  await page.goto('./chat')
+  await page.getByRole('button', {name: '运行', exact: true}).click()
+  await expect.poll(() => Boolean(held)).toBe(true)
+  await page.getByRole('button', {name: '取消', exact: true}).click()
+  await held!.abort('failed')
+  await expect(page.locator('.chat-toolbar p')).toContainText('取消待确认，仅查询')
+  await page.getByRole('button', {name: '重试提交结果'}).click()
+  await expect.poll(() => lookups).toBe(1)
+  expect(posts).toBe(1)
+})
+
+test('hung conversation creation times out and can be abandoned without creating a Run', async ({ page }) => {
+  let held: import('@playwright/test').Route | undefined, posts = 0
+  await page.route('**/api/v1/conversations', route => { held = route })
+  page.on('request', req => { if (req.method() === 'POST' && req.url().endsWith('/runs')) posts++ })
+  await page.goto('./chat')
+  await page.getByRole('button', {name: '运行', exact: true}).click()
+  await expect.poll(() => Boolean(held)).toBe(true)
+  // Real AbortSignal deadline; no clock or API timeout replacement in this test.
+  await expect(page.getByRole('button', {name: '放弃等待（不取消服务端）'})).toBeEnabled({timeout: 15_000})
+  await expect(page.locator('.chat-toolbar p')).toContainText('尚未提交 Run')
+  await page.getByRole('button', {name: '放弃等待（不取消服务端）'}).click()
+  await held!.fulfill({status: 201, json: {id: 'late-conversation', agentVersionId: 'version-1'}}).catch(() => {})
+  await expect(page.getByRole('button', {name: '新会话'})).toBeEnabled()
+  expect(posts).toBe(0)
+  expect(await page.evaluate(() => (window as unknown as { __streams: unknown[] }).__streams.length)).toBe(0)
 })
 
 test('already terminal creation reconciles without a live terminal event', async ({ page }) => {
