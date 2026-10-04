@@ -4,6 +4,31 @@
   "updatedAt": "2026-10-04T16:20:46Z",
   "tasks": [
     {
+      "id": "CAPABILITY-ROLLOUT-001",
+      "title": "已验收能力代码部署132并验证非embedding线上链路",
+      "description": "从CAPABILITY-DEPLOY-001拆出可执行发布：语义模型长期endpoint尚缺，不能宣称线上语义ready；先发布同树代码/V24，验证豆包LLM、具名输入、旧会话、上传及基础健康。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["harness", "frontend"],
+      "verifyScopes": ["harness", "frontend"],
+      "risk": "high_risk",
+      "operation": "deployment",
+      "approvalRef": "goal:2026-10-04T22:14:00+08:00:ten-hour-hify-implement-deploy-verify",
+      "dependsOn": ["CAPABILITY-VERIFY-001", "SPEC-DEPLOY-004"],
+      "acceptance": [
+        "backend/frontend/deploy与六scope通过的a510191等价；真实jar迁移目标V1..24",
+        "Python>=3.11、空间估算与保留量、三类在途/旧输入兼容预检通过；停服前备份后迁移，持久systemd-run执行",
+        "只改原版Hify产物和既有snippet，不改任何其他站点、不读取密钥或自动删历史目录；SHA/健康/旧新会话/豆包LLM/typed输入/上传有远端证据",
+        "明确线上embedding端点未配置、Workflow GET未授权默认拒绝，不冒充所有外部节点已线上验证；完整目标仍由CAPABILITY-DEPLOY-001追踪"
+      ],
+      "planPath": "exec-plans/active/CAPABILITY-ROLLOUT-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-04T16:25:00Z",
+      "updatedAt": "2026-10-04T16:25:00Z"
+    },
+    {
       "id": "SPEC-DEPLOY-008",
       "title": "部署补强剩余解释器与管道守卫及恢复手册",
       "description": "DEPLOY004独立review三项P2：Python3.10无add_note、tar列目录管道可能掩盖状态、恢复命令/演练未提供。132当前3.12.3且解包兜底；不阻塞本轮受信产物部署。",
