@@ -3583,7 +3583,7 @@
         "smoke检索要求本次文档ID与短句，不接受仅非空",
         "每个意外202也先登记自身ID；逐项清理尝试全部ID和KB，汇总失败且保留原始错误；本地假HTTP反例验证"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/SPEC-DEPLOY-002.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
