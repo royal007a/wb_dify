@@ -18,6 +18,7 @@ import com.hify.agent.api.AgentMcpToolSnapshot;
 import com.hify.common.BizException;
 import com.hify.common.ErrorCode;
 import com.hify.common.PageResult;
+import com.hify.common.TextInput;
 import com.hify.domain.AgentDefinition;
 import com.hify.domain.AgentToolBinding;
 import com.hify.domain.AgentVersion;
@@ -212,6 +213,8 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     @Override
     @Transactional
     public List<String> replaceTools(String id, AgentToolBindingRequest request) {
+        TextInput.requireNoNul(id);
+        if (request.toolIds() != null) request.toolIds().forEach(TextInput::requireNoNul);
         AgentDefinition agent = requireDraft(id);
         List<String> toolNames = validateTools(request.toolIds());
         draftToolBindings.deleteByAgentId(id);
@@ -224,6 +227,8 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     @Override
     @Transactional
     public List<AgentKnowledgeBindingSnapshot> replaceKnowledge(String id, AgentKnowledgeBindingRequest request) {
+        TextInput.requireNoNul(id);
+        request.bindings().forEach(binding -> TextInput.requireNoNul(binding.knowledgeBaseId()));
         AgentDefinition agent=requireDraft(id);
         TreeSet<String> seen=new TreeSet<>();
         List<AgentKnowledgeBindingInput> bindings=request.bindings().stream()
@@ -245,6 +250,7 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     @Override
     @Transactional
     public AgentWorkflowBindingSnapshot replaceWorkflow(String id, AgentWorkflowBindingRequest request) {
+        TextInput.requireNoNul(id, request.workflowId());
         AgentDefinition agent = requireDraft(id);
         WorkflowCapabilitySnapshot current = workflows.freeze(request.workflowId().trim());
         draftWorkflowBindings.deleteByAgentId(id);
@@ -264,6 +270,11 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     @Override
     @Transactional
     public List<AgentMcpToolSnapshot> replaceMcpTools(String id, AgentMcpBindingRequest request) {
+        TextInput.requireNoNul(id);
+        request.bindings().forEach(binding -> {
+            TextInput.requireNoNul(binding.serverId());
+            binding.toolNames().forEach(TextInput::requireNoNul);
+        });
         AgentDefinition agent=requireDraft(id);
         TreeSet<String> seen=new TreeSet<>();
         for(var binding:request.bindings())for(String tool:binding.toolNames()){

@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "meaning": "人工核对的断言映射。tests为精确方法，不以类通过推断整组功能通过。environment/fixture为本次测试条件；remaining为未保证或未测项。",
   "cases": [
+    {"caseId":"NUL-BIND-KB","tests":["InputHygienePostgresTest#agentKnowledgeBindingRejectsNulWithoutReplacingExistingBinding","InputHygieneIntegrationTest#agentKnowledgeBindingRejectsNulWithoutReplacingExistingBinding"],"environment":"Spring MVC + application/H2/隔离真实PG","fixture":"合成KB及Agent，实际绑定正例","expected":"KB绑定目标NUL400，直接service同样拒绝；完整Agent和绑定不变；合法替换成功","remaining":"不证明所有路径ID/读路径；未部署132"},
+    {"caseId":"NUL-BIND-MCP","tests":["InputHygienePostgresTest#agentMcpBindingRejectsNulWithoutReplacingExistingBinding","InputHygieneIntegrationTest#agentMcpBindingRejectsNulWithoutReplacingExistingBinding"],"environment":"Spring MVC + application/H2/隔离真实PG","fixture":"合成READY快照两个READ工具，不做网络发现","expected":"serverId/toolNames NUL400，直接service同样拒绝；原绑定不变；合法替换成功","remaining":"不证明发现/真实MCP调用或所有路径ID；未部署132"},
+    {"caseId":"NUL-BIND-WORKFLOW","tests":["InputHygienePostgresTest#agentWorkflowBindingRejectsNulWithoutReplacingExistingBinding","InputHygieneIntegrationTest#agentWorkflowBindingRejectsNulWithoutReplacingExistingBinding"],"environment":"Spring MVC + application/H2/隔离真实PG","fixture":"两个真实发布的确定性图和一个Agent","expected":"workflowId NUL400，直接service同样拒绝；完整Agent和原绑定不变；合法替换成功","remaining":"不证明所有路径ID/读路径；未部署132"},
+    {"caseId":"NUL-BIND-TOOLS","tests":["InputHygienePostgresTest#agentToolBindingRejectsNulWithoutReplacingExistingBinding","InputHygieneIntegrationTest#agentToolBindingRejectsNulWithoutReplacingExistingBinding"],"environment":"Spring MVC + application/H2/隔离真实PG","fixture":"calculator/current_time实际目录绑定","expected":"toolIds NUL400且不回显输入；直接service拒绝；原绑定不变；合法替换成功","remaining":"不代表工具执行参数卫生；未部署132"},
+    {"caseId":"NUL-ENABLED-TOOLS","tests":["InputHygienePostgresTest#agentCreateEnabledToolsRejectsNulBeforeWritingAndKeepsValidTools","InputHygieneIntegrationTest#agentCreateEnabledToolsRejectsNulBeforeWritingAndKeepsValidTools"],"environment":"Spring MVC + application/H2/隔离真实PG","fixture":"calculator合法创建正例","expected":"enabledTools含NUL时HTTP/service400，无Agent/绑定行新增；合法绑定保存","remaining":"001已有保护，002仅补集成证据；未部署132"},
+    {"caseId":"NUL-DEEP-CONFIG","tests":["InputHygienePostgresTest#workflowDeepConfigKeysAndArraysRejectNulWithoutChangingStoredGraph","InputHygieneIntegrationTest#workflowDeepConfigKeysAndArraysRejectNulWithoutChangingStoredGraph"],"environment":"Spring MVC + application/H2/隔离真实PG","fixture":"嵌套config数组对象/键/字符串，合法Unicode和字面量反斜杠u0000","expected":"深层NUL坏创建/更新400且图不变；合法深层配置保存并回读","remaining":"001已有保护，002仅补集成证据；不代表任意工具config；未部署132"},
     {"caseId":"NUL-UPLOAD","tests":["InputHygienePostgresTest#uploadRejectsContentAndMetadataBeforeDocumentsOrIndexTasksExist","InputHygieneIntegrationTest#uploadRejectsContentAndMetadataBeforeDocumentsOrIndexTasksExist"],"environment":"Spring MVC + application/H2/隔离真实PG","fixture":"合成文本；PG原生NUL拒绝对照；不访问外部模型","expected":"上传正文/文件名/mediaType拒绝，零文档/任务；合法UTF8原文保存","remaining":"不代表所有文本入口/返回值卫生、浏览器或132已更新"},
     {"caseId":"NUL-KB","tests":["InputHygienePostgresTest#knowledgeTextCreateAndUpdateRejectWithoutChangingRows","InputHygieneIntegrationTest#knowledgeTextCreateAndUpdateRejectWithoutChangingRows"],"environment":"Spring MVC + application/H2/隔离真实PG","fixture":"合成文本；PG原生NUL拒绝对照；不访问外部模型","expected":"KB名称/描述创建更新400，HTTP与service均拒绝，回读不变","remaining":"不代表所有文本入口/返回值卫生、浏览器或132已更新"},
     {"caseId":"NUL-AGENT","tests":["InputHygienePostgresTest#agentTextCreateAndUpdateRejectWithoutChangingRows","InputHygieneIntegrationTest#agentTextCreateAndUpdateRejectWithoutChangingRows"],"environment":"Spring MVC + application/H2/隔离真实PG","fixture":"合成文本；PG原生NUL拒绝对照；不访问外部模型","expected":"Agent管理文本创建更新400，合法更新通过，坏请求零改动","remaining":"不代表所有文本入口/返回值卫生、浏览器或132已更新"},
@@ -81,7 +87,7 @@
     {"id":"F31","cases":[],"notRun":"浏览器独立结果，不由Java计数推断；真实全CRUD未穷举；在途GET人工重连、取消查询按钮名、跨会话提示和失效resume循环（SPEC-CHAT-LIFECYCLE-005/RUN-INPUT-001）"},
     {"id":"F32","cases":[],"notRun":"受控画布/diff smoke见浏览器结果；真实编辑全链路未验收"},
     {"id":"F33","cases":[],"notRun":"MCP编辑和Token由browser-live独立证明，不由本表推断"},
-    {"id":"F34","cases":["ERRORS","ADMISSION","HTTPCLIENT","NUL-UPLOAD","NUL-KB","NUL-AGENT","NUL-WORKFLOW","NUL-PROVIDER","NUL-MCP","NUL-CONVERSATION","NUL-WORKFLOW-RUN"],"notRun":"不是每条路由全部错误组合；NUL范围外见SPEC_INPUT_HYGIENE"},
+    {"id":"F34","cases":["ERRORS","ADMISSION","HTTPCLIENT","NUL-UPLOAD","NUL-KB","NUL-AGENT","NUL-WORKFLOW","NUL-PROVIDER","NUL-MCP","NUL-CONVERSATION","NUL-WORKFLOW-RUN","NUL-BIND-KB","NUL-BIND-MCP","NUL-BIND-WORKFLOW","NUL-BIND-TOOLS","NUL-ENABLED-TOOLS","NUL-DEEP-CONFIG"],"notRun":"不是每条路由全部错误组合；NUL范围外见SPEC_INPUT_HYGIENE"},
     {"id":"F35","cases":[],"notRun":"看本次migration-postgres独立零skip清单；非所有PG并发排列"},
     {"id":"F36","cases":[],"notRun":"132重新发布尚未执行；备份恢复演练未完成"},
     {"id":"F37","cases":["EVAL"],"notRun":"真实LLM/RAG准确率、端到端延迟和费用"},
@@ -89,11 +95,11 @@
   ],
   "routes": {
     "GET /api/conversations/{id}":["CATALOG"], "GET /api/tools":["CATALOG"],
-    "GET /api/v1/agents":["AGENT"], "POST /api/v1/agents":["AGENT","NUL-AGENT"], "DELETE /api/v1/agents/{agentId}":["ARCHIVE"],
+    "GET /api/v1/agents":["AGENT"], "POST /api/v1/agents":["AGENT","NUL-AGENT","NUL-ENABLED-TOOLS"], "DELETE /api/v1/agents/{agentId}":["ARCHIVE"],
     "GET /api/v1/agents/{agentId}":["AGENT"], "PUT /api/v1/agents/{agentId}":["AGENT","NUL-AGENT"],
-    "PUT /api/v1/agents/{agentId}/knowledge-bindings":["BIND-KB"], "PUT /api/v1/agents/{agentId}/mcp-bindings":["MCP"],
-    "POST /api/v1/agents/{agentId}/publications":["AGENT"], "PUT /api/v1/agents/{agentId}/tools":["AGENT"],
-    "GET /api/v1/agents/{agentId}/versions":["AGENT"], "DELETE /api/v1/agents/{agentId}/workflow-binding":["PINNED"], "PUT /api/v1/agents/{agentId}/workflow-binding":["PINNED"],
+    "PUT /api/v1/agents/{agentId}/knowledge-bindings":["BIND-KB","NUL-BIND-KB"], "PUT /api/v1/agents/{agentId}/mcp-bindings":["MCP","NUL-BIND-MCP"],
+    "POST /api/v1/agents/{agentId}/publications":["AGENT"], "PUT /api/v1/agents/{agentId}/tools":["AGENT","NUL-BIND-TOOLS"],
+    "GET /api/v1/agents/{agentId}/versions":["AGENT"], "DELETE /api/v1/agents/{agentId}/workflow-binding":["PINNED"], "PUT /api/v1/agents/{agentId}/workflow-binding":["PINNED","NUL-BIND-WORKFLOW"],
     "POST /api/v1/conversations":["RUN","NUL-CONVERSATION"], "POST /api/v1/conversations/{conversationId}/runs":["RUN","IDENTITY","ADMISSION"],
     "GET /api/v1/conversations/{conversationId}/runs/by-key":["LOOKUP"],
     "GET /api/v1/demo-items":["DEMO"], "POST /api/v1/demo-items":["DEMO"], "DELETE /api/v1/demo-items/{id}":["DEMO"], "GET /api/v1/demo-items/{id}":["DEMO"], "PUT /api/v1/demo-items/{id}":["DEMO"],
@@ -107,7 +113,7 @@
     "GET /api/v1/runs/{runId}":["RUN"], "POST /api/v1/runs/{runId}/cancellations":["CANCEL","ERRORS"], "GET /api/v1/runs/{runId}/events":["RUN"], "GET /api/v1/runs/{runId}/events/stream":["SSE"],
     "GET /api/v1/runs/{runId}/memory":["MEMORY-GATE"], "GET /api/v1/runs/{runId}/memory/details/{refId}":["MEMORY","MEMORY-GATE"], "POST /api/v1/runs/{runId}/memory/search":["MEMORY","MEMORY-GATE"],
     "GET /api/v1/tools":["CATALOG"], "GET /api/v1/workflow-runs/{id}":["WORKFLOW","PINNED"], "GET /api/v1/workflow-versions/{id}":["WORKFLOW"], "POST /api/v1/workflow-versions/{id}/runs":["WORKFLOW","NUL-WORKFLOW-RUN"],
-    "GET /api/v1/workflows":["WORKFLOW"], "POST /api/v1/workflows":["WORKFLOW","NUL-WORKFLOW"], "DELETE /api/v1/workflows/{id}":["WORKFLOW"], "GET /api/v1/workflows/{id}":["WORKFLOW"], "PUT /api/v1/workflows/{id}":["WORKFLOW","NUL-WORKFLOW"],
+    "GET /api/v1/workflows":["WORKFLOW"], "POST /api/v1/workflows":["WORKFLOW","NUL-WORKFLOW","NUL-DEEP-CONFIG"], "DELETE /api/v1/workflows/{id}":["WORKFLOW"], "GET /api/v1/workflows/{id}":["WORKFLOW"], "PUT /api/v1/workflows/{id}":["WORKFLOW","NUL-WORKFLOW","NUL-DEEP-CONFIG"],
     "POST /api/v1/workflows/{id}/validations":["WORKFLOW"], "GET /api/v1/workflows/{id}/versions":["WORKFLOW"], "POST /api/v1/workflows/{id}/versions":["WORKFLOW"]
   }
 }

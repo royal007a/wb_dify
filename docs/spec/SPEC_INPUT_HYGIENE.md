@@ -7,6 +7,7 @@
 | POST/PUT knowledge-bases | name、description；update id | 坏创建无新行，坏更新回读完全不变 |
 | POST knowledge-bases/{id}/documents | baseId、原filename、mediaType、UTF8解码正文 | 无文档/索引任务，不发索引事件 |
 | POST agents / PUT agents/{id} 基本信息 | name、description、instructions、providerId、modelId；create enabledTools；update id | 不改变草稿及绑定 |
+| PUT agents/{id}/knowledge-bindings、mcp-bindings、workflow-binding、tools | id、knowledgeBaseId、serverId、toolNames、workflowId、toolIds | 在requireDraft及目标查询/freeze前拒绝；原绑定/草稿时间不变 |
 | POST/PUT workflows | name、description、节点key/type/name、边key/两端/condition、config递归键与字符串值 | 不删除或替换原图 |
 | POST workflow-versions/{id}/runs | versionId、input；HTTP和engine公开入口 | 无workflow_run及节点行 |
 | POST/PUT providers | name、baseUrl、auth的ref/header/prefix、每个model的displayName/modelId；update id | 不替换模型目录，不读真实凭据或请求远端 |
@@ -19,8 +20,8 @@
 
 ## 验收
 
-`InputHygieneIntegrationTest`与`InputHygienePostgresTest`执行同一套8个场景；真实PG每项先确认`select version()`并以绑定参数证明服务器确实拒绝含NUL文本。覆盖HTTP与直接application/engine调用、合法创建/更新/试跑正向对照、坏更新回读不变、坏创建行数不变、上传零文档/索引任务。`TextInputTest`覆盖边界位置、嵌套数组/对象键及不改变合法JSON。
+`InputHygieneIntegrationTest`与`InputHygienePostgresTest`执行同一套场景；001为8项，002增至14项；真实PG每项先确认`select version()`并以绑定参数证明服务器确实拒绝含NUL文本。覆盖HTTP与直接application/engine调用、合法创建/更新/试跑正向对照、坏更新回读不变、坏创建行数不变、上传零文档/索引任务。002增补四类绑定、create enabledTools、深层config数组值/对象键：坏请求后完整Agent/Workflow回读及绑定行不变，合法替换仍成功。MCP目录由隔离数据库合成READY快照提供，不是外部MCP发现验收。`TextInputTest`覆盖边界位置、嵌套数组/对象键及不改变合法JSON。
 
 该矩阵不覆盖所有JSON/query/header/path输入、Demo参考CRUD、上传后的模型/MCP返回值、历史数据清洗、未绑定工具业务参数。没有全局Jackson替换器或自动数据库清洗；没有前端浏览器/生产发布证据时，不得声称132已修复本项。
 
-首轮未覆盖Agent的knowledge-bindings、mcp-bindings、workflow-binding和tools写入口，归SPEC-INPUT-HYGIENE-002；读路径retrieval-tests、memory/search及意图路由归SPEC-INPUT-HYGIENE-003。当前结果不能概称“全部Agent写入口已覆盖”。
+首轮未覆盖Agent的knowledge-bindings、mcp-bindings、workflow-binding和tools写入口，由SPEC-INPUT-HYGIENE-002补强。读路径retrieval-tests、memory/search及意图路由归SPEC-INPUT-HYGIENE-003；archive/publish/clearWorkflow等仅路径ID的入口不在本矩阵（真实容器路径拒绝未测）。不能概称“所有Agent端点已覆盖”。

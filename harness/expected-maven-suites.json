@@ -16,8 +16,8 @@
     "com.hify.api.KnowledgeMemoryPostgresTest": 21
   },
   "backend-tests": {
-    "com.hify.api.InputHygieneIntegrationTest": 8,
-    "com.hify.api.InputHygienePostgresTest": 8,
+    "com.hify.api.InputHygieneIntegrationTest": 14,
+    "com.hify.api.InputHygienePostgresTest": 14,
     "com.hify.common.TextInputTest": 2,
     "com.hify.api.UploadBoundaryNetworkTest": 3,
     "com.hify.api.ManagementReadbackIntegrationTest": 4,
