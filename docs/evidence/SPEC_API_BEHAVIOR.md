@@ -15,6 +15,8 @@
 
 窄测命令：`mvn -B -pl hify-app -am -Dtest=ManagementReadbackIntegrationTest,RunSubmissionIdentityTest -Dsurefire.failIfNoSpecifiedTests=false test`。2026-10-04 08:02（Asia/Shanghai）退出0，9项通过（本轮新增6项、原有3项），0失败/错误/跳过。完整门禁见本任务verification，不以窄测代替全量。
 
+08:05完成本任务harness/backend门禁，代码`b16af24`、schema 3 / passed：后端80类532项执行，失败/错误/跳过/flake均0；Harness Python 31项通过。逐类XML SHA、期望集合及命令见`backend-tests.tests.json`和`verification.json`，窄测日志SHA见`focused-summary.json`。新增六项没有替换/降低旧测试分母。
+
 首轮同命令9项中3失败，均为本次测试作者的错误假设，保留在`focused.log`：把真实`/cancellations`写成`/cancel`；把Workflow分页夹值误写成400；把草稿binding误当成已冻结的版本ID。对照Controller/草稿与发布契约后修正用例（`focused-corrected.log`），没有为迎合错误断言改生产代码，也不把这三个失败计成修复了三个产品缺陷。
 
 13条管理路由补候选指针；取消路由补明确语义与直接断言；Workflow分页文档注明与Agent/KB验证边界不同。候选指针仍不代表全部路由故障排列已通过。后续全接口/F01–F38汇总和真实浏览器/132部署由SPEC-VERIFY-001与SPEC-DEPLOY-001另行记录。

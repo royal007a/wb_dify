@@ -1,20 +1,28 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-03T23:53:52Z",
+  "updatedAt": "2026-10-04T00:05:13Z",
   "tasks": [
     {
       "id": "SPEC-API-BEHAVIOR-001",
       "title": "补齐管理读写与取消幂等的行为断言",
       "description": "针对全接口库存中只有候选类、缺直接断言的管理路由和取消/幂等恢复语义，补全应用MockMvc加隔离H2集成用例；不把库存匹配当行为通过。",
       "priority": "P1",
-      "status": "pending",
-      "scopes": ["backend", "harness"],
-      "verifyScopes": ["harness", "backend"],
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "backend"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-HTTP-ERROR-001"],
+      "dependsOn": [
+        "SPEC-HTTP-ERROR-001"
+      ],
       "acceptance": [
         "知识库列表/详情/更新/归档及文档列表按正文、分页和归档可见性断言",
         "Workflow列表/版本列表/版本详情/执行回读/归档与Agent解绑保留已发布快照有正负对照",
@@ -22,12 +30,24 @@
         "同key不同resume返回40901且不新增Run；旧会话及工具目录实际返回字段可断言",
         "候选测试映射和最少测试数同步更新，全量backend零skip并记录证据等级"
       ],
-      "planPath": "exec-plans/active/SPEC-API-BEHAVIOR-001.md",
+      "planPath": "exec-plans/completed/SPEC-API-BEHAVIOR-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-API-BEHAVIOR-001-20261004T000019Z-62dd48a5",
+          "path": "harness/evidence/SPEC-API-BEHAVIOR-001/SPEC-API-BEHAVIOR-001-20261004T000019Z-62dd48a5",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "ab46ec5f8eb850641cd8f96d3799f5871476ef44",
+          "headCommit": "b16af2471237b51b67fbb155aac7da4f8bf39163",
+          "recordedAt": "2026-10-04T00:05:13Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "a76500449cfe2c87428540fe0e73bacfc28cabdc8c0cd6d17164f31751284ca6"
+        }
+      ],
       "createdAt": "2026-10-04T00:00:00Z",
-      "updatedAt": "2026-10-04T00:00:00Z"
+      "updatedAt": "2026-10-04T00:05:13Z"
     },
     {
       "id": "SPEC-HTTP-ERROR-001",

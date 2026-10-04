@@ -39,10 +39,10 @@
 
 | ID | 场景与必须断言 | 失败/边界 | 已有入口及核验层 |
 |---|---|---|---|
-| F23 | KB CRUD→TXT/MD上传→持久索引→chunk/digest→检索→归档 | 空/超大/错误类型/重启/归档竞态；分页负值；非法 overlap | A: KnowledgeApiIntegrationTest；多条管理读取/更新/归档路径需补 |
+| F23 | KB CRUD→TXT/MD上传→持久索引→chunk/digest→检索→归档 | 空/超大/错误类型/重启/归档竞态；分页负值；非法 overlap | A: KnowledgeApiIntegrationTest、ManagementReadbackIntegrationTest（管理列表/更新/归档及正向文档列表）；真实nginx上传上限由SPEC-UPLOAD-BOUNDARY-001另验 |
 | F24 | FTS+向量/RRF 正确过滤，canonical chunk可回读；旧语料原文/成员快照稳定 | 空命中/库停用/失败；冻结归档引用需匹配摘要；H2 不测 PG SQL；向量重建排序未冻结 | A/P: KnowledgeApiIntegrationTest、WorkflowKnowledgeIntegrationTest/WorkflowKnowledgePostgresTest、PostgresConcurrencyIntegrationTest；embedding 为64维 hash bootstrap，不是真实模型 |
 | F25 | Agent 知识绑定发布固定 revision、注入来源事件；最终引用来源门禁 | 空/失败模型零调用、缺/伪引用 NEEDS_INPUT；旧映射恢复、无未经验证正文 delta | U/A/P: KnowledgeCompletionVerifierTest、KnowledgeFinishIntegrationTest/KnowledgeFinishPostgresTest；不是答案语义 grounding 保证 |
-| F26 | Workflow CRUD/校验/发布/历史/试跑/轨迹；最长路径含START/END≤50、先解析后插值 | 必经/死路/分支；旧非法DSL拒绝；全角空格/旧转义兼容待修 | U/A: SPEC_WORKFLOW_GRAPH_REVIEW记录41项模块+9项HTTP；列表/归档等仍需VERIFY，资源冻结/取消另验 |
+| F26 | Workflow CRUD/校验/发布/历史/试跑/轨迹；最长路径含START/END≤50、先解析后插值 | 必经/死路/分支；旧非法DSL拒绝；全角空格/旧转义兼容待修 | U/A: SPEC_WORKFLOW_GRAPH_REVIEW记录41项模块+9项HTTP；ManagementReadbackIntegrationTest补列表、版本/执行回读、归档及解绑旧快照；资源冻结/取消另验 |
 | F27 | Chat 固定已发布 Workflow 执行，图更新不变旧行为 | KNOWLEDGE 发布语料、归档后引用；取消中执行；空候选不继续 END | A/P: WorkflowKnowledgeIntegrationTest/WorkflowKnowledgePostgresTest、KnowledgeFinishIntegrationTest/KnowledgeFinishPostgresTest；A: WorkflowRunControlIntegrationTest；无关候选的普遍识别/语义验证仍未实现 |
 | F28 | MCP Server CRUD、发现新 revision、READ工具调试、绑定 QueryLoop | 假工具/非READ、schema漂移、不可用/超时/取消/SSE replay | A: McpServerApiIntegrationTest、McpProtocolClientReliabilityTest |
 | F29 | MCP Token KEEP/TOKEN/REFERENCE/CLEAR；GCM随机nonce/所有者绑定；旧快照旧凭据；引用/目标默认拒绝 | 缺/错主密钥、篡改、跨Server、畸形JSON、回显、清除不等于全局撤销；换地址不得KEEP、历史引用运行时复查 | U: McpCredentialCipherTest、CredentialReferencePolicyTest；A/P: AbstractMcpCredentialContract 两环境；A: McpProtocolClientReliabilityTest；B: mcp-token-live.spec.ts（引用新策略尚未部署验证） |

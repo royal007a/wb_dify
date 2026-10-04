@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "command": "mvn -B -pl hify-app -am -Dtest=ManagementReadbackIntegrationTest,RunSubmissionIdentityTest -Dsurefire.failIfNoSpecifiedTests=false test",
+  "fixture": "Full Spring MVC / isolated H2 / captured runExecutor; no external model or shared state",
+  "initial": {
+    "exitCode": 1,
+    "tests": 9,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0,
+    "logSha256": "675c2f1d66b009998aebd12f43651c057094098fccca49a757dc0ec7a52fde2f",
+    "cause": "Test author assumptions: wrong cancellation route, clamp mistaken for validation error, draft mistaken for frozen binding. Not production defects."
+  },
+  "corrected": {
+    "codeCommit": "b16af24",
+    "exitCode": 0,
+    "tests": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "logSha256": "be233f6bc6d99dacaaecd047ca65d90495be9b96846557d194fdcc26e19be0d2"
+  }
+}
