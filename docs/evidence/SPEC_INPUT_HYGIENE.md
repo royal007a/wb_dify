@@ -17,3 +17,5 @@
 行为报告含68条路由、38功能组、44个具名子场景pass，不表示路由/功能全量通过。脱敏method-evidence离线重算JSON/MD逐字节一致，命令与SHA见reproduction.json。原始失败日志含合成SQL错误，仅提交脱敏计数和SHA，不提交XML或运行环境属性。未部署132。
 
 独立静态复核无P0/P1（reviewer未运行）：Agent绑定写入口不在首轮实现中，PG可能500，且enabledTools/深层config集成覆盖偏窄，归SPEC-INPUT-HYGIENE-002补齐；检索query、memory/search与意图路由NUL反例归SPEC-INPUT-HYGIENE-003，不把现有门禁外推到读路径。复核消息om_x100b632f8debe8a4c1553576a7cc3e9。
+
+最终复核消息om_x100b632f946e8cacc3295e305093a73：reviewer在d391d2b的archive隔离副本核对schema/head/565计数/源码树，复算tests摘要SHA及method-evidence SHA，并实际离线重算44子场景报告，JSON/MD逐字节一致；未重跑Maven。001按限定范围关闭，002/003分别处理登记项。

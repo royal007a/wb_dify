@@ -1,0 +1,29 @@
+{
+  "runs": [
+    {
+      "log": "narrow-red.log",
+      "exitCode": 1,
+      "sha256": "2b88cc5335c0dcb3ec3a611364d7d128dabcf4733b673e9e45b8a13053a6538a",
+      "meaning": "Initial tests: 28 run/10 failures/0 skips. Two failures are the test incorrectly assuming returned node order."
+    },
+    {
+      "log": "narrow-red-corrected.log",
+      "exitCode": 1,
+      "sha256": "b46f65153499fee0d33d7b3b59d720b9bfa1780c5ccf768bce2d3c7b730bc853",
+      "meaning": "Node matched by key: 28 run/8 failures/0 skips. Four binding cases fail in each database."
+    },
+    {
+      "log": "narrow-green.log",
+      "exitCode": 1,
+      "sha256": "6bf63893345860a8526914ddc133b2d3a1b82a11af47c6dafeeebc319ba89828",
+      "meaning": "Compile error missing import; only common 2 tests executed, no application proof."
+    },
+    {
+      "log": "narrow-green-import-fixed.log",
+      "exitCode": 0,
+      "sha256": "83ece5895709633cb16e92d59bfe3119f5f066c36b62d1fa3c802d8fa9ba819e",
+      "meaning": "30 tests: H2 14 + PG 14 + common 2, zero failure/error/skip."
+    }
+  ],
+  "boundary": "Local disposable databases and synthetic catalog only. No browser, remote service or 132 deployment."
+}

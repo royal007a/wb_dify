@@ -1,0 +1,8 @@
+{
+  "headCommit": "2f37ae0f7ad2b439cb1978443bfba1aff63afede",
+  "backendTree": "ea4e78ff0c643e05356c719a76af15ed097e4765",
+  "frontendTree": "8f83bc4774e6049892447286e0da9057c5c3f397",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "status": "M harness/progress.md\n M harness/state.json\n M harness/tasks.json\n?? harness/evidence/SPEC-INPUT-HYGIENE-002/",
+  "note": "Recorded before fresh gate; only harness state/evidence remain uncommitted."
+}

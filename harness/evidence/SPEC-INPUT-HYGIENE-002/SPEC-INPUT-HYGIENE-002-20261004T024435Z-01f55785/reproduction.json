@@ -1,0 +1,32 @@
+{
+  "headCommit": "2f37ae0f7ad2b439cb1978443bfba1aff63afede",
+  "finishedAt": "2026-10-04T02:56:20Z",
+  "invocationId": "83ec07a2-be13-481b-b0e7-c262945096c2",
+  "gateResult": "passed",
+  "methodEvidenceSha256": "d1fafbd96b749f7b1c2a801c0c40de1b2c57cf7749f62cfbb6273302c571d20a",
+  "jsonSha256": "963fcc4bd43e3960baa35f6b55b7810e2d48e593e6c20b9fd8b294363b75bc86",
+  "markdownSha256": "7c4f384a607f0b590f403a577d4065caa8b1418f21bb7acbf238cd2bf309f52c",
+  "byteIdentical": {
+    "json": true,
+    "markdown": true
+  },
+  "commands": {
+    "export": [
+      "python3",
+      "harness/behavior_report.py",
+      "--evidence-dir",
+      "harness/evidence/SPEC-INPUT-HYGIENE-002/SPEC-INPUT-HYGIENE-002-20261004T024435Z-01f55785",
+      "--export-methods",
+      "harness/evidence/SPEC-INPUT-HYGIENE-002/SPEC-INPUT-HYGIENE-002-20261004T024435Z-01f55785/method-evidence.json"
+    ],
+    "offline": [
+      "python3",
+      "harness/behavior_report.py",
+      "--evidence-dir",
+      "harness/evidence/SPEC-INPUT-HYGIENE-002/SPEC-INPUT-HYGIENE-002-20261004T024435Z-01f55785",
+      "--method-evidence",
+      "harness/evidence/SPEC-INPUT-HYGIENE-002/SPEC-INPUT-HYGIENE-002-20261004T024435Z-01f55785/method-evidence.json"
+    ]
+  },
+  "meaning": "Offline recomputation, not a second test execution. SHA is an accidental-change check, not a signature. Raw XML, properties and message bodies are excluded."
+}
