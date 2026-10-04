@@ -186,6 +186,48 @@ class RunSubmissionIdentityTest {
         verifyNoInteractions(executor);
     }
 
+    @Test void localizedPostgresConflictReplaysUsingStructuredConstraintNotHibernateMessageExtraction() throws Exception {
+        String conversation=conversation(),key=UUID.randomUUID().toString();
+        String id=create(conversation,key,"hello",202).path("id").asText();
+        long beforeRuns=runs.count(),beforeMessages=messages.count(),beforeEvents=events.count();
+        var missOnce=new java.util.concurrent.atomic.AtomicBoolean(true);
+        doAnswer(call->missOnce.getAndSet(false)?java.util.Optional.empty():call.callRealMethod())
+                .when(runs).findByConversationIdAndIdempotencyKey(conversation,key);
+        var detail=new org.postgresql.util.ServerErrorMessage(
+                "SERROR\0C23505\0M重复键违反唯一约束\0nUQ_RUN_IDEMPOTENCY\0");
+        var pg=new org.postgresql.util.PSQLException(detail);
+        // Hibernate's English-text extractor cannot extract this localized name.
+        var constraint=new org.hibernate.exception.ConstraintViolationException("localized",pg,(String)null);
+        doThrow(new org.springframework.dao.DataIntegrityViolationException("localized",constraint))
+                .when(runs).saveAndFlush(any());
+        assertThat(create(conversation,key,"hello",200).path("id").asText()).isEqualTo(id);
+        assertThat(runs.count()).isEqualTo(beforeRuns);
+        assertThat(messages.count()).isEqualTo(beforeMessages);
+        assertThat(events.count()).isEqualTo(beforeEvents);
+        verify(executor,times(1)).execute(any());
+    }
+
+    @Test void nulInputIsRejectedBeforeWritesOnBothHttpAndService() throws Exception {
+        String conversation=conversation(),nul=String.valueOf((char)0);
+        long beforeRuns=runs.count(),beforeMessages=messages.count(),beforeEvents=events.count();
+        assertThat(create(conversation,UUID.randomUUID().toString(),"bad"+nul,400).path("code").asInt()).isEqualTo(40000);
+        org.assertj.core.api.Assertions.assertThatThrownBy(()->service.create(conversation,"key","bad"+nul))
+                .isInstanceOfSatisfying(com.hify.common.BizException.class,
+                        error->assertThat(error.errorCode()).isEqualTo(com.hify.common.ErrorCode.PARAM_ERROR));
+        for(var resume:java.util.List.of(java.util.Map.of("runId","bad"+nul,"gapIds",java.util.List.of("gap")),
+                java.util.Map.of("runId","source","gapIds",java.util.List.of("gap"+nul)))) {
+            http.perform(post("/api/v1/conversations/{id}/runs",conversation).header("Idempotency-Key",UUID.randomUUID().toString())
+                    .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(java.util.Map.of("message","hello","resume",resume))))
+                    .andExpect(status().isBadRequest()).andExpect(jsonPath("$.code").value(40000));
+        }
+        assertThat(runs.count()).isEqualTo(beforeRuns);
+        assertThat(messages.count()).isEqualTo(beforeMessages);
+        assertThat(events.count()).isEqualTo(beforeEvents);
+        verifyNoInteractions(executor);
+        assertThat(create(conversation,UUID.randomUUID().toString(),"hello",202).path("inputMessage").asText()).isEqualTo("hello");
+        verify(executor,times(1)).execute(any());
+    }
+
     @Test void h2SameKeyRaceStillConvergesWithOneUserMessageAndDispatch() throws Exception {
         String conversation=conversation(), key=UUID.randomUUID().toString();
         var barrier=new java.util.concurrent.CyclicBarrier(2);

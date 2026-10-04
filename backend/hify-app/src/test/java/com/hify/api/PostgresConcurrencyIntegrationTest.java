@@ -81,6 +81,26 @@ class PostgresConcurrencyIntegrationTest {
     @Autowired org.springframework.transaction.support.TransactionTemplate transactions;
     @org.springframework.boot.test.mock.mockito.SpyBean com.hify.application.RunEventBroker broker;
 
+    @Test void postgresNulIsRejectedAtAdmissionWithoutCreatingRunOrMessages() throws Exception {
+        String nul=String.valueOf((char)0);
+        // Positive database contrast: the real driver/server rejects this value.
+        org.assertj.core.api.Assertions.assertThatThrownBy(()->jdbc.queryForObject("select cast(? as text)",String.class,"bad"+nul))
+                .isInstanceOf(org.springframework.dao.DataAccessException.class);
+        String conversation=createConversation("demo-agent","NUL admission").path("id").asText();
+        for(var body:List.of(java.util.Map.of("message","bad"+nul),
+                java.util.Map.of("message","hello","resume",java.util.Map.of("runId","bad"+nul,"gapIds",List.of("gap"))),
+                java.util.Map.of("message","hello","resume",java.util.Map.of("runId","source","gapIds",List.of("gap"+nul))))) {
+            http.perform(post("/api/v1/conversations/{id}/runs",conversation).header("Idempotency-Key",UUID.randomUUID().toString())
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.code").value(40000));
+        }
+        assertThat(jdbc.queryForObject("select count(*) from agent_runs where conversation_id=?",Long.class,conversation)).isZero();
+        assertThat(messages.findByConversationIdOrderByCreatedAtAsc(conversation)).isEmpty();
+        String accepted=createRun(conversation,UUID.randomUUID().toString(),"计算 6 * 7");
+        assertThat(awaitTerminal(accepted).getState()).isEqualTo(RunState.COMPLETED);
+    }
+
     @Test void rollbackNeverEmitsAndCommittedTerminalClosesTheLiveStream() throws Exception {
         AgentRun run = dormantRun();
         MvcResult stream=http.perform(get("/api/v1/runs/{id}/events/stream",run.getId()).accept(MediaType.TEXT_EVENT_STREAM))
