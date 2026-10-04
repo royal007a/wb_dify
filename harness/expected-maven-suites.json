@@ -17,7 +17,10 @@
     "com.hify.api.KnowledgeMemoryPostgresTest": 21
   },
   "backend-tests": {
-    "com.hify.api.WorkflowExternalNodesIntegrationTest": 11,
+    "com.hify.workflow.application.WorkflowAddressPolicyTest": 6,
+    "com.hify.workflow.application.WorkflowHttpClientTest": 4,
+    "com.hify.workflow.application.WorkflowExternalPolicyTest": 4,
+    "com.hify.api.WorkflowExternalNodesIntegrationTest": 13,
     "com.hify.api.SemanticKnowledgeIntegrationTest": 7,
     "com.hify.api.SemanticKnowledgePostgresTest": 7,
     "com.hify.knowledge.application.DocumentIndexingServiceTest": 5,

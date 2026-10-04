@@ -1,5 +1,7 @@
 # Hify 当前实现边界
 
+2026-10-04 22点后增量：Dify官方逐篇差距映射见 `competitors/2026-10-04-dify.md`。本地已有SEMANTIC-001小型库语义检索与WORKFLOW-NODES-001外部节点，均不等于132已上线。外部HTTP的独立SSRF P1由WORKFLOW-NODES-002补强，当前仅开发窄测27项通过，完整门禁与独立复核待补，发布前仍按未验收处理。下段42db727指最近一次线上完整发布基线，不代表新HEAD全部部署。
+
 最新完整验收：2026-10-04 08:26:10Z，代码42db727、证据043c18f，六scope通过：backend87类602项、migration118项、runtime34项、eval24项均零失败/错误/skip/flaky（scope重叠不相加），Harness74项、另行受控浏览器38项通过。57具名子场景及脱敏离线重算已独立复核，不能把68路由/38功能组映射称为全部功能通过，见`evidence/SPEC_RELEASE_VERIFY_20261004.md`。默认Colima满盘未清理，改用独立验证profile真实PG完成。旧知识完整性和Chat005的满盘blocked记录保留，不回写历史。当前代码已完整重部署132，08:33:39Z线上检查和harness/frontend收尾通过，见`evidence/SPEC_DEPLOYMENT_FULL_20261004.md`。
 
 初始审计基线：2026-10-03，原版 `/Users/weberzhao/hify`，`973257c`；源码对齐至 `9f40639`（2026-10-04）。下表区分源码存在、专项测试、历史运行，不代表全功能、真实模型或部署全部复验。历史审计001为495项中406通过/89条skip记录，Chat003为498项中409通过/89条skip记录；不回写或将历史skip冒充通过。新一轮SPEC-VERIFY后端539项/81类全部执行且零失败/错误/skip/flaky，包含真实隔离PG；逐方法子场景及其未测边界见 `evidence/SPEC_VERIFICATION.md`。该轮先出现背压测试夹具并发红灯，修复测试后重新全量运行，未掩盖首轮失败。当前验收清单见 `spec/README.md`；反例索引见 `spec/AUDIT_FINDINGS.md`；任务状态只看Harness。2026-09-13初版证据不能当作新功能的运行结果。

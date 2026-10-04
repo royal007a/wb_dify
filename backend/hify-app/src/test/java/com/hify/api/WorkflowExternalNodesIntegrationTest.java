@@ -49,6 +49,7 @@ class WorkflowExternalNodesIntegrationTest {
         s.createContext("/read", e -> {
             httpCalls.incrementAndGet();rawQuery.set(e.getRequestURI().getRawQuery());String current=mode.get();
             if(current.equals("slow")){entered.countDown();try{release.await(5,TimeUnit.SECONDS);}catch(InterruptedException x){Thread.currentThread().interrupt();}}
+            if(current.equals("socket-timeout")){entered.countDown();try{release.await(10,TimeUnit.SECONDS);}catch(InterruptedException x){Thread.currentThread().interrupt();}}
             byte[] body=(current.equals("large")?"x".repeat(32769):current.equals("echo")?"synthetic-workflow-secret":"HTTP 原文").getBytes(StandardCharsets.UTF_8);
             try{e.getResponseHeaders().set("Content-Type","text/plain; charset=utf-8");
                 if(current.equals("redirect")){e.getResponseHeaders().set("Location","/private");e.sendResponseHeaders(302,-1);}
@@ -66,6 +67,8 @@ class WorkflowExternalNodesIntegrationTest {
     }
     @Autowired MockMvc http; @Autowired ObjectMapper json; @Autowired JdbcTemplate db;
     @Autowired WorkflowApplicationService workflows; @Autowired WorkflowEngine engine;
+    @Autowired org.springframework.cache.CacheManager caches;
+    @Autowired com.hify.provider.api.ProviderQueryService providerQuery;
     @BeforeEach void reset(){mode.set("ok");entered=new CountDownLatch(1);release=new CountDownLatch(1);}
     @AfterEach void unblock(){release.countDown();}
     @AfterAll static void stop(){server.stop(0);serverPool.shutdownNow();System.clearProperty("WORKFLOW_TEST_KEY");}
@@ -93,7 +96,11 @@ class WorkflowExternalNodesIntegrationTest {
         String stored=db.queryForObject("select dsl_json from workflow_versions where id=?",String.class,version);
         assertThat(stored).contains("modelSnapshot","externalNodeFormat").doesNotContain("synthetic-workflow-secret");
         db.update("update providers set base_url=? where public_id=?",base()+"/other",config.path("providerId").asText());
+        Objects.requireNonNull(caches.getCache("provider-cache")).evict(config.path("providerId").asText());
+        assertThat(providerQuery.requireEnabled(config.path("providerId").asText()).baseUrl()).isEqualTo(base()+"/other");
+        int callsBefore=modelCalls.get();
         assertThat(engine.execute(version,"again").output()).isEqualTo("固定模型答案");
+        assertThat(modelCalls.get()).isEqualTo(callsBefore+1);
     }
     @Test void snapshotForgeryAndNonUpstreamPromptAreRejectedBeforeWrites() throws Exception {
         var config=llm();int count=rows("workflows"), calls=modelCalls.get();config.set("modelSnapshot",json.createObjectNode());
@@ -146,6 +153,18 @@ class WorkflowExternalNodesIntegrationTest {
         }
     }
 
+    @Test void httpSocketTimeoutFailsNodeWhileParentDeadlineStillHasBudget() {
+        String version=publish("API_CALL",api());
+        assertThat(engine.execute(version,"positive").status()).isEqualTo("SUCCEEDED");
+        mode.set("socket-timeout");int before=httpCalls.get();
+        var control=ExecutionControl.withTimeout(Duration.ofSeconds(30),()->false);
+        var result=engine.execute(version,"timeout",control);
+        assertThat(entered.getCount()).isZero();assertThat(httpCalls.get()).isEqualTo(before+1);
+        assertThat(control.isExpired()).isFalse();assertThat(result.status()).isEqualTo("FAILED");
+        assertThat(result.output()).isNull();assertThat(result.nodes()).hasSize(2);
+        assertThat(result.nodes().get(1).status()).isEqualTo("FAILED");
+    }
+
     @Test void httpManagementAndExecutionUseSameImmutableGraph() throws Exception {
         var draft=graph("API_CALL",api());
         String id=json.readTree(http.perform(post("/api/v1/workflows").contentType("application/json").content(json.writeValueAsString(draft)))
@@ -162,6 +181,14 @@ class WorkflowExternalNodesIntegrationTest {
         var config=llm();String version=publish("LLM",config);
         assertThat(engine.execute(version,"positive").status()).isEqualTo("SUCCEEDED");
         db.update("update providers set enabled=false where public_id=?",config.path("providerId").asText());
+        int before=modelCalls.get();var refused=engine.execute(version,"negative");
+        assertThat(refused.status()).isEqualTo("FAILED");assertThat(refused.output()).isNull();assertThat(modelCalls.get()).isEqualTo(before);
+    }
+
+    @Test void disabledModelCannotBeBypassedByPublishedModelSnapshot() throws Exception {
+        var config=llm();String version=publish("LLM",config);
+        assertThat(engine.execute(version,"positive").status()).isEqualTo("SUCCEEDED");
+        assertThat(db.update("update provider_models set enabled=false where provider_id=(select id from providers where public_id=?)",config.path("providerId").asText())).isEqualTo(1);
         int before=modelCalls.get();var refused=engine.execute(version,"negative");
         assertThat(refused.status()).isEqualTo("FAILED");assertThat(refused.output()).isNull();assertThat(modelCalls.get()).isEqualTo(before);
     }

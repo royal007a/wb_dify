@@ -6,6 +6,7 @@ import com.hify.common.*;
 import com.hify.provider.api.TextGenerationPort;
 import com.hify.workflow.api.*;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.time.Duration;
 import java.util.*;
 
@@ -14,8 +15,14 @@ public class WorkflowExternalNodes {
     private final TextGenerationPort models;
     private final WorkflowHttpClient http;
     private final ObjectMapper json;
+    private final Duration llmTimeout;
+    @Autowired
     public WorkflowExternalNodes(TextGenerationPort models, WorkflowHttpClient http, ObjectMapper json) {
+        this(models, http, json, Duration.ofSeconds(45));
+    }
+    WorkflowExternalNodes(TextGenerationPort models, WorkflowHttpClient http, ObjectMapper json, Duration llmTimeout) {
         this.models = models; this.http = http; this.json = json;
+        this.llmTimeout = llmTimeout;
     }
     static boolean isExternal(WorkflowNodeSpec node) {
         return Set.of("LLM", "API_CALL").contains(node.type().toUpperCase(Locale.ROOT));
@@ -50,22 +57,28 @@ public class WorkflowExternalNodes {
         JsonNode config = node.config();
         if (node.type().equalsIgnoreCase("LLM")) {
             // The node budget is capped by the original Run deadline; retries cannot reset it.
-            ExecutionControl bounded = ExecutionControl.withTimeout(control.remaining(Duration.ofSeconds(45)), control::isCancelled)
+            Duration remaining = control.remaining(llmTimeout);
+            WorkflowControl.check(control);
+            ExecutionControl bounded = ExecutionControl.withTimeout(remaining, control::isCancelled)
                     .withShutdown(control::isSuspended);
             try {
                 String result = models.generate(profile(node), context.resolve(config.path("systemPrompt").asText("")),
                         context.resolve(config.path("prompt").asText()), config.path("temperature").asDouble(0.2),
                         config.path("maxOutputTokens").asInt(1024), bounded);
-                WorkflowControl.check(bounded);
+                checkModelBudget(control, bounded);
                 return result;
             } catch (RuntimeException failure) {
-                WorkflowControl.check(bounded);
+                checkModelBudget(control, bounded);
                 throw failure;
             }
         }
         Map<String, String> query = new LinkedHashMap<>();
         config.path("query").fields().forEachRemaining(entry -> query.put(entry.getKey(), context.resolve(entry.getValue().asText())));
         return http.get(config.path("endpoint").asText(), config.path("credentialRef").asText(), query, control);
+    }
+    private static void checkModelBudget(ExecutionControl parent, ExecutionControl node) {
+        WorkflowControl.check(parent);
+        if (node.isExpired()) throw new BizException(ErrorCode.CONFLICT, "LLM 节点调用超时，工作流已停止");
     }
     private TextGenerationPort.Profile profile(WorkflowNodeSpec node) {
         try {
