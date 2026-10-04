@@ -4,7 +4,7 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-10-04T05:08:35Z`
 - Current task: `none`
-- Counts: pending 15 · running 0 · blocked 2 · completed 77
+- Counts: pending 17 · running 0 · blocked 2 · completed 77
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -50,6 +50,7 @@
 | `SPEC-CHAT-LIFECYCLE-003` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 结果不明提交的身份恢复与安全退出 |
 | `SPEC-DEPLOY-003` | P1 | completed | harness | reversible_write | 消除安装器stderr失败阻止恢复旧服务 |
 | `SPEC-DEPLOY-006` | P1 | completed | harness, frontend | high_risk | 发布已复核Run输入与Chat恢复增量至132 |
+| `SPEC-DEPLOY-007` | P1 | pending | harness, frontend | high_risk | 按最新完整门禁重新发布原版Hify到132 |
 | `SPEC-HISTORY-RECOVERY-001` | P1 | completed | backend, runtime, migration, harness | reversible_write | 恢复时重放已提交模型响应而非重新生成 |
 | `SPEC-HISTORY-RECOVERY-002` | P1 | completed | backend, runtime, harness | reversible_write | 恢复元数据按JSON语义比较，兼容跨JVM键顺序 |
 | `SPEC-HTTP-ERROR-001` | P1 | completed | backend, harness | reversible_write | 修复真实HTTP负路径的状态码与安全正文 |
@@ -58,6 +59,7 @@
 | `SPEC-KNOWLEDGE-FINISH-003` | P1 | completed | backend, runtime, migration, harness | reversible_write | 隔离知识门禁内部历史与可交付记忆并补回读关闭验证 |
 | `SPEC-PROVIDER-LOCAL-FAILURE-001` | P1 | completed | backend, runtime, harness | reversible_write | 取消与本地拒绝不得污染供应商熔断 |
 | `SPEC-PROVIDER-LOCAL-FAILURE-002` | P1 | completed | backend, runtime, harness | reversible_write | 区分用户取消与真实上游模型期限超时 |
+| `SPEC-RELEASE-VERIFY-001` | P1 | pending | harness, backend, migration, runtime, eval, frontend | reversible_write | 最新业务代码重新部署前全量验收 |
 | `SPEC-RUN-ADMISSION-001` | P1 | completed | backend, runtime, harness | reversible_write | Workflow与AgentRun最终提交竞争的投影一致性 |
 | `SPEC-RUN-ADMISSION-002` | P1 | completed | backend, runtime, harness | reversible_write | Run 执行器容量拒绝的终态与幂等回放 |
 | `SPEC-RUN-DISPATCH-001` | P1 | completed | backend, runtime, harness | reversible_write | 同实例create与恢复扫描的调度所有权 |

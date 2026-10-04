@@ -4058,6 +4058,55 @@
       ],
       "createdAt": "2026-10-04T01:49:00Z",
       "updatedAt": "2026-10-04T02:01:39Z"
+    },
+    {
+      "id": "SPEC-RELEASE-VERIFY-001",
+      "title": "最新业务代码重新部署前全量验收",
+      "description": "响应用户完整重新部署；使用隔离Colima profile避开共享满盘，重跑全部六类门禁，不复用窄测充当PG结果。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["harness", "backend", "migration", "runtime", "eval", "frontend"],
+      "verifyScopes": ["harness", "migration", "backend", "runtime", "eval", "frontend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "当前源码完整backend及真实PG/migration、runtime、eval、harness、前端typecheck/build全部成功且零skip；失败不进入部署",
+        "记录源码树和无未提交业务改动；补当前受控浏览器验收，区分真实后端与mock",
+        "保留旧的满盘失败和blocked记录，不把新环境成功追认旧运行通过"
+      ],
+      "planPath": "exec-plans/active/SPEC-RELEASE-VERIFY-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-04T08:14:00Z",
+      "updatedAt": "2026-10-04T08:14:00Z"
+    },
+    {
+      "id": "SPEC-DEPLOY-007",
+      "title": "按最新完整门禁重新发布原版Hify到132",
+      "description": "用户明确授权完整重新部署。前置RELEASE-VERIFY全范围通过并绑定同一源码，再构建、备份、发布和真实线上验证；不删旧目录或修改凭据。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["harness", "frontend"],
+      "verifyScopes": ["harness", "frontend"],
+      "risk": "high_risk",
+      "operation": "deployment",
+      "approvalRef": "lark:om_x100b6314d40470a4b2e14a8024c780f",
+      "dependsOn": ["SPEC-RELEASE-VERIFY-001"],
+      "acceptance": [
+        "发布源码树和最新完整六scope门禁完全一致；使用已复核安装器，迁移仍为V23且无未验证脚本",
+        "132空间/Run/Workflow/索引预检、停旧后非空备份和list验证；旧jar/dist/snippet保留，主密钥仅比元数据",
+        "健康200、产物SHA本地远端一致、真实浏览器Chat、输入卫生400/零写入及上传10MiB边界通过",
+        "记录部署时间、URL、运行边界、未验功能与未恢复备份；交独立review，不将Mock称真实模型验收"
+      ],
+      "planPath": "exec-plans/active/SPEC-DEPLOY-007.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-04T08:14:00Z",
+      "updatedAt": "2026-10-04T08:14:00Z"
     }
   ]
 }
