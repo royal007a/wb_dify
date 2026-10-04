@@ -1,0 +1,8 @@
+{
+  "headCommit": "3e47d13390e0b304b761a0236bd099104bd3cbc0",
+  "backendTree": "5899367ab1a642763fbf94e16c6a3aad429af5b4",
+  "frontendTree": "6181271f7e6b1e10b74c913395285f9c6e389c94",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "buildCommit": "a66be9e6a0266fdce2c90eb94876a5e9afc1e9b2",
+  "meaning": "Backend/frontend source trees unchanged between prior full gate, release build and this final gate; working tree source diff empty. Harness runtime/evidence may be dirty."
+}

@@ -19,6 +19,7 @@
 2. 真实132浏览器：`E2E_BASE_URL=https://118.196.123.132/hify/ E2E_IGNORE_HTTPS_ERRORS=true PLAYWRIGHT_CHANNEL=chromium-headless-shell MCP_TOKEN_LIVE=1 npx playwright test e2e/chat.spec.ts e2e/chat-time.spec.ts e2e/mcp-token-live.spec.ts --workers=1 --trace=off`：3 passed，17.7秒。Demo greeting/三次时间/calculator共5条Run，完成数从32到37；Token合成值保存、KEEP、替换、CLEAR及不回显通过，测试Server归档。没有调用真实LLM或teacher MCP。
 3. 证书仍自签名：严格curl验证先返回60；HTTPS smoke和浏览器显式接受测试证书，证明TLS路径/代理行为，不证明公有CA受信。未弱化生产HTTP客户端的TLS或出站策略。
 4. 磁盘发布前2086296KiB可用，验收后1858008KiB可用（96%使用）。nginx请求体目录`/var/lib/nginx/body`为www-data:0700且在同一磁盘。容量仍紧张，需要日常清理/扩容决策；未擅自删历史备份或其他应用数据。
+5. 132 HTTPS按不存在的会话和合成Idempotency-Key查询by-key：HTTP404、JSON40400、Cache-Control:no-store、Vary:Idempotency-Key。此检查只验证负例响应；只读零写入断言仍由本地集成用例证明，不把一次curl观察当全量事务断言。
 
 ## 如实保留的负面结果
 
@@ -31,3 +32,11 @@
 证据根：`harness/evidence/SPEC-DEPLOY-001/SPEC-DEPLOY-001-20261004T004451Z-46b22950/`。deployment-summary.json记录产物、日志SHA、命令结果及负面尝试；门禁verification另列。原始日志默认不提交，SHA无法替代重跑或还原日志。总验收独立review（34e1a03..eeb385e）无P1，报告器实测与静态阅读分开；新增P2归VERIFY-002/API-PAGINATION-001/CHAT-LIFECYCLE-005，不随发布自动关闭。
 
 未承诺：真实供应商效果/费用、复杂外部MCP协议、认证/用户、DNS重绑定、全错误排列、全量管理UI、备份实际恢复，以及已登记的输入/分页/恢复/配额等P2。132的`/hify`恰好10MiB已实测；仓库独立根路径nginx的恰好10MiB回归仍未补，不将本次替代它。
+
+## 最终本地门禁与独立复核
+
+最终门禁于2026-10-04T00:56:13Z结束，HEAD为3e47d13，schemaVersion=3、strictEvidence=true，result/commandResult/testCoverage均passed。backend为81类539项、migration为14类114项；两步的failures/errors/skipped/flakyAttempts均0、underfilledSuites为空，不将重复scope相加。Harness 36项及前端typecheck/build通过。backend摘要SHA为`30e05f20b691e87024866f970067da195c9937cdd5c2d71effb4e06185ded7a5`，migration摘要SHA为`35586f5b326bbce6349f8f10fa723d68ed83bdb638d0b5e2c48f8bd0aa7dab9c`，已按文件重算。
+
+source-identity记录backend树5899367a、frontend树6181271f，源码diff为空串SHA；与构建a66be9e相同。该本地门禁与上面的132运行检查是两组证据，不互相替代。
+
+mymacclaude只读复核eeb385e..3e47d13：无P0/P1、不阻塞发布；代码静态阅读、摘要核对、本地git/SHA核对分开，未访问132。六条P2归SPEC-DEPLOY-002：迁移后失败可能停服等人工处理（含60s健康等待）；信号中断未专门trap；previous-dist仅备份、原计划误称恢复；预检到停止之间的新Run/Workflow窗口；检索仅非空断言；超限意外202及清理失败时遗漏自身数据。当前成功发布不证明这些故障路径安全。TLS测试显式关闭证书校验不是证书指纹固定；同盘备份不是异地备份，约1.8GiB余量仍为部署风险。

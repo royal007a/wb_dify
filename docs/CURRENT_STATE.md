@@ -66,6 +66,8 @@
 
 以下反例尚未由上述专项关闭，具体状态在tasks.json，不以本页另建状态板：
 
+- 发布故障路径：SPEC-DEPLOY-002登记安装器信号、停止前准入窗口、静态备份不恢复、迁移后停服人工评估，以及smoke弱检索断言/清理失败；132成功smoke不能关闭这些反例。
+
 - 总验收补录：管理分页400/夹值尚未统一（SPEC-API-PAGINATION-001）；在途GET下人工重连、取消查询按钮名、跨会话提示、失效resume循环（SPEC-CHAT-LIFECYCLE-005/RUN-INPUT-001）；send阻塞后再次提交断言、报告partial传播与脱敏可复算输入（SPEC-VERIFY-002）。
 
 - 知识：部分来源失败仍先发completed；wrapped suspension/数据库故障可能转Gap；索引isPostgres另借连接且失败当H2；Agent记录的Workflow checksum运行时未比对。分别见SPEC-KNOWLEDGE-FINISH-004、SPEC-KNOWLEDGE-INTEGRITY-003。

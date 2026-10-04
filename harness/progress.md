@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T00:44:51Z`
-- Current task: `SPEC-DEPLOY-001`
-- Counts: pending 19 · running 1 · blocked 0 · completed 64
+- Generated from task state updated at: `2026-10-04T00:56:13Z`
+- Current task: `none`
+- Counts: pending 20 · running 0 · blocked 0 · completed 65
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -25,7 +25,7 @@
 | `SPEC-CHAT-UI-001` | P0 | completed | frontend, harness | reversible_write | 修复流式会话生命周期与终态回读恢复 |
 | `SPEC-COMMON-001` | P0 | completed | backend, harness | reversible_write | 修复 HTTP 客户端错误映射与阻塞调用取消 |
 | `SPEC-CREDENTIAL-BOUNDARY-001` | P0 | completed | backend, runtime, harness | reversible_write | 凭据引用只允许管理员配置的引用与目标绑定 |
-| `SPEC-DEPLOY-001` | P0 | running | harness, backend, frontend, migration | high_risk | 发布验收修复并验证 132 与本地 |
+| `SPEC-DEPLOY-001` | P0 | completed | harness, backend, frontend, migration | high_risk | 发布验收修复并验证 132 与本地 |
 | `SPEC-SSE-COMMIT-001` | P0 | completed | backend, runtime, harness | reversible_write | 修复SSE提交时序与Run终态事件原子性 |
 | `SPEC-VERIFY-001` | P0 | completed | harness, backend, frontend, migration, runtime, eval | reversible_write | 执行全功能矩阵并修复发现的问题 |
 | `SPEC-WORKFLOW-CONTROL-001` | P0 | completed | backend, runtime, migration, harness | reversible_write | 传播 Workflow 取消和截止时间并阻止错误成功终态 |
@@ -76,6 +76,7 @@
 | `SPEC-CHILD-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 核验子任务孤儿扫描与父Run恢复时序 |
 | `SPEC-CREDENTIAL-BOUNDARY-002` | P2 | completed | backend, runtime, harness | reversible_write | 补齐受保护配置命名空间与冻结凭据负向验收 |
 | `SPEC-CREDENTIAL-BOUNDARY-003` | P2 | completed | backend, harness | reversible_write | 主密钥宽松配置绑定别名不得被误授权 |
+| `SPEC-DEPLOY-002` | P2 | pending | harness | reversible_write | 补强发布脚本中断边界与smoke自身数据清理 |
 | `SPEC-HISTORY-RECOVERY-003` | P2 | pending | backend, runtime, harness | reversible_write | 补齐恢复后的计划投影和预算边界 |
 | `SPEC-KNOWLEDGE-FINISH-004` | P2 | pending | backend, frontend, runtime, harness | reversible_write | 对齐知识门禁故障分类、检索事件和核验范围展示 |
 | `SPEC-KNOWLEDGE-INTEGRITY-003` | P2 | pending | backend, harness, migration | reversible_write | 补齐索引数据库类型检测及Agent固定Workflow校验和 |
