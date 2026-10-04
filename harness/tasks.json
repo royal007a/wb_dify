@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T00:26:35Z",
+  "updatedAt": "2026-10-04T00:37:26Z",
   "tasks": [
     {
       "id": "SPEC-UPLOAD-BOUNDARY-001",
@@ -2012,9 +2012,9 @@
         "失败先有可复现证据，再补回归修复；迁移门禁无跳过",
         "凭据、用户数据、旧发布版本和取消/replay 的安全边界不退化"
       ],
-      "planPath": "exec-plans/active/SPEC-VERIFY-001.md",
+      "planPath": "exec-plans/blocked/SPEC-VERIFY-001.md",
       "checkpoint": null,
-      "blockedReason": "task command failed",
+      "blockedReason": "verification failed",
       "evidence": [
         {
           "runId": "SPEC-VERIFY-001-20261003T233040Z-36e1c946",
@@ -2024,10 +2024,19 @@
           "baselineCommit": "7f735fe4716a0de06f531705df65e45a853287c4",
           "headCommit": "7f735fe4716a0de06f531705df65e45a853287c4",
           "recordedAt": "2026-10-03T23:38:14Z"
+        },
+        {
+          "runId": "SPEC-VERIFY-001-20261004T002745Z-de13ece6",
+          "path": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T002745Z-de13ece6",
+          "result": "blocked",
+          "exitCode": 1,
+          "baselineCommit": "2c99821ad6a105f77b6f537e011e67497bef14d0",
+          "headCommit": "7173e5599a17212114a5031a4b9721b22873357b",
+          "recordedAt": "2026-10-04T00:37:26Z"
         }
       ],
       "createdAt": "2026-10-03T14:35:00Z",
-      "updatedAt": "2026-10-03T23:38:14Z"
+      "updatedAt": "2026-10-04T00:37:26Z"
     },
     {
       "id": "SPEC-DEPLOY-001",

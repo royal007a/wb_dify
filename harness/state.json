@@ -7,16 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-API-BEHAVIOR-002-20261004T001941Z-31a7040d",
-    "path": "harness/evidence/SPEC-API-BEHAVIOR-002/SPEC-API-BEHAVIOR-002-20261004T001941Z-31a7040d",
-    "result": "completed",
-    "exitCode": 0,
-    "baselineCommit": "ebd6e086cb5bd280fc1b4e7881c5aab662d9441b",
-    "headCommit": "6ea09e5048b036f5ee2b0fc22d3eba2c49ed60f7",
-    "recordedAt": "2026-10-04T00:26:35Z",
-    "verificationSchemaVersion": 3,
-    "verificationSha256": "76c173c1915e2fe7af6d7c94c8cfe8ea4fbb8aa63551b57a162f70f97e117769"
+    "runId": "SPEC-VERIFY-001-20261004T002745Z-de13ece6",
+    "path": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T002745Z-de13ece6",
+    "result": "blocked",
+    "exitCode": 1,
+    "baselineCommit": "2c99821ad6a105f77b6f537e011e67497bef14d0",
+    "headCommit": "7173e5599a17212114a5031a4b9721b22873357b",
+    "recordedAt": "2026-10-04T00:37:26Z"
   },
   "lastCompletedTaskId": "SPEC-API-BEHAVIOR-002",
-  "updatedAt": "2026-10-04T00:26:35Z"
+  "updatedAt": "2026-10-04T00:37:26Z"
 }

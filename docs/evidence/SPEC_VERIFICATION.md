@@ -1,4 +1,4 @@
-# 全接口与功能新鲜验证（进行中）
+# 全接口与功能新鲜验证
 
 任务SPEC-VERIFY-001，源码基线7f735fe。机器状态看harness/tasks.json，不以本文标题或条数判断任务完成。证据根目录：`harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261003T233040Z-36e1c946/`。
 
@@ -23,3 +23,28 @@
 新增真实Tomcat的HttpErrorSurfaceTest，`mvn -B -pl hify-app -am -Dtest=HttpErrorSurfaceTest -Dsurefire.failIfNoSpecifiedTests=false test`退出1：5项中4失败、0错误/跳过。未知Run为400而非404，multipart格式错误与超限为500而非400/413，未知路由404正文反射请求路径。400/405/415及缺header的框架错误组合用例通过。fixture保存在本证据目录（不放入常规测试源集，待修复时原样恢复），完整失败日志为http-red.log。不能因旧520项绿而忽略新红灯。
 
 同时审查发现门禁的Flakes漏计、预期类遗漏/旧XML和finish绕过。SPEC-VERIFY-001暂停验收，先独立执行SPEC-AUDIT-003修复验证可信度，再恢复本任务修复HTTP红灯。未将本次任务标成完成。
+
+## 2026-10-04恢复：方法级验证与本地真实浏览器
+
+上述为历史红灯，未删除或回写。后续独立切片已处理：门禁38afd9a..f64a690；HTTP fa5f48f..a9a7357；上传8827af4/f17ab2a；Chat83055fb/a2ee546；管理6ea09e5/34e1a03。mymacclaude分别静态复核并核对相应证据（门禁另有隔离假命令实测），阻塞项已关闭，遗留P2仍在AUDIT_FINDINGS/tasks，不归零。
+
+恢复基线`2c99821`，新证据根`harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T002745Z-de13ece6/`。本次未改src/main，不为增加覆盖数改变线上语义。补了McpServerApiIntegrationTest.listsCurrentToolsAndArchiveRemovesOnlyTheActiveServer：目录先空后有2条、与发现响应精确一致；归档前列表有id/名字，归档后列表消失且详情和工具目录404。窄测8项零失败/错误/跳过（08:33:45）。不据此声称验证了已发布旧快照的归档后调用资格。
+
+### 浏览器证据分层
+
+独占Tomcat18081（新内存H2）、Vite15174、Chromium headless，模型使用Mock；MCP配置只用合成Token和显式允许的假引用，新建禁用Server，不连第三方。主密钥仅临时随机注入，不打印或保存。测试后两进程停止，未修改共享服务、真实凭据或132。
+
+- 首次4项命令中，独立代理用字符串target默认改写Host，导致浏览器Origin与应用地址不符，POST返回预期CORS403，第一项超时。保留日志并中断（exit130），是测试夹具错误，不计为产品修复。
+- 改为程序化Vite proxy的changeOrigin:false，保留同源Host；不改应用CORS策略。4项重跑通过（15.8秒）。
+- 再执行全部7个Playwright文件：39 passed、0 skipped（1.3分钟）。其中4项是实际HTTP+Tomcat+数据库+Vue链路：时间多轮、calculator与SSE、MCP编辑回读、Token保存/KEEP/替换/CLEAR且不回显。其余35项HTTP或EventSource打桩，只证明客户端时序/页面行为。
+- 不宣称真实LLM质量、外部MCP调用、所有管理CRUD的浏览器操作或132 TLS/nginx通过。完整命令、SHA和范围在browser-summary.json。
+
+### 接口与功能对照
+
+`docs/spec/behavior-cases.json`逐项关联人工检查的断言、精确测试方法、fixture、68路由及F01–F38。报告器把当前verification的invocation和tests摘要SHA对齐，再读与摘要SHA一致的XML，只提取方法名/结果，不输出properties、日志或正文。缺方法、skip和flaky不会因整个类其他测试通过而变绿；5个报告器单测覆盖这些分类及XML篡改。历史538项报告的只读干跑准确给新MCP方法not-run，没有修改历史文件。
+
+生成的behavior-report.json/Markdown只对具名子场景标pass/fail/not-run；整条路由不标“全行为通过”。对功能组逐条保留外部模型、真实图编辑、全部错误排列、恢复/配额等缺口。源码树、构建jar摘要与验证前空source diff见source-identity.json。全量门禁和最终分类见下文。
+
+### 7173e55全量红灯（00:37:26Z）
+
+此次verification明确为failed，不得用其他scope通过覆盖：backend在hify-chat提前中止，RunEventBrokerBackpressureTest的blockedSendCannotHoldCommitCallbackOrCollidingRunOrHeartbeat发生Mockito WrongTypeOfReturnValue（List被误用于返回Optional的方法）。测试先subscribe启动worker，随后才修改events mock及替换emitter，存在并发stubbing；不是产品背压断言失败。Maven未进入hify-app，因此摘要因缺类fail-closed，不把0条摘要解释为0失败。独立migration 114、runtime 34、eval 24均零失败/错误/跳过，Harness36与前端构建通过，仍不代表全量通过。原报告和日志SHA完整保留。下一轮将先配置mock，再用responseCommitted门闩放行worker，保留原来的慢发送/提交/碰撞Run/心跳断言，不通过重跑旧竞态来冒充修复。

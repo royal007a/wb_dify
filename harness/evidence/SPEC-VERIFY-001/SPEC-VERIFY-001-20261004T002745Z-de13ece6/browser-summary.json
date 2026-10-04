@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "2c99821",
+  "backendProductionCode": "83055fb",
+  "environment": "Dedicated Tomcat 18081 with in-memory H2, Vite 15174 and Chromium headless; no shared service or 132 changes",
+  "fixture": "Seeded Mock model; temporary random MCP master key; explicitly approved synthetic MCP_EDIT_SMOKE_TOKEN reference. New disabled MCP records only; no external MCP/model requests.",
+  "initial": {
+    "command": "E2E_BASE_URL=http://127.0.0.1:15174/ PLAYWRIGHT_CHANNEL=chromium-headless-shell MCP_TOKEN_LIVE=1 MCP_EDIT_LIVE=1 npx playwright test e2e/chat.spec.ts e2e/chat-time.spec.ts e2e/mcp-token-live.spec.ts e2e/mcp-edit-live.spec.ts --workers=1 --trace=off",
+    "exitCode": 130,
+    "status": "interrupted-after-failure",
+    "logSha256": "c80ded08c21b97053ab32cae2ac2106bba7ed93651d2b5a26523fba71618f086",
+    "cause": "Temporary proxy rewrote Host and triggered expected CORS rejection on a nonstandard test port. First test timed out; run stopped. No product fix claimed."
+  },
+  "corrected": {
+    "fixtureChange": "Programmatic Vite proxy uses target http://127.0.0.1:18081 with changeOrigin:false; preserves same-origin Host. Application CORS unchanged.",
+    "exitCode": 0,
+    "tests": 4,
+    "passed": 4,
+    "skipped": 0,
+    "durationSeconds": 15.8,
+    "logSha256": "8afaaaa316a46f1905c857a1da7f80fbb8aaedaca5f6d7b5dfb74e04e25064a3"
+  },
+  "fullBrowser": {
+    "command": "E2E_BASE_URL=http://127.0.0.1:15174/ PLAYWRIGHT_CHANNEL=chromium-headless-shell MCP_TOKEN_LIVE=1 MCP_EDIT_LIVE=1 npx playwright test --workers=1 --trace=off",
+    "exitCode": 0,
+    "tests": 39,
+    "passed": 39,
+    "skipped": 0,
+    "durationMinutes": 1.3,
+    "logSha256": "c1e5ecce4f06f3d4935188b6cb2e11e49a71032b44e472c01751e5798eb2a0e3",
+    "realBackendCases": ["chat.spec.ts: streamed calculator", "chat-time.spec.ts: greeting and repeated time questions", "mcp-edit-live.spec.ts: edit and readback", "mcp-token-live.spec.ts: save/KEEP/replace/CLEAR without echo"],
+    "controlledCases": 35,
+    "scopeLimit": "35 use mocked HTTP/EventSource. Four use a real local backend, but the model is Mock and MCP tests only configure disabled servers; not actual external tool calls or deployed TLS/proxy proof."
+  }
+}

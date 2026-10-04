@@ -1,0 +1,10 @@
+{
+  "headCommit": "7173e5599a17212114a5031a4b9721b22873357b",
+  "backendTree": "975070deef47ad576f554fcaa2082c3ee55f7447",
+  "frontendTree": "6181271f7e6b1e10b74c913395285f9c6e389c94",
+  "trackedSourceDiffCommand": "git diff -- backend frontend",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "statusBeforeVerification": [" M harness/progress.md", " M harness/state.json", " M harness/tasks.json", "?? harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T002745Z-de13ece6/"],
+  "browserArtifact": {"buildCommit": "2c99821", "jarSha256": "fa44c40e4270506ddfbf11aaa0020e2915b1c9bc976022d3a1369a899659e7bc", "productionDifferenceToVerificationHead": "none; subsequent backend edits only add a test"},
+  "scope": "Captured after code commit, before full verification. No backend/frontend edits during verification. Local app and Vite stopped after browser runs; dedicated H2 was in-memory."
+}

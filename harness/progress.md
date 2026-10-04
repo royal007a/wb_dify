@@ -2,7 +2,7 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T00:26:35Z`
+- Generated from task state updated at: `2026-10-04T00:37:26Z`
 - Current task: `none`
 - Counts: pending 17 · running 0 · blocked 1 · completed 63
 
@@ -91,6 +91,6 @@
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |
 
 ## Blocked
-- `SPEC-VERIFY-001`: task command failed
+- `SPEC-VERIFY-001`: verification failed
 
 Regenerate with `python3 harness/harness.py render-progress`; verify with `python3 harness/harness.py check-progress`.
