@@ -128,7 +128,10 @@ class DeployInstallerTest(unittest.TestCase):
                         process.send_signal(sig)
                         (root / 'release-wait').touch()
                         stdout, stderr = process.communicate(timeout=5)
-                        self.assertNotEqual(process.returncode, 0)
+                        # After trap removal, shells differ: sh can finish normally
+                        # when only the parent receives INT while its child succeeds.
+                        # The contract is no rollback, not an enforced signal exit.
+                        self.assertIn(process.returncode, (0, -sig, 128+sig))
                         self.assertEqual((root / 'service').read_text(), 'active')
                         self.assertEqual((root / 'etc/nginx/snippets/hify-path.conf').read_text(), 'new snippet')
                         self.assertEqual((app / 'frontend/dist/index.html').read_text(), 'new index')

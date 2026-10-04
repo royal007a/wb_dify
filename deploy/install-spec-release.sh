@@ -4,7 +4,7 @@ set -eu
 release=${1:?absolute release directory required}
 health_attempts=${HIFY_DEPLOY_HEALTH_ATTEMPTS:-60}
 case "$health_attempts" in ''|*[!0-9]*) exit 2 ;; esac
-test "$health_attempts" -ge 1 && test "$health_attempts" -le 300
+if ! test "$health_attempts" -ge 1 || ! test "$health_attempts" -le 300; then exit 2; fi
 case "$release" in /opt/hify/releases/spec-verify-*) ;; *) exit 2 ;; esac
 case "$release" in *..*|*[!a-zA-Z0-9/_-]*) exit 2 ;; esac
 test "$(id -u)" = 0
@@ -12,8 +12,11 @@ jar=/opt/hify/backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar
 dist=/opt/hify/frontend/dist
 snippet=/etc/nginx/snippets/hify-path.conf
 key=/etc/hify/mcp-credentials.env
-test -s "$jar" && test -f "$dist/index.html" && test -f "$snippet"
-test -s "$key" && test "$(stat -c %a "$key")" = 600
+test -s "$jar"
+test -f "$dist/index.html"
+test -f "$snippet"
+test -s "$key"
+test "$(stat -c %a "$key")" = 600
 test -f /etc/systemd/system/hify.service.d/20-mcp-credentials.conf
 key_identity=$(stat -c '%i:%s:%Y:%a:%U' "$key")
 test ! -e "$release/previous.jar"
@@ -42,6 +45,9 @@ cutover=0
 nginx_changed=0
 on_exit() {
   result=$?
+  # Cleanup must survive stderr EIO/EBADF (for example after SSH disconnect).
+  # Preserve the original failure even if recovery or diagnostics also fail.
+  set +e
   trap - EXIT HUP INT TERM
   if [ "$result" -ne 0 ]; then
     if [ "$nginx_changed" -eq 1 ]; then
@@ -50,11 +56,11 @@ on_exit() {
       fi
     fi
     if [ "$cutover" -eq 0 ]; then
-      printf 'Upgrade stopped before application replacement; restarting old service. Backup: %s\n' "$release" >&2
       systemctl start hify || true
+      printf 'Upgrade stopped before application replacement; attempted old-service restart. Backup: %s\n' "$release" >&2 || true
     else
       systemctl stop hify || true
-      printf 'Upgrade halted. DB/key preserved. Assess schema/new rows before reverting application. Backup: %s\n' "$release" >&2
+      printf 'Upgrade halted. DB/key preserved. Assess schema/new rows before reverting application. Backup: %s\n' "$release" >&2 || true
     fi
   fi
   exit "$result"
@@ -94,7 +100,9 @@ install -m 644 "$release/incoming/frontend/dist/index.html" "$dist/index.html.ne
 mv "$dist/index.html.next" "$dist/index.html"
 test "$(stat -c '%i:%s:%Y:%a:%U' "$key")" = "$key_identity"
 systemctl is-active hify
+# All actual success checks are complete. Diagnostic output below may fail or
+# receive a signal; that must not stop a healthy published release.
+trap - EXIT HUP INT TERM
 sha256sum "$jar" "$snippet" "$dist/index.html"
 runuser -u postgres -- psql -d hify -Atqc "SELECT version,success FROM flyway_schema_history WHERE version IN ('21','22','23') ORDER BY installed_rank"
 printf 'Upgrade healthy; backup=%s; key metadata unchanged\n' "$release"
-trap - EXIT HUP INT TERM

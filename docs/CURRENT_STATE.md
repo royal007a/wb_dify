@@ -67,7 +67,7 @@
 以下反例尚未由上述专项关闭，具体状态在tasks.json，不以本页另建状态板：
 
 - 发布故障路径：SPEC-DEPLOY-002本地补强后review仍发现stderr写失败阻止恢复旧服务的P1，归SPEC-DEPLOY-003，426de39安装器禁止后续发布直至修复复验；非标准smoke响应/索引静默/schema目标归SPEC-DEPLOY-004。132当前已健康部署不受影响，也不证明这些故障路径安全。
-- Run输入增量64bda57：20000 UTF-16上限、只认指定幂等唯一约束、并发删除会话404及明确拒绝resume的页面出口已由本轮543项后端（含PG）/32项受控浏览器验证，见SPEC_RUN_INPUT；未部署，独立复核进行中。其他Chat恢复P3与全数据库故障排列仍非保证。
+- Run输入增量64bda57：20000 UTF-16上限、只认指定幂等唯一约束、并发删除会话404及明确拒绝resume的页面出口已由本轮543项后端（含PG）/32项受控浏览器验证，见SPEC_RUN_INPUT；未部署，独立静态复核及摘要SHA核对无P0/P1。剩余PG本地化约束名、NUL输入500归SPEC-RUN-INPUT-002；重复gapId撑爆的反例已撤回。其他Chat恢复P3与全数据库故障排列仍非保证。
 
 - 总验收补录：管理分页400/夹值尚未统一（SPEC-API-PAGINATION-001）；在途GET下人工重连、取消查询按钮名、跨会话提示、失效resume循环（SPEC-CHAT-LIFECYCLE-005/RUN-INPUT-001）；send阻塞后再次提交断言、报告partial传播与脱敏可复算输入（SPEC-VERIFY-002）。
 
