@@ -109,6 +109,48 @@ class DeployInstallerTest(unittest.TestCase):
                     self.assertEqual((root / 'service').read_text(), 'active')
                     self.assertFalse((release / 'database-before.dump').exists())
 
+    def test_broken_stderr_pipe_preserves_cleanup_and_original_exit(self):
+        for shell in self.shells():
+            for stage in ('late', 'health'):
+                with self.subTest(shell=shell, stage=stage), tempfile.TemporaryDirectory() as temp:
+                    root, app, release, script, env = self.fixture(temp)
+                    env['DEPLOY_FIXTURE_LATE' if stage == 'late' else 'DEPLOY_FIXTURE_CURL_EXIT'] = 'agent' if stage == 'late' else '7'
+                    read_fd, write_fd = os.pipe()
+                    os.close(read_fd)  # A real pipe with no reader: EPIPE, not EBADF.
+                    try:
+                        result = subprocess.run([shell, str(script), str(release)], env=env,
+                                                stdout=subprocess.PIPE, stderr=write_fd, timeout=10)
+                    finally:
+                        os.close(write_fd)
+                    self.assertEqual(result.returncode, 1)
+                    self.assertEqual((root / 'service').read_text(), 'active' if stage == 'late' else 'inactive')
+                    self.assertEqual(self.calls(root).count(['systemctl', ['stop', 'hify']]), 1 if stage == 'late' else 2)
+
+    def test_broken_stdout_does_not_roll_back_success_and_quiet_still_checks_state(self):
+        for shell in self.shells():
+            with self.subTest(shell=shell), tempfile.TemporaryDirectory() as temp:
+                root, app, release, script, env = self.fixture(temp)
+                read_fd, write_fd = os.pipe()
+                os.close(read_fd)
+                try:
+                    result = subprocess.run([shell, str(script), str(release)], env=env,
+                                            stdout=write_fd, stderr=subprocess.PIPE, timeout=10)
+                finally:
+                    os.close(write_fd)
+                # Read-only diagnostics may fail after success; service must stay healthy.
+                self.assertEqual((root / 'service').read_text(), 'active', result.stderr)
+                self.assertEqual((root / 'etc/nginx/snippets/hify-path.conf').read_text(), 'new snippet')
+                self.assertEqual((app / 'frontend/dist/index.html').read_text(), 'new index')
+                self.assertIn(['systemctl', ['is-active', '--quiet', 'hify']], self.calls(root))
+                self.assertEqual(self.calls(root).count(['systemctl', ['stop', 'hify']]), 1)
+            with self.subTest(shell=shell, inactive=True), tempfile.TemporaryDirectory() as temp:
+                root, app, release, script, env = self.fixture(temp)
+                env['DEPLOY_FIXTURE_FINAL_INACTIVE'] = '1'
+                result = subprocess.run([shell, str(script), str(release)], env=env, capture_output=True, timeout=10)
+                self.assertEqual(result.returncode, 3)
+                self.assertEqual((root / 'service').read_text(), 'inactive')
+                self.assertEqual(self.calls(root).count(['systemctl', ['stop', 'hify']]), 2)
+
     def test_signal_after_success_does_not_stop_or_revert_healthy_release(self):
         for shell in self.shells():
             for sig in (signal.SIGHUP, signal.SIGINT, signal.SIGTERM):

@@ -2,6 +2,7 @@
 """Fake OS/network commands for an isolated installer copy. Never run real services."""
 import json
 import os
+import signal
 from pathlib import Path
 import sys
 import time
@@ -23,8 +24,13 @@ elif name == 'systemctl':
         (root / 'stopped').touch()
     elif args == ['start', 'hify']:
         state.write_text('active')
-    elif args == ['is-active', 'hify']:
-        print(state.read_text())
+    elif args in (['is-active', 'hify'], ['is-active', '--quiet', 'hify']):
+        # Match systemctl's SIGPIPE, not Python's default ignored PIPE.
+        signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+        if '--quiet' not in args:
+            print(state.read_text(), flush=True)
+        if '--quiet' in args and os.environ.get('DEPLOY_FIXTURE_FINAL_INACTIVE') == '1':
+            sys.exit(3)
         sys.exit(0 if state.read_text() == 'active' else 3)
 elif name == 'runuser':
     if 'pg_dump' in args:
