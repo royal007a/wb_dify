@@ -14,7 +14,9 @@ START.config.inputs为最多16项数组，省略即旧userMessage输入。字段
 | options | 仅enum，1–32个唯一非空文本选项，每项最多128字符 |
 | default | 和type精确匹配，不允许null、不隐式转换；false、0、可选空文本均合法 |
 
-未知schema属性拒绝。数字必须有限且绝对值<=1e12；必填text不能空白。schema与实际输入拒绝NUL但不修改值，不解析输入中的模板表达式。
+未知schema属性拒绝。数字必须有限且绝对值<=1e12，十进制precision<=1000且scale绝对值<=1000，防止极端指数放大模板；HTTP原始JSON和发布默认值使用局部BigDecimal解析，不经过double。模板数字去掉无意义尾零后用普通十进制表示（1e12→1000000000000、1e-7→0.0000001、-0.0→0），不是财务计算引擎。内部调用方若预先构造DoubleNode，精度已经丢失，服务不能还原原始文本。前端Element Plus数字控件仍使用JS Number，不能承诺超过其浮点精度的手输/默认值无损；高精度调用应使用原始JSON API。
+
+必填text的空白按ECMAScript trim字符集判断，包括NBSP/U+00A0和BOM/U+FEFF；不对非空内容做trim。长度按UTF-16，一个emoji通常计2。schema与实际输入拒绝NUL但不修改值；其他控制字符、方向符和U+200B零宽空格不做清洗（U+200B不是此契约的空白），输入不作为模板递归解释。required boolean仅表示该键必须存在，false为合法值，界面默认false不要求用户勾选确认。
 
 试跑`POST /api/v1/workflow-versions/{id}/runs`：
 
@@ -28,6 +30,8 @@ START具名变量沿用必经上游检查，`{{entry.owner}}`只能引用声明�
 
 配置存在inputs时，发布DSL额外带`publication.inputSchemaFormat=1`并纳入checksum；旧无inputs版本行为不变，旧有同名配置却没有服务端标记的版本拒绝并提示重新发布，不静默更换其语义。旧版本回读/执行不受新草稿修改影响。
 
-Agent Chat目前只传userMessage：含必填具名字段的Workflow绑定/发布返回409；批量可用快照不展示这种版本。可选默认字段支持Agent固定版本路径。控制台列表和画布共用试跑表单，读取发布版本而非草稿；START schema仍在Config JSON编辑。表单关闭不取消服务端执行，同步试跑没有幂等重放能力，结果不明后重复试跑可能产生另一执行（既有边界）。
+Agent Chat目前只传userMessage：含必填具名字段的Workflow绑定/发布返回409；先绑定可选版本、Workflow后发布为必填时，Agent再次发布仍重查并拒绝。批量可用快照不展示这种版本。可选默认字段支持Agent固定版本路径。控制台列表和画布共用试跑表单，读取发布版本而非草稿；START schema仍在Config JSON编辑。可选数字控件清空产生null时前端省略该键，由服务端使用发布默认值；必填数字清空拒绝，HTTP直接传null仍拒绝。表单关闭不取消服务端执行，同步试跑没有幂等重放能力，结果不明后重复试跑可能产生另一执行（既有边界）。
+
+上线前只读统计旧发布版本START.config含inputs但无inputSchemaFormat的记录；非零必须先解决兼容方案，不能直接切换或修改不可变旧版本。2026-10-04约23:35的132检查为0，只是当次状态，部署前必须再查。
 
 测试：WorkflowInputsTest有执行前拒绝+合法外部execute一次的mock对照；WorkflowInputsIntegrationTest/H2与Postgres子类验证HTTP契约、零写入与合法+1/+2、schema冻结、Agent绑定拒绝及可选默认真实异步Chat。MockMvc不是真实Tomcat网络。前端workflow-inputs.spec为路由打桩，证明客户端表单/请求，不替代上线验收。模型质量、文件、多模态、Chatflow不在范围。

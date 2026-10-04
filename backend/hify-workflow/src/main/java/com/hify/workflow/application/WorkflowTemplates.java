@@ -35,7 +35,11 @@ final class WorkflowTemplates {
         }
         Matcher matcher = VARIABLE.matcher(template);
         StringBuilder result = new StringBuilder();
-        while (matcher.find()) matcher.appendReplacement(result, Matcher.quoteReplacement(String.valueOf(values.get(matcher.group(1).trim()))));
+        while (matcher.find()) {
+            Object value = values.get(matcher.group(1).trim());
+            String text = value instanceof java.math.BigDecimal decimal ? decimal.stripTrailingZeros().toPlainString() : String.valueOf(value);
+            matcher.appendReplacement(result, Matcher.quoteReplacement(text));
+        }
         matcher.appendTail(result);
         return result.toString();
     }

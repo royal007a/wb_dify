@@ -33,7 +33,7 @@ final class WorkflowPublishedGraph {
         if(!checksum(version.getDslJson()).equals(version.getChecksum()))
             throw new BizException(ErrorCode.CONFLICT,"Workflow 发布版本校验和不匹配，请重新发布 Workflow 和 Agent，并创建新会话");
         try {
-            JsonNode tree=json.readTree(version.getDslJson());
+            JsonNode tree=com.hify.workflow.api.WorkflowJson.readTree(json,version.getDslJson());
             if(!(tree instanceof ObjectNode root))throw invalid();
             JsonNode stamp=root.remove("publication");
             WorkflowDraftRequest graph=json.treeToValue(root,WorkflowDraftRequest.class);

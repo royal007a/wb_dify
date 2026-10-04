@@ -88,4 +88,45 @@ class WorkflowInputsTest {
         assertThat(engine.executeWithInputs("v","hello",json.createObjectNode().put("topic","test")).status()).isEqualTo("SUCCEEDED");
         verify(external,times(1)).execute(any(),any(),any());verify(runs,times(2)).save(any());verify(nodes,times(6)).save(any());
     }
+
+    @Test void decimalRequestAndSnapshotAreExactAndTemplatesArePlain() throws Exception {
+        var node=start("[{\"name\":\"n\",\"type\":\"number\",\"required\":true}]");
+        for(String raw:java.util.List.of("1e12","1e-7","1e-400","0.12345678901234567890123","999999999999.9999999","0","0.0","-0.0")) {
+            var request=json.readValue("{\"input\":\"x\",\"inputs\":{\"n\":"+raw+"}}",com.hify.workflow.api.WorkflowRunRequest.class);
+            var bound=WorkflowInputs.bind(node,request.inputs());
+            var ctx=new WorkflowExecutionContext("entry","x");bound.forEach((k,v)->ctx.set("entry",k,v));
+            assertThat(ctx.resolve("{{entry.n}}")).as(raw).isEqualTo(new java.math.BigDecimal(raw).stripTrailingZeros().toPlainString());
+        }
+        for(String raw:java.util.List.of("1000000000000.0000001","-1000000000000.0000001","1e-1001","1e999")) {
+            var request=json.readValue("{\"input\":\"x\",\"inputs\":{\"n\":"+raw+"}}",com.hify.workflow.api.WorkflowRunRequest.class);
+            assertThatThrownBy(()->WorkflowInputs.bind(node,request.inputs())).as(raw).isInstanceOf(com.hify.common.BizException.class);
+        }
+        var optional=json.readValue("{\"nodeKey\":\"entry\",\"type\":\"START\",\"name\":\"start\",\"config\":{\"inputs\":[{\"name\":\"n\",\"type\":\"number\",\"required\":false,\"default\":0.12345678901234567890123}]}}",WorkflowNodeSpec.class);
+        var graph=draft(java.util.List.of(optional,node("end","END","output","{{entry.n}}")),edge("entry","end"));
+        String dsl=WorkflowPublishedGraph.write(graph,json);
+        var read=WorkflowPublishedGraph.read(new com.hify.workflow.domain.WorkflowVersion("v","w",1,1,dsl,WorkflowPublishedGraph.checksum(dsl),java.time.Instant.now()),json);
+        assertThat(WorkflowInputs.bind(read.nodes().get(0),null).get("n")).isEqualTo(new java.math.BigDecimal("0.12345678901234567890123"));
+        var nullable=json.readValue("{\"input\":\"x\",\"inputs\":null}",com.hify.workflow.api.WorkflowRunRequest.class);
+        assertThatThrownBy(()->WorkflowInputs.bind(optional,nullable.inputs())).isInstanceOf(com.hify.common.BizException.class);
+        var absent=json.readValue("{\"input\":\"x\"}",com.hify.workflow.api.WorkflowRunRequest.class);
+        assertThat(absent.inputs()).isNull();
+        assertThat(WorkflowInputs.bind(optional,absent.inputs()).get("n")).isEqualTo(new java.math.BigDecimal("0.12345678901234567890123"));
+        assertThat(json.isEnabled(com.fasterxml.jackson.databind.DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)).isFalse();
+    }
+
+    @Test void textWhitespaceUtf16AndFieldCountsAreBounded() throws Exception {
+        var node=start("[{\"name\":\"s\",\"type\":\"text\",\"required\":true,\"maxLength\":2}]");
+        for(String raw:java.util.List.of("", " ","\u00a0","\ufeff","\u3000","\t\n"))
+            assertThatThrownBy(()->WorkflowInputs.bind(node,json.createObjectNode().put("s",raw))).isInstanceOf(com.hify.common.BizException.class);
+        assertThat(WorkflowInputs.bind(node,json.createObjectNode().put("s","😀")).get("s")).isEqualTo("😀");
+        assertThatThrownBy(()->WorkflowInputs.bind(node,json.createObjectNode().put("s","😀x"))).isInstanceOf(com.hify.common.BizException.class);
+        assertThat(WorkflowInputs.bind(node,json.createObjectNode().put("s","\u200b")).get("s")).isEqualTo("\u200b");
+        var schema=json.createArrayNode();var values=json.createObjectNode();
+        for(int i=0;i<16;i++){schema.addObject().put("name","n"+i).put("type","boolean").put("required",true);values.put("n"+i,false);}
+        var sixteen=new WorkflowNodeSpec("entry","START","start",json.createObjectNode().set("inputs",schema));
+        assertThat(WorkflowInputs.bind(sixteen,values)).hasSize(16);
+        assertThatThrownBy(()->WorkflowInputs.bind(sixteen,values.deepCopy().put("extra",false))).isInstanceOf(com.hify.common.BizException.class);
+        schema.addObject().put("name","extra").put("type","boolean").put("required",true);
+        assertThatThrownBy(()->WorkflowInputs.schema(sixteen)).isInstanceOf(com.hify.common.BizException.class);
+    }
 }

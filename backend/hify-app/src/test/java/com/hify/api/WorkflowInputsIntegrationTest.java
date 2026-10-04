@@ -100,6 +100,13 @@ class WorkflowInputsIntegrationTest {
         assertThat(run.path("state").asText()).isEqualTo("COMPLETED");
         assertThat(run.path("outputMessage").asText()).isEqualTo("default|0|false|a|hello");
         assertThat(count("workflow_runs")).isEqualTo(before+1);
+        // Binding happened while all fields were optional. A newer publication
+        // must be rechecked when the Agent is subsequently published.
+        var title=(ObjectNode)graph.path("nodes").get(0).path("config").path("inputs").get(0);
+        title.put("required",true);title.remove("default");
+        http.perform(put("/api/v1/workflows/{id}",wid).contentType("application/json").content(graph.toString())).andExpect(status().isOk());
+        publish(wid);
+        http.perform(post("/api/v1/agents/{id}/publications",aid)).andExpect(status().isConflict());
     }
 
     @Test void oldUnmarkedInputConfigIsRejectedButLegacyUserMessageStillRuns() throws Exception {
@@ -114,6 +121,34 @@ class WorkflowInputsIntegrationTest {
         String old=publish(create(legacy));
         JsonNode response=data(http.perform(post("/api/v1/workflow-versions/{id}/runs",old).contentType("application/json").content("{\"input\":\"legacy\"}")).andExpect(status().isAccepted()).andReturn().getResponse().getContentAsString());
         assertThat(response.path("output").asText()).isEqualTo("legacy");assertThat(count("workflow_runs")).isEqualTo(before+1);
+    }
+
+    @Test void rawJsonDecimalsKeepPrecisionThroughHttpAndPublishedDefaults() throws Exception {
+        String exact="0.12345678901234567890123";
+        var graph=graph();
+        ((ObjectNode)graph.path("nodes").get(0).path("config").path("inputs").get(1)).put("default",new java.math.BigDecimal(exact));
+        String version=publish(create(graph));
+        assertThat(run(version,good()).path("output").asText()).isEqualTo("{{entry.flag}}|"+exact+"|false|a|hello");
+        for(String raw:List.of(exact,"1e12","1e-7","1e-400","999999999999.9999999","0.0","-0.0")) {
+            String body="{\"input\":\"hello\",\"inputs\":{\"title\":\"x\",\"count\":"+raw+",\"flag\":false,\"pick\":\"a\"}}";
+            JsonNode response=data(http.perform(post("/api/v1/workflow-versions/{id}/runs",version).contentType("application/json").content(body)).andExpect(status().isAccepted()).andReturn().getResponse().getContentAsString());
+            assertThat(response.path("output").asText()).as(raw).isEqualTo("x|"+new java.math.BigDecimal(raw).stripTrailingZeros().toPlainString()+"|false|a|hello");
+        }
+        int runs=count("workflow_runs"),nodes=count("workflow_node_runs");
+        for(String raw:List.of("1000000000000.0000001","-1000000000000.0000001","1e-1001","NaN","{\"nested\":[1]}","null")) {
+            String body="{\"input\":\"hello\",\"inputs\":{\"title\":\"x\",\"count\":"+raw+",\"flag\":false,\"pick\":\"a\"}}";
+            http.perform(post("/api/v1/workflow-versions/{id}/runs",version).contentType("application/json").content(body)).andExpect(status().isBadRequest());
+        }
+        assertThat(count("workflow_runs")).isEqualTo(runs);assertThat(count("workflow_node_runs")).isEqualTo(nodes);
+    }
+
+    @Test void requiredTextWhitespaceAndUtf16LimitsAgreeWithBrowser() throws Exception {
+        String version=publish(create(graph()));
+        for(String text:List.of("x".repeat(64),"😀".repeat(32),"\u200b"))
+            assertThat(run(version,good().put("title",text)).path("status").asText()).isEqualTo("SUCCEEDED");
+        int before=count("workflow_runs");
+        for(String text:List.of("\u00a0","\ufeff"," \t\n","😀".repeat(32)+"x"))reject(version,good().put("title",text));
+        assertThat(count("workflow_runs")).isEqualTo(before);
     }
 
     private ObjectNode graph() throws Exception {return (ObjectNode)json.readTree("""

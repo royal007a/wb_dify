@@ -55,5 +55,5 @@ public class WorkflowApplicationService {
  private int version(WorkflowDraftRequest d){return d.schemaVersion()==null?1:d.schemaVersion();} private String clean(String v){return v==null?"":v.trim();}
  private BizException duplicate(){return new BizException(ErrorCode.CONFLICT,"Workflow 名称已存在");}
  private String write(Object value){try{return json.writeValueAsString(value);}catch(Exception e){throw new BizException(ErrorCode.PARAM_ERROR,"Workflow JSON 无法序列化");}}
- private com.fasterxml.jackson.databind.JsonNode readTree(String value){try{return json.readTree(value);}catch(Exception e){throw new IllegalStateException(e);}}
+ private com.fasterxml.jackson.databind.JsonNode readTree(String value){try{return WorkflowJson.readTree(json,value);}catch(Exception e){throw new IllegalStateException(e);}}
 }

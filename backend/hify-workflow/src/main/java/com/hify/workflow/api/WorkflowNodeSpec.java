@@ -4,4 +4,5 @@ import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record WorkflowNodeSpec(@NotBlank String nodeKey,@NotBlank String type,@NotBlank String name,@NotNull JsonNode config) {}
+public record WorkflowNodeSpec(@NotBlank String nodeKey,@NotBlank String type,@NotBlank String name,
+        @NotNull @com.fasterxml.jackson.databind.annotation.JsonDeserialize(using=WorkflowJson.DecimalTreeDeserializer.class) JsonNode config) {}

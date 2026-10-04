@@ -99,7 +99,7 @@ final class WorkflowInputs {
         switch (type) {
             case "text":
                 if (!value.isTextual() || value.asText().length() > field.path("maxLength").asInt(2000)
-                        || (field.path("required").booleanValue() && value.asText().isBlank())) break;
+                        || (field.path("required").booleanValue() && blankText(value.asText()))) break;
                 return value.asText();
             case "enum":
                 if (value.isTextual()) for (JsonNode option : field.path("options")) if (option.equals(value)) return value.asText();
@@ -108,12 +108,23 @@ final class WorkflowInputs {
                 if (value.isBoolean()) return value.booleanValue();
                 break;
             case "number":
-                if (value.isNumber() && Double.isFinite(value.doubleValue()) && value.decimalValue().abs().compareTo(MAX_NUMBER) <= 0)
-                    return value.decimalValue();
+                if (value.isNumber() && Double.isFinite(value.doubleValue())) {
+                    BigDecimal number = value.decimalValue();
+                    if (number.precision() <= 1000 && Math.abs((long) number.scale()) <= 1000
+                            && number.abs().compareTo(MAX_NUMBER) <= 0)
+                        return number.stripTrailingZeros();
+                }
                 break;
             default: break;
         }
         throw invalid("输入类型或取值不符合schema: " + field.path("name").asText());
+    }
+
+    // ECMAScript trim whitespace, shared with the browser's required-text check.
+    private static boolean blankText(String text) {
+        return text.codePoints().allMatch(c -> (c >= 9 && c <= 13) || c == 32 || c == 0xa0 || c == 0x1680
+                || (c >= 0x2000 && c <= 0x200a) || c == 0x2028 || c == 0x2029
+                || c == 0x202f || c == 0x205f || c == 0x3000 || c == 0xfeff);
     }
 
     private static BizException invalid(String message) { return new BizException(ErrorCode.PARAM_ERROR, message); }

@@ -28,11 +28,55 @@ test('list and canvas run the published typed schema, preserving false and zero'
   await dialog.getByRole('button',{name:'执行已发布版本'}).click()
   await expect(dialog.getByText('published answer')).toBeVisible()
   expect(requests).toEqual([{input:'安排任务',inputs:{owner:'小林',count:0,urgent:false,mode:'普通'}}])
+  await dialog.getByRole('spinbutton',{name:'数量',exact:true}).fill('')
+  await dialog.getByLabel('负责人',{exact:true}).click() // commit Element Plus's null-on-clear
+  await dialog.getByRole('button',{name:'执行已发布版本'}).click()
+  await expect.poll(()=>requests.length).toBe(2)
+  expect(requests[1]).toEqual({input:'安排任务',inputs:{owner:'小林',urgent:false,mode:'普通'}})
   await dialog.getByRole('button',{name:'关闭',exact:true}).click()
   await page.getByRole('button',{name:'画布',exact:true}).click()
   await page.getByRole('button',{name:'试跑',exact:true}).click()
   await expect(dialog.getByLabel('负责人',{exact:true})).toBeVisible()
   await expect(dialog.getByText('草稿新字段')).toHaveCount(0)
+})
+
+test('late published schema and late execution cannot overwrite another version dialog',async({page})=>{
+  const graphs=['a','b'].map(id=>({id,name:`工作流-${id}`,publishedVersionId:`version-${id}`,nodes:[],edges:[]}))
+  let releaseSchema!:()=>void, releaseRun!:()=>void
+  const schemaBarrier=new Promise<void>(resolve=>{releaseSchema=resolve})
+  const runBarrier=new Promise<void>(resolve=>{releaseRun=resolve})
+  let schemaRequested=false, runRequested=false
+  await page.route('**/api/v1/workflows**',route=>route.fulfill({json:{code:200,data:graphs,total:2,page:1,size:10}}))
+  await page.route('**/api/v1/workflow-versions/version-*',async route=>{
+    const id=route.request().url().endsWith('version-a')?'a':'b'
+    if(id==='a'){schemaRequested=true;await schemaBarrier}
+    await route.fulfill({json:{code:200,data:{id:`version-${id}`,versionNo:id==='a'?1:2,nodes:[{nodeKey:'start',type:'START',name:'开始',config:{inputs:[{name:'text',label:`字段-${id}`,type:'text',required:false,default:id}]}}],edges:[]}}})
+  })
+  await page.route('**/api/v1/workflow-versions/version-b/runs',async route=>{
+    runRequested=true;await runBarrier
+    await route.fulfill({status:202,json:{code:200,data:{id:'late-b',status:'SUCCEEDED',output:'旧运行晚到',nodes:[]}}})
+  })
+  await page.goto('./workflows')
+  const dialog=page.getByRole('dialog',{name:'运行已发布版本'})
+  await page.getByRole('button',{name:'运行',exact:true}).nth(0).click()
+  await expect.poll(()=>schemaRequested).toBe(true)
+  await dialog.getByRole('button',{name:'关闭',exact:true}).click()
+  await page.getByRole('button',{name:'运行',exact:true}).nth(1).click()
+  await expect(dialog.getByLabel('字段-b',{exact:true})).toBeVisible()
+  const oldSchema=page.waitForResponse('**/api/v1/workflow-versions/version-a')
+  releaseSchema();await oldSchema
+  await expect(dialog.getByLabel('字段-b',{exact:true})).toBeVisible()
+  await expect(dialog.getByLabel('字段-a',{exact:true})).toHaveCount(0)
+  await dialog.getByRole('button',{name:'执行已发布版本'}).click()
+  await expect.poll(()=>runRequested).toBe(true)
+  await dialog.getByRole('button',{name:'关闭',exact:true}).click()
+  await page.getByRole('button',{name:'运行',exact:true}).nth(0).click()
+  await expect(dialog.getByLabel('字段-a',{exact:true})).toBeVisible()
+  const oldRun=page.waitForResponse('**/api/v1/workflow-versions/version-b/runs')
+  releaseRun();await oldRun
+  await expect(dialog.getByLabel('字段-a',{exact:true})).toBeVisible()
+  await expect(dialog.getByText('旧运行晚到')).toHaveCount(0)
+  await expect(dialog.getByRole('button',{name:'执行已发布版本'})).toBeEnabled()
 })
 
 test('legacy form works and a failed run does not display a successful result',async({page})=>{
