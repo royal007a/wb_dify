@@ -1,8 +1,32 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T15:04:31Z",
+  "updatedAt": "2026-10-04T15:30:34Z",
   "tasks": [
+    {
+      "id": "HARNESS-DEPLOY-TIMING-001",
+      "title": "部署信号测试门闩等待预算与诊断",
+      "description": "WORKFLOW-INPUTS-001完整门禁及单独重跑都在发信号前等待5秒门闩失败；独立观察5.163秒到达且正常退出。只调整隔离fixture等待预算，保留全部服务/退出码/回滚断言，不修改生产安装器。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["harness"],
+      "verifyScopes": ["harness"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "父进程等待门闩有界且失败输出阶段/退出码；子进程等待大于父等待并在测试finally先放行，避免残留等待子进程",
+        "sh与dash各HUP/INT/TERM在门闩到达后实际注入；原状态、退出码、stop次数、snippet/index断言不削弱",
+        "完整harness通过；保留Inputs首轮失败，不外推业务和部署验收"
+      ],
+      "planPath": "exec-plans/active/HARNESS-DEPLOY-TIMING-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-04T15:33:00Z",
+      "updatedAt": "2026-10-04T15:33:00Z"
+    },
     {
       "id": "DIFY-AUDIT-001",
       "title": "Dify官方逐篇阅读与十小时能力差距审计",
@@ -148,12 +172,20 @@
       "description": "003独立review残余：不可从HTTP入口触发的IPv6 helper DNS回退、规范化后二次检查缺独立对照、charset*参数策略。当前未发现外部绕过，不能夸称任意内部输入均不DNS。",
       "priority": "P2",
       "status": "pending",
-      "scopes": ["backend", "harness"],
-      "verifyScopes": ["harness", "backend"],
+      "scopes": [
+        "backend",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "backend"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["WORKFLOW-NODES-003"],
+      "dependsOn": [
+        "WORKFLOW-NODES-003"
+      ],
       "acceptance": [
         "IPv6内部helper拒绝畸形数字字符，不落到系统DNS；保留合法IPv6正向对照",
         "明确规范化后二次检查的防御与可测边界，不虚构可达反例；明确charset*接受或拒绝契约并测试"
@@ -170,7 +202,7 @@
       "title": "Workflow结构化输入与可复用运行表单",
       "description": "对照Dify课2/quick-start，扩展目前只有userMessage的输入契约，保持旧版本兼容；具体实现先独立设计再开工。",
       "priority": "P1",
-      "status": "pending",
+      "status": "blocked",
       "scopes": [
         "backend",
         "frontend",
@@ -192,12 +224,22 @@
         "下游安全引用命名输入，旧userMessage工作流行为不变",
         "控制台按发布输入schema呈现试运行表单，真实HTTP正反例与前端验证通过，不宣称文件/多模态/Chatflow会话变量已支持"
       ],
-      "planPath": "exec-plans/active/WORKFLOW-INPUTS-001.md",
+      "planPath": "exec-plans/blocked/WORKFLOW-INPUTS-001.md",
       "checkpoint": null,
-      "blockedReason": null,
-      "evidence": [],
+      "blockedReason": "verification failed",
+      "evidence": [
+        {
+          "runId": "WORKFLOW-INPUTS-001-20261004T152444Z-3b5139a3",
+          "path": "harness/evidence/WORKFLOW-INPUTS-001/WORKFLOW-INPUTS-001-20261004T152444Z-3b5139a3",
+          "result": "blocked",
+          "exitCode": 1,
+          "baselineCommit": "87a815f403adb06e6936ff7c6e57fc679c766dd1",
+          "headCommit": "87a815f403adb06e6936ff7c6e57fc679c766dd1",
+          "recordedAt": "2026-10-04T15:30:34Z"
+        }
+      ],
       "createdAt": "2026-10-04T14:14:00Z",
-      "updatedAt": "2026-10-04T14:14:00Z"
+      "updatedAt": "2026-10-04T15:30:34Z"
     },
     {
       "id": "SEMANTIC-001",

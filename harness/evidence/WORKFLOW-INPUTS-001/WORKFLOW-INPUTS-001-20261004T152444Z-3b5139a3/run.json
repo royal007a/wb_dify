@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "WORKFLOW-INPUTS-001-20261004T152444Z-3b5139a3",
+  "taskId": "WORKFLOW-INPUTS-001",
+  "status": "blocked",
+  "baselineCommit": "87a815f403adb06e6936ff7c6e57fc679c766dd1",
+  "approvalRef": null,
+  "startedAt": "2026-10-04T15:24:44Z",
+  "exitCode": 1,
+  "reason": "verification failed",
+  "headCommit": "87a815f403adb06e6936ff7c6e57fc679c766dd1",
+  "finishedAt": "2026-10-04T15:30:34Z"
+}

@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T15:04:31Z`
+- Generated from task state updated at: `2026-10-04T15:30:34Z`
 - Current task: `none`
-- Counts: pending 18 · running 0 · blocked 2 · completed 84
+- Counts: pending 18 · running 0 · blocked 3 · completed 84
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -40,6 +40,7 @@
 | `DEPLOY-001` | P1 | completed | backend, frontend, migration, runtime, eval | high_risk | 部署摘要与细节召回纵向切片 |
 | `DEPLOY-002` | P1 | completed | backend, frontend, migration, runtime, eval | high_risk | 推送并部署高级能力纵向切片 |
 | `DIFY-AUDIT-001` | P1 | completed | harness | reversible_write | Dify官方逐篇阅读与十小时能力差距审计 |
+| `HARNESS-DEPLOY-TIMING-001` | P1 | pending | harness | reversible_write | 部署信号测试门闩等待预算与诊断 |
 | `MCP-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付 MCP Server 目录与安全调试闭环 |
 | `MCP-EDIT-001` | P1 | completed | backend, frontend | reversible_write | MCP Server 编辑与凭证引用校验 |
 | `MCP-EDIT-DEPLOY-001` | P1 | completed | frontend, backend | high_risk | 部署 MCP 编辑切片并验收 132 页面 |
@@ -73,7 +74,7 @@
 | `SPEC-UPLOAD-BOUNDARY-001` | P1 | completed | backend, harness | reversible_write | 统一真实应用与两种代理入口的上传上限 |
 | `SPEC-WORKFLOW-GRAPH-002` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 统一图步数限制与条件语法契约 |
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
-| `WORKFLOW-INPUTS-001` | P1 | pending | backend, frontend, harness | reversible_write | Workflow结构化输入与可复用运行表单 |
+| `WORKFLOW-INPUTS-001` | P1 | blocked | backend, frontend, harness | reversible_write | Workflow结构化输入与可复用运行表单 |
 | `WORKFLOW-NODES-001` | P1 | completed | backend, frontend, harness | reversible_write | 版本化Workflow LLM与受控HTTP节点 |
 | `WORKFLOW-NODES-003` | P1 | completed | backend, harness | reversible_write | HTTP数字地址无歧义解析与响应charset补强 |
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
@@ -114,6 +115,7 @@
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |
 
 ## Blocked
+- `WORKFLOW-INPUTS-001`: verification failed
 - `SPEC-KNOWLEDGE-INTEGRITY-003`: 本机Colima数据盘100%、仅余258MiB，PG初始化No space left on device；df7a92b精确计数H2窄测通过，完整backend/migration待释放空间后重跑
 - `SPEC-CHAT-LIFECYCLE-005`: Colima Docker数据盘100%/约256MiB可用，完整backend门禁未运行；f20bd34已通过34项受控浏览器、17项H2与frontend/harness七步，但不能替代frontend/backend/harness完整验收。runner预检返回75，未部署。
 
