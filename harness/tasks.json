@@ -3782,7 +3782,7 @@
         "假SQL分别区分agent/workflow/索引表，独立负例不因同一字符串匹配空跑",
         "迁移目标与产物绑定且停服务前校验，不让未来V24发布在迁移后才被旧版本比较拒绝；知识索引任务纳入静默检查"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/SPEC-DEPLOY-004.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
