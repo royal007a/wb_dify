@@ -31,3 +31,7 @@
 - API和HTTP_API将Workflow分页夹值、终态取消202明确标注为现有兼容行为的记录，不据此追认原产品决策；KB400与Workflow夹值的差异仍待统一决策。本次不调整线上行为。
 
 2026-10-04 08:20:46（Asia/Shanghai）窄测BUILD SUCCESS，11项（Management4、Identity7），失败/错误/跳过0；命令同上，日志SHA见本次focused-summary.json。完整Spring/MockMvc与隔离H2；无真实浏览器、外部模型或132验证。一次从backend目录误调仓库根的规格生成器导致路径不存在，随后从根目录重新生成成功；不计作产品失败。全量门禁另记，不以窄测代替。
+
+独立复核（mymacclaude，`ebd6e08..6ea09e5`）逐项检查上述断言与契约来源，未发现空断言或新的P0/P1，同意四条P2在全量证据补齐后关闭。复核仅静态阅读，没有重跑。宽泛DataIntegrityViolation捕获导致20001字/FK错误误归40900仍开放于SPEC-RUN-INPUT-001，不随本次关闭。
+
+2026-10-04 08:26:35（Asia/Shanghai）全量harness/backend门禁退出0：schema3、headCommit=`6ea09e5`、result=passed；81类538项全部执行，失败/错误/跳过/flake均0，underfilled为空；Harness Python31项通过。源码树与空source diff记录在source-identity.json；验证期间未改backend/frontend。backend-tests.tests.json的SHA-256为`0c6f4eb354875aceb62882c6e3401d7d6b41a9b41f0537a938bd60a4cc3d7b41`。四条管理P2按本次静态复核和新鲜门禁关闭，仍不是所有接口、真实外部模型或部署全验收。

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "baselineCommit": "ebd6e08",
+  "command": "mvn -B -pl hify-app -am -Dtest=ManagementReadbackIntegrationTest,RunSubmissionIdentityTest -Dsurefire.failIfNoSpecifiedTests=false test",
+  "finishedAt": "2026-10-04T00:20:46Z",
+  "exitCode": 0,
+  "tests": 11,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "classes": {"ManagementReadbackIntegrationTest": 4, "RunSubmissionIdentityTest": 7},
+  "logSha256": "862f948ad50d6240869f696bb4ea3a219ed87563332ba07b2b1d03029fece43e",
+  "fixture": "Full Spring MVC / isolated H2. Management runs a real asynchronous START-END workflow. Terminal-cancel tests seed terminal rows and capture the executor.",
+  "meaning": "Characterization strengthening only; no production change, no new defect fix, no browser or deployed-server evidence."
+}

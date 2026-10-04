@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T00:19:03Z`
+- Generated from task state updated at: `2026-10-04T00:26:35Z`
 - Current task: `none`
-- Counts: pending 17 · running 0 · blocked 1 · completed 62
+- Counts: pending 17 · running 0 · blocked 1 · completed 63
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -66,7 +66,7 @@
 | `SPEC-WORKFLOW-GRAPH-002` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 统一图步数限制与条件语法契约 |
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
-| `SPEC-API-BEHAVIOR-002` | P2 | pending | backend, harness | reversible_write | 澄清管理契约来源并补终态取消和旧会话执行 |
+| `SPEC-API-BEHAVIOR-002` | P2 | completed | backend, harness | reversible_write | 澄清管理契约来源并补终态取消和旧会话执行 |
 | `SPEC-AUDIT-002` | P2 | completed | harness, backend | reversible_write | 规格复核补证据等级与可提交测试摘要 |
 | `SPEC-AUDIT-003` | P2 | completed | harness | reversible_write | 封闭验证报告与任务完成入口 |
 | `SPEC-AUDIT-004` | P2 | pending | harness | reversible_write | 补验证摘要实文件绑定与历史兼容清单 |
@@ -82,6 +82,7 @@
 | `SPEC-PROVIDER-SAMPLING-001` | P2 | pending | backend, runtime, harness | reversible_write | 区分HTTP实际尝试与Run预算截断的健康采样 |
 | `SPEC-RECOVERY-ADMISSION-001` | P2 | pending | backend, runtime, harness | reversible_write | 恢复扫描的写库故障与容量准入 |
 | `SPEC-RUN-BUDGET-001` | P2 | pending | backend, runtime, harness | reversible_write | 统一聊天与Workflow跨重启的Run预算 |
+| `SPEC-RUN-INPUT-001` | P2 | pending | backend, harness | reversible_write | 限定Run幂等竞争异常与输入长度 |
 | `SPEC-SSE-BACKPRESSURE-002` | P2 | pending | backend, runtime, harness | reversible_write | SSE公平接入与慢读总时限的确定性验证 |
 | `SPEC-WORKFLOW-GRAPH-003` | P2 | pending | backend, frontend, runtime, harness | reversible_write | 条件空白、旧转义兼容与迁移诊断 |
 | `SPEC-WORKFLOW-KNOWLEDGE-002` | P2 | completed | backend, migration, harness | reversible_write | 补齐冻结Workflow发布边界、锁顺序与事务隔离证据 |

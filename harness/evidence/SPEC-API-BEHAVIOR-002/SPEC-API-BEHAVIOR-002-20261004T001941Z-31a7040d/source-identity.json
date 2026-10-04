@@ -1,0 +1,9 @@
+{
+  "headCommit": "6ea09e5048b036f5ee2b0fc22d3eba2c49ed60f7",
+  "backendTree": "3c2c48df2cca5bf418bc8d0815066ae0a00a478e",
+  "frontendTree": "6181271f7e6b1e10b74c913395285f9c6e389c94",
+  "trackedSourceDiffCommand": "git diff -- backend frontend",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "statusBeforeVerification": [" M harness/progress.md", " M harness/state.json", " M harness/tasks.json", "?? harness/evidence/SPEC-API-BEHAVIOR-002/"],
+  "scope": "Captured after the code commit, immediately before full verification. No backend/frontend edits during verification."
+}

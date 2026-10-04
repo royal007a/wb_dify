@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T00:19:03Z",
+  "updatedAt": "2026-10-04T00:26:35Z",
   "tasks": [
     {
       "id": "SPEC-UPLOAD-BOUNDARY-001",
@@ -250,11 +250,44 @@
       "updatedAt": "2026-10-03T23:47:43Z"
     },
     {
+      "id": "SPEC-RUN-INPUT-001",
+      "title": "限定Run幂等竞争异常与输入长度",
+      "description": "83055fb只修未知resume的外键顺序；create仍捕获全部DataIntegrityViolation，超长消息/并发删会话可能误归40900。独立review残留P2，不阻塞已修Chat片关闭。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": [
+        "backend",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "backend"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [
+        "SPEC-CHAT-LIFECYCLE-004"
+      ],
+      "acceptance": [
+        "20001字符message在写入前400且零额外Run/消息/事件/执行，20000边界另测",
+        "只把指定幂等唯一约束竞争转重放；其他完整性异常安全分类，不回显数据库细节",
+        "并发删除会话与创建交错有失败反例；保留同key竞争唯一性回归",
+        "明确拒绝resume后前端有退出/纠正途径，不把同一个失效resume无限重发"
+      ],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-04T00:21:00Z",
+      "updatedAt": "2026-10-04T00:21:00Z"
+    },
+    {
       "id": "SPEC-API-BEHAVIOR-002",
       "title": "澄清管理契约来源并补终态取消和旧会话执行",
       "description": "ab46ec5..36eaae6静态复核四条P2；不把代码现状自动升格为产品规格。非法resume新key反向对照先随Chat004补齐，其余在本任务验收。",
       "priority": "P2",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "harness"
@@ -275,12 +308,24 @@
         "旧会话钉住Agent版本后解绑并新发布，真实Run仍使用原Workflow版本和checksum",
         "同key异resume40901有新key同非法resume400对照（Chat004已加）；原首轮日志SHA无法还原源码的局限写明"
       ],
-      "planPath": "exec-plans/active/SPEC-API-BEHAVIOR-002.md",
+      "planPath": "exec-plans/completed/SPEC-API-BEHAVIOR-002.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-API-BEHAVIOR-002-20261004T001941Z-31a7040d",
+          "path": "harness/evidence/SPEC-API-BEHAVIOR-002/SPEC-API-BEHAVIOR-002-20261004T001941Z-31a7040d",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "ebd6e086cb5bd280fc1b4e7881c5aab662d9441b",
+          "headCommit": "6ea09e5048b036f5ee2b0fc22d3eba2c49ed60f7",
+          "recordedAt": "2026-10-04T00:26:35Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "76c173c1915e2fe7af6d7c94c8cfe8ea4fbb8aa63551b57a162f70f97e117769"
+        }
+      ],
       "createdAt": "2026-10-04T00:12:46Z",
-      "updatedAt": "2026-10-04T00:12:46Z"
+      "updatedAt": "2026-10-04T00:26:35Z"
     },
     {
       "id": "SPEC-CHAT-LIFECYCLE-004",
