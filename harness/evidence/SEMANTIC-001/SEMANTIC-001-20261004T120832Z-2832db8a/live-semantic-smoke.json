@@ -1,0 +1,33 @@
+{
+  "result": "passed",
+  "model": "bge-m3:latest",
+  "dimensions": 1024,
+  "realModel": true,
+  "scope": "three synthetic Chinese paraphrases, not a semantic quality benchmark",
+  "observations": [
+    {
+      "query": "汽车保养有哪些注意事项？",
+      "expectedDocument": "c5c645a2-52c2-4efd-a14f-1aac6e3943c5",
+      "actualDocument": "c5c645a2-52c2-4efd-a14f-1aac6e3943c5",
+      "content": "车辆定期养护应更换机油，检查制动系统与轮胎气压。",
+      "latencyMs": 57
+    },
+    {
+      "query": "种植水果的土地该如何浇水？",
+      "expectedDocument": "5ce376f9-4ff2-48f5-9f8d-98db2cb28b5a",
+      "actualDocument": "5ce376f9-4ff2-48f5-9f8d-98db2cb28b5a",
+      "content": "果园灌溉应根据土壤湿度调整水量，避免根系积水。",
+      "latencyMs": 30
+    },
+    {
+      "query": "熬夜后为什么难以集中精神？",
+      "expectedDocument": "b40214f9-529c-4a9d-95dc-3d0f691d0d65",
+      "actualDocument": "b40214f9-529c-4a9d-95dc-3d0f691d0d65",
+      "content": "夜间睡眠不足可导致白天注意力下降，建议规律作息。",
+      "latencyMs": 33
+    }
+  ],
+  "headCommit": "4fcd14a81b938188d81e0c3761e93ff98191c606",
+  "backendTree": "d8fda958e244ad39f9e6825c1be4236473c08665",
+  "sourceDiffEmpty": true
+}

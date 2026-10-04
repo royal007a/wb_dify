@@ -1,0 +1,10 @@
+{
+  "headCommit": "4fcd14a81b938188d81e0c3761e93ff98191c606",
+  "backendTree": "d8fda958e244ad39f9e6825c1be4236473c08665",
+  "frontendTree": "92fe90cde670bc150cbaa4f6580a21d812654068",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "methodEvidenceSha256": "8a511cc3a3f905201ce1f44b70347a3cc870363d8e967b02be74f2e867f6d63b",
+  "offlineReportByteIdentical": {"json": true, "markdown": true},
+  "environment": "Dedicated colima-hify-verify-20261004; 1 CPU / 2 GiB. Local Dify remained running. No remote deployment.",
+  "scope": "Backend 616 and migration 125 are overlapping test scopes, not additive. Portable report covers 57 mapped subcases, not all product capabilities. Raw logs/XML excluded."
+}
