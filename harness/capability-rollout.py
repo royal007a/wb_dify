@@ -48,7 +48,8 @@ artifacts = {str(p):hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in [
     Path('deploy/nginx-path.conf'),Path('deploy/install-spec-release.sh')]}
 (evidence/'local-artifacts.json').write_text(json.dumps({'gate':str(gate.relative_to(ROOT)),
     'testedHead':verification['headCommit'],'release':release,'unit':unit,'localBundle':str(bundle),
-    'artifacts':artifacts,'uploadFiles':manifest},indent=2)+'\n')
+    'artifacts':artifacts,'uploadFiles':manifest,
+    'meaning':'Rebuilt from the tested source trees; /hify frontend build settings. Not identical test-time binaries.'},indent=2)+'\n')
 new_bytes=(ROOT/'backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar').stat().st_size+sum(
     p.stat().st_size for p in (ROOT/'frontend/dist').rglob('*') if p.is_file())
 # Include incoming AND the replacement .next/static-copy peak, not just tar size.
@@ -94,7 +95,11 @@ for attempt in $(seq 1 360); do
   esac
   sleep 1
 done
-test "$(systemctl show {unit} -p ActiveState --value)" = inactive
+if [ "$(systemctl show {unit} -p ActiveState --value)" != inactive ]; then
+  systemctl show {unit} -p ActiveState -p SubState -p Result -p ExecMainStatus
+  printf 'Wait expired; oneshot may still be running. Inspect the existing unit; do not rerun deployment.\n' >&2
+  exit 1
+fi
 test "$(systemctl show {unit} -p Result --value)" = success
 systemctl show {unit} -p Result -p ExecMainStatus -p InactiveEnterTimestamp
 systemctl is-active --quiet hify
@@ -114,13 +119,23 @@ checks=[('capability', ['python3','harness/capability-remote-smoke.py']),
         ('current',['python3','harness/evidence/SPEC-DEPLOY-007/SPEC-DEPLOY-007-20261004T082939Z-1f8dfa88/smoke-current.py']),
         ('prefix',['python3','deploy/smoke-upload.py','--api','https://118.196.123.132/hify/api/v1','--self-signed-test']),
         ('direct',ssh)]
+failures=[]
 for name,args in checks:
-    command(args,'smoke-'+name,text=(f'python3 {release}/smoke-upload.py --api http://127.0.0.1:28080/api/v1\n' if name=='direct' else None))
-    value=json.loads((evidence/('smoke-'+name+'.log')).read_text())
-    (evidence/('smoke-'+name+'.json')).write_text(json.dumps(value,ensure_ascii=False,indent=2)+'\n')
-command(['./node_modules/.bin/playwright','test','e2e/chat.spec.ts','e2e/chat-time.spec.ts',
+    try:
+        command(args,'smoke-'+name,text=(f'python3 {release}/smoke-upload.py --api http://127.0.0.1:28080/api/v1\n' if name=='direct' else None))
+        value=json.loads((evidence/('smoke-'+name+'.log')).read_text())
+        (evidence/('smoke-'+name+'.json')).write_text(json.dumps(value,ensure_ascii=False,indent=2)+'\n')
+    except (subprocess.CalledProcessError,subprocess.TimeoutExpired,json.JSONDecodeError) as error:
+        failures.append({'check':name,'errorType':type(error).__name__})
+        print('smoke-'+name+' failed; collecting remaining independent checks, not retrying',flush=True)
+try:
+    command(['./node_modules/.bin/playwright','test','e2e/chat.spec.ts','e2e/chat-time.spec.ts',
          '--workers=1','--trace=off'],'browser-live',cwd=ROOT/'frontend',
         env=dict(os.environ,E2E_BASE_URL='https://118.196.123.132/hify/',E2E_IGNORE_HTTPS_ERRORS='true'))
+except (subprocess.CalledProcessError,subprocess.TimeoutExpired) as error:
+    failures.append({'check':'browser-live','errorType':type(error).__name__})
+(evidence/'post-install-checks.json').write_text(json.dumps({'failedChecks':failures,
+    'automaticRollback':False,'modelRetry':False},indent=2)+'\n')
 command(ssh,'remote-final',text='''set -eu
 systemctl is-active hify
 df -Pk /opt/hify
@@ -137,4 +152,6 @@ for source,target in targets.items():
     assert artifacts[source]+'  '+target in remote_final, 'installed artifact SHA differs'
 stats=next(json.loads(line) for line in remote_final.splitlines() if line.startswith('{'))
 assert stats == {'runningRuns':0,'runningWorkflows':0,'activeIndexTasks':0,'schemaVersion':24,'allMigrationsSucceeded':True}
+if failures:
+    raise RuntimeError('Post-install checks failed; new release remains running. Inspect logs and schema compatibility before manual action: '+json.dumps(failures))
 print('Remote code rollout and scoped smoke passed; closing gates follow. Embedding/GET configuration remains separate.',flush=True)

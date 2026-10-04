@@ -7,3 +7,11 @@
 3. 上传到全新spec-verify目录，校验本地/远端SHA；systemd-run执行安装器，等待成功并确认V24、service/health、备份非空/0600/list、key元数据未变。不自动恢复数据库。
 4. 只对自建合成资源执行新LLM/typed输入、新旧会话与NUL/上传smoke；模型使用用户已配豆包，不修改其配置，不读取Key。工作流/Agent草稿、KB/文档按本次ID归档，运行/会话等无删除接口的合成记录保留。
 5. 在线embedding、生产GET endpoint授权保持显式未完成，不打开默认白名单。真实本机GET→LLM与语义证据在CAPABILITY-VERIFY-001，不能冒充132结果。归档摘要，收尾harness/frontend；与CC协调切换窗口，只reload本项目既有snippet（不改其他server）。
+
+## 切换后的失败与证据口径
+
+- 上线jar/dist是a510191同一源码树重新构建的产物，前端使用/hify构建参数；不称测试时同一个二进制。记录本次本地/远端SHA。
+- installer成功后新版本已经提供服务，后续smoke失败不自动停服/回滚。编排记录所有独立smoke结果后非0退出；由当前发布负责人核查health、在途任务、失败是否只是外部Provider时延及数据/迁移风险，决定停止新应用或继续诊断。旧jar兼容V24未演练，不能盲回滚，更不能覆盖生产数据库。
+- 豆包只有一次smoke，不为通过而隐藏重试；45秒节点上限、65秒HTTP等待，超时/空结果按失败保留。独立基础smoke和最终状态仍会继续收集。
+- 360秒等待超时打印unit状态，systemd任务可能仍运行；SSH超时也不代表unit已停。不得重跑，先只读查询该unit。release与unit存在检查防止误重复执行。
+- chat/chat-time浏览器只在自己的新页面创建合成会话，旧会话检查只使用DEPLOY007保留的已知合成ID。不枚举真实会话；会话/Run/不可变版本无删除接口，明确保留，草稿按own ID归档。
