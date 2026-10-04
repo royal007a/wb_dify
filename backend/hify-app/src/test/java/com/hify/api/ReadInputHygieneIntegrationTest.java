@@ -139,7 +139,7 @@ class ReadInputHygieneIntegrationTest {
     private Map<String,Long> counts(){return Map.of("runs",count("agent_runs"),"messages",count("chat_messages"),
             "tasks",count("document_index_tasks"),"documents",count("knowledge_documents"),"snapshots",count("knowledge_corpus_versions"));}
     private long count(String table){return db.queryForObject("select count(*) from "+table,Long.class);}
-    private List<String> badTexts(String text){return List.of(NUL+text,text+NUL,"invalid"+NUL+text);}
+    private List<String> badTexts(String text){return List.of("invalid"+NUL+text,NUL+text,text+NUL);}
     private String query(String text){return json.createObjectNode().put("query",text).toString();}
     private HistoryRecallService.SearchQuery search(String query,String entity){return new HistoryRecallService.SearchQuery(query,null,null,null,entity,8);}
     private void rejected(org.assertj.core.api.ThrowableAssert.ThrowingCallable action){assertThatThrownBy(action).isInstanceOfSatisfying(BizException.class,
