@@ -1,0 +1,14 @@
+{
+  "failedChecks": [
+    {
+      "check": "capability",
+      "errorType": "CalledProcessError"
+    },
+    {
+      "check": "browser-live",
+      "errorType": "CalledProcessError"
+    }
+  ],
+  "automaticRollback": false,
+  "modelRetry": false
+}

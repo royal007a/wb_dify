@@ -1,0 +1,103 @@
+{
+  "api": "https://118.196.123.132/hify/api/v1",
+  "tlsCertificateValidation": false,
+  "checks": [
+    {
+      "case": "health",
+      "status": 200
+    },
+    {
+      "case": "read-own-kb",
+      "status": 200
+    },
+    {
+      "case": "kb-nul-update",
+      "status": 400
+    },
+    {
+      "case": "upload-nul",
+      "status": 400
+    },
+    {
+      "case": "upload-valid",
+      "status": 202
+    },
+    {
+      "case": "knowledge-positive",
+      "status": 200
+    },
+    {
+      "case": "knowledge-read-nul",
+      "status": 400
+    },
+    {
+      "case": "knowledge-bindings-nul",
+      "status": 400
+    },
+    {
+      "case": "mcp-bindings-nul",
+      "status": 400
+    },
+    {
+      "case": "workflow-binding-nul",
+      "status": 400
+    },
+    {
+      "case": "tools-nul",
+      "status": 400
+    },
+    {
+      "case": "binding-positive",
+      "status": 200
+    },
+    {
+      "case": "conversation-nul",
+      "status": 400
+    },
+    {
+      "case": "conversation-positive",
+      "status": 201
+    },
+    {
+      "case": "length",
+      "status": 400
+    },
+    {
+      "case": "message-nul",
+      "status": 400
+    },
+    {
+      "case": "resume-nul",
+      "status": 400
+    },
+    {
+      "case": "run-positive",
+      "status": 202
+    },
+    {
+      "case": "idempotent-replay",
+      "status": 200
+    },
+    {
+      "case": "memory-read-nul",
+      "status": 400
+    },
+    {
+      "case": "intent-agent-nul",
+      "status": 400
+    },
+    {
+      "case": "intent-input-nul",
+      "status": 400
+    },
+    {
+      "case": "intent-positive",
+      "status": 200
+    }
+  ],
+  "conversationId": "6f1c31ea-d0f3-4a64-a331-f0908bf43bea",
+  "runId": "d0f070a8-4d38-4f25-9eba-c3bb9e98de74",
+  "cleanup": "own Agent, KB and document archived",
+  "retained": "synthetic conversation and Run: no deletion API",
+  "scope": "real deployed PostgreSQL + Mock model; not external-provider evaluation"
+}

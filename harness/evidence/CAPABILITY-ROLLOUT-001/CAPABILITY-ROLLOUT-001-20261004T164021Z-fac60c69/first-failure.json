@@ -1,0 +1,14 @@
+{
+  "result": "blocked",
+  "installation": "succeeded; new service remains active; V24 all successful",
+  "capabilityFailure": "Old synthetic conversation GET used /api/v1/conversations instead of /api/conversations. Correct legacy path independently returned the retained conversation and pinned version.",
+  "capabilityLogSha256": "ae9e27ad72ec357448f3b3066b87d6f3e0bfd3fadb8ee05dc00b722536d12c5a",
+  "browserFailure": "Both historical tests assumed the first published Agent was Demo; actual first selection was the previously created synthetic after-sales Workflow Agent.",
+  "browserLogSha256": "38b62d25c9eb023e2235e0bffde888a7fbb525babc826d6b0bf678a3c413b501",
+  "passedIndependentChecks": ["current", "prefix", "direct", "remote-final"],
+  "modelBoundary": "First real Doubao assertion passed before the legacy GET failure. Corrected full smoke makes an explicitly recorded second model call, not a hidden timeout retry.",
+  "final": {"runningRuns": 0, "runningWorkflows": 0, "activeIndexTasks": 0, "schemaVersion": 24, "allMigrationsSucceeded": true, "freeKiB": 2075608},
+  "rawLogsCommitted": false,
+  "automaticRollback": false,
+  "followup": "Correct verification only; do not rerun capability-rollout.py, upload, installer, or migration."
+}

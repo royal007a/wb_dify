@@ -20,11 +20,12 @@ owned = []
 results = []
 marker = 'capability-smoke-'+str(uuid.uuid4())
 
-def request(method, path, body=None, expected=200, key=None):
+def request(method, path, body=None, expected=200, key=None, legacy=False):
     headers = {'Content-Type': 'application/json'}
     if key:
         headers['Idempotency-Key'] = key
-    req = urllib.request.Request(API+path, method=method, headers=headers,
+    base = API.removesuffix('/v1') if legacy else API
+    req = urllib.request.Request(base+path, method=method, headers=headers,
         data=None if body is None else json.dumps(body).encode())
     try:
         response = client.open(req, timeout=65)
@@ -108,7 +109,7 @@ try:
     # This is explicitly our retained synthetic conversation from DEPLOY007,
     # never an enumerated user conversation. Verify its immutable pin survives.
     old = json.loads((ROOT / 'harness/evidence/SPEC-DEPLOY-007/SPEC-DEPLOY-007-20261004T082939Z-1f8dfa88/smoke-current.json').read_text())['conversationId']
-    pinned = request('GET','/conversations/'+old)['conversation']['agentVersionId']
+    pinned = request('GET','/conversations/'+old,legacy=True)['conversation']['agentVersionId']
     key = str(uuid.uuid4())
     result = request('POST','/conversations/'+old+'/runs',{'message':'请计算 6*7'},202,key)
     run_id = result['id']
@@ -123,6 +124,9 @@ try:
                     'runId':run_id,'agentVersionId':pinned,'output':result['outputMessage']})
 finally:
     primary = sys.exc_info()[1]
+    (ROOT / state['evidencePath'] / 'capability-progress.json').write_text(json.dumps({
+        'checksCompleted':results,'ownedWorkflows':owned,
+        'primaryErrorType':type(primary).__name__ if primary else None},ensure_ascii=False,indent=2)+'\n')
     failures=[]
     for wid in dict.fromkeys(owned):
         try:
