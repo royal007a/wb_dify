@@ -40,15 +40,20 @@ class RunEventBrokerBackpressureTest {
                 catch (InterruptedException e) { Thread.currentThread().interrupt(); throw new java.io.IOException("test stopped"); }
             }
         };
-        broker.subscribe("run-Aa", null);
+        RunEvent event = new RunEvent("run-Aa",1,"message.delta","{\"delta\":\"hello\"}");
+        ReflectionTestUtils.setField(event,"id",1L);
+        // Finish stubbing before the sender can call this shared mock. Changing a
+        // Mockito stub concurrently with drain can attach it to the wrong call.
+        when(events.findByRunIdAndIdGreaterThanOrderByIdAsc(eq("run-Aa"),anyLong(),any())).thenAnswer(i -> (Long)i.getArgument(1) < 1 ? List.of(event) : List.of());
+        var responseReady = new java.util.concurrent.atomic.AtomicBoolean(false);
+        broker.subscribe("run-Aa", null, responseReady::get);
         // Replace only this subscriber's transport with a deliberately blocked socket equivalent.
         Map<String, ? extends Collection<?>> subscribers = (Map<String, ? extends Collection<?>>) ReflectionTestUtils.getField(broker,"subscribers");
         Object sub = subscribers.get("run-Aa").iterator().next();
         ReflectionTestUtils.setField(sub,"emitter",blocking);
-        RunEvent event = new RunEvent("run-Aa",1,"message.delta","{\"delta\":\"hello\"}");
-        ReflectionTestUtils.setField(event,"id",1L);
-        when(events.findByRunIdAndIdGreaterThanOrderByIdAsc(eq("run-Aa"),anyLong())).thenReturn(List.of(event));
-        when(events.findByRunIdAndIdGreaterThanOrderByIdAsc(eq("run-Aa"),anyLong(),any())).thenAnswer(i -> (Long)i.getArgument(1) < 1 ? List.of(event) : List.of());
+        verify(events,never()).findFirstByRunIdAndEventTypeInOrderByIdAsc(anyString(),any());
+        verify(events,never()).findByRunIdAndIdGreaterThanOrderByIdAsc(anyString(),anyLong(),any());
+        responseReady.set(true);
         Future<?> commit = caller.submit(() -> {
             TransactionSynchronizationManager.initSynchronization();
             TransactionSynchronizationManager.setActualTransactionActive(true);
