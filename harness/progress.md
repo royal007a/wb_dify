@@ -4,7 +4,7 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-10-04T08:33:39Z`
 - Current task: `none`
-- Counts: pending 15 · running 0 · blocked 2 · completed 79
+- Counts: pending 18 · running 0 · blocked 2 · completed 79
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -31,6 +31,7 @@
 | `SPEC-WORKFLOW-CONTROL-001` | P0 | completed | backend, runtime, migration, harness | reversible_write | 传播 Workflow 取消和截止时间并阻止错误成功终态 |
 | `SPEC-WORKFLOW-GRAPH-001` | P0 | completed | backend, harness | reversible_write | 验证 Workflow 路径终止与模板必经变量 |
 | `SPEC-WORKFLOW-KNOWLEDGE-001` | P0 | completed | backend, runtime, harness | reversible_write | 固定 Workflow 知识语料快照并保留历史引用 |
+| `CAPABILITY-DEPLOY-001` | P1 | pending | harness, frontend | high_risk | 能力补齐完整验收与132重新部署 |
 | `CHAT-DEMO-001` | P1 | completed | backend, frontend, runtime | reversible_write | 修复 Demo 时间问句回显而不调用工具 |
 | `CHAT-DEMO-DEPLOY-001` | P1 | completed | backend, frontend | high_risk | 部署并验证 132 Demo 会话时间修复 |
 | `CONSOLE-002` | P1 | completed | frontend, runtime | reversible_write | 交付知识库工作流 MCP 管理台 |
@@ -45,6 +46,7 @@
 | `PROVIDER-001` | P1 | completed | backend, runtime | reversible_write | 补原生流式故障注入矩阵 |
 | `RECALL-002` | P1 | completed | backend, migration, runtime, eval | reversible_write | 建立召回评测门禁并按证据演进检索 |
 | `SECURITY-001` | P1 | completed | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |
+| `SEMANTIC-001` | P1 | pending | backend, frontend, harness | reversible_write | 真实Provider语义向量与版本隔离检索 |
 | `SPEC-API-BEHAVIOR-001` | P1 | completed | backend, harness | reversible_write | 补齐管理读写与取消幂等的行为断言 |
 | `SPEC-CHAT-LIFECYCLE-002` | P1 | completed | frontend, runtime, harness | reversible_write | 复核前端Run创建与恢复输入边界 |
 | `SPEC-CHAT-LIFECYCLE-003` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 结果不明提交的身份恢复与安全退出 |
@@ -69,6 +71,7 @@
 | `SPEC-UPLOAD-BOUNDARY-001` | P1 | completed | backend, harness | reversible_write | 统一真实应用与两种代理入口的上传上限 |
 | `SPEC-WORKFLOW-GRAPH-002` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 统一图步数限制与条件语法契约 |
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
+| `WORKFLOW-NODES-001` | P1 | pending | backend, frontend, harness | reversible_write | 版本化Workflow LLM与受控HTTP节点 |
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
 | `SPEC-API-BEHAVIOR-002` | P2 | completed | backend, harness | reversible_write | 澄清管理契约来源并补终态取消和旧会话执行 |
 | `SPEC-API-PAGINATION-001` | P2 | pending | backend, harness | reversible_write | 确定并统一管理列表分页越界契约 |
