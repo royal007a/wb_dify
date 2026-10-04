@@ -68,7 +68,7 @@
     "com.hify.api.KnowledgeFinishIntegrationTest": 18,
     "com.hify.api.McpCredentialIntegrationTest": 8,
     "com.hify.api.WorkflowGraphBoundaryIntegrationTest": 3,
-    "com.hify.api.McpServerApiIntegrationTest": 7,
+    "com.hify.api.McpServerApiIntegrationTest": 8,
     "com.hify.api.AgentCacheIntegrationTest": 1,
     "com.hify.api.RunShutdownPostgresTest": 2,
     "com.hify.api.KnowledgeFinishPostgresTest": 18,

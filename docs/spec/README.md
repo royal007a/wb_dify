@@ -1,12 +1,13 @@
 # Hify 可执行验收规格
 
-范围：原版 `~/hify`，不包含独立课程实现 `~/code/hify-cc`。初始源码基线 `973257c`；规格与专项证据更新至 `641fdcb`。审计任务 `SPEC-AUDIT-001`，全行为验证/修复与部署由 `tasks.json` 中独立任务承接。本文是验收要求，不是完成声明。
+范围：原版 `~/hify`，不包含独立课程实现 `~/code/hify-cc`。初始源码基线 `973257c`；专项修复、方法级验证与部署进度以本次manifest和tasks.json为准。本文是验收要求，不是完成声明。
 
 ## 入口与证据等级
 
 - [HTTP_API.md](HTTP_API.md)：全部显式 `/api` 方法/路径、输入 DTO、成功响应、核心边界、候选测试。
 - [http-api.json](http-api.json)：人工维护的接口契约；`ApiContractInventoryTest` 对 Spring 实际注册集合做双向相等校验，不能只检查文档里的接口存在。
 - [FUNCTION_TESTS.md](FUNCTION_TESTS.md)：跨接口、页面、Runtime、安全、恢复、评测和部署验收矩阵。
+- [behavior-cases.json](behavior-cases.json)：人工核对的精确测试方法/断言、68条路由和F01–F38映射。`harness/behavior_report.py --evidence-dir <本次目录>`仅从与本次摘要SHA匹配的Surefire XML提取方法结果；缺失/跳过为not-run，参数化任一失败为fail。输出behavior-report.json/Markdown，不将整条路由或功能组统称通过。原始XML不提交（含运行环境属性），提交去正文的方法结果及摘要；没有本地XML时不能重新生成方法报告。
 - [AUDIT_FINDINGS.md](AUDIT_FINDINGS.md)：可定位的差距与风险。实际任务状态只看 `harness/tasks.json`。
 - [SPEC_RUN_SHUTDOWN.md](SPEC_RUN_SHUTDOWN.md)：应用关闭、用户取消、Workflow 中断与单实例重启恢复契约。
 - [SPEC_WORKFLOW_SETTLEMENT.md](SPEC_WORKFLOW_SETTLEMENT.md)：Workflow 执行事实与父 Run 交付结果分开记录的 v2 投影。
@@ -24,7 +25,7 @@
 1. 管理 API 使用 `Result<T>={code,message,data}`，成功 code=200。分页为 `PageResult<T>`，data 是列表，total/page/size 在顶层；请求为 page/pageSize，不是 cursor。
 2. Run、Conversation、Intent、Memory 与旧 `/api` 读接口返回原始资源，不强制解包 data。SSE 返回 `text/event-stream`。客户端必须按接口选用相应处理器。
 3. `Idempotency-Key` 仅创建 Run 时强制。其余 POST/PUT 不宣称幂等键支持。首次 Run 为 HTTP202；同 key 同语义重放200；不同语义409/40901。
-4. 业务错误 HTTP 状态与 Result.code 对应：40000、40100、40300、40400、40500、40600、40900、40901、41500、50000。协议错误也返回 JSON Result；缺header/参数、类型错误不回显拒绝值。Provider/Tool 的分类错误是运行事件/检查结果语义，不是另一套 HTTP 数字枚举。
+4. 业务错误 HTTP 状态与 Result.code 对应：40000、40100、40300、40400、40500、40600、40900、40901、41300、41500、50000、50300。已覆盖的框架错误返回 JSON Result；缺header/参数、类型错误不回显拒绝值，但不能泛化到所有IllegalArgumentException或容器进入DispatcherServlet之前的错误。Provider/Tool 的分类错误是运行事件/检查结果语义，不是另一套 HTTP 数字枚举。
 5. Instant 时间按 UTC ISO 格式；DemoItem 的 LocalDateTime 为无时区 ISO 本地日期时间。ID 大多为 UUID 字符串；DemoItem 是 Long，不承诺 UUIDv7/ULID。
 6. 管理台无登录/RBAC/租户隔离。数据归属检查（例如 memory 同会话）不等于用户权限。只能在受信网络入口使用，不宣称公网安全产品。
 7. Provider 只存 env/system 引用。MCP 另有 write-only TOKEN：AES-GCM 加密、服务端独立主密钥；页面不回填。Token 保留/替换/清除和历史 snapshot 的影响见 ADR-0020。

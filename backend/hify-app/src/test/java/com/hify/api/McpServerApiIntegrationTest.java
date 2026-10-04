@@ -22,6 +22,25 @@ class McpServerApiIntegrationTest {
   http.perform(post("/api/v1/mcp-servers/{id}/tools/submit_refund:call",id).contentType("application/json").content("{\"arguments\":{}}")).andExpect(status().isForbidden());
  }
 
+ @Test void listsCurrentToolsAndArchiveRemovesOnlyTheActiveServer()throws Exception{
+  String name="catalog-archive-"+UUID.randomUUID();
+  String payload=json.createObjectNode().put("name",name).put("endpointUrl","http://127.0.0.1:"+port+"/mcp").put("enabled",true).toString();
+  String id=body(http.perform(post("/api/v1/mcp-servers").contentType("application/json").content(payload)).andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();
+  JsonNode before=body(http.perform(get("/api/v1/mcp-servers")).andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");
+  assertThat(before.toString()).contains(id,name);
+  JsonNode empty=body(http.perform(get("/api/v1/mcp-servers/{id}/tools",id)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");
+  assertThat(empty).isEmpty();
+  JsonNode discovered=body(http.perform(post("/api/v1/mcp-servers/{id}/tools:refresh",id)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");
+  JsonNode listed=body(http.perform(get("/api/v1/mcp-servers/{id}/tools",id)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");
+  assertThat(listed).hasSize(2).isEqualTo(discovered);
+  assertThat(listed.toString()).contains("lookup_order","submit_refund","schemaDigest","inputSchema");
+  http.perform(delete("/api/v1/mcp-servers/{id}",id)).andExpect(status().isOk());
+  JsonNode after=body(http.perform(get("/api/v1/mcp-servers")).andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");
+  assertThat(after.toString()).doesNotContain(id,name);
+  http.perform(get("/api/v1/mcp-servers/{id}",id)).andExpect(status().isNotFound());
+  http.perform(get("/api/v1/mcp-servers/{id}/tools",id)).andExpect(status().isNotFound());
+ }
+
  @Test void blocksPrivateEndpointsByDefault(){assertThatThrownBy(()->new McpEndpointGuard(false).validate("http://127.0.0.1:8080/mcp")).isInstanceOf(BizException.class);}
  @Test void directTokenFailsClosedWithoutStorageKey()throws Exception{
   var request=json.createObjectNode().put("name","unconfigured-"+UUID.randomUUID()).put("endpointUrl","http://127.0.0.1:"+port+"/mcp").put("enabled",true).put("credentialAction","TOKEN").put("credentialToken","fake-secret-without-master-key");
