@@ -23,4 +23,4 @@
 
 所有systemctl/psql/nginx等由PATH假命令代替；cp/tar/mv只作用临时目录。测试jar是含SQL和Java迁移条目的合成ZIP，不是实际Spring/Flyway启动，因此实际V24迁移仍须完整产品门禁与发布验证。smoke全部为假HTTP，没有调用外部服务。
 
-完整harness门禁待代码提交后由原子runner补齐；当前不宣称本任务正式完成。
+完整harness门禁：代码2f7e340，运行`SPEC-DEPLOY-004-20261004T160406Z-0a3abd16`，schema v3结果passed，五步退出0，Python 78/78（182.425秒），runner完成。Maven evidence的failed文字是预期负例测试，不是实际Maven构建；本片未运行Maven、Docker或132。独立复核另行记录。

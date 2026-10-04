@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T15:54:13Z`
+- Generated from task state updated at: `2026-10-04T16:07:09Z`
 - Current task: `none`
-- Counts: pending 17 · running 0 · blocked 2 · completed 87
+- Counts: pending 16 · running 0 · blocked 2 · completed 88
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -90,7 +90,7 @@
 | `SPEC-CREDENTIAL-BOUNDARY-002` | P2 | completed | backend, runtime, harness | reversible_write | 补齐受保护配置命名空间与冻结凭据负向验收 |
 | `SPEC-CREDENTIAL-BOUNDARY-003` | P2 | completed | backend, harness | reversible_write | 主密钥宽松配置绑定别名不得被误授权 |
 | `SPEC-DEPLOY-002` | P2 | completed | harness | reversible_write | 补强发布脚本中断边界与smoke自身数据清理 |
-| `SPEC-DEPLOY-004` | P2 | pending | harness | reversible_write | 补齐部署schema/索引与非标准smoke响应边界 |
+| `SPEC-DEPLOY-004` | P2 | completed | harness | reversible_write | 补齐部署schema/索引与非标准smoke响应边界 |
 | `SPEC-DEPLOY-005` | P2 | completed | harness | reversible_write | 收束安装器断管道SIGPIPE边界 |
 | `SPEC-HISTORY-RECOVERY-003` | P2 | pending | backend, runtime, harness | reversible_write | 补齐恢复后的计划投影和预算边界 |
 | `SPEC-INPUT-HYGIENE-001` | P2 | completed | backend, harness | reversible_write | 拒绝上传与管理文本中的PG非法NUL |

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T15:54:13Z",
+  "updatedAt": "2026-10-04T16:07:09Z",
   "tasks": [
     {
       "id": "WORKFLOW-INPUTS-002",
@@ -4210,7 +4210,7 @@
       "title": "补齐部署schema/索引与非标准smoke响应边界",
       "description": "部署002复核新增P2：200成功或字典data里的ID未登记、KB非字符串、KeyboardInterrupt清理错误；假SQL迟到类型区分；schema版本写死23及知识索引RUNNING未检查。",
       "priority": "P2",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "harness"
       ],
@@ -4226,12 +4226,24 @@
         "假SQL分别区分agent/workflow/索引表，独立负例不因同一字符串匹配空跑",
         "迁移目标与产物绑定且停服务前校验，不让未来V24发布在迁移后才被旧版本比较拒绝；知识索引任务纳入静默检查"
       ],
-      "planPath": "exec-plans/active/SPEC-DEPLOY-004.md",
+      "planPath": "exec-plans/completed/SPEC-DEPLOY-004.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-DEPLOY-004-20261004T160406Z-0a3abd16",
+          "path": "harness/evidence/SPEC-DEPLOY-004/SPEC-DEPLOY-004-20261004T160406Z-0a3abd16",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "2f7e34025768e7f47b0de392564d5218009971b7",
+          "headCommit": "2f7e34025768e7f47b0de392564d5218009971b7",
+          "recordedAt": "2026-10-04T16:07:09Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "675038bd2e07f95fe175d61a40892ca3b61a5330adb2548cbe002186c0c196fc"
+        }
+      ],
       "createdAt": "2026-10-04T01:18:00Z",
-      "updatedAt": "2026-10-04T01:18:00Z"
+      "updatedAt": "2026-10-04T16:07:09Z"
     },
     {
       "id": "SPEC-RUN-INPUT-002",
