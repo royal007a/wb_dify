@@ -73,7 +73,7 @@
         "已记录历史runId显式白名单之外completed必须有v3证据；降schema/追加假历史/清空证据拒绝",
         "31项既有回归保留，补对方隔离伪造反例，不改历史测试结果或误称旧PG通过"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/SPEC-AUDIT-004.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
