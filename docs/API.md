@@ -1,5 +1,11 @@
 # Hify API 契约
 
+## 语义知识库扩展（ADR-0025）
+
+创建知识库可提供 `embedding: {"providerId":"...","model":"bge-m3","dimensions":1024}`，Provider 必须为启用的 OpenAI/OpenAI-compatible，模型必须支持 `/embeddings`。返回 `embedding` 仅包含这三个公开字段，不返回鉴权配置。未提供时保留旧 token-hash 兼容模式，不声称语义检索。维度范围 1..4096，Provider 输出不符时索引 FAILED、不产生分块；供应商错误不会回退 hash。新建 UI 默认要求语义配置。
+
+Embedding 配置创建后固定，PUT 改动返回 409；迁移模型须新建库/重传文档/重发 Workflow 与 Agent。语义索引每文档上限4096分块、每批32个。查询采用真实模型向量的精确余弦扫描加词法RRF，不宣称HNSW加速。冻结语料摘要覆盖新增语义向量和profile；旧语料摘要不变。
+
 完整的当前接口清单与验收边界见 [可执行测试规格](spec/README.md)；68个显式 `/api` 方法/路径（含只读提交查询）由 `ApiContractInventoryTest` 与真实 Spring 注册映射双向核对。下文不把规划接口列为已开放。
 
 ## 1. 通用规则

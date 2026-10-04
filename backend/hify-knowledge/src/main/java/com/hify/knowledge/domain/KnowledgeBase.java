@@ -15,6 +15,7 @@ public class KnowledgeBase {
     private int chunkSize;
     private int chunkOverlap;
     private boolean enabled;
+    private String embeddingProfile;
     private Instant archivedAt;
     private Instant createdAt;
     private Instant updatedAt;
@@ -33,6 +34,8 @@ public class KnowledgeBase {
     }
     public void archive() { this.enabled = false; this.archivedAt = Instant.now(); this.updatedAt = this.archivedAt; }
     public String getId() { return id; }
+    public String getEmbeddingProfile() { return embeddingProfile; }
+    public void setEmbeddingProfile(String profile) { this.embeddingProfile=profile; }
     public String getName() { return name; }
     public String getDescription() { return description; }
     public int getChunkSize() { return chunkSize; }

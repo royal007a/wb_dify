@@ -1,5 +1,6 @@
 {
   "migration-postgres": {
+    "com.hify.api.SemanticKnowledgePostgresTest": 4,
     "com.hify.api.KnowledgeShutdownPostgresTest": 22,
     "com.hify.api.HistoryRecoveryMigrationTest": 1,
     "com.hify.api.WorkflowKnowledgeReviewPostgresTest": 19,
@@ -16,6 +17,8 @@
     "com.hify.api.KnowledgeMemoryPostgresTest": 21
   },
   "backend-tests": {
+    "com.hify.api.SemanticKnowledgeIntegrationTest": 4,
+    "com.hify.api.SemanticKnowledgePostgresTest": 4,
     "com.hify.knowledge.application.DocumentIndexingServiceTest": 5,
     "com.hify.api.InputHygieneIntegrationTest": 14,
     "com.hify.api.InputHygienePostgresTest": 14,

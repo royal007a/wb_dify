@@ -53,6 +53,8 @@
 
 ## Phase 4：简版 RAG
 
+2026-10-04 用户授权能力补齐，按 ADR-0025 扩展真实 embedding 及 Phase 5 LLM/受控 HTTP 节点。机器状态见 SEMANTIC-001、WORKFLOW-NODES-001、CAPABILITY-DEPLOY-001；本文计划不是验收结果。
+
 2026-09-21 启动 `KNOWLEDGE-001`：统一 PostgreSQL，不采用课程 MySQL + pgvector 双库；先完成可引用的独立数据管线和检索测试，再接 ContextManager。
 
 - TXT/Markdown 上传、checksum/version、分块、embedding、HNSW。

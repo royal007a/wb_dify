@@ -32,6 +32,8 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     private final KnowledgeApplicationService knowledge;
 
     private final double minVectorScore;
+    @org.springframework.beans.factory.annotation.Autowired private SemanticEmbeddings semantic;
+    @org.springframework.beans.factory.annotation.Autowired private org.springframework.transaction.PlatformTransactionManager transactionManager;
 
     public KnowledgeRetrievalService(JdbcTemplate jdbc,KnowledgeApplicationService knowledge,
             @org.springframework.beans.factory.annotation.Value("${hify.knowledge.min-vector-score:0.5}") double minVectorScore){
@@ -42,12 +44,12 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     }
 
     @Override
-    @Transactional(readOnly=true)
     public List<KnowledgeCitation> search(String knowledgeBaseId,String query,int topK){
         TextInput.requireNoNul(knowledgeBaseId, query);
         if(query==null||query.isBlank())throw new BizException(ErrorCode.PARAM_ERROR,"检索问题不能为空");
         var base=knowledge.requireBase(knowledgeBaseId); if(!base.isEnabled())throw new BizException(ErrorCode.CONFLICT,"知识库已停用");
-        return rank(query,topK,activeRows(knowledgeBaseId),knowledgeBaseId,null);
+        var vectors=prepareVectors(query,knowledgeBaseId,null);
+        return readTransaction(()->rank(query,topK,activeRows(knowledgeBaseId),knowledgeBaseId,null,vectors));
     }
 
     @Override
@@ -83,23 +85,23 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     }
 
     @Override
-    @Transactional(readOnly=true,isolation=Isolation.REPEATABLE_READ)
     public List<KnowledgeCitation> searchRevision(String corpusVersionId,String query,int topK) {
         TextInput.requireNoNul(corpusVersionId, query);
         if(query==null||query.isBlank())throw new BizException(ErrorCode.PARAM_ERROR,"检索问题不能为空");
-        KnowledgeCorpusSnapshot snapshot=requireSnapshot(corpusVersionId);
-        return rank(query,topK,verifiedRows(snapshot),null,corpusVersionId);
+        var vectors=prepareVectors(query,null,corpusVersionId);
+        return readTransaction(()->{KnowledgeCorpusSnapshot snapshot=requireSnapshot(corpusVersionId);
+            return rank(query,topK,verifiedRows(snapshot),null,corpusVersionId,vectors);});
     }
 
     @Override
-    @Transactional(readOnly=true,isolation=Isolation.REPEATABLE_READ)
     public List<KnowledgeCitation> searchSnapshot(KnowledgeCorpusSnapshot expected,String query,int topK) {
         if(expected==null)throw new BizException(ErrorCode.CONFLICT,"缺少发布知识快照，请重新发布");
         TextInput.requireNoNul(expected.id(), expected.knowledgeBaseId(), expected.manifestDigest(), query);
         if(query==null||query.isBlank())throw new BizException(ErrorCode.PARAM_ERROR,"检索问题不能为空");
-        KnowledgeCorpusSnapshot actual=requireSnapshot(expected.id());
-        if(!actual.equals(expected))throw new BizException(ErrorCode.CONFLICT,"知识语料快照摘要或身份不匹配");
-        return rank(query,topK,verifiedRows(actual),null,actual.id());
+        var vectors=prepareVectors(query,null,expected.id());
+        return readTransaction(()->{KnowledgeCorpusSnapshot actual=requireSnapshot(expected.id());
+            if(!actual.equals(expected))throw new BizException(ErrorCode.CONFLICT,"知识语料快照摘要或身份不匹配");
+            return rank(query,topK,verifiedRows(actual),null,actual.id(),vectors);});
     }
 
     private KnowledgeCorpusSnapshot requireSnapshot(String id) {
@@ -121,7 +123,7 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
         if(!sha256(row.content()).equals(row.digest()))throw new BizException(ErrorCode.CONFLICT,"引用分块原文摘要不匹配");
     }
 
-    private List<KnowledgeCitation> rank(String query,int topK,List<Row> fallbackRows,String baseId,String corpusVersionId){
+    private List<KnowledgeCitation> rank(String query,int topK,List<Row> fallbackRows,String baseId,String corpusVersionId,Map<String,float[]> queryVectors){
         int limit=Math.min(20,Math.max(1,topK)); float[] queryVector=KnowledgeEmbedding.embed(query);
         List<Row> lexical; List<Row> vector;
         if(isPostgres()){
@@ -134,6 +136,23 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
             vector=new ArrayList<>(all);
             vector.sort(Comparator.comparingDouble((Row r)->KnowledgeEmbedding.cosine(queryVector,KnowledgeEmbedding.parse(r.embedding()))).reversed());
             vector=vector.stream().filter(r->KnowledgeEmbedding.cosine(queryVector,KnowledgeEmbedding.parse(r.embedding()))>=minVectorScore)
+                    .limit(limit*4L).toList();
+        }
+        Map<String,SemanticRow> semanticRows=semanticRows(fallbackRows);
+        if(!semanticRows.isEmpty()){
+            Map<String,Double> similarity=new HashMap<>();
+            for(Row row:fallbackRows){
+                SemanticRow stored=semanticRows.get(row.id());
+                float[] candidate=KnowledgeEmbedding.parse(stored==null?row.embedding():stored.vector());
+                float[] q=stored==null?queryVector:queryVectors.get(stored.profile());
+                if(q==null)throw new BizException(ErrorCode.CONFLICT,"Embedding 空间在检索期间变化，请重试");
+                if(q.length!=candidate.length)throw new BizException(ErrorCode.CONFLICT,"知识语义向量维度不匹配");
+                double score=KnowledgeEmbedding.cosine(q,candidate);
+                if(!Double.isFinite(score))throw new BizException(ErrorCode.CONFLICT,"知识语义向量不可用");
+                similarity.put(row.id(),score);
+            }
+            vector=fallbackRows.stream().filter(r->similarity.get(r.id())>=minVectorScore)
+                    .sorted(Comparator.comparingDouble((Row r)->similarity.get(r.id())).reversed().thenComparing(Row::id))
                     .limit(limit*4L).toList();
         }
         Map<String,Double> scores=new HashMap<>(); Map<String,Row> rows=new LinkedHashMap<>();
@@ -190,7 +209,43 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
               AND (c.embedding <=> CAST(? AS vector)) <= ?
             ORDER BY c.embedding <=> CAST(? AS vector) LIMIT ?
             """,(rs,n)->new Row(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getString(8)),versionId,literal,1-minVectorScore,literal,limit);}
-    private String manifestDigest(List<Row> rows){StringBuilder canonical=new StringBuilder();for(Row row:rows)canonical.append(row.id()).append(':').append(row.digest()).append('\n');try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(canonical.toString().getBytes(StandardCharsets.UTF_8)));}catch(Exception e){throw new IllegalStateException("SHA-256 unavailable",e);}}
+    private String manifestDigest(List<Row> rows){
+        Map<String,SemanticRow> semanticRows=semanticRows(rows);
+        StringBuilder canonical=new StringBuilder();
+        for(Row row:rows){canonical.append(row.id()).append(':').append(row.digest()).append('\n');
+            var stored=semanticRows.get(row.id());
+            if(stored!=null)canonical.append("semantic:").append(sha256(stored.profile()+"\n"+stored.vector())).append('\n');
+        }
+        return sha256(canonical.toString());
+    }
+    private Map<String,SemanticRow> semanticRows(List<Row> rows){
+        Map<String,SemanticRow> result=new HashMap<>();
+        for(int from=0;from<rows.size();from+=500){
+            var batch=rows.subList(from,Math.min(rows.size(),from+500));
+            String placeholders=String.join(",",java.util.Collections.nCopies(batch.size(),"?"));
+            jdbc.query("SELECT id,semantic_profile,semantic_vector FROM document_chunks WHERE semantic_profile IS NOT NULL AND id IN ("+placeholders+")",
+                    rs->{result.put(rs.getString(1),new SemanticRow(rs.getString(2),rs.getString(3)));},batch.stream().map(Row::id).toArray());
+        }
+        return result;
+    }
+    private record SemanticRow(String profile,String vector){}
+    private Map<String,float[]> prepareVectors(String query,String baseId,String corpusId){
+        List<String> profiles=corpusId==null
+                ?jdbc.queryForList("SELECT DISTINCT semantic_profile FROM document_chunks WHERE knowledge_base_id=? AND archived_at IS NULL AND semantic_profile IS NOT NULL",String.class,baseId)
+                :jdbc.queryForList("SELECT DISTINCT c.semantic_profile FROM document_chunks c JOIN knowledge_corpus_version_chunks vc ON vc.chunk_id=c.id WHERE vc.corpus_version_id=? AND c.semantic_profile IS NOT NULL",String.class,corpusId);
+        if(!profiles.isEmpty()&&org.springframework.transaction.support.TransactionSynchronizationManager.isActualTransactionActive())
+            throw new BizException(ErrorCode.CONFLICT,"语义检索须在数据库事务外发起");
+        Map<String,float[]> vectors=new HashMap<>();
+        for(String profile:profiles)vectors.put(profile,semantic.embed(profile,List.of(query)).get(0));
+        return vectors;
+    }
+    private <T> T readTransaction(java.util.function.Supplier<T> read){
+        if(transactionManager==null)return read.get();
+        var tx=new org.springframework.transaction.support.TransactionTemplate(transactionManager);
+        tx.setReadOnly(true);tx.setIsolationLevel(org.springframework.transaction.TransactionDefinition.ISOLATION_REPEATABLE_READ);
+        tx.setPropagationBehavior(org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        return tx.execute(status->read.get());
+    }
     private String sha256(String value){try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8)));}catch(Exception failure){throw new IllegalStateException("SHA-256 unavailable",failure);}}
     private boolean isPostgres(){return Boolean.TRUE.equals(jdbc.execute((org.springframework.jdbc.core.ConnectionCallback<Boolean>)
             connection->connection.getMetaData().getDatabaseProductName().toLowerCase(Locale.ROOT).contains("postgresql")));}

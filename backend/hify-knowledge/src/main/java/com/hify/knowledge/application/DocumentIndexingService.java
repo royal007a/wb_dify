@@ -28,6 +28,8 @@ public class DocumentIndexingService {
     private final DocumentIndexTaskRepository tasks;
     private final JdbcTemplate jdbc;
     private final RecursiveTextChunker chunker = new RecursiveTextChunker();
+    @org.springframework.beans.factory.annotation.Autowired private SemanticEmbeddings semantic;
+    @org.springframework.beans.factory.annotation.Autowired private org.springframework.transaction.PlatformTransactionManager transactionManager;
 
     public DocumentIndexingService(KnowledgeDocumentRepository documents, KnowledgeBaseRepository bases,
                                    DocumentIndexTaskRepository tasks, JdbcTemplate jdbc) {
@@ -35,7 +37,6 @@ public class DocumentIndexingService {
     }
 
     @Async("asyncExecutor")
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onIndexRequested(KnowledgeIndexRequested event) { index(event.documentId()); }
 
@@ -44,12 +45,37 @@ public class DocumentIndexingService {
         if(document==null) return;
         DocumentIndexTask task=tasks.findByDocumentIdAndDocumentVersion(documentId,document.getDocumentVersion()).orElseThrow();
         KnowledgeBase base=bases.findByIdAndArchivedAtIsNull(document.getKnowledgeBaseId()).orElseThrow();
+        List<RecursiveTextChunker.Chunk> chunks=chunker.split(document.getCanonicalContent(),base.getChunkSize(),base.getChunkOverlap());
+        List<float[]> semanticVectors=new java.util.ArrayList<>();
+        // Provider IO runs before the write transaction: no DB connection is held while embedding.
         try {
+            if(base.getEmbeddingProfile()!=null){
+                if(chunks.size()>4096)throw new IllegalArgumentException("语义索引超过4096个分块，请拆分文档");
+                for(int i=0;i<chunks.size();i+=32)
+                    semanticVectors.addAll(semantic.embed(base.getEmbeddingProfile(),chunks.subList(i,Math.min(chunks.size(),i+32)).stream().map(RecursiveTextChunker.Chunk::content).toList()));
+            }
+        }catch(Exception e){
+            writeTransaction(()->{document.failed("语义索引失败，请检查Embedding配置和Provider");task.failed("语义索引失败，请检查Embedding配置和Provider");documents.save(document);tasks.save(task);});return;
+        }
+        writeTransaction(()->persist(documentId,document,task,base,chunks,semanticVectors));
+    }
+
+    private void writeTransaction(Runnable action){
+        if(transactionManager==null){action.run();return;}
+        var tx=new org.springframework.transaction.support.TransactionTemplate(transactionManager);
+        tx.setPropagationBehavior(org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        tx.executeWithoutResult(status->action.run());
+    }
+
+    private void persist(String documentId,KnowledgeDocument document,DocumentIndexTask task,KnowledgeBase base,
+                         List<RecursiveTextChunker.Chunk> chunks,List<float[]> semanticVectors){
+        try {
+            if(documents.findByIdAndArchivedAtIsNull(documentId).isEmpty()||bases.findByIdAndArchivedAtIsNull(base.getId()).isEmpty())return;
             task.running("hify-local"); document.processing(); tasks.save(task); documents.save(document);
-            List<RecursiveTextChunker.Chunk> chunks=chunker.split(document.getCanonicalContent(),base.getChunkSize(),base.getChunkOverlap());
             if(chunks.isEmpty()) throw new IllegalArgumentException("文档没有可索引文本");
             boolean postgres=isPostgres();
             jdbc.update("DELETE FROM document_chunks WHERE document_id = ? AND document_version = ?",documentId,document.getDocumentVersion());
+            int semanticIndex=0;
             for(RecursiveTextChunker.Chunk chunk:chunks){
                 float[] embedding=KnowledgeEmbedding.embed(chunk.content()); String literal=KnowledgeEmbedding.literal(embedding);
                 String id=UUID.randomUUID().toString(); String digest=digest(chunk.content());
@@ -64,6 +90,8 @@ public class DocumentIndexingService {
                             VALUES (?,?,?,?,?,?,?,?,?,?)
                             """,id,base.getId(),documentId,document.getDocumentVersion(),chunk.ordinal(),chunk.content(),digest,chunk.tokenCount(),literal,java.sql.Timestamp.from(Instant.now()));
                 }
+                if(base.getEmbeddingProfile()!=null)jdbc.update("UPDATE document_chunks SET semantic_profile=?,semantic_vector=? WHERE id=?",
+                        base.getEmbeddingProfile(),KnowledgeEmbedding.literal(semanticVectors.get(semanticIndex++)),id);
                 task.checkpoint(chunk.ordinal());
             }
             document.indexed(chunks.size()); task.succeeded(); documents.save(document); tasks.save(task);

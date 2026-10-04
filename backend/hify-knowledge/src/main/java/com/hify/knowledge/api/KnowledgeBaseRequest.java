@@ -10,4 +10,8 @@ public record KnowledgeBaseRequest(
         @Size(max=1000) String description,
         @Min(64) @Max(2048) Integer chunkSize,
         @Min(0) Integer chunkOverlap,
-        Boolean enabled) {}
+        Boolean enabled, KnowledgeEmbeddingConfig embedding) {
+    public KnowledgeBaseRequest(String name,String description,Integer chunkSize,Integer chunkOverlap,Boolean enabled){
+        this(name,description,chunkSize,chunkOverlap,enabled,null);
+    }
+}

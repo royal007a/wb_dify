@@ -40,6 +40,7 @@ public class KnowledgeApplicationService {
     private final DocumentIndexTaskRepository tasks;
     private final JdbcTemplate jdbc;
     private final ApplicationEventPublisher events;
+    @org.springframework.beans.factory.annotation.Autowired private SemanticEmbeddings semantic;
 
     public KnowledgeApplicationService(KnowledgeBaseRepository bases, KnowledgeDocumentRepository documents,
                                        DocumentIndexTaskRepository tasks, JdbcTemplate jdbc,
@@ -54,6 +55,7 @@ public class KnowledgeApplicationService {
         int size=request.chunkSize()==null?512:request.chunkSize(); int overlap=request.chunkOverlap()==null?64:request.chunkOverlap();
         validateChunking(size,overlap);
         KnowledgeBase base=new KnowledgeBase(UUID.randomUUID().toString(),name,clean(request.description()),size,overlap,Instant.now());
+        base.setEmbeddingProfile(semantic.freeze(request.embedding()));
         try { bases.saveAndFlush(base); } catch(DataIntegrityViolationException e){throw duplicate();}
         return base.getId();
     }
@@ -73,6 +75,8 @@ public class KnowledgeApplicationService {
     public void update(String id,KnowledgeBaseRequest request){
         TextInput.requireNoNul(id,request.name(),request.description());
         KnowledgeBase base=requireBase(id); String name=request.name().trim();
+        if(request.embedding()!=null&&!request.embedding().equals(semantic.config(base.getEmbeddingProfile())))
+            throw new BizException(ErrorCode.CONFLICT,"Embedding 空间不可变，请新建知识库并重新上传/发布");
         if(bases.existsByNameAndIdNotAndArchivedAtIsNull(name,id)) throw duplicate();
         int size=request.chunkSize()==null?base.getChunkSize():request.chunkSize();
         int overlap=request.chunkOverlap()==null?base.getChunkOverlap():request.chunkOverlap(); validateChunking(size,overlap);
@@ -125,7 +129,7 @@ public class KnowledgeApplicationService {
 
     KnowledgeBase requireBase(String id){return bases.findByIdAndArchivedAtIsNull(id).orElseThrow(()->new BizException(ErrorCode.NOT_FOUND,"知识库不存在"));}
     KnowledgeDocument requireDocument(String id){return documents.findByIdAndArchivedAtIsNull(id).orElseThrow(()->new BizException(ErrorCode.NOT_FOUND,"文档不存在"));}
-    private KnowledgeBaseResponse response(KnowledgeBase b){return new KnowledgeBaseResponse(b.getId(),b.getName(),b.getDescription(),b.getChunkSize(),b.getChunkOverlap(),b.isEnabled(),documents.findByKnowledgeBaseIdAndArchivedAtIsNull(b.getId()).size(),b.getCreatedAt(),b.getUpdatedAt());}
+    private KnowledgeBaseResponse response(KnowledgeBase b){return new KnowledgeBaseResponse(b.getId(),b.getName(),b.getDescription(),b.getChunkSize(),b.getChunkOverlap(),b.isEnabled(),documents.findByKnowledgeBaseIdAndArchivedAtIsNull(b.getId()).size(),b.getCreatedAt(),b.getUpdatedAt(),semantic.config(b.getEmbeddingProfile()));}
     private KnowledgeDocumentResponse documentResponse(KnowledgeDocument d){return new KnowledgeDocumentResponse(d.getId(),d.getKnowledgeBaseId(),d.getName(),d.getMediaType(),d.getFileSize(),d.getChecksum(),d.getDocumentVersion(),d.getIndexingState().name(),d.getErrorMessage(),d.getChunkCount(),d.getCreatedAt(),d.getUpdatedAt());}
     private void validateChunking(int size,int overlap){if(overlap<0||overlap>=size)throw new BizException(ErrorCode.PARAM_ERROR,"chunkOverlap 必须小于 chunkSize");}
     private BizException duplicate(){return new BizException(ErrorCode.CONFLICT,"知识库名称已存在");}
