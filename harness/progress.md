@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T12:15:59Z`
+- Generated from task state updated at: `2026-10-04T12:39:14Z`
 - Current task: `none`
-- Counts: pending 17 · running 0 · blocked 2 · completed 80
+- Counts: pending 19 · running 0 · blocked 2 · completed 81
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -31,6 +31,7 @@
 | `SPEC-WORKFLOW-CONTROL-001` | P0 | completed | backend, runtime, migration, harness | reversible_write | 传播 Workflow 取消和截止时间并阻止错误成功终态 |
 | `SPEC-WORKFLOW-GRAPH-001` | P0 | completed | backend, harness | reversible_write | 验证 Workflow 路径终止与模板必经变量 |
 | `SPEC-WORKFLOW-KNOWLEDGE-001` | P0 | completed | backend, runtime, harness | reversible_write | 固定 Workflow 知识语料快照并保留历史引用 |
+| `WORKFLOW-NODES-002` | P0 | pending | backend, harness | reversible_write | 外部节点出站特殊网段与超时语义补强 |
 | `CAPABILITY-DEPLOY-001` | P1 | pending | harness, frontend | high_risk | 能力补齐完整验收与132重新部署 |
 | `CHAT-DEMO-001` | P1 | completed | backend, frontend, runtime | reversible_write | 修复 Demo 时间问句回显而不调用工具 |
 | `CHAT-DEMO-DEPLOY-001` | P1 | completed | backend, frontend | high_risk | 部署并验证 132 Demo 会话时间修复 |
@@ -38,6 +39,7 @@
 | `CONTEXT-001` | P1 | completed | backend, runtime, eval | reversible_write | 建立上下文预算归档与压缩评测 |
 | `DEPLOY-001` | P1 | completed | backend, frontend, migration, runtime, eval | high_risk | 部署摘要与细节召回纵向切片 |
 | `DEPLOY-002` | P1 | completed | backend, frontend, migration, runtime, eval | high_risk | 推送并部署高级能力纵向切片 |
+| `DIFY-AUDIT-001` | P1 | pending | harness | reversible_write | Dify官方逐篇阅读与十小时能力差距审计 |
 | `MCP-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付 MCP Server 目录与安全调试闭环 |
 | `MCP-EDIT-001` | P1 | completed | backend, frontend | reversible_write | MCP Server 编辑与凭证引用校验 |
 | `MCP-EDIT-DEPLOY-001` | P1 | completed | frontend, backend | high_risk | 部署 MCP 编辑切片并验收 132 页面 |
@@ -71,7 +73,8 @@
 | `SPEC-UPLOAD-BOUNDARY-001` | P1 | completed | backend, harness | reversible_write | 统一真实应用与两种代理入口的上传上限 |
 | `SPEC-WORKFLOW-GRAPH-002` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 统一图步数限制与条件语法契约 |
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
-| `WORKFLOW-NODES-001` | P1 | pending | backend, frontend, harness | reversible_write | 版本化Workflow LLM与受控HTTP节点 |
+| `WORKFLOW-INPUTS-001` | P1 | pending | backend, frontend, harness | reversible_write | Workflow结构化输入与可复用运行表单 |
+| `WORKFLOW-NODES-001` | P1 | completed | backend, frontend, harness | reversible_write | 版本化Workflow LLM与受控HTTP节点 |
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
 | `SPEC-API-BEHAVIOR-002` | P2 | completed | backend, harness | reversible_write | 澄清管理契约来源并补终态取消和旧会话执行 |
 | `SPEC-API-PAGINATION-001` | P2 | pending | backend, harness | reversible_write | 确定并统一管理列表分页越界契约 |

@@ -1,8 +1,44 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T12:15:59Z",
+  "updatedAt": "2026-10-04T12:39:14Z",
   "tasks": [
+    {
+      "id": "DIFY-AUDIT-001",
+      "title": "Dify官方逐篇阅读与十小时能力差距审计",
+      "description": "用户2026-10-04新目标，窗口22:14至次日08:14 CST；主代理负责原版Hify，mymacclaude负责hify-cc。逐篇官方摘要、来源和源码证据，区分官网/教程/路线图/社区部署事实。",
+      "priority": "P1", "status": "pending",
+      "scopes": ["harness"], "verifyScopes": ["harness"],
+      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": ["官网、核心概念、home、quick-start、Workflow101 01至10、simple-chatbot及New Agent文章逐篇有来源与摘要，损坏链接明确处理", "差距附Hify源码路径并区分本地实现、测试证据和线上部署；CC独立负责人结果不冒充本仓验收", "高价值改造按独立任务登记，明确非目标、截止窗口及发布资源边界"],
+      "planPath": "exec-plans/active/DIFY-AUDIT-001.md", "checkpoint": null, "blockedReason": null, "evidence": [],
+      "createdAt": "2026-10-04T14:14:00Z", "updatedAt": "2026-10-04T14:14:00Z"
+    },
+    {
+      "id": "WORKFLOW-NODES-002",
+      "title": "外部节点出站特殊网段与超时语义补强",
+      "description": "先修独立review发现的SSRF P1，再允许外部节点发布；不将旧全量通过等同于风险已关闭。",
+      "priority": "P0", "status": "pending",
+      "scopes": ["backend", "harness"], "verifyScopes": ["harness", "backend", "runtime"],
+      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
+      "dependsOn": ["DIFY-AUDIT-001"],
+      "acceptance": ["DNS任何记录落入私网/特殊用途范围整体拒绝，云metadata/CGNAT/IPv6转换网段对字面IP同样拒绝；解析后连接使用同一地址集合", "显式授权的本地fixture仍可测，重定向/超限/错误内容类型不交付；套接字超时不冒充Run截止", "补DNS混合记录、精确32768与chunked、模型停用/配置缓存对照、凭据撤销和节点配置负例；旧测试保留"],
+      "planPath": "exec-plans/active/WORKFLOW-NODES-002.md", "checkpoint": null, "blockedReason": null, "evidence": [],
+      "createdAt": "2026-10-04T14:14:00Z", "updatedAt": "2026-10-04T14:14:00Z"
+    },
+    {
+      "id": "WORKFLOW-INPUTS-001",
+      "title": "Workflow结构化输入与可复用运行表单",
+      "description": "对照Dify课2/quick-start，扩展目前只有userMessage的输入契约，保持旧版本兼容；具体实现先独立设计再开工。",
+      "priority": "P1", "status": "pending",
+      "scopes": ["backend", "frontend", "harness"], "verifyScopes": ["harness", "backend", "frontend"],
+      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
+      "dependsOn": ["WORKFLOW-NODES-002"],
+      "acceptance": ["START声明有界文本/数字/布尔/枚举输入，发布快照覆盖schema，缺失/类型/未知字段在网络与写执行行前拒绝", "下游安全引用命名输入，旧userMessage工作流行为不变", "控制台按发布输入schema呈现试运行表单，真实HTTP正反例与前端验证通过，不宣称文件/多模态/Chatflow会话变量已支持"],
+      "planPath": null, "checkpoint": null, "blockedReason": null, "evidence": [],
+      "createdAt": "2026-10-04T14:14:00Z", "updatedAt": "2026-10-04T14:14:00Z"
+    },
     {
       "id": "SEMANTIC-001",
       "title": "真实Provider语义向量与版本隔离检索",
@@ -63,7 +99,7 @@
       "title": "版本化Workflow LLM与受控HTTP节点",
       "description": "复用Provider调用和取消/预算边界，新增可在画布配置的LLM/API_CALL节点；HTTP副作用不自动放行。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "frontend",
@@ -87,12 +123,24 @@
         "发布前校验节点参数与变量引用，旧版本不变，画布与API可创建并实际执行",
         "正常、失败、取消、截止、未授权目标均有测试，真实调用与Mock证据区分"
       ],
-      "planPath": "exec-plans/active/WORKFLOW-NODES-001.md",
+      "planPath": "exec-plans/completed/WORKFLOW-NODES-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "WORKFLOW-NODES-001-20261004T121802Z-3ecb7ea8",
+          "path": "harness/evidence/WORKFLOW-NODES-001/WORKFLOW-NODES-001-20261004T121802Z-3ecb7ea8",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "538b51030e1ac9b470d0cd283fa70794f06d8943",
+          "headCommit": "7bfb2b5e4c2ce3510994ed489494e65cac41e018",
+          "recordedAt": "2026-10-04T12:39:14Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "a7a706751fce0c7581a6c34febfc3c6bdf0818ea2a70618ab74db0c53973b202"
+        }
+      ],
       "createdAt": "2026-10-04T10:45:00Z",
-      "updatedAt": "2026-10-04T10:45:00Z"
+      "updatedAt": "2026-10-04T12:39:14Z"
     },
     {
       "id": "CAPABILITY-DEPLOY-001",

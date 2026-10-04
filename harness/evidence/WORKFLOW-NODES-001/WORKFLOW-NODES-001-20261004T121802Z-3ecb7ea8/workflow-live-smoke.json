@@ -1,0 +1,19 @@
+{
+  "result": "passed",
+  "realModel": "qwen2.5:0.5b",
+  "httpFixture": true,
+  "getCalls": 1,
+  "status": "SUCCEEDED",
+  "output": "42",
+  "nodeTypes": [
+    "START",
+    "API_CALL",
+    "LLM",
+    "END"
+  ],
+  "latencyMs": 1807,
+  "scope": "synthetic GET -> real local model; not quality/security benchmark or production deployment",
+  "headCommit": "7bfb2b5e4c2ce3510994ed489494e65cac41e018",
+  "backendTree": "64c781af0da5e33681efebc11206dac3bd56c287",
+  "sourceDiffEmpty": true
+}
