@@ -22,7 +22,9 @@
 
 后端命令`mvn -B -pl hify-app -am -Dtest=RunSubmissionIdentityTest,RunFlowIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test`：2026-10-04 08:14:55 Asia/Shanghai退出0，7项、0失败/错误/跳过，全应用MockMvc与隔离H2，非PG或真实网络。两份红绿日志SHA与计数见focused-summary.json。
 
-完整harness/backend/frontend门禁待本run verification.json记录；窄测不代替全量。浏览器绿灯之后只调整了bindConnection缩进，没有改变语义。
+完整harness/backend/frontend门禁于2026-10-04 08:19:03 Asia/Shanghai结束，代码`83055fb`，schema v3/passed：backend 81类536项、失败/错误/skip/flake均0（含真实PG专项）；Harness Python 31项通过，frontend typecheck/build退出0。浏览器窄测不代替该门禁，backend/runtime/migration重叠用例不累加。浏览器绿灯之后只调整了bindConnection缩进，没有改变语义。
+
+全量开始前，backend/frontend没有未提交或未跟踪源码；source-identity.json记录两个Git tree、空diff SHA和仅Harness状态/证据的status清单。本轮verify仍写base=working-tree，不将其说成隔离的干净clone。独立15174 Vite已停止；没有部署。
 
 ## 保留边界
 

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T00:11:45Z",
+  "updatedAt": "2026-10-04T00:19:03Z",
   "tasks": [
     {
       "id": "SPEC-UPLOAD-BOUNDARY-001",
@@ -255,12 +255,20 @@
       "description": "ab46ec5..36eaae6静态复核四条P2；不把代码现状自动升格为产品规格。非法resume新key反向对照先随Chat004补齐，其余在本任务验收。",
       "priority": "P2",
       "status": "pending",
-      "scopes": ["backend", "harness"],
-      "verifyScopes": ["harness", "backend"],
+      "scopes": [
+        "backend",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "backend"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-API-BEHAVIOR-001"],
+      "dependsOn": [
+        "SPEC-API-BEHAVIOR-001"
+      ],
       "acceptance": [
         "Workflow分页夹值标为兼容现状，与KB400不一致明确待统一决策；不擅自改变现有API",
         "COMPLETED/FAILED后取消202、cancelRequestedAt仍null、状态及事件不变",
@@ -271,15 +279,15 @@
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
-      "createdAt": "2026-10-04T00:16:00Z",
-      "updatedAt": "2026-10-04T00:16:00Z"
+      "createdAt": "2026-10-04T00:12:46Z",
+      "updatedAt": "2026-10-04T00:12:46Z"
     },
     {
       "id": "SPEC-CHAT-LIFECYCLE-004",
       "title": "补人工重连、澄清放弃与建会话超时边界",
       "description": "1ce9cfb..daec369静态复验新增四条P2与测试缺口，保持未知取消只查询、不误建Run；补新key非法resume反向对照。",
       "priority": "P2",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "frontend",
@@ -302,12 +310,24 @@
         "建会话挂住有请求超时和可退出路径，不误称取消成功",
         "后端补同key异resume的40901、新key同非法resume400对照和缺header/no-store边界"
       ],
-      "planPath": "exec-plans/active/SPEC-CHAT-LIFECYCLE-004.md",
+      "planPath": "exec-plans/completed/SPEC-CHAT-LIFECYCLE-004.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-CHAT-LIFECYCLE-004-20261004T001246Z-fa30e7f6",
+          "path": "harness/evidence/SPEC-CHAT-LIFECYCLE-004/SPEC-CHAT-LIFECYCLE-004-20261004T001246Z-fa30e7f6",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "e48928c63646402083d7e02da66338c9ceb7a15a",
+          "headCommit": "83055fb1967f3392be3c1b762bec176bb9055396",
+          "recordedAt": "2026-10-04T00:19:03Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "07dfb2a7a2e7ccb8e4075c51369e0bd05aaa6193b094babc98651d3db25b3f22"
+        }
+      ],
       "createdAt": "2026-10-03T23:26:00Z",
-      "updatedAt": "2026-10-03T23:26:00Z"
+      "updatedAt": "2026-10-04T00:19:03Z"
     },
     {
       "id": "SPEC-AUDIT-002",

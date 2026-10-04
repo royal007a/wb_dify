@@ -1,0 +1,9 @@
+{
+  "headCommit": "83055fb1967f3392be3c1b762bec176bb9055396",
+  "backendTree": "4d926f2337f718d0f592b369a7570e296b6dd9dc",
+  "frontendTree": "6181271f7e6b1e10b74c913395285f9c6e389c94",
+  "trackedSourceDiffCommand": "git diff -- backend frontend",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "statusBeforeVerification": [" M harness/progress.md", " M harness/state.json", " M harness/tasks.json", "?? harness/evidence/SPEC-CHAT-LIFECYCLE-004/"],
+  "scope": "Captured after code commit, before completion of full verification; no backend/frontend edits during verification."
+}

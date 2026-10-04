@@ -1,0 +1,12 @@
+{
+  "baselineCommit": "e48928c",
+  "red": {
+    "browser": {"tests": 4, "failed": 4, "exitCode": 1, "logSha256": "a3b9f1b65159909fb53867be6caf4c11dc38d08d6ab7d6efc1513aec13688743"},
+    "backend": {"tests": 5, "failed": 2, "errors": 0, "skipped": 0, "exitCode": 1, "logSha256": "40831177401d159d6d1d4a031f4259b24310eee8eaaacf1398fa308b2ba4d863"}
+  },
+  "green": {
+    "browser": {"command": "E2E_BASE_URL=http://127.0.0.1:15174/ npx playwright test e2e/chat-lifecycle.spec.ts", "tests": 31, "passed": 31, "exitCode": 0, "logSha256": "1b9885e8599b9b32219833449856646f2a63aa7044b002620bf85ae79e6fb2e1"},
+    "backend": {"command": "mvn -B -pl hify-app -am -Dtest=RunSubmissionIdentityTest,RunFlowIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test", "tests": 7, "failed": 0, "errors": 0, "skipped": 0, "exitCode": 0, "logSha256": "10dafb1c4d2a2fb7b910d140e4571cd41652dfdd925670e691d7e51b6a80a497"}
+  },
+  "limitations": ["Browser HTTP and EventSource are controlled; not live server SSE", "Narrow backend uses full Spring MockMvc/H2", "No deployment or shared-service changes", "Green browser run preceded whitespace-only bindConnection indentation change"]
+}
