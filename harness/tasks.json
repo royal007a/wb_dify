@@ -3645,7 +3645,7 @@
         "0/000/301和缺失旧产物在停服务前明确拒绝，不能由AND列表绕过",
         "越过健康/静态成功点后的诊断输出被信号中断不停止已健康服务；有隔离信号用例"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/SPEC-DEPLOY-003.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
