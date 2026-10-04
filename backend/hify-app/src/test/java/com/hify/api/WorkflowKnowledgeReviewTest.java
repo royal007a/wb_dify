@@ -67,7 +67,14 @@ class WorkflowKnowledgeReviewTest extends WorkflowKnowledgeIntegrationTest {
         assertThat(db.queryForObject("select count(*) from chat_messages where conversation_id=? and role='assistant'",Integer.class,cid)).isEqualTo(assistantCount);
         // Restore fixture to show rejection did not disable an otherwise valid old conversation.
         db.update("update workflow_versions set dsl_json=?,checksum=? where id=?",original,published.path("checksum").asText(),version);
-        assertThat(runToTerminal(cid).path("state").asText()).isEqualTo("COMPLETED");
+        var restored=runToTerminal(cid);
+        assertThat(restored.path("state").asText()).isEqualTo("COMPLETED");
+        assertThat(restored.path("outputMessage").asText()).contains("七天");
+        assertThat(restored.path("agentVersionId")).isEqualTo(before.path("agentVersionId"));
+        // Same Agent/Chat path must persist exactly one execution and answer, plus START/KNOWLEDGE/END.
+        assertThat(db.queryForObject("select count(*) from workflow_runs where workflow_version_id=?",Integer.class,version)).isEqualTo(workflowCount+1);
+        assertThat(db.queryForObject("select count(*) from workflow_node_runs",Integer.class)).isEqualTo(nodeCount+3);
+        assertThat(db.queryForObject("select count(*) from chat_messages where conversation_id=? and role='assistant'",Integer.class,cid)).isEqualTo(assistantCount+1);
     }
 
     @Test void indexingSuccessIncludesTheActualVectorStorage() throws Exception {
