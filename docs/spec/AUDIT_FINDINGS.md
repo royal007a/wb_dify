@@ -122,6 +122,8 @@ SPEC-DEPLOY-002独立review在隔离archive用sh/dash实测9项与边界：新P1
 
 2026-10-04总验收eeb385e独立复核无P1，四条P2不推翻本轮通过：SPEC-VERIFY-002跟踪send已阻塞后再次publish的直接断言、路由随子场景partial以及可离线复算方法报告；SPEC-API-PAGINATION-001跟踪管理分页契约差异，未做产品决策；SPEC-CHAT-LIFECYCLE-005跟踪在途GET下人工重连、取消查询按钮名、跨会话来源文案、失效resume循环（最后一项亦见RUN-INPUT-001）。报告目前mapped-subcases-only不是通过标志，原始XML未提交所以仅凭Git不能重算，边界不隐藏。
 
+005实施更新：f20bd34修复在途人工重试、取消查询按钮和resume来源统一错误。实际受控浏览器34项/H2窄测17项及frontend/harness七步通过；完整backend因Colima数据盘100%未运行，任务仍blocked，不能关闭验收或视为132已更新。红灯、欢迎气泡夹具误选与修正均见`../evidence/SPEC_CHAT_INFLIGHT_RECOVERY.md`。后续先恢复环境，再重跑原三个scope。
+
 2026-10-04 Chat004（83055fb/a2ee546）独立静态review与摘要SHA核对关闭人工重连、澄清放弃、取消文案、建会话超时、缺header缓存头及非法resume误归类。create仍宽泛捕获DataIntegrityViolation：超长消息/并发会话删除可变成40900，归SPEC-RUN-INPUT-001；abort后失败的fulfill不能作为迟到成功响应证据，SPEC_CHAT_MANUAL_RECOVERY已收窄措辞。管理001的夹值契约来源、终态取消种类、旧会话执行与非法resume反向对照归SPEC-API-BEHAVIOR-002，不以旧窄测替代。
 
 2026-10-04新增复核：HTTP切片fa5f48f..9aac4e7的上传P1归SPEC-UPLOAD-BOUNDARY-001（应用/两nginx没有显式上限，原10MB/JSON承诺不可达）；f64a690门禁旧问题已关闭，恶意/手工改manifest或降级历史schema仍可绕过的两条P2归SPEC-AUDIT-004。reviewer对HTTP仅静态阅读；门禁使用隔离archive+假mvn/XML实测，不等于实际Maven执行。

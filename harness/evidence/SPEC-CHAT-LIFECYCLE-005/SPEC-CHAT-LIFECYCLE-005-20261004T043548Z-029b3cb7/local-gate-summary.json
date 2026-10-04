@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "kind": "limited-scope-gate-check",
+  "verification": "local-gate/verification.json",
+  "verificationSha256": "392847508235227d56fdb0fcd55147321888d3aac21fcac97eb4362f86359053",
+  "headCommit": "f20bd342fb4b0d583d9a8d0dd53bde3f448c4fad",
+  "finishedAt": "2026-10-04T04:49:01Z",
+  "scopes": [
+    "frontend",
+    "harness"
+  ],
+  "steps": [
+    {
+      "name": "frontend-typecheck",
+      "exitCode": 0,
+      "logSha256": "150b8f5e6954ae1ebc67a61220fd3b475d89a262b5f342b98838e3dc84fed489"
+    },
+    {
+      "name": "frontend-build",
+      "exitCode": 0,
+      "logSha256": "54477d43aeff23d0ebdac341b026ec6b00616233287a851dd0f3e3f93a849aad"
+    },
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "logSha256": "6b88b9a6057606024a1bf285377c7371051f61b28a1e81d6b68a3fd12bf6cb7b"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "logSha256": "53a4a1b7863bea67045d82fe8a1bc53c8c30dd3740b7708ff332a9300796dc18"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "logSha256": "0456d6551eef206c05217007f775b3b7e8fe918df66de019312f60508977f0f0"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "logSha256": "4e10a1e812f0b191030d2c37fe44de0208496da697420ac588f8a781ffe4e1be"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "pythonTests": 64,
+  "allStepLogHashesRecomputed": true,
+  "requiredTaskScopes": [
+    "frontend",
+    "backend",
+    "harness"
+  ],
+  "fullTaskResult": "blocked",
+  "fullBackendRun": false,
+  "meaning": "Seven selected steps only. Raw logs checked locally but not committed. Does not authorize task completion or deployment."
+}

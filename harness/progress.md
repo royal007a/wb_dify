@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T04:27:21Z`
+- Generated from task state updated at: `2026-10-04T04:49:51Z`
 - Current task: `none`
-- Counts: pending 17 · running 0 · blocked 1 · completed 76
+- Counts: pending 16 · running 0 · blocked 2 · completed 76
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -75,7 +75,7 @@
 | `SPEC-AUDIT-004` | P2 | completed | harness | reversible_write | 补验证摘要实文件绑定与历史兼容清单 |
 | `SPEC-AUDIT-005` | P2 | pending | harness | reversible_write | 绑定规范run目录、步骤日志与可信计数清单 |
 | `SPEC-CHAT-LIFECYCLE-004` | P2 | completed | backend, frontend, harness | reversible_write | 补人工重连、澄清放弃与建会话超时边界 |
-| `SPEC-CHAT-LIFECYCLE-005` | P2 | pending | frontend, backend, harness | reversible_write | 补齐人工恢复残余交互与提示 |
+| `SPEC-CHAT-LIFECYCLE-005` | P2 | blocked | frontend, backend, harness | reversible_write | 补齐人工恢复残余交互与提示 |
 | `SPEC-CHILD-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 核验子任务孤儿扫描与父Run恢复时序 |
 | `SPEC-CREDENTIAL-BOUNDARY-002` | P2 | completed | backend, runtime, harness | reversible_write | 补齐受保护配置命名空间与冻结凭据负向验收 |
 | `SPEC-CREDENTIAL-BOUNDARY-003` | P2 | completed | backend, harness | reversible_write | 主密钥宽松配置绑定别名不得被误授权 |
@@ -105,5 +105,6 @@
 
 ## Blocked
 - `SPEC-KNOWLEDGE-INTEGRITY-003`: 本机Colima数据盘100%、仅余258MiB，PG初始化No space left on device；df7a92b精确计数H2窄测通过，完整backend/migration待释放空间后重跑
+- `SPEC-CHAT-LIFECYCLE-005`: Colima Docker数据盘100%/约256MiB可用，完整backend门禁未运行；f20bd34已通过34项受控浏览器、17项H2与frontend/harness七步，但不能替代frontend/backend/harness完整验收。runner预检返回75，未部署。
 
 Regenerate with `python3 harness/harness.py render-progress`; verify with `python3 harness/harness.py check-progress`.

@@ -76,7 +76,7 @@
 - Run输入001/002：20000 UTF-16上限、指定幂等唯一约束、并发删除会话404及明确拒绝resume的出口已有543项后端/32项受控浏览器历史证据；f0dd199追加结构化PG约束字段和NUL拦截后547项后端零skip，09:56已部署132并实测。重复gapId撑爆的反例已撤回。其他Chat恢复P3与全数据库故障排列仍非保证。
 - 输入卫生001–003：上传、基本管理文本、会话标题、Workflow试跑与四类Agent绑定NUL前置400，选定检索/memory/意图读准入已有本地585项后端零skip证据（104af66），未部署132。002和003均经独立archive重算SHA、源码身份及离线报告闭环，复核方未重新运行Maven。保留多元素后项非法专门用例/仅路径ID边界；内部模型文本也按PARAM_ERROR拒绝且不清洗，不代表一定是用户错误。不能概称全入口完成。132磁盘96%、余量约1.55GiB，下次发布前须明确清理范围或扩容，未擅自删除备份。
 
-- 总验收补录：管理分页400/夹值尚未统一（SPEC-API-PAGINATION-001）；在途GET下人工重连、取消查询按钮名、跨会话提示仍归SPEC-CHAT-LIFECYCLE-005，明确拒绝resume循环已随RUN-INPUT-001修复。send阻塞后再次提交断言、报告partial传播与脱敏可复算输入已由SPEC-VERIFY-002本轮门禁补齐，原始XML仍不提交；输入不是签名。
+- 总验收补录：管理分页400/夹值尚未统一（SPEC-API-PAGINATION-001）；在途GET人工重连、取消查询按钮、跨会话提示已由f20bd34实现，34项受控浏览器及17项H2通过，frontend/harness七步通过，但SPEC-CHAT-LIFECYCLE-005因Colima满盘未跑完整backend而blocked、未部署，见SPEC_CHAT_INFLIGHT_RECOVERY。明确拒绝resume循环已随RUN-INPUT-001修复。send阻塞后再次提交断言、报告partial传播与脱敏可复算输入已由SPEC-VERIFY-002本轮门禁补齐，原始XML仍不提交；输入不是签名。
 
 - 知识：部分来源失败仍先发completed；wrapped suspension/数据库故障可能转Gap，见SPEC-KNOWLEDGE-FINISH-004。索引isPostgres另借连接/失败当H2和Agent固定Workflow checksum未比对已由1388db6修复，77项窄测通过，独立静态复核认可；df7a92b补强合法Agent执行的精确写入计数。SPEC-KNOWLEDGE-INTEGRITY-003完整门禁仍因本机Colima磁盘满而未通过，不能正式收口或宣称已部署。
 - 恢复：Chat每次重启重置完整runTimeout（SPEC-RUN-BUDGET-001）；recallLatency/replanDecisions重置、轮末replan生成新UUID及重复观察事件（SPEC-HISTORY-RECOVERY-003）。

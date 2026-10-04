@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T04:27:21Z",
+  "updatedAt": "2026-10-04T04:49:51Z",
   "tasks": [
     {
       "id": "SPEC-AUDIT-005",
@@ -9,12 +9,18 @@
       "description": "AUDIT-004独立隔离CLI复核剩余P2：run目录指向同根另一run、步骤共用或错用日志、自报totals不符classes、历史清单可直接扩充；另有手改任务状态的静态边界。原P2-A/B已收口，不宣称防仓库恶意写者。",
       "priority": "P2",
       "status": "pending",
-      "scopes": ["harness"],
-      "verifyScopes": ["harness"],
+      "scopes": [
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-AUDIT-004"],
+      "dependsOn": [
+        "SPEC-AUDIT-004"
+      ],
       "acceptance": [
         "规范evidence/task/runId目录不可经同根符号链接重用另一个run；逐步骤只读自己唯一命名的日志",
         "按classes重算非负完整totals并要求实际执行大于0、匹配期望suite；伪造空/零/不一致计数拒绝",
@@ -3578,7 +3584,7 @@
       "title": "补齐人工恢复残余交互与提示",
       "description": "总验收review要求显式登记P3：在途GET时人工重试不重连、取消待确认按钮名仍重试提交、跨会话resume与不存在的文案不同；明确拒绝后resumeState循环同时关联SPEC-RUN-INPUT-001。",
       "priority": "P2",
-      "status": "pending",
+      "status": "blocked",
       "scopes": [
         "frontend",
         "backend",
@@ -3598,12 +3604,22 @@
         "取消待确认按钮明确仅查询，跨会话来源不暴露更多身份",
         "resume被明确拒绝后有恢复入口，不重发同一个失效resume；与RUN-INPUT验收去重"
       ],
-      "planPath": "exec-plans/active/SPEC-CHAT-LIFECYCLE-005.md",
+      "planPath": "exec-plans/blocked/SPEC-CHAT-LIFECYCLE-005.md",
       "checkpoint": null,
-      "blockedReason": null,
-      "evidence": [],
+      "blockedReason": "Colima Docker数据盘100%/约256MiB可用，完整backend门禁未运行；f20bd34已通过34项受控浏览器、17项H2与frontend/harness七步，但不能替代frontend/backend/harness完整验收。runner预检返回75，未部署。",
+      "evidence": [
+        {
+          "runId": "SPEC-CHAT-LIFECYCLE-005-20261004T043548Z-029b3cb7",
+          "path": "harness/evidence/SPEC-CHAT-LIFECYCLE-005/SPEC-CHAT-LIFECYCLE-005-20261004T043548Z-029b3cb7",
+          "result": "blocked",
+          "exitCode": 75,
+          "baselineCommit": "37aa151277740b8d9925cc5cd2e2f89389adbc0e",
+          "headCommit": "f20bd342fb4b0d583d9a8d0dd53bde3f448c4fad",
+          "recordedAt": "2026-10-04T04:49:51Z"
+        }
+      ],
       "createdAt": "2026-10-04T00:50:00Z",
-      "updatedAt": "2026-10-04T00:50:00Z"
+      "updatedAt": "2026-10-04T04:49:51Z"
     },
     {
       "id": "SPEC-VERIFY-002",

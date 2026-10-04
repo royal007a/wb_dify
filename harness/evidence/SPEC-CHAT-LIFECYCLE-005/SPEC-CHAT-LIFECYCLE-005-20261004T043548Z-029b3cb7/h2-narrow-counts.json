@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "kind": "narrow-only-not-full-backend",
+  "totals": {
+    "tests": 17,
+    "executed": 17,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "flakyAttempts": 0
+  },
+  "classes": [
+    {
+      "class": "com.hify.api.RunFlowIntegrationTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "executed": 2,
+      "flakyAttempts": 0,
+      "expectedMinimum": 2,
+      "xmlSha256": "336056bc839af05f4fe6907f723549ee3f1ddd6297f6bc1d01cccb26d9e1511f"
+    },
+    {
+      "class": "com.hify.api.RunSubmissionIdentityTest",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "executed": 15,
+      "flakyAttempts": 0,
+      "expectedMinimum": 15,
+      "xmlSha256": "b810ebb4c490cd5597ca7ce94647d559db9f67d37b9b57e8b3f8aa5d59d9fa88"
+    }
+  ],
+  "underfilledSuites": [],
+  "countMeaning": "Reported testcase/skip records; disabled containers can hide additional intended methods."
+}

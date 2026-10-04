@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-CHAT-LIFECYCLE-005-20261004T043548Z-029b3cb7",
+  "taskId": "SPEC-CHAT-LIFECYCLE-005",
+  "status": "blocked",
+  "baselineCommit": "37aa151277740b8d9925cc5cd2e2f89389adbc0e",
+  "approvalRef": null,
+  "startedAt": "2026-10-04T04:35:48Z",
+  "exitCode": 75,
+  "reason": "task command failed",
+  "headCommit": "f20bd342fb4b0d583d9a8d0dd53bde3f448c4fad",
+  "finishedAt": "2026-10-04T04:49:51Z"
+}

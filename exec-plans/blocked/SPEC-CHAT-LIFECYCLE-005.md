@@ -7,3 +7,9 @@
 3. 缺失和跨会话resume来源统一40000固定文案，无ID回显，在任何写入之前拒绝；同会话不在NEEDS_INPUT仍409，合法恢复与幂等语义不改。HTTP/H2统计零增量及正向对照，服务层使用统一BizException/ErrorCode。
 4. 先保留红灯，再实现；本地独立Vite/受控浏览器，不用共享后端；仅选定H2测试，不启动Docker或PG。规格、候选映射、最少用例数和证据同步。
 5. 单独记录frontend/harness门禁及浏览器/H2范围。若盘仍满，runner非零保留blocked，不跑明知无空间的全后端容器门禁；待完整三scope通过再收口、再评估部署。交mymacclaude只读复核，声明未测与未部署。
+
+## 本轮结果（不改变完成标准）
+
+代码f20bd34：34项受控浏览器、17项指定H2测试均通过；独立frontend/harness七步通过（含64项Python）。红灯与测试夹具错误分别保留在narrow-summary，详见docs/evidence/SPEC_CHAT_INFLIGHT_RECOVERY.md。04:49Z runner以75结束，原因是Colima数据盘100%/约256MiB可用，未运行完整backend门禁；任务仍blocked，未部署。不要把local-gate中的passed移作本任务完成证据。
+
+恢复条件：人确认共享Docker清理/扩容范围并完成空间恢复后，按原frontend/backend/harness范围新建一次runner，重跑完整门禁；以新源码身份提交证据，再决定部署。旧红灯、blocked记录均保留。

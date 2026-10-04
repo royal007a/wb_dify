@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "kind": "partial-validation-not-task-completion",
+  "recordedAt": "2026-10-04T04:49:31.530Z",
+  "headCommit": "f20bd342fb4b0d583d9a8d0dd53bde3f448c4fad",
+  "backendTree": "85586d8cfe5ce35a3224e51b4c6020a6327a0977",
+  "frontendTree": "1e257aae35618d3175c8d2897070d90c456a9060",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "logs": [
+    {
+      "log": "browser-red.log",
+      "sha256": "8071e8196225d67b060982402c86881aa3a58bc337cf5cdf7c11b31efb93e304"
+    },
+    {
+      "log": "h2-red.log",
+      "sha256": "2f685b537ed234b27fa5e4b28a221bb9abadfa3022f82276007b89dd6f71de4d"
+    },
+    {
+      "log": "h2-red-contract.log",
+      "sha256": "6d1434fc60c1078922e9cb6fef9e6636338a75d1762c24657da42380a19b2198"
+    },
+    {
+      "log": "browser-targeted.log",
+      "sha256": "21a0ac3822989bee3a3949e25137541aa13e346a64a6857bed59928934db422f"
+    },
+    {
+      "log": "browser-green.log",
+      "sha256": "9af6491d8f8d5df625e1e6d523573c20aa21d5f65b4294208c45308007c00f26"
+    },
+    {
+      "log": "h2-green.log",
+      "sha256": "a436fbfdb74b3fe5039db8d197104cdf7c793c49840ee014c973c5b12e5c8b1d"
+    }
+  ],
+  "red": [
+    {
+      "log": "browser-red.log",
+      "exitCode": 1,
+      "tests": 2,
+      "failed": 2,
+      "reason": "Actual manual retry clicks refused because the button is disabled while GET is in flight; RUNNING/COMPLETED variants."
+    },
+    {
+      "log": "h2-red.log",
+      "exitCode": 1,
+      "tests": 1,
+      "failed": 1,
+      "reason": "Preliminary fixed-message expectation fails on distinct foreign-source response; expectation subsequently uses existing ErrorCode.PARAM_ERROR rather than new hard-coded text."
+    },
+    {
+      "log": "h2-red-contract.log",
+      "exitCode": 1,
+      "tests": 1,
+      "failed": 1,
+      "reason": "Final generic PARAM_ERROR contract still fails against old source-specific response."
+    }
+  ],
+  "fixtureCorrection": {
+    "log": "browser-targeted.log",
+    "exitCode": 1,
+    "tests": 5,
+    "passed": 3,
+    "failed": 2,
+    "reason": "After product fix, two new tests incorrectly selected both the welcome bubble and the answer. Corrected to last answer plus baseline assistant count +1; not a product regression."
+  },
+  "green": [
+    {
+      "log": "browser-green.log",
+      "exitCode": 0,
+      "tests": 34,
+      "passed": 34,
+      "scope": "Real Chromium/Vue with controlled HTTP and EventSource; not backend SSE or deployment."
+    },
+    {
+      "log": "h2-green.log",
+      "exitCode": 0,
+      "tests": 17,
+      "passed": 17,
+      "skipped": 0,
+      "scope": "RunSubmissionIdentityTest 15 and RunFlowIntegrationTest 2; isolated H2, not PG or complete backend.",
+      "summary": "h2-narrow-counts.json",
+      "summarySha256": "7c7ae6bfa58b7f7112f3a18d5eff537a4cedb80c61a6b9855f1cbce2b85ca072"
+    }
+  ],
+  "notRun": [
+    "Complete frontend/backend/harness task gate",
+    "PostgreSQL regression",
+    "Real network SSE for these races",
+    "Deployment to 132"
+  ],
+  "blocker": {
+    "check": "colima ssh -- df -h /var/lib/docker",
+    "observed": "40G total / 37G used / 256M available / 100%",
+    "action": "No Docker tests or shared-state cleanup attempted; scope approval needed before deleting shared resources."
+  }
+}
