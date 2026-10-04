@@ -120,6 +120,8 @@ GET    /api/v1/runs/{runId}/events/stream
 
 Run输入上限为20000个Java UTF-16代码单元（与Bean Validation/String.length一致，不是UTF-8字节或Unicode码点数）；超过上限在写入前返回400/40000，恰好20000可接受。仅SQLState=23505且约束为uq_run_idempotency（H2为该约束的生成索引）才作为并发幂等重放；其他完整性异常回滚后，如会话已不存在返回404/40400，否则固定500/50000，不回显SQL/约束/输入。现有普通会话不存在入口的400兼容行为不在本片统一变更。
 
+Run创建的message、conversationId、Idempotency-Key、resume.runId/gapIds含NUL（U+0000）时，数据库访问前拒绝400/40000。PG唯一冲突读取驱动结构化SQLState/constraint字段，不依赖lc_messages；存在PG诊断时优先于Hibernate的报文解析结果，缺字段不猜测。H2兼容路径保持原行为。
+
 Console在一次此前非unknown的resume提交被明确4xx拒绝后，清除恢复身份、暂停该会话继续发送，提示显式新建会话并重新描述完整任务；不自动恢复该次澄清回答到输入框，不让失效resume反复提交或悄悄变成新任务。若此前结果不明，仍保留原key查找/重放，不能用后来的4xx武断丢弃已提交身份。
 
 取消接口对已存在的终态Run仍返回202及原资源，不修改状态、取消时间戳或追加事件；COMPLETED/FAILED且原本未请求取消时，cancelRequestedAt保持null。这同样是当前HTTP兼容口径的显式记录，并非宣称初版规格已预先规定；不存在的Run仍为404。

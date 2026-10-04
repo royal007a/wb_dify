@@ -140,6 +140,8 @@ public class RunApplicationService {
     public CreateResult create(String conversationId, String idempotencyKey, String message,
                                ResumeRequest resume) {
         validateIdempotencyKey(idempotencyKey);
+        rejectNul(conversationId);
+        rejectNul(message);
         if (message == null || message.isBlank() || message.length() > 20000) {
             throw new com.hify.common.BizException(com.hify.common.ErrorCode.PARAM_ERROR);
         }
@@ -196,8 +198,15 @@ public class RunApplicationService {
     }
 
     private static void validateIdempotencyKey(String key) {
+        rejectNul(key);
         if (key == null || key.isBlank()) throw new IllegalArgumentException("Idempotency-Key is required");
         if (key.length() > 128) throw new IllegalArgumentException("Idempotency-Key must be at most 128 characters");
+    }
+
+    private static void rejectNul(String value) {
+        if (value != null && value.indexOf(0) >= 0) {
+            throw new com.hify.common.BizException(com.hify.common.ErrorCode.PARAM_ERROR);
+        }
     }
 
     /** A Run is durable before submission. Refusal must settle it, not leave a replayable zombie. */
@@ -303,6 +312,17 @@ public class RunApplicationService {
 
     private static boolean isIdempotencyConstraint(Throwable failure) {
         Set<Throwable> seen = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+        // PG's structured protocol field is locale independent. Hibernate's
+        // constraint-name extractor may parse English message text, so it must
+        // not override an actual PG diagnostic (including a missing field).
+        for (Throwable cause = failure; cause != null && seen.add(cause); cause = cause.getCause()) {
+            if (cause instanceof org.postgresql.util.PSQLException pg) {
+                var detail = pg.getServerErrorMessage();
+                return "23505".equals(pg.getSQLState()) && detail != null
+                        && "uq_run_idempotency".equalsIgnoreCase(detail.getConstraint());
+            }
+        }
+        seen.clear();
         for (Throwable cause = failure; cause != null && seen.add(cause); cause = cause.getCause()) {
             if (!(cause instanceof org.hibernate.exception.ConstraintViolationException constraint)
                     || !"23505".equals(constraint.getSQLState())) continue;
@@ -912,6 +932,8 @@ public class RunApplicationService {
     public record CreateResult(AgentRun run, boolean replayed) {}
     public record ResumeRequest(String runId, List<String> gapIds) {
         public ResumeRequest {
+            rejectNul(runId);
+            if (gapIds != null) gapIds.forEach(RunApplicationService::rejectNul);
             if (runId == null || runId.isBlank()) throw new IllegalArgumentException("Resume Run id is required");
             gapIds = gapIds == null ? List.of() : gapIds.stream().distinct().toList();
             if (gapIds.isEmpty()) throw new IllegalArgumentException("At least one gap id is required");

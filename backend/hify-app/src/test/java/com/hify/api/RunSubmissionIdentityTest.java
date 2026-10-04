@@ -190,8 +190,8 @@ class RunSubmissionIdentityTest {
         String conversation=conversation(),key=UUID.randomUUID().toString();
         String id=create(conversation,key,"hello",202).path("id").asText();
         long beforeRuns=runs.count(),beforeMessages=messages.count(),beforeEvents=events.count();
-        var missOnce=new java.util.concurrent.atomic.AtomicBoolean(true);
-        doAnswer(call->missOnce.getAndSet(false)?java.util.Optional.empty():call.callRealMethod())
+        var winner=runs.findById(id).orElseThrow();
+        doReturn(java.util.Optional.empty(),java.util.Optional.of(winner))
                 .when(runs).findByConversationIdAndIdempotencyKey(conversation,key);
         var detail=new org.postgresql.util.ServerErrorMessage(
                 "SERROR\0C23505\0M重复键违反唯一约束\0nUQ_RUN_IDEMPOTENCY\0");
@@ -226,6 +226,21 @@ class RunSubmissionIdentityTest {
         verifyNoInteractions(executor);
         assertThat(create(conversation,UUID.randomUUID().toString(),"hello",202).path("inputMessage").asText()).isEqualTo("hello");
         verify(executor,times(1)).execute(any());
+    }
+
+    @Test void structuredPostgresFieldsOverrideMisleadingHibernateConstraintNames() throws Exception {
+        String conversation=conversation();
+        long beforeRuns=runs.count(),beforeMessages=messages.count(),beforeEvents=events.count();
+        for(String fields:java.util.List.of("C23505\0nuq_other\0", "C23503\0nuq_run_idempotency\0", "C23505\0")) {
+            var pg=new org.postgresql.util.PSQLException(new org.postgresql.util.ServerErrorMessage("SERROR\0M合成错误\0"+fields));
+            var wrapper=new org.hibernate.exception.ConstraintViolationException("synthetic",pg,"uq_run_idempotency");
+            doThrow(new org.springframework.dao.DataIntegrityViolationException("synthetic",wrapper)).when(runs).saveAndFlush(any());
+            assertThat(create(conversation,UUID.randomUUID().toString(),"hello",500).path("code").asInt()).isEqualTo(50000);
+        }
+        assertThat(runs.count()).isEqualTo(beforeRuns);
+        assertThat(messages.count()).isEqualTo(beforeMessages);
+        assertThat(events.count()).isEqualTo(beforeEvents);
+        verifyNoInteractions(executor);
     }
 
     @Test void h2SameKeyRaceStillConvergesWithOneUserMessageAndDispatch() throws Exception {
