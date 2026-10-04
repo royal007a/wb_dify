@@ -34,3 +34,10 @@ verification schema v2保存每步command/exitCode/logSha256及Maven逐类tests/
 - finish completed校验当前runId、HEAD、要求的scopes及步骤、schema v3、passed、零skip/失败/flake；拒绝无报告或partial。新完成记录保存verification SHA，validate重查。run-task保留partial原因且不忽略finish失败。
 - 旧制度的completed记录不回写历史证据，也不代表旧skip已经补跑；SPEC-AUDIT-001、SPEC-CHAT-LIFECYCLE-003的描述注明partial，完整验收归SPEC-VERIFY-001。validate的历史兼容不构成旧记录已通过新门禁。
 - 本制度防误操作/漏测，不是针对能改仓库、伪造XML/manifest的恶意写者的安全边界；不承诺用SHA证明证据来源不可伪造。原始日志缺失时SHA也不能重建日志。
+
+## SPEC-AUDIT-004：实文件与历史准入
+
+- `finish completed`没有便携/降级开关：除上述manifest校验，还必须读取本run目录内每一步的真实日志、复算logSha256；Maven步骤必须读取对应的`<step>.tests.json`、复算testSummarySha256，并核对schema=1、result=passed、commandExitCode=0、invocationId/step和嵌入manifest的全部tests对象相同。缺文件、路径或符号链接逃逸、摘要不一致时拒绝完成，不修改任务为completed。
+- `legacy-evidence.json`冻结ebee870时已有86条记录的task/run/顺序与规范JSON摘要，不能通过删证据、改schema或在末尾追加假历史获得兼容。历史前缀不可变，新记录永不自动纳入清单；所有新completed记录都要求v3与verification SHA，包含非末条以及当前任务已重新pending/blocked时的旧completed。completed任务必须有completed尾记录。历史v3仍核对manifest身份和摘要；历史非v3兼容绝不代表旧partial/skip通过。
+- `validate`是可提交证据的便携检查，不等同于重新完成任务：新记录的verification和Maven摘要必须存在并匹配；原始日志若在场则复算，git archive里缺失的gitignore日志明确标注未复验。不能用这个模式调用finish放行。不会要求上传含环境/正文的原始XML或日志以换取绿色状态。
+- 反例与具名测试见`../spec/SPEC_HARNESS_COMPLETION.md`；仍不防写者同时伪造日志、摘要和仓库，未声称签名、可信执行或完整产品覆盖。

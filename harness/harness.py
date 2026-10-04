@@ -47,6 +47,11 @@ def atomic_json(path: Path, value: Any) -> None:
     temporary.replace(path)
 
 
+def record_digest(record: Any) -> str:
+    return hashlib.sha256(json.dumps(record, sort_keys=True, separators=(",", ":"),
+                                     ensure_ascii=False).encode("utf-8")).hexdigest()
+
+
 @dataclass
 class HarnessStore:
     root: Path
@@ -166,21 +171,60 @@ class HarnessStore:
         if len(ids) != len(set(ids)):
             errors.append("task ids must be unique")
         known = set(ids)
+        try:
+            legacy = self.read_json(self.harness_dir / "legacy-evidence.json")
+            if not isinstance(legacy, dict) or legacy.get("schemaVersion") != 1 or not isinstance(legacy.get("tasks"), dict):
+                raise ValueError("invalid legacy evidence inventory")
+            legacy = legacy["tasks"]
+            if set(legacy) - known:
+                errors.append("legacy evidence tasks were removed")
+        except (ValueError, OSError) as exc:
+            errors.append(str(exc))
+            legacy = {}
+        evidence_runs: set[str] = set()
         for task in tasks:
             for dependency in task.get("dependsOn", []):
                 if dependency not in known:
                     errors.append(f"{task.get('id')}: unknown dependency {dependency}")
                 if dependency == task.get("id"):
                     errors.append(f"{task.get('id')}: task cannot depend on itself")
-            if task.get("status") == "completed" and task.get("evidence"):
-                record = task["evidence"][-1]
-                if record.get("verificationSchemaVersion", 0) >= 3:
-                    try:
-                        raw = self.check_verification(task, record["path"], record["runId"], record["headCommit"])
-                        if hashlib.sha256(raw).hexdigest() != record.get("verificationSha256"):
-                            raise ValueError("verification digest changed")
-                    except (ValueError, OSError, KeyError, TypeError) as exc:
-                        errors.append(f"{task['id']}: invalid completed verification ({exc})")
+            records = task.get("evidence")
+            frozen = legacy.get(task["id"], [])
+            if not isinstance(records, list) or not isinstance(frozen, list):
+                errors.append(f"{task['id']}: invalid evidence list or frozen prefix")
+                continue
+            if len(records) < len(frozen):
+                errors.append(f"{task['id']}: historical evidence prefix was removed")
+            if task.get("status") == "completed" and (not records or not isinstance(records[-1], dict)
+                                                      or records[-1].get("result") != "completed"):
+                errors.append(f"{task['id']}: completed requires a completed evidence tail")
+            for index, record in enumerate(records):
+                try:
+                    if not isinstance(record, dict) or not isinstance(record.get("runId"), str) or not record["runId"]:
+                        raise ValueError("evidence record requires runId")
+                    if record["runId"] in evidence_runs:
+                        raise ValueError("duplicate evidence runId")
+                    evidence_runs.add(record["runId"])
+                    historical = index < len(frozen)
+                    if historical and (not isinstance(frozen[index], dict)
+                                       or frozen[index].get("runId") != record["runId"]
+                                       or frozen[index].get("recordSha256") != record_digest(record)):
+                        raise ValueError("historical evidence prefix changed")
+                    if record.get("result") not in {"completed", "blocked"}:
+                        raise ValueError("invalid evidence outcome")
+                    if record["result"] != "completed":
+                        continue
+                    if historical and record.get("verificationSchemaVersion") != 3:
+                        # Exact pre-enforcement records only; not a claim that old tests passed.
+                        continue
+                    if record.get("verificationSchemaVersion") != 3 or record.get("exitCode") != 0:
+                        raise ValueError("new completed evidence requires schema 3 and exit 0")
+                    raw = self.check_verification(task, record["path"], record["runId"], record["headCommit"],
+                                                  artifacts=not historical, require_logs=False)
+                    if hashlib.sha256(raw).hexdigest() != record.get("verificationSha256"):
+                        raise ValueError("verification digest changed")
+                except (ValueError, OSError, KeyError, TypeError, AttributeError) as exc:
+                    errors.append(f"{task['id']}: invalid completed verification / evidence ({exc})")
 
         graph = {task["id"]: task.get("dependsOn", []) for task in tasks if task.get("id")}
         visiting: set[str] = set()
@@ -379,6 +423,9 @@ class HarnessStore:
         if outcome == "completed":
             if exit_code != 0:
                 raise ValueError("completed requires a zero exit code and passed verification")
+            errors = self.validate()
+            if errors:
+                raise ValueError("invalid state before completion: " + "; ".join(errors))
             verification = self.check_verification(task, evidence_path, state["runId"], head)
         record = {
             "runId": state["runId"],
@@ -418,19 +465,48 @@ class HarnessStore:
         atomic_json(run_path, run)
         self.write_progress()
 
-    def check_verification(self, task, evidence_path, run_id, head):
-        path = self.root / evidence_path / "verification.json"
+    def evidence_file(self, directory: Path, name: str) -> Path:
+        if not isinstance(name, str) or not name:
+            raise ValueError("missing evidence file path")
+        path = (self.root / name).resolve()
+        if not path.is_relative_to(directory) or path == directory:
+            raise ValueError("evidence file escapes its run directory")
+        return path
+
+    def check_file_digest(self, path: Path, expected: str, *, required: bool = True) -> bytes | None:
+        if not isinstance(expected, str) or len(expected) != 64 or any(c not in "0123456789abcdef" for c in expected):
+            raise ValueError("invalid evidence SHA256")
+        if not required and not path.exists():
+            return None  # Portable metadata validation only; never used by finish.
+        try:
+            raw = path.read_bytes()
+        except OSError as exc:
+            raise ValueError("required evidence file is missing or unreadable") from exc
+        if hashlib.sha256(raw).hexdigest() != expected:
+            raise ValueError("evidence file digest changed")
+        return raw
+
+    def check_verification(self, task, evidence_path, run_id, head, *, artifacts=True, require_logs=True):
+        directory = (self.root / evidence_path).resolve()
+        evidence_root = (self.harness_dir / "evidence").resolve()
+        if (not evidence_root.is_relative_to(self.root.resolve())
+                or not directory.is_relative_to(evidence_root) or directory == evidence_root):
+            raise ValueError("verification directory escapes harness evidence")
+        path = self.evidence_file(directory, str(directory / "verification.json"))
         try:
             raw = path.read_bytes()
             report = json.loads(raw)
         except (OSError, ValueError) as exc:
             raise ValueError("current verification is missing or invalid") from exc
-        if (report.get("schemaVersion", 0) < 3 or not report.get("strictEvidence")
+        if (not isinstance(report, dict) or report.get("schemaVersion") != 3 or report.get("strictEvidence") is not True
                 or report.get("runId") != run_id or report.get("headCommit") != head
+                or not isinstance(report.get("scopes"), list)
+                or any(not isinstance(scope, str) for scope in report["scopes"])
                 or set(report.get("scopes", [])) != set(task["verifyScopes"])
                 or report.get("result") != "passed" or report.get("commandResult") != "passed"
                 or report.get("testCoverage") not in {"passed", "not-assessed"}
-                or not report.get("steps") or not report.get("invocationId")):
+                or not report.get("steps") or not isinstance(report.get("invocationId"), str)
+                or not report["invocationId"]):
             raise ValueError("verification must pass for this run, HEAD and all required scopes")
         required_steps = {
             "harness": {"harness-state", "harness-progress", "harness-api-spec", "harness-python-tests", "harness-shell-syntax"},
@@ -438,18 +514,35 @@ class HarnessStore:
             "runtime": {"runtime-tests"}, "eval": {"intent-context-recall-eval"},
             "frontend": {"frontend-typecheck", "frontend-build"},
         }
+        if not isinstance(report["steps"], list) or any(not isinstance(step, dict) for step in report["steps"]):
+            raise ValueError("invalid verification steps")
         names = [step.get("name") for step in report["steps"]]
+        if any(not isinstance(name, str) or not name or "/" in name or "\\" in name for name in names):
+            raise ValueError("invalid verification step name")
         required = set().union(*(required_steps[scope] for scope in task["verifyScopes"]))
         if not required <= set(names) or len(names) != len(set(names)):
             raise ValueError("verification is missing required scope steps or has duplicates")
         for step in report["steps"]:
             if step.get("exitCode") != 0 or step.get("summaryError") or not step.get("logSha256"):
                 raise ValueError("verification contains a failed or unverified step")
+            if artifacts:
+                log = self.evidence_file(directory, step.get("log"))
+                self.check_file_digest(log, step["logSha256"], required=require_logs)
             tests = step.get("mavenTests", {})
+            if not isinstance(tests, dict) or not isinstance(tests.get("totals", {}), dict):
+                raise ValueError("invalid verification test counts")
             totals = tests.get("totals", {})
-            if step.get("name") in {"backend-tests", "migration-postgres", "runtime-tests", "intent-context-recall-eval"}:
+            if step.get("name") in {"backend-tests", "migration-postgres", "runtime-tests", "intent-context-recall-eval", "api-inventory"}:
                 if not tests.get("classes") or not step.get("testSummarySha256"):
                     raise ValueError("verification is missing fresh Maven evidence")
+                if artifacts:
+                    summary_path = self.evidence_file(directory, str(directory / (step["name"] + ".tests.json")))
+                    summary = json.loads(self.check_file_digest(summary_path, step["testSummarySha256"]))
+                    if (not isinstance(summary, dict) or summary.get("schemaVersion") != 1
+                            or summary.get("result") != "passed" or summary.get("commandExitCode") != 0
+                            or summary.get("invocationId") != report["invocationId"]
+                            or summary.get("step") != step["name"] or summary.get("tests") != tests):
+                        raise ValueError("test summary must pass and match invocation, step and embedded counts")
             if any(totals.get(key, 0) for key in ("failures", "errors", "skipped", "flakyAttempts")) or tests.get("underfilledSuites"):
                 raise ValueError("verification contains failed, skipped or missing tests")
         return raw
@@ -500,7 +593,7 @@ def main() -> int:
                 for error in errors:
                     print(f"ERROR: {error}", file=sys.stderr)
                 return 1
-            print("Harness state is valid")
+            print("Harness state is valid (portable metadata check; absent raw logs are not reverified)")
         elif args.command == "render-progress":
             store.write_progress()
             print(store.progress_path.relative_to(store.root))

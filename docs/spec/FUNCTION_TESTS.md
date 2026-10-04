@@ -59,7 +59,7 @@
 | F35 | Flyway V1-V23从空库/升级不丢版本，唯一约束/加密存储 | 不能将 Testcontainers skip 当通过；数据真实且隔离 | P: migration scope（具体类和计数见 harness/verify.sh）；不是全部业务的 PG 覆盖 |
 | F36 | 启停脚本、失败清理、PID归属、备份恢复、SSE代理、TLS、前缀 | 不杀其他进程；构建与已部署SHA一致；Token主密钥不可重置 | O: start/stop/deploy 脚本；本轮需重新验证授权范围 |
 | F37 | 版本化评测数据、成功率/召回/覆盖/重复调查/成本延迟 | 测试集与参数不能混用；mock token/延迟不能称真实P95 | E: IntentEvaluationDatasetTest、HistoryRecallEvaluationTest、ContextManagementEvaluationTest；真实供应商效果未验收 |
-| F38 | Harness单任务、权限、baseline/checkpoint/evidence、生成进度 | 不同高风险动作需approvalRef；失败不标完成；测试记录版本对齐；skip须partial且退出非0 | harness/tests/test_harness.py、test_verification_report.py；ApiContractInventoryTest只核对接口库存method/path/handler，不是接口行为门禁 |
+| F38 | Harness单任务、权限、baseline/checkpoint/evidence、生成进度 | 不同高风险动作需approvalRef；失败不标完成；测试记录版本对齐；skip须partial且退出非0；完成须实文件SHA/摘要身份匹配，历史仅精确清单兼容 | harness/tests/test_harness.py、test_verification_report.py、SPEC_HARNESS_COMPLETION；ApiContractInventoryTest只核对接口库存method/path/handler，不是接口行为门禁；便携validate不重建缺失日志 |
 
 ## 必补负路径与精确HTTP断言
 

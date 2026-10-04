@@ -1,0 +1,503 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "ebee870034bcbbe7df8ae423f76cd4de40446eed",
+  "meaning": "Frozen compatibility inventory, not retrospective execution or approval of skipped historical tests. New records must never be added automatically.",
+  "tasks": {
+    "SPEC-UPLOAD-BOUNDARY-001": [
+      {
+        "runId": "SPEC-UPLOAD-BOUNDARY-001-20261004T000555Z-a33dd2b2",
+        "recordSha256": "197fbca7438677d725deb17580ffaf4142df562b9d3d199d872f52e6a17de3ed"
+      }
+    ],
+    "SPEC-API-BEHAVIOR-001": [
+      {
+        "runId": "SPEC-API-BEHAVIOR-001-20261004T000019Z-62dd48a5",
+        "recordSha256": "fec7aafacd65ec6e823cefc8841c351f90f2c7c1d326062b3111383df47e6b8c"
+      }
+    ],
+    "SPEC-HTTP-ERROR-001": [
+      {
+        "runId": "SPEC-HTTP-ERROR-001-20261003T234851Z-03837d9f",
+        "recordSha256": "16b9bc2f205c1b48e1284bc0fc8d241b0fa13eedd3e3cb08ce82a872c4d65955"
+      }
+    ],
+    "SPEC-AUDIT-003": [
+      {
+        "runId": "SPEC-AUDIT-003-20261003T233839Z-7c2f0035",
+        "recordSha256": "5219b62301344a15eb18a6bc9455e7b832a44bac72545a438acfa61798d33ba4"
+      }
+    ],
+    "SPEC-RUN-INPUT-001": [
+      {
+        "runId": "SPEC-RUN-INPUT-001-20261004T010956Z-64e536c5",
+        "recordSha256": "50a1a8d2cb3208d97da69c462ca4a29f2a5b6c624fe19bea61be008d87151109"
+      }
+    ],
+    "SPEC-API-BEHAVIOR-002": [
+      {
+        "runId": "SPEC-API-BEHAVIOR-002-20261004T001941Z-31a7040d",
+        "recordSha256": "ee096f2cf1989182812f7a9fe322d9ccdd65daf99894573db8c5414e5fa888e1"
+      }
+    ],
+    "SPEC-CHAT-LIFECYCLE-004": [
+      {
+        "runId": "SPEC-CHAT-LIFECYCLE-004-20261004T001246Z-fa30e7f6",
+        "recordSha256": "45472d81f0e9de2f7720b2488cf7df93ac1dca296ed5280412293d3a36c630d9"
+      }
+    ],
+    "SPEC-AUDIT-002": [
+      {
+        "runId": "SPEC-AUDIT-002-20261003T232617Z-bdeff028",
+        "recordSha256": "85a00575eb29bc12a06629e7dcdba44b57349e02c50e1ba042391a164927df31"
+      }
+    ],
+    "SPEC-CHAT-LIFECYCLE-003": [
+      {
+        "runId": "SPEC-CHAT-LIFECYCLE-003-20261003T231505Z-3104ff49",
+        "recordSha256": "8b03fbbfe7fef6b7693d9b09c1e9f78c7fb2deda1879c634ae033b714790e438"
+      }
+    ],
+    "SPEC-KNOWLEDGE-FINISH-003": [
+      {
+        "runId": "SPEC-KNOWLEDGE-FINISH-003-20261003T223822Z-bcc4281b",
+        "recordSha256": "ca3ebc2ab5f1ae91f53eeecd30a3a8d387c40a2522fcd02b9e4fd9728e86c000"
+      }
+    ],
+    "SPEC-KNOWLEDGE-FINISH-002": [
+      {
+        "runId": "SPEC-KNOWLEDGE-FINISH-002-20261003T222452Z-1c171576",
+        "recordSha256": "cdb810875dbb134067233ea814a9773596dcab5052eeb12da9b19c25afe8217e"
+      }
+    ],
+    "SPEC-KNOWLEDGE-INTEGRITY-003": [
+      {
+        "runId": "SPEC-KNOWLEDGE-INTEGRITY-003-20261004T032219Z-4e2d89c3",
+        "recordSha256": "b4d89651c518eda1ce4b132b029cc1237cdd2613dfd1469feeda618bb88b3ee3"
+      },
+      {
+        "runId": "SPEC-KNOWLEDGE-INTEGRITY-003-20261004T035147Z-fa35246e",
+        "recordSha256": "aca909c20e4e3e5f01e77836654882e8b42796ab12f0c9ef09923f31ec723c67"
+      }
+    ],
+    "SPEC-WORKFLOW-KNOWLEDGE-002": [
+      {
+        "runId": "SPEC-WORKFLOW-KNOWLEDGE-002-20261003T214143Z-a52b174c",
+        "recordSha256": "88ade7bc8cd870f101c450cd586e32d2456acce44dff63e08d4887ad59c014ce"
+      }
+    ],
+    "SPEC-HISTORY-RECOVERY-002": [
+      {
+        "runId": "SPEC-HISTORY-RECOVERY-002-20261003T210830Z-27c07002",
+        "recordSha256": "0804b9fe2f43839e201ecb99b78ff1de40893cf731d111e1d9e2b522d97f6fb0"
+      }
+    ],
+    "SPEC-HISTORY-RECOVERY-001": [
+      {
+        "runId": "SPEC-HISTORY-RECOVERY-001-20261003T204023Z-65c21df0",
+        "recordSha256": "f61facfab87766eff9d3251a77e155f40261c4f6c1c12d75ec62ff22b6081c67"
+      }
+    ],
+    "SPEC-RUN-SHUTDOWN-002": [
+      {
+        "runId": "SPEC-RUN-SHUTDOWN-002-20261003T200338Z-6fd9d532",
+        "recordSha256": "71976f6b6b8d41f863c786083fd9f55bd69cb448f07cb784721e90faa426c09b"
+      }
+    ],
+    "SPEC-RUN-SHUTDOWN-001": [
+      {
+        "runId": "SPEC-RUN-SHUTDOWN-001-20261003T193447Z-c75a236c",
+        "recordSha256": "b7399f6119b715b52fcfeeb19ee0350894c9b87f71b97e3aba6d3dd3e27de724"
+      }
+    ],
+    "SPEC-RUN-DISPATCH-001": [
+      {
+        "runId": "SPEC-RUN-DISPATCH-001-20261003T191810Z-fac85812",
+        "recordSha256": "50cba43ecb62e4c07526ccb667f9f05f990c4ca333b3a810148ea040b9e478ed"
+      }
+    ],
+    "SPEC-RUN-ADMISSION-002": [
+      {
+        "runId": "SPEC-RUN-ADMISSION-002-20261003T190736Z-c7c03d28",
+        "recordSha256": "fc4d9ca24fe82d1aa17c1d72c377e57cfabce99b0f2141a8ce8a547a2e630246"
+      }
+    ],
+    "SPEC-PROVIDER-LOCAL-FAILURE-002": [
+      {
+        "runId": "SPEC-PROVIDER-LOCAL-FAILURE-002-20261003T185305Z-d0bc5012",
+        "recordSha256": "9f6423d4c2378dc13a6458891912021f7ae323519e2c44b0c1198f1d84a875ee"
+      }
+    ],
+    "SPEC-CREDENTIAL-BOUNDARY-003": [
+      {
+        "runId": "SPEC-CREDENTIAL-BOUNDARY-003-20261003T190227Z-914e7df7",
+        "recordSha256": "6b5cfaa00507857732968ad599ae4d1ad04ff00d673be874f47e84cb53655768"
+      }
+    ],
+    "SPEC-CREDENTIAL-BOUNDARY-002": [
+      {
+        "runId": "SPEC-CREDENTIAL-BOUNDARY-002-20261003T182421Z-0778be20",
+        "recordSha256": "ff795a4ec297c7981f98f6cdb12ef840f4e1251fa4bd2329d84ba1da2bb75b8d"
+      }
+    ],
+    "SPEC-PROVIDER-LOCAL-FAILURE-001": [
+      {
+        "runId": "SPEC-PROVIDER-LOCAL-FAILURE-001-20261003T181315Z-126518e8",
+        "recordSha256": "6bb074f2a3a45fb30c71796242cdab604371db1175c10d0bc0185310201378d0"
+      }
+    ],
+    "SPEC-SSE-BACKPRESSURE-001": [
+      {
+        "runId": "SPEC-SSE-BACKPRESSURE-001-20261003T183234Z-1e6b28a8",
+        "recordSha256": "8c41668a24d48df3040d37a0efc0690c26000672815e8d9c0ad82f8d8733e963"
+      }
+    ],
+    "SPEC-RUN-ADMISSION-001": [
+      {
+        "runId": "SPEC-RUN-ADMISSION-001-20261003T202045Z-26dafb80",
+        "recordSha256": "a449aa144be941274b9a71e55dbc8e6f3f312890ac4c5050152c20f4d33b51b3"
+      }
+    ],
+    "SPEC-CHAT-LIFECYCLE-002": [
+      {
+        "runId": "SPEC-CHAT-LIFECYCLE-002-20261003T230116Z-4da78444",
+        "recordSha256": "5e5b6fbe60ab50a0875e9d877867f98080925ae4350c42be84625ba6503e7de1"
+      }
+    ],
+    "SPEC-WORKFLOW-GRAPH-002": [
+      {
+        "runId": "SPEC-WORKFLOW-GRAPH-002-20261003T225202Z-ce8fc33a",
+        "recordSha256": "0d20ab0bc766d5711c620296173cf351a21dbfbee08c58ff711365f671a63bb9"
+      }
+    ],
+    "SPEC-KNOWLEDGE-FINISH-001": [
+      {
+        "runId": "SPEC-KNOWLEDGE-FINISH-001-20261003T215851Z-6a2cffa8",
+        "recordSha256": "546c149cdfc7417856ca1b22d8ad50559a9194c17f984ff8e2e85cd08024367e"
+      }
+    ],
+    "SPEC-CREDENTIAL-BOUNDARY-001": [
+      {
+        "runId": "SPEC-CREDENTIAL-BOUNDARY-001-20261003T175759Z-426f4174",
+        "recordSha256": "4d8bb6f5660e5a1e49d73da94aab47883dc8861d9701807bc715575a5a9681a1"
+      }
+    ],
+    "SPEC-WORKFLOW-KNOWLEDGE-001": [
+      {
+        "runId": "SPEC-WORKFLOW-KNOWLEDGE-001-20261003T211653Z-11fb17fe",
+        "recordSha256": "2efc7498c6e84893d9d7e80bec5a21d5063b5417d334584747a4fe8b5b407a95"
+      },
+      {
+        "runId": "SPEC-WORKFLOW-KNOWLEDGE-001-20261003T213835Z-5121176c",
+        "recordSha256": "1a36eafd5eaf2c6ac22606616a50b73d0dd802752c36156d02fff6cc60671116"
+      }
+    ],
+    "SPEC-SSE-COMMIT-001": [
+      {
+        "runId": "SPEC-SSE-COMMIT-001-20261003T172003Z-1b8c2194",
+        "recordSha256": "25660fd0f1ddd83836b825995f5dd9ab4a01b6be40874f5e2dde1b6253c52890"
+      }
+    ],
+    "SPEC-WORKFLOW-CONTROL-001": [
+      {
+        "runId": "SPEC-WORKFLOW-CONTROL-001-20261003T162913Z-631e20c2",
+        "recordSha256": "5563464f8ff987987d87b2c90fb14c75d215ab90aea6bd5fd96fdbf4a68728d5"
+      },
+      {
+        "runId": "SPEC-WORKFLOW-CONTROL-001-20261003T171628Z-289874ad",
+        "recordSha256": "abddc062fb6e17c2e5fcd9f7ebc3938f58647fc789b33f929bc33cb82e065bef"
+      }
+    ],
+    "SPEC-WORKFLOW-GRAPH-001": [
+      {
+        "runId": "SPEC-WORKFLOW-GRAPH-001-20261003T160632Z-a99d5e7b",
+        "recordSha256": "cbddd81f932b4defc4a33d5d9e5284868e6c12d29fd20222052a5f4244f8366d"
+      }
+    ],
+    "SPEC-CHAT-UI-001": [
+      {
+        "runId": "SPEC-CHAT-UI-001-20261003T152908Z-8fad96f4",
+        "recordSha256": "9354e407e630383ecc0fb1fabcc6da06912d11f0dc2c570059e532c1a60e155a"
+      }
+    ],
+    "SPEC-COMMON-001": [
+      {
+        "runId": "SPEC-COMMON-001-20261003T151103Z-4fbdb81c",
+        "recordSha256": "7b8262506229d285a87f7122cd4cbd5aaa2382993282c5972e18d5ec34957cf6"
+      }
+    ],
+    "SPEC-AUDIT-001": [
+      {
+        "runId": "SPEC-AUDIT-001-20261003T142933Z-6a67ea8e",
+        "recordSha256": "b24011eb2215bd51c61a984a1412f81ebc0783005afa63e74ea8987777a4526d"
+      },
+      {
+        "runId": "SPEC-AUDIT-001-20261003T145048Z-ab1cba79",
+        "recordSha256": "bebedb315b163dc893ed5d9c979ba58ba5bc8eb1be27832b80ace7b0a9a3dec0"
+      },
+      {
+        "runId": "SPEC-AUDIT-001-20261003T230750Z-14ee53bf",
+        "recordSha256": "37680331c3813cb1892f4c160dbeb712b2ace4d4350e9bfc8c835736f6bd050e"
+      }
+    ],
+    "SPEC-VERIFY-001": [
+      {
+        "runId": "SPEC-VERIFY-001-20261003T233040Z-36e1c946",
+        "recordSha256": "099e884edc8bf4e75a5bd3873102af6078b9fb9611e099c04d7e74e3c6c29b7f"
+      },
+      {
+        "runId": "SPEC-VERIFY-001-20261004T002745Z-de13ece6",
+        "recordSha256": "8035387af8189f5689e6ea76f3af5b01ff235138801b8e0e23c9d16562898ed5"
+      },
+      {
+        "runId": "SPEC-VERIFY-001-20261004T003903Z-a34dc9b5",
+        "recordSha256": "b4d4f5f2cf146570055e60325ca697f60312edd20299beb2f56c9a6eac238d48"
+      }
+    ],
+    "SPEC-DEPLOY-001": [
+      {
+        "runId": "SPEC-DEPLOY-001-20261004T004451Z-46b22950",
+        "recordSha256": "6c662f5323f307edd2fe6aa3ef900cd72e0b2e014fb49d93eff13935bb2c031e"
+      }
+    ],
+    "MCP-TOKEN-DEPLOY-001": [
+      {
+        "runId": "MCP-TOKEN-DEPLOY-001-20261003T133102Z-5fda8339",
+        "recordSha256": "4a3eea22671851804c448fc84609a0d22824e815ac442d1b2630dcb404dbd39f"
+      }
+    ],
+    "MCP-TOKEN-001": [
+      {
+        "runId": "MCP-TOKEN-001-20261003T130723Z-bab6d426",
+        "recordSha256": "407d913a6d12ff3c0ef147c6d9a1907afa6e31c5c984e0cb76579be46715b807"
+      }
+    ],
+    "CHAT-DEMO-DEPLOY-001": [
+      {
+        "runId": "CHAT-DEMO-DEPLOY-001-20261003T123143Z-2bb8d4ed",
+        "recordSha256": "b411dc73da25304edd1f2dd1498621dff3e6a72581dcbeaeee570a4aa72190a2"
+      }
+    ],
+    "CHAT-DEMO-001": [
+      {
+        "runId": "CHAT-DEMO-001-20261003T122751Z-e8cc6970",
+        "recordSha256": "e6ffd12f7ab5f289a1c37d88f756de884b2dde849e29d7af69f4abf08d539158"
+      }
+    ],
+    "MCP-EDIT-DEPLOY-001": [
+      {
+        "runId": "MCP-EDIT-DEPLOY-001-20261003T115430Z-0c7248c0",
+        "recordSha256": "98879aeb349209c040a3448977b651a116c20931442f92462945fb32e47d5b09"
+      }
+    ],
+    "MCP-EDIT-001": [
+      {
+        "runId": "MCP-EDIT-001-20261003T114237Z-41f1a26a",
+        "recordSha256": "7fa56ddde0dfd921ce2020b50ef631d17f18d8c7faba7fbbcf432460268faa66"
+      }
+    ],
+    "HARNESS-001": [
+      {
+        "runId": "HARNESS-001-bootstrap",
+        "recordSha256": "28f700751bc3c064d897be06004e840f4fe375500e14d9847f12bd906a7033af"
+      }
+    ],
+    "PROVIDER-001": [
+      {
+        "runId": "PROVIDER-001-20260922T064758Z-30ffba0a",
+        "recordSha256": "0c4bbc9c6f02b17f4657b4ee1e22af9b86981d1848135aba2c40afb841ace998"
+      }
+    ],
+    "SECURITY-001": [
+      {
+        "runId": "SECURITY-001-20260922T064910Z-a11902a5",
+        "recordSha256": "96860ed918d73d35ea0e63f47934587d34067a38a92c40081ce77492b7e7cdc2"
+      }
+    ],
+    "RUNTIME-001": [
+      {
+        "runId": "RUNTIME-001-20260919T144937Z-2d63f8ee",
+        "recordSha256": "86d7f2749977657e730711f86f04adc472b36bed4a8ee8f96a367f784c6ac4e0"
+      }
+    ],
+    "CONTEXT-001": [
+      {
+        "runId": "CONTEXT-001-20260919T150026Z-8930877a",
+        "recordSha256": "263c382a9a6d84b95e25556e05e405399cb48b10f19061099487bdb01aae3f77"
+      }
+    ],
+    "SUBAGENT-001": [
+      {
+        "runId": "SUBAGENT-001-20260919T150635Z-76a3775b",
+        "recordSha256": "eab510196784d8dda0e1cc9d86105b3e104c7221d510d2bc6362fd1e4f33d22e"
+      }
+    ],
+    "MEMORY-002": [
+      {
+        "runId": "MEMORY-002-20260920T154414Z-5b6db58e",
+        "recordSha256": "fc09144f802e42f576d07816fd67cb8ffc092cda1e9cf4336397f61b23f96e6a"
+      }
+    ],
+    "RECALL-001": [
+      {
+        "runId": "RECALL-001-20260920T155145Z-eb16d6bf",
+        "recordSha256": "45d47ff48764080ca886a8b3e877e4a98134ceb3dcd3931c11660a00ad377b52"
+      }
+    ],
+    "RECALL-002": [
+      {
+        "runId": "RECALL-002-20260920T160349Z-fe885bf9",
+        "recordSha256": "4a65a5f8cdd0d03b85fd8338dfa9b2db54a887425943df74b5fe98976f9a0f00"
+      }
+    ],
+    "DEPLOY-001": [
+      {
+        "runId": "DEPLOY-001-20260920T161559Z-6463d37d",
+        "recordSha256": "00f01915c7c9ae175eca704241ab050ab54a3181efcc26e1a0a83ddffa1aa9dd"
+      }
+    ],
+    "COURSE-018-025": [
+      {
+        "runId": "COURSE-018-025-20260920T234237Z-225b9e09",
+        "recordSha256": "0c6ce1628cf1887cdf0c6ed3ae33b96ef133fe72b32af6e9240448f543497b54"
+      }
+    ],
+    "KNOWLEDGE-001": [
+      {
+        "runId": "KNOWLEDGE-001-20260920T234519Z-2c4da65e",
+        "recordSha256": "3eac96313b768c88c25b5966dfaa318ff2c6da5e91276e74d865395240cb0dce"
+      }
+    ],
+    "WORKFLOW-001": [
+      {
+        "runId": "WORKFLOW-001-20260920T235340Z-396f31f3",
+        "recordSha256": "7a5e3f9efc9d84088dcfe636133bc5d08df816f12abda4c47fe48d322ad2596d"
+      }
+    ],
+    "MCP-001": [
+      {
+        "runId": "MCP-001-20260921T000216Z-d1b51317",
+        "recordSha256": "08ccbf5e54e2b2bb16b771e8691e03389df40bbcac5574b2cbfce7ce6d2eaa1f"
+      }
+    ],
+    "CONSOLE-002": [
+      {
+        "runId": "CONSOLE-002-20260921T000904Z-aaa44507",
+        "recordSha256": "3c036f40d34aa39ef3d60089c6b8ead80891e22588ec702f0c08c4b0c48022f0"
+      }
+    ],
+    "DEPLOY-002": [
+      {
+        "runId": "DEPLOY-002-20260921T001323Z-d29ac04b",
+        "recordSha256": "bafc1c0b0f9b1ea2d3aecd5a94a9d1c2a3c24e4cd9f782397a21ddd0950e45f7"
+      }
+    ],
+    "CAPABILITY-001": [
+      {
+        "runId": "CAPABILITY-001-20260922T024229Z-cc108ebb",
+        "recordSha256": "ee70e3174884c839dfdc2aa3f80eee47f26d85f7a9a9983015bb4dc4147c600b"
+      }
+    ],
+    "DEPLOY-003": [
+      {
+        "runId": "DEPLOY-003-20260922T025729Z-ad1e7625",
+        "recordSha256": "49dba164be377982ade57a977b2e0c1c30728818a57b88f9dc602d80f16fa0bb"
+      }
+    ],
+    "CAPABILITY-002": [
+      {
+        "runId": "CAPABILITY-002-20260922T034435Z-aee6184e",
+        "recordSha256": "062c804ab5c501cfe53f54558771944ec024e6faa4ca681c363c254cbec8408b"
+      },
+      {
+        "runId": "CAPABILITY-002-20260922T042400Z-bb43ae09",
+        "recordSha256": "caeba6411e8114a55e631875d1b21e4cb09c425495fd70c66498826ad890441a"
+      }
+    ],
+    "CONSOLE-003": [
+      {
+        "runId": "CONSOLE-003-20260922T042651Z-b6bb7740",
+        "recordSha256": "b6cb60a23cc0b6759935c4e97ae9d76e93204c0285b827a9ffc6e5cc98901e82"
+      }
+    ],
+    "DEPLOY-004": [
+      {
+        "runId": "DEPLOY-004-20260922T043005Z-ad8875cd",
+        "recordSha256": "ff71d2cc5a7ca8df43d6b821a78d49018e4db2c0df817da1211f5c1de1bcbecf"
+      },
+      {
+        "runId": "DEPLOY-004-20260922T043445Z-e942e755",
+        "recordSha256": "fd314f8d91962b64ab6825b333dfc8c9b86fa3904d97add420dda4fd56b8a7a1"
+      }
+    ],
+    "CAPABILITY-003": [
+      {
+        "runId": "CAPABILITY-003-20260922T064636Z-57fa0d91",
+        "recordSha256": "65be4732e6bc45ba7212e15ec9038b165d4169df390a019b6f57351b396a31bf"
+      }
+    ],
+    "COURSE-005-016": [
+      {
+        "runId": "COURSE-005-016-20260923T145953Z-f34493a1",
+        "recordSha256": "f5d70f5b7e8b109f3574b29d1960c3567477bce99722d21c5ab19fbd7823c316"
+      }
+    ],
+    "SPEC-VERIFY-002": [
+      {
+        "runId": "SPEC-VERIFY-002-20261004T020317Z-18c9e471",
+        "recordSha256": "40e7651245b079b55e30538cdb380e93289db11050a0123f4e9c3b19f35de66d"
+      }
+    ],
+    "SPEC-DEPLOY-002": [
+      {
+        "runId": "SPEC-DEPLOY-002-20261004T005922Z-a988d37f",
+        "recordSha256": "6cc7eeb00bf84830cc99efd21d1722e20922c9fa413ec035d302298b4cd97ad5"
+      }
+    ],
+    "SPEC-DEPLOY-003": [
+      {
+        "runId": "SPEC-DEPLOY-003-20261004T012841Z-fefe05f5",
+        "recordSha256": "cdd2971bde34844a9dff08a54359e6af534756ee11120c4dca8e6199838c74cb"
+      }
+    ],
+    "SPEC-RUN-INPUT-002": [
+      {
+        "runId": "SPEC-RUN-INPUT-002-20261004T013652Z-a0e3089e",
+        "recordSha256": "5395ba60c0f620b096b15001fb4334438505f19a36e6ac004aa1389006e923f6"
+      }
+    ],
+    "SPEC-DEPLOY-005": [
+      {
+        "runId": "SPEC-DEPLOY-005-20261004T014624Z-fe130b4d",
+        "recordSha256": "edc432eeec822c035284fb8c198abc39a8540bfcaccbc7b5edd235decd6493b3"
+      },
+      {
+        "runId": "SPEC-DEPLOY-005-20261004T015109Z-f50d1ff1",
+        "recordSha256": "621015281139120e004160b48eecc807e1653cf8161244981df8d3f2d3ef93b0"
+      }
+    ],
+    "SPEC-INPUT-HYGIENE-001": [
+      {
+        "runId": "SPEC-INPUT-HYGIENE-001-20261004T022129Z-d48cc760",
+        "recordSha256": "6c21fc3b3fe531b87c46046a6c79d2843d68dde33e0d3657bd0934a84d6a6034"
+      }
+    ],
+    "SPEC-INPUT-HYGIENE-002": [
+      {
+        "runId": "SPEC-INPUT-HYGIENE-002-20261004T024435Z-01f55785",
+        "recordSha256": "5bcc18ee1f0ee25cc209fa962fe329670a9afa990e783f8e30502871824cecc2"
+      }
+    ],
+    "SPEC-INPUT-HYGIENE-003": [
+      {
+        "runId": "SPEC-INPUT-HYGIENE-003-20261004T025954Z-48c4e6fd",
+        "recordSha256": "0ad918d62442fdc690d32bdee64e24e7871e7a29ba5369b684ad9caf7fd1ad09"
+      }
+    ],
+    "SPEC-DEPLOY-006": [
+      {
+        "runId": "SPEC-DEPLOY-006-20261004T015317Z-986538b0",
+        "recordSha256": "aaff3084465436b2201c5df04cadb87ae98226049b226eadf4fc422b436125f0"
+      }
+    ]
+  }
+}
