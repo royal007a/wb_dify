@@ -7,14 +7,14 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-KNOWLEDGE-INTEGRITY-003-20261004T032219Z-4e2d89c3",
-    "path": "harness/evidence/SPEC-KNOWLEDGE-INTEGRITY-003/SPEC-KNOWLEDGE-INTEGRITY-003-20261004T032219Z-4e2d89c3",
+    "runId": "SPEC-KNOWLEDGE-INTEGRITY-003-20261004T035147Z-fa35246e",
+    "path": "harness/evidence/SPEC-KNOWLEDGE-INTEGRITY-003/SPEC-KNOWLEDGE-INTEGRITY-003-20261004T035147Z-fa35246e",
     "result": "blocked",
-    "exitCode": 1,
-    "baselineCommit": "60bfe301f1fefe1f0826eae9b888e5265080d548",
-    "headCommit": "1388db6f96c39f80091a735e86c49d299ac0688c",
-    "recordedAt": "2026-10-04T03:41:54Z"
+    "exitCode": 75,
+    "baselineCommit": "f4abbe7730071e69f10def0739ad7a90e7094cb6",
+    "headCommit": "f4abbe7730071e69f10def0739ad7a90e7094cb6",
+    "recordedAt": "2026-10-04T03:51:47Z"
   },
   "lastCompletedTaskId": "SPEC-INPUT-HYGIENE-003",
-  "updatedAt": "2026-10-04T03:41:54Z"
+  "updatedAt": "2026-10-04T03:51:47Z"
 }

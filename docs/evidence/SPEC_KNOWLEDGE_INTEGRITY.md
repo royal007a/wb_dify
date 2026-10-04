@@ -21,3 +21,11 @@
 mymacclaude对6e13407..1388db6静态复核，两条生产缺陷认可修复，未构建或跑测；提出合法Agent Chat正向计数不够精确的测试P2。下一次同任务重跑将补强恢复原DSL后合法执行的workflow_runs恰好+1、节点行+3、助手消息+1，再取得新鲜backend/harness/migration证据。当前不正式收口。
 
 连接检查的范围仅是DocumentIndexingService；memory中的CanonicalMemoryIndexer和HistoryRecallService仍有直接借连接路径，它们元数据失败会抛错，不是本片修复的H2静默降级，不能写成全仓连接借用问题已消除。PG INSERT失败导致事务aborted后无法持久化FAILED仍在前述可提交边界之外。
+
+## 正向对照补强与环境阻碍
+
+df7a92b只改测试：恢复原DSL后在同一个旧Agent会话实际发起Chat Run，断言COMPLETED、旧agentVersionId和原答案，并精确要求workflow_runs+1、START/KNOWLEDGE/END节点共+3、助手消息+1。拒绝路径仍要求三个计数全部不变，直接版本试跑对照仍保留。535b2a4虽提交标题写了test，实际只补了阻碍处理计划；测试变更以df7a92b为准。
+
+03:57:00Z定向H2方法1项通过，0失败/错误/skip，Maven退出0；源码树及日志SHA见`harness/evidence/SPEC-KNOWLEDGE-INTEGRITY-003/SPEC-KNOWLEDGE-INTEGRITY-003-20261004T035147Z-fa35246e/narrow-positive-summary.json`。这次runner的stdin结束使保护分支以75退出，未执行verify；H2是随后单独跑的窄测，不能说runner通过或完整门禁通过。新断言尚未在PG执行。
+
+只读`colima ssh -- df -h /var/lib/docker`显示本机Docker盘40G、已用37G、可用258MiB、100%；macOS工作盘仍有48GiB，不能混为一谈。`docker system df`标出的reclaimable不是删除授权。未清理共享镜像/容器/卷、未重启Colima、未连接132。需先释放或扩容本机Colima数据盘，再运行新鲜backend/harness/migration；保留blocked和原失败记录，不降级验收范围。

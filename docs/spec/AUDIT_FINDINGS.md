@@ -96,7 +96,7 @@ G切片独立复核：无P0/P1；P2-1指出受保护命名空间漏掉项目实�
 | 对应任务/说明 | 具体反例与验证缺口 |
 |---|---|
 | SPEC-KNOWLEDGE-FINISH-004 | 部分来源失败先发knowledge.retrieval.completed再失败；wrapped suspension未沿cause链判定；DataAccessException变成用户Gap；UI缺来源核验范围说明 |
-| SPEC-KNOWLEDGE-INTEGRITY-003 | DocumentIndexingService.isPostgres另借连接，元数据读取失败返回false导致PG漏写向量却成功；运行时未比Agent绑定的workflow checksum |
+| SPEC-KNOWLEDGE-INTEGRITY-003 | 1388db6修复索引另借连接/元数据失败降H2及Agent固定workflow checksum未比对；77项窄测通过、独立静态复核认可。df7a92b补强合法Chat精确写入计数；首轮完整backend因本机PG容器磁盘满失败，完整验收仍开放，见SPEC_KNOWLEDGE_INTEGRITY证据 |
 | SPEC-MEMORY-FILTER-001 | PG前100候选先截断后按来源过滤，普通Run证据会被挤掉；缺同会话普通ref可见的正向端到端对照 |
 | SPEC-HISTORY-RECOVERY-003 | recallLatency/replanDecisions恢复归零；触发replan的末工具没有后续恢复记录时重建UUID；观察事件重放会重复 |
 | SPEC-RUN-BUDGET-001 | Chat重启重新分配完整runTimeout；Workflow按createdAt扣减，两条路径不一致 |

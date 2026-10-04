@@ -1,6 +1,6 @@
 # Hify 当前实现边界
 
-最新本地验证：2026-10-04 03:11:56Z，SPEC-INPUT-HYGIENE-003代码104af66，后端86类585项零失败/错误/skip/flaky、Harness54项通过；新增读准入H2/真实PG各4项均执行。54个具名子场景、68条接口/38功能组映射及显式脱敏离线重算见`evidence/SPEC_INPUT_HYGIENE_READS.md`，不将映射称为全功能通过。输入卫生001–003有本地生产代码变更但尚未部署；当前132仍为下述09:56 CST已复核增量。
+最新本地完整通过记录：2026-10-04 03:11:56Z，SPEC-INPUT-HYGIENE-003代码104af66，后端86类585项零失败/错误/skip/flaky、Harness54项通过；新增读准入H2/真实PG各4项均执行。54个具名子场景、68条接口/38功能组映射及显式脱敏离线重算见`evidence/SPEC_INPUT_HYGIENE_READS.md`，不将映射称为全功能通过。后续知识完整性1388db6的03:41:54Z门禁失败：backend的PG容器初始化磁盘不足，独立migration118项通过不能抵消；记录见`evidence/SPEC_KNOWLEDGE_INTEGRITY.md`。本机Colima数据盘仅余258MiB，完整重跑暂停。输入卫生及知识完整性本地生产代码变更尚未部署；当前132仍为下述09:56 CST已复核增量。
 
 初始审计基线：2026-10-03，原版 `/Users/weberzhao/hify`，`973257c`；源码对齐至 `9f40639`（2026-10-04）。下表区分源码存在、专项测试、历史运行，不代表全功能、真实模型或部署全部复验。历史审计001为495项中406通过/89条skip记录，Chat003为498项中409通过/89条skip记录；不回写或将历史skip冒充通过。新一轮SPEC-VERIFY后端539项/81类全部执行且零失败/错误/skip/flaky，包含真实隔离PG；逐方法子场景及其未测边界见 `evidence/SPEC_VERIFICATION.md`。该轮先出现背压测试夹具并发红灯，修复测试后重新全量运行，未掩盖首轮失败。当前验收清单见 `spec/README.md`；反例索引见 `spec/AUDIT_FINDINGS.md`；任务状态只看Harness。2026-09-13初版证据不能当作新功能的运行结果。
 
@@ -72,11 +72,11 @@
 
 - 发布故障路径：SPEC-DEPLOY-003的stderr写失败P1和005的清理SIGPIPE/最终quiet检查P2已经独立复验，609829e脚本随006成功发布；旧426de39仍不是可用安装器。非标准smoke响应/索引静默/schema目标归SPEC-DEPLOY-004。主流程stderr断管道仍可能fail-closed中止，本次用systemd/journal执行；不宣称所有失败路径安全。
 - Run输入001/002：20000 UTF-16上限、指定幂等唯一约束、并发删除会话404及明确拒绝resume的出口已有543项后端/32项受控浏览器历史证据；f0dd199追加结构化PG约束字段和NUL拦截后547项后端零skip，09:56已部署132并实测。重复gapId撑爆的反例已撤回。其他Chat恢复P3与全数据库故障排列仍非保证。
-- 输入卫生001–003：上传、基本管理文本、会话标题、Workflow试跑与四类Agent绑定NUL前置400，选定检索/memory/意图读准入已有本地585项后端零skip证据（104af66），未部署132。002独立archive复算闭环；003独立静态复核无P0/P1/P2，最终证据另待核对。保留多元素后项非法专门用例/仅路径ID边界；内部模型文本也按PARAM_ERROR拒绝且不清洗，不代表一定是用户错误。不能概称全入口完成。磁盘96%、余量约1.55GiB，下次发布前须明确清理范围或扩容，未擅自删除备份。
+- 输入卫生001–003：上传、基本管理文本、会话标题、Workflow试跑与四类Agent绑定NUL前置400，选定检索/memory/意图读准入已有本地585项后端零skip证据（104af66），未部署132。002和003均经独立archive重算SHA、源码身份及离线报告闭环，复核方未重新运行Maven。保留多元素后项非法专门用例/仅路径ID边界；内部模型文本也按PARAM_ERROR拒绝且不清洗，不代表一定是用户错误。不能概称全入口完成。132磁盘96%、余量约1.55GiB，下次发布前须明确清理范围或扩容，未擅自删除备份。
 
 - 总验收补录：管理分页400/夹值尚未统一（SPEC-API-PAGINATION-001）；在途GET下人工重连、取消查询按钮名、跨会话提示仍归SPEC-CHAT-LIFECYCLE-005，明确拒绝resume循环已随RUN-INPUT-001修复。send阻塞后再次提交断言、报告partial传播与脱敏可复算输入已由SPEC-VERIFY-002本轮门禁补齐，原始XML仍不提交；输入不是签名。
 
-- 知识：部分来源失败仍先发completed；wrapped suspension/数据库故障可能转Gap；索引isPostgres另借连接且失败当H2；Agent记录的Workflow checksum运行时未比对。分别见SPEC-KNOWLEDGE-FINISH-004、SPEC-KNOWLEDGE-INTEGRITY-003。
+- 知识：部分来源失败仍先发completed；wrapped suspension/数据库故障可能转Gap，见SPEC-KNOWLEDGE-FINISH-004。索引isPostgres另借连接/失败当H2和Agent固定Workflow checksum未比对已由1388db6修复，77项窄测通过，独立静态复核认可；df7a92b补强合法Agent执行的精确写入计数。SPEC-KNOWLEDGE-INTEGRITY-003完整门禁仍因本机Colima磁盘满而未通过，不能正式收口或宣称已部署。
 - 恢复：Chat每次重启重置完整runTimeout（SPEC-RUN-BUDGET-001）；recallLatency/replanDecisions重置、轮末replan生成新UUID及重复观察事件（SPEC-HISTORY-RECOVERY-003）。
 - 调度/关闭：拒绝后终态写库失败可留RUNNING、恢复超过104容量可判FAILED、WorkflowRecovery整体UPDATE失败阻止启动，统一归SPEC-RECOVERY-ADMISSION-001，已有三项对应验收。子任务监听器顺序另归SPEC-CHILD-RECOVERY-001。
 - Workflow：执行前异常/成功后读取失败仍可落MODEL_ERROR；END节点SUCCEEDED可与父CANCELLED不同；成功事实落盘后崩溃可重新执行（SPEC-WORKFLOW-RECOVERY-001）。started早于校验而无failed投影归SPEC-WORKFLOW-GRAPH-003。

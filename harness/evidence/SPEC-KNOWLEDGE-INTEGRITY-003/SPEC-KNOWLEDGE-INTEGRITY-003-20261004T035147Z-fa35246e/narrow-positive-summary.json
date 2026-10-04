@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "kind": "narrow-test-only",
+  "headCommit": "df7a92b7f7790428f881a3a37c37dfe67426f3c9",
+  "backendTree": "7c292e563a43e4fca438c108a7523f78243e13a0",
+  "frontendTree": "8f83bc4774e6049892447286e0da9057c5c3f397",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "command": ["mvn", "-B", "-f", "backend/pom.xml", "-pl", "hify-app", "-am", "-Dtest=WorkflowKnowledgeReviewTest#agentPinnedChecksumRejectsAChangedButInternallyValidWorkflow", "-Dsurefire.failIfNoSpecifiedTests=false", "test"],
+  "exitCode": 0,
+  "finishedAt": "2026-10-04T03:57:00Z",
+  "class": "com.hify.api.WorkflowKnowledgeReviewTest",
+  "method": "agentPinnedChecksumRejectsAChangedButInternallyValidWorkflow",
+  "counts": {"tests": 1, "failures": 0, "errors": 0, "skipped": 0},
+  "log": "narrow-positive-h2.log",
+  "logSha256": "2dd358283e600ce1d6ae4d93246e19e0d08cbaab9bbdf5a1f8a41c4f8590a8a1",
+  "meaning": "H2 targeted test after exact +1 workflow, +3 nodes and +1 assistant assertions; no Docker or PG started. Counts from the named Surefire class result, not sum of class and reactor totals. This is not a complete gate, not schema-v3 completion evidence and not deployment acceptance.",
+  "notRun": ["new positive assertions on PostgreSQL", "fresh complete backend gate", "fresh migration gate", "deployment"],
+  "environmentBlocker": "Read-only colima ssh df observed Docker data filesystem 40G, 37G used, 258MiB available, 100%; first complete backend log contains PG initdb No space left on device. No shared containers, images or volumes were removed.",
+  "runnerBoundary": "Runner stdin ended and guard returned 75 before verification. This narrow H2 command ran separately afterward; runner blocked state is retained."
+}

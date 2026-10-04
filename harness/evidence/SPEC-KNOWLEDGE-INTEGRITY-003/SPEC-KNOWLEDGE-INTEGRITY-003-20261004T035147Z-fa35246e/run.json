@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-KNOWLEDGE-INTEGRITY-003-20261004T035147Z-fa35246e",
+  "taskId": "SPEC-KNOWLEDGE-INTEGRITY-003",
+  "status": "blocked",
+  "baselineCommit": "f4abbe7730071e69f10def0739ad7a90e7094cb6",
+  "approvalRef": null,
+  "startedAt": "2026-10-04T03:51:47Z",
+  "exitCode": 75,
+  "reason": "task command failed",
+  "headCommit": "f4abbe7730071e69f10def0739ad7a90e7094cb6",
+  "finishedAt": "2026-10-04T03:51:47Z"
+}

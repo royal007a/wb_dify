@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T03:41:54Z",
+  "updatedAt": "2026-10-04T03:51:47Z",
   "tasks": [
     {
       "id": "SPEC-UPLOAD-BOUNDARY-001",
@@ -703,7 +703,7 @@
     {
       "id": "SPEC-KNOWLEDGE-INTEGRITY-003",
       "title": "补齐索引数据库类型检测及Agent固定Workflow校验和",
-      "description": "知识复验新增P2：索引侧isPostgres额外借连接且失败降级，执行侧未比对Agent已固定checksum。",
+      "description": "知识复验新增P2：索引侧isPostgres额外借连接且失败降级，执行侧未比对Agent已固定checksum。1388db6修复和窄测77项通过；完整backend因Colima磁盘满失败，df7a92b补强合法Agent执行精确计数，完整门禁仍待恢复空间后重跑。",
       "priority": "P2",
       "status": "blocked",
       "scopes": [
@@ -728,7 +728,7 @@
       ],
       "planPath": "exec-plans/blocked/SPEC-KNOWLEDGE-INTEGRITY-003.md",
       "checkpoint": null,
-      "blockedReason": "verification failed",
+      "blockedReason": "本机Colima数据盘100%、仅余258MiB，PG初始化No space left on device；df7a92b精确计数H2窄测通过，完整backend/migration待释放空间后重跑",
       "evidence": [
         {
           "runId": "SPEC-KNOWLEDGE-INTEGRITY-003-20261004T032219Z-4e2d89c3",
@@ -738,10 +738,19 @@
           "baselineCommit": "60bfe301f1fefe1f0826eae9b888e5265080d548",
           "headCommit": "1388db6f96c39f80091a735e86c49d299ac0688c",
           "recordedAt": "2026-10-04T03:41:54Z"
+        },
+        {
+          "runId": "SPEC-KNOWLEDGE-INTEGRITY-003-20261004T035147Z-fa35246e",
+          "path": "harness/evidence/SPEC-KNOWLEDGE-INTEGRITY-003/SPEC-KNOWLEDGE-INTEGRITY-003-20261004T035147Z-fa35246e",
+          "result": "blocked",
+          "exitCode": 75,
+          "baselineCommit": "f4abbe7730071e69f10def0739ad7a90e7094cb6",
+          "headCommit": "f4abbe7730071e69f10def0739ad7a90e7094cb6",
+          "recordedAt": "2026-10-04T03:51:47Z"
         }
       ],
       "createdAt": "2026-10-03T22:00:00Z",
-      "updatedAt": "2026-10-04T03:41:54Z"
+      "updatedAt": "2026-10-04T03:51:47Z"
     },
     {
       "id": "SPEC-WORKFLOW-KNOWLEDGE-002",

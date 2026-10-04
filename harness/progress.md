@@ -2,7 +2,7 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T03:41:54Z`
+- Generated from task state updated at: `2026-10-04T03:51:47Z`
 - Current task: `none`
 - Counts: pending 17 · running 0 · blocked 1 · completed 75
 
@@ -103,6 +103,6 @@
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |
 
 ## Blocked
-- `SPEC-KNOWLEDGE-INTEGRITY-003`: verification failed
+- `SPEC-KNOWLEDGE-INTEGRITY-003`: 本机Colima数据盘100%、仅余258MiB，PG初始化No space left on device；df7a92b精确计数H2窄测通过，完整backend/migration待释放空间后重跑
 
 Regenerate with `python3 harness/harness.py render-progress`; verify with `python3 harness/harness.py check-progress`.
