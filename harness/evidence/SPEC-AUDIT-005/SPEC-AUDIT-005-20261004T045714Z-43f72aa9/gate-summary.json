@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "kind": "harness-scope-only",
+  "headCommit": "0fee0df9f0a7cca06002152f2b9b4d711579c3e6",
+  "runId": "SPEC-AUDIT-005-20261004T045714Z-43f72aa9",
+  "invocationId": "5751109a-f210-427c-8ebe-855d1c9579fe",
+  "finishedAt": "2026-10-04T05:08:35Z",
+  "result": "passed",
+  "testCoverage": "not-assessed",
+  "verificationSha256": "d26f14ca1e3aa960fd4a32ec6d65b38aba120567a30ca62d22738f5b08f553de",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "logSha256": "6b88b9a6057606024a1bf285377c7371051f61b28a1e81d6b68a3fd12bf6cb7b"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "logSha256": "53a4a1b7863bea67045d82fe8a1bc53c8c30dd3740b7708ff332a9300796dc18"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "logSha256": "0456d6551eef206c05217007f775b3b7e8fe918df66de019312f60508977f0f0"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "logSha256": "ce740dc071ac692ec1510205864ec98b1240b8514bb2d0668f08bbde7cd21a1a"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "python": {
+    "tests": 74,
+    "failed": 0,
+    "errors": 0,
+    "durationSeconds": 65.079,
+    "meaning": "Python suites include fake Maven/installer commands; no actual Maven, Docker or remote deployment."
+  },
+  "stateSuite": {
+    "tests": 29,
+    "meaning": "Subset of the 74, not additional independent tests."
+  },
+  "trackedImplementationDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "legacyInventorySha256": "4ff93c4264edaeb7ada5e6cda2f20367b2f646f2495a6abd13e133e83071c648",
+  "allStepLogHashesRecomputed": true,
+  "rawLogsCommitted": false,
+  "boundary": "Hashes verified locally; archive validation without logs cannot reverify their contents. Completion is this registered harness slice, not the overall product/deployment goal."
+}

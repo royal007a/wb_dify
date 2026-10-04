@@ -130,7 +130,9 @@ SPEC-DEPLOY-002独立review在隔离archive用sh/dash实测9项与边界：新P1
 
 SPEC-AUDIT-004实现补证：cee737f增加完成时实文件哈希/摘要身份检查、86条精确历史前缀、逐条completed验证；本次64项Python回归和五步harness scope通过，首轮已有dash/HUP测试门闩超时失败仍保留。尚待独立复核，不把防误改描述成对仓库恶意写者的签名保障。便携validate缺ignored日志时不宣称复算过日志，finish不享受这项宽限；见SPEC_HARNESS_COMPLETION。
 
-004独立复核已关闭原两项P2，无P0/P1；四个新增CLI实测边界和一条静态状态边界登记SPEC-AUDIT-005：同根run目录符号链接、共用/错用日志、classes与totals自报不一致/零执行、可改历史清单、手工状态复用。详见SPEC_HARNESS_COMPLETION独立复核节，不宣称64项已由对方重跑。
+004独立复核已关闭原两项P2，无P0/P1；四个新增CLI实测边界和一条静态状态边界登记SPEC-AUDIT-005：同根run目录符号链接、共用/错用日志、classes与totals自报不一致/零执行、可改历史清单、手工状态复用。不宣称004的64项已由对方重跑。
+
+005本轮0fee0df已实现前四类补强：相同最终测试对旧代码29项产生25个失败断言，新代码29项通过，完整harness74项/五步通过。第五项手工回滚到原合法状态已实测并明确保留为恶意仓库写者边界，未说成修复。代码和证据待独立复核；见`../evidence/SPEC_HARNESS_COMPLETION_HARDENING.md`。不改产品/部署，不重写旧证据或把历史skip算通过。
 
 - API.md 把未实现会话列表、v1 会话详情/消息、tool-definition/dry-run 写成可调用；Workflow更新写成不存在的PATCH。
 - API.md 泛称全写请求幂等键、默认cursor分页、UUIDv7/ULID，均不是当前实现。

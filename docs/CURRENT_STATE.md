@@ -86,6 +86,8 @@
 - 资源边界：SSE每连接独占线程，慢读可延长单次send，180秒不是硬总期限；Run先截止时breaker只释放、不计供应商超时（SPEC-SSE-BACKPRESSURE-002、SPEC-PROVIDER-SAMPLING-001）。
 - 凭据：禁止用-D/JAVA_OPTS传密钥；sun.java.command等进程启动配置不在引用名单保护范围，不能误授权；见OPERATIONS。Chat004与Run输入001/002已复核关闭，其他管理文本输入卫生独立记录，不外推这些修复。
 
+- 门禁补强SPEC-AUDIT-005：0fee0df绑定规范run目录和每步日志、按类复核totals及当次期望集合、固定legacy清单身份；实际harness74项/五步通过，待独立复核。任意仓库写者回滚任务状态仍是非目标，不宣称签名；未运行Maven/PG或部署，不能解除Chat/知识完整门禁阻塞。
+
 - 不删除原型后重写；先用 characterization tests 固定 mock provider、tool call/result 和会话行为。
 - 当前初版优先建立纵向闭环；后续仍按 `PHASE_0_ALIGNMENT.md` 完成多模块和剩余契约，再扩展业务能力。
 - README/设计文档分别使用“源码存在”“测试通过”“运行验证”三种证据等级，禁止统称“已完成”。

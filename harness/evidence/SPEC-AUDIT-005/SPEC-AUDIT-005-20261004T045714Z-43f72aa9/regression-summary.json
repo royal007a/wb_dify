@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "kind": "isolated-harness-regression",
+  "headCommit": "0fee0df9f0a7cca06002152f2b9b4d711579c3e6",
+  "oldImplementation": "65775d5",
+  "runs": [
+    {
+      "log": "old-code-red.log",
+      "logSha256": "329eb2861645b132597ac54bafe1d45a16c8780711f34bad2f31982ea7d8e362",
+      "exitCode": 1,
+      "tests": 25,
+      "failedAssertions": 20,
+      "errors": 0
+    },
+    {
+      "log": "new-code-targeted.log",
+      "logSha256": "a38debe4cc7ed76961127066fd48096e9d6d62aec4fa134e22f1384a87b2b69f",
+      "exitCode": 1,
+      "tests": 25,
+      "failedAssertions": 0,
+      "errors": 13
+    },
+    {
+      "log": "new-code-targeted-root-normalized.log",
+      "logSha256": "f70c41f6149870a3f7a87961dc489773ced3f358f238ce8171e692d6338470a7",
+      "exitCode": 0,
+      "tests": 25,
+      "failedAssertions": 0,
+      "errors": 0
+    },
+    {
+      "log": "cli-and-state-green.log",
+      "logSha256": "bd2f345290bf016fa68840e4e3815653eb70d1b62dc531f119ff9f593bea64eb",
+      "exitCode": 0,
+      "tests": 29,
+      "failedAssertions": 0,
+      "errors": 0
+    },
+    {
+      "log": "final-tests-old-code-red.log",
+      "logSha256": "e5134365657cc3ef863252ae87602121bca223152298750c8a540206f19dccae",
+      "exitCode": 1,
+      "tests": 29,
+      "failedAssertions": 25,
+      "errors": 0
+    },
+    {
+      "log": "final-state-green.log",
+      "logSha256": "e3ba17def3cca2ae3aabaec9681e6b16292ed2e3c4fc3e22ddcfdfbe1f4ecd4d",
+      "exitCode": 0,
+      "tests": 29,
+      "failedAssertions": 0,
+      "errors": 0
+    }
+  ],
+  "countMeaning": "Failure count includes parameterized subtests, not independent defects; runs overlap and must not be added.",
+  "implementationCorrection": "First implementation compared canonical root to macOS /var alias, causing 13 errors. Root is now normalized before comparing owned subdirectories. Initial message mistakenly claimed pass and was explicitly corrected; failure log retained.",
+  "finalMutation": "Same final test_harness.py copied into a 65775d5 git archive; 29 tests, 25 failed assertions, no errors. No real Maven/Docker/132.",
+  "legacySha256": "4ff93c4264edaeb7ada5e6cda2f20367b2f646f2495a6abd13e133e83071c648",
+  "legacyChanged": false,
+  "sourceFiles": [
+    {
+      "path": "harness/harness.py",
+      "sha256": "0822e3bc5ff1a2a0f261f1bb36e1f3ca4cbede91c5500c446d7d74a560d436bf",
+      "gitBlob": "71e38d4069fbfa85992fa5ca4e01685dbc035f02"
+    },
+    {
+      "path": "harness/tests/test_harness.py",
+      "sha256": "0c64a24802082fd8e9cd3bfd1e689cb47a845828725f1185bba7caf003c37ac1",
+      "gitBlob": "3a266ee347e358e50bae30f0deaf6e7a23761a71"
+    }
+  ],
+  "productSourceChanged": false,
+  "boundaries": [
+    "Synthetic fixture pin substituted only in temporary test executable; production has no override flag/env.",
+    "Task status relabel to prior legitimate completion is possible with arbitrary repository writes; not a new run or new evidence.",
+    "Historical 585-case summary was parsed for format compatibility, not re-executed.",
+    "Raw logs remain ignored; committed hashes do not prove authenticity or reconstruct missing logs."
+  ]
+}

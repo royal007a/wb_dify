@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T04:49:51Z",
+  "updatedAt": "2026-10-04T05:08:35Z",
   "tasks": [
     {
       "id": "SPEC-AUDIT-005",
       "title": "绑定规范run目录、步骤日志与可信计数清单",
       "description": "AUDIT-004独立隔离CLI复核剩余P2：run目录指向同根另一run、步骤共用或错用日志、自报totals不符classes、历史清单可直接扩充；另有手改任务状态的静态边界。原P2-A/B已收口，不宣称防仓库恶意写者。",
       "priority": "P2",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "harness"
       ],
@@ -27,12 +27,24 @@
         "历史清单有固定身份，不可只修改清单扩大兼容；不重写旧测试记录或误称签名保障",
         "验证手改completed状态的可达性，记录协议边界；原四个实测反例先红后绿并保留合法CLI和便携副本正例"
       ],
-      "planPath": "exec-plans/active/SPEC-AUDIT-005.md",
+      "planPath": "exec-plans/completed/SPEC-AUDIT-005.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-AUDIT-005-20261004T045714Z-43f72aa9",
+          "path": "harness/evidence/SPEC-AUDIT-005/SPEC-AUDIT-005-20261004T045714Z-43f72aa9",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "65775d59e6a2bf2efb9bc657029c50c740d48d06",
+          "headCommit": "0fee0df9f0a7cca06002152f2b9b4d711579c3e6",
+          "recordedAt": "2026-10-04T05:08:35Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "d26f14ca1e3aa960fd4a32ec6d65b38aba120567a30ca62d22738f5b08f553de"
+        }
+      ],
       "createdAt": "2026-10-04T04:34:00Z",
-      "updatedAt": "2026-10-04T04:34:00Z"
+      "updatedAt": "2026-10-04T05:08:35Z"
     },
     {
       "id": "SPEC-UPLOAD-BOUNDARY-001",

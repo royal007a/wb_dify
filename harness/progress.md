@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T04:49:51Z`
+- Generated from task state updated at: `2026-10-04T05:08:35Z`
 - Current task: `none`
-- Counts: pending 16 · running 0 · blocked 2 · completed 76
+- Counts: pending 15 · running 0 · blocked 2 · completed 77
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -73,7 +73,7 @@
 | `SPEC-AUDIT-002` | P2 | completed | harness, backend | reversible_write | 规格复核补证据等级与可提交测试摘要 |
 | `SPEC-AUDIT-003` | P2 | completed | harness | reversible_write | 封闭验证报告与任务完成入口 |
 | `SPEC-AUDIT-004` | P2 | completed | harness | reversible_write | 补验证摘要实文件绑定与历史兼容清单 |
-| `SPEC-AUDIT-005` | P2 | pending | harness | reversible_write | 绑定规范run目录、步骤日志与可信计数清单 |
+| `SPEC-AUDIT-005` | P2 | completed | harness | reversible_write | 绑定规范run目录、步骤日志与可信计数清单 |
 | `SPEC-CHAT-LIFECYCLE-004` | P2 | completed | backend, frontend, harness | reversible_write | 补人工重连、澄清放弃与建会话超时边界 |
 | `SPEC-CHAT-LIFECYCLE-005` | P2 | blocked | frontend, backend, harness | reversible_write | 补齐人工恢复残余交互与提示 |
 | `SPEC-CHILD-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 核验子任务孤儿扫描与父Run恢复时序 |
