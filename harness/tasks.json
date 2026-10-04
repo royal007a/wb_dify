@@ -3571,7 +3571,7 @@
         "映射子场景not-run/fail使路由明确partial并有突变测试",
         "提供脱敏方法级可提交输入或明确不可离线复算边界，不提交XML properties/正文"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/SPEC-VERIFY-002.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
