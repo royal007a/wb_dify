@@ -1,8 +1,31 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T15:35:48Z",
+  "updatedAt": "2026-10-04T15:48:21Z",
   "tasks": [
+    {
+      "id": "WORKFLOW-INPUTS-002",
+      "title": "保留未编辑数字的发布默认值",
+      "description": "001复验剩余：可选数字默认值被浏览器Number近似后显式提交。仅用户修改数字时发键，未编辑或清空使用服务端默认；不声称手输任意精度。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["frontend", "harness"],
+      "verifyScopes": ["harness", "frontend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["WORKFLOW-INPUTS-001"],
+      "acceptance": [
+        "可选数字未编辑不发键、主动改成0仍发送真实0、清空省略；必填数字仍校验",
+        "浏览器覆盖高精度默认值不覆盖与1e-7显示行为，重开表单重置编辑标记；不修改后台或发布快照"
+      ],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-04T15:49:00Z",
+      "updatedAt": "2026-10-04T15:49:00Z"
+    },
     {
       "id": "HARNESS-DEPLOY-TIMING-001",
       "title": "部署信号测试门闩等待预算与诊断",
@@ -218,7 +241,7 @@
       "title": "Workflow结构化输入与可复用运行表单",
       "description": "对照Dify课2/quick-start，扩展目前只有userMessage的输入契约，保持旧版本兼容；具体实现先独立设计再开工。",
       "priority": "P1",
-      "status": "blocked",
+      "status": "completed",
       "scopes": [
         "backend",
         "frontend",
@@ -242,7 +265,7 @@
       ],
       "planPath": "exec-plans/blocked/WORKFLOW-INPUTS-001.md",
       "checkpoint": null,
-      "blockedReason": "verification failed",
+      "blockedReason": null,
       "evidence": [
         {
           "runId": "WORKFLOW-INPUTS-001-20261004T152444Z-3b5139a3",
@@ -252,10 +275,21 @@
           "baselineCommit": "87a815f403adb06e6936ff7c6e57fc679c766dd1",
           "headCommit": "87a815f403adb06e6936ff7c6e57fc679c766dd1",
           "recordedAt": "2026-10-04T15:30:34Z"
+        },
+        {
+          "runId": "WORKFLOW-INPUTS-001-20261004T154206Z-aa4ea297",
+          "path": "harness/evidence/WORKFLOW-INPUTS-001/WORKFLOW-INPUTS-001-20261004T154206Z-aa4ea297",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "0fc126f5c5650241511cf0cdd86c8d4f7f949279",
+          "headCommit": "0fc126f5c5650241511cf0cdd86c8d4f7f949279",
+          "recordedAt": "2026-10-04T15:48:21Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "ff1aeff947a46ac471b8db7a5a4a7fba779060e2a5c5bc6bcf228efe8c8a3e70"
         }
       ],
       "createdAt": "2026-10-04T14:14:00Z",
-      "updatedAt": "2026-10-04T15:30:34Z"
+      "updatedAt": "2026-10-04T15:48:21Z"
     },
     {
       "id": "SEMANTIC-001",

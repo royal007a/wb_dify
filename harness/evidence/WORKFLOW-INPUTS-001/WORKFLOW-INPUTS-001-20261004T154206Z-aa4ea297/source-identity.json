@@ -1,0 +1,9 @@
+{
+  "headCommit": "0fc126f5c5650241511cf0cdd86c8d4f7f949279",
+  "backendTree": "3b42842e5f0a73185eb5b5127caa0c004f07aaa1",
+  "frontendTree": "cb720f31efbd608dcd86f3c3a19bd89aeca266b8",
+  "deployTree": "fd72f546c5559303e9722b220a1839e87fab72dc",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourcePaths": ["backend", "frontend", "deploy"],
+  "meaning": "Source trees and empty tracked diff checked during and after gate. No deployment or real-model acceptance."
+}

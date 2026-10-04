@@ -2,6 +2,10 @@
 
 计划d8118d1。目前未部署；完整门禁与独立review待补。契约见spec/SPEC_WORKFLOW_INPUTS.md。
 
+最终补录：0fc126f 的完整harness/backend/frontend门禁于2026-10-04 15:48:21Z passed，invocation `147fc20d-2801-4bec-8aad-b0043f9c396a`；backend96类667项全部执行、失败/错误/skip/flaky全0，Harness74项91.354秒，typecheck/build通过。证据目录 `harness/evidence/WORKFLOW-INPUTS-001/WORKFLOW-INPUTS-001-20261004T154206Z-aa4ea297`；verification SHA `ff1aeff947a46ac471b8db7a5a4a7fba779060e2a5c5bc6bcf228efe8c8a3e70`，backend摘要SHA `106e2c44babdd12469e1f2fdc7a8e9d91f5bfd39a50601e1ab7d8da4ebfa8adc`。源码树及空diff见source-identity。没有迁移/部署/真实模型范围。
+
+独立复验确认原四项P2处理成立、无P0/P1；只读及Jackson/Node片段不冒充重跑本项目。未编辑可选数字默认值由浏览器浮点覆盖的问题另归WORKFLOW-INPUTS-002。单测的mapper未变断言只针对单测对象，不证明Spring全局配置；局部reader由源码审查支持。JSON数值可序列化成科学计数法，不改变其数值；规范十进制仅承诺模板输出。Agent发布409和16字段是补回归覆盖，不是修复前必红的突变试验。
+
 - 单测第一轮56项（输入3+图28+引擎14+控制11）通过，零失败/错误/skip；追加外部execute次数对照后23:23:27 CST重跑57项通过，0失败/错误/skip。
 - HTTP窄测首轮失败：H2首个用例误认已按key排序列表第一项为START，修为按type定位；PG未执行成功，手动命令没有Harness的host/nonProxyHosts环境，localhost解析失败。首轮日志SHA `f42a0f46f1feb68c02d6100e25dd648ed2eed2d110ae9294eae917cf445bceac`。
 - 第二轮H2五项通过，但PG仍因SOCKS路径的127.0.0.1解析失败；没有算作通过。第三轮补齐Harness同样的HTTP/HTTPS/SOCKS nonProxyHosts，独立hify-verify-20261004 context，23:21:54 CST，H2与真实PG各5项全部执行、0失败/错误/skip。PG每例select version确认；没有修改共享default/Dify。
