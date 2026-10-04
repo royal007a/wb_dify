@@ -451,7 +451,7 @@ public class RunApplicationService {
         eventBroker.publish(run.getId(), "workflow.started", Map.of(
                 "version",1,"runId",run.getId(),"workflowId",binding.workflowId(),
                 "workflowVersionId",binding.workflowVersionId(),"workflowChecksum",binding.checksum()));
-        WorkflowRunResponse result = workflows.execute(binding.workflowVersionId(), run.getInputMessage(), control);
+        WorkflowRunResponse result = workflows.executePinned(binding.workflowVersionId(), binding.checksum(), run.getInputMessage(), control);
         // Execution facts are immutable once returned. Delivery cancellation is settled under
         // the parent row lock below; a late signal must not rename the Workflow outcome.
         RunState state = switch (result.status()) {

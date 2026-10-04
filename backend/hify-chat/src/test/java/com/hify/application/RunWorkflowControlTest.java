@@ -70,20 +70,20 @@ class RunWorkflowControlTest {
             doAnswer(invocation->{if(first.getAndSet(false))throw new java.util.concurrent.RejectedExecutionException("capacity");
                 ((Runnable)invocation.getArgument(0)).run();return null;}).when(executor).execute(any());
         }else when(runs.findById("broken")).thenThrow(new org.springframework.dao.DataAccessResourceFailureException("fixture"));
-        when(workflows.execute(eq("wv1"),eq("input"),any())).thenReturn(result("SUCCEEDED"));
+        when(workflows.executePinned(eq("wv1"),eq("checksum"),eq("input"),any())).thenReturn(result("SUCCEEDED"));
         assertThatCode(service::convergeInterruptedRuns).doesNotThrowAnyException();
         assertThat(run.getState()).isEqualTo(RunState.COMPLETED);
         assertThat((Map<?,?>)org.springframework.test.util.ReflectionTestUtils.getField(service,"dispatchOwners")).isEmpty();
     }
     @Test void cancelledWorkflowIsNotMisreportedAsModelFailure() {
-        prepare(run); when(workflows.execute(eq("wv1"),eq("input"),any())).thenReturn(result("CANCELLED"));
+        prepare(run); when(workflows.executePinned(eq("wv1"),eq("checksum"),eq("input"),any())).thenReturn(result("CANCELLED"));
         service.convergeInterruptedRuns();
         assertThat(run.getState()).isEqualTo(RunState.CANCELLED);
         verify(messages,never()).save(any());
         verify(events).publish(eq("run"),eq("run.cancelled"),anyMap());
     }
     @Test void timedOutWorkflowHasTimeoutTerminalReason() {
-        prepare(run); when(workflows.execute(eq("wv1"),eq("input"),any())).thenReturn(result("TIMED_OUT"));
+        prepare(run); when(workflows.executePinned(eq("wv1"),eq("checksum"),eq("input"),any())).thenReturn(result("TIMED_OUT"));
         service.convergeInterruptedRuns();
         assertThat(run.getState()).isEqualTo(RunState.TIMED_OUT);
         assertThat(run.getTerminalReason()).isEqualTo("TIMEOUT");
@@ -92,7 +92,7 @@ class RunWorkflowControlTest {
     @org.junit.jupiter.params.provider.CsvSource({"SUCCEEDED,COMPLETED","TIMED_OUT,TIMED_OUT","FAILED,FAILED"})
     void computedWorkflowOutcomeIsNotDiscardedWhenShutdownStartsBeforeReturn(String workflowState,RunState expected) {
         prepare(run);
-        when(workflows.execute(eq("wv1"),eq("input"),any())).thenAnswer(invocation->{
+        when(workflows.executePinned(eq("wv1"),eq("checksum"),eq("input"),any())).thenAnswer(invocation->{
             when(lifecycle.isStopping()).thenReturn(true);return result(workflowState);
         });
         service.convergeInterruptedRuns();
@@ -101,7 +101,7 @@ class RunWorkflowControlTest {
     }
     @Test void persistentCancellationBeforeCommitWinsOverSuccessfulWorkflowResult() {
         prepare(run);
-        when(workflows.execute(eq("wv1"),eq("input"),any())).thenAnswer(invocation -> { run.requestCancel();return result("SUCCEEDED"); });
+        when(workflows.executePinned(eq("wv1"),eq("checksum"),eq("input"),any())).thenAnswer(invocation -> { run.requestCancel();return result("SUCCEEDED"); });
         service.convergeInterruptedRuns();
         assertThat(run.getState()).isEqualTo(RunState.CANCELLED);
         verify(messages,never()).save(any());
@@ -125,7 +125,7 @@ class RunWorkflowControlTest {
     }
     @Test void cancellationCommittedJustBeforeTerminalLockPreventsAssistantAndSuccessEvent() {
         prepare(run);
-        when(workflows.execute(eq("wv1"),eq("input"),any())).thenReturn(result("SUCCEEDED"));
+        when(workflows.executePinned(eq("wv1"),eq("checksum"),eq("input"),any())).thenReturn(result("SUCCEEDED"));
         when(runs.findByIdForUpdate("run")).thenAnswer(invocation -> { run.requestCancel(); return Optional.of(run); });
         service.convergeInterruptedRuns();
         assertThat(run.getState()).isEqualTo(RunState.CANCELLED);

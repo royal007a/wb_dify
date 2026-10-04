@@ -76,6 +76,8 @@ GET    /api/v1/agents/{agentId}/versions
 
 PUT 只更新 draft 基本信息，不修改能力绑定。`PUT /tools`、`PUT /knowledge-bindings`、`PUT /workflow-binding`、`PUT /mcp-bindings` 分别替换草稿能力。发布时将 draft 固化为不可变 `AgentVersion`：Workflow 固定 `workflowVersionId/checksum`，MCP 固定 `serverRevision/serverSchemaDigest/tool schema digest`，且一期只接受 READ。Conversation 始终绑定版本，不追随草稿变化；Run 返回 `agentVersionId/agentSnapshotDigest`。
 
+Workflow绑定执行还须比对Agent固定checksum与同一加载版本的checksum，再校验原始DSL；缺失/不符时父Run为FAILED/WORKFLOW_ERROR，不创建Workflow执行行或助手消息。直接版本试跑不具有Agent固定摘要，仍按版本自身完整性检查。详见`spec/SPEC_KNOWLEDGE_INTEGRITY.md`；不承诺防御同时篡改两份数据库记录。
+
 Agent 响应的 `hasUnpublishedChanges` 由当前运行配置 digest 与已发布 digest 比较得出：未发布或模型、指令、运行参数、工具等发生变化时为 `true`，再次发布同步后为 `false`。纯管理描述不影响运行快照。前端不得用 revision/version 数字猜测该状态。
 
 DELETE 是归档而非物理删除：归档后不再列表展示，不能创建新 Conversation；草稿工具绑定被清理，发布版本和版本工具快照保留，旧 Conversation/Run 仍可重放。归档名称不允许复用。

@@ -22,6 +22,33 @@ class WorkflowEngineTest {
 
     @BeforeEach void saveReturnsPersistedRun() { when(runs.save(any())).thenAnswer(invocation -> invocation.getArgument(0)); }
 
+    @Test void pinnedExecutionValidatesAndUsesTheSameLoadedVersion() throws Exception {
+        var first=stored(draft(List.of(node("start","START"),node("end","END","output","original")),edge("start","end")));
+        String changed=WorkflowPublishedGraph.write(draft(List.of(node("start","START"),node("end","END","output","different")),edge("start","end")),JSON);
+        var second=new WorkflowVersion("v1","w1",1,1,changed,WorkflowPublishedGraph.checksum(changed),Instant.now());
+        when(app.requireVersion("v1")).thenReturn(first,second);
+        assertThat(engine.executePinned("v1",first.getChecksum(),"input",com.hify.common.ExecutionControl.none()).output()).isEqualTo("original");
+        verify(app,times(1)).requireVersion("v1");
+    }
+
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.NullAndEmptySource
+    @org.junit.jupiter.params.provider.ValueSource(strings={"wrong"})
+    void missingOrChangedPinnedChecksumCannotStartExecution(String expected) throws Exception {
+        stored(chain(2));
+        assertThatThrownBy(()->engine.executePinned("v1",expected,"input",com.hify.common.ExecutionControl.none()))
+                .isInstanceOf(com.hify.workflow.api.WorkflowDefinitionException.class)
+                .satisfies(e->assertThat(((BizException)e).errorCode()).isEqualTo(com.hify.common.ErrorCode.CONFLICT));
+        verifyNoInteractions(runs,nodes,knowledge);
+    }
+
+    @Test void matchingPinnedChecksumStillRequiresRawDslIntegrity() throws Exception {
+        var first=stored(chain(2));
+        when(app.requireVersion("v1")).thenReturn(new WorkflowVersion("v1","w1",1,1,"{}",first.getChecksum(),Instant.now()));
+        assertThatThrownBy(()->engine.executePinned("v1",first.getChecksum(),"input",com.hify.common.ExecutionControl.none())).isInstanceOf(BizException.class);
+        verifyNoInteractions(runs,nodes,knowledge);
+    }
+
     @Test void fiftyStepGraphReallyCompletes() throws Exception {stored(chain(50));assertThat(engine.execute("v1","input").status()).isEqualTo("SUCCEEDED");}
     @Test void quotedOperatorsAreLiteralData() throws Exception {
         stored(condition("{{start.userMessage}} == 'a contains b'"));
@@ -71,8 +98,10 @@ class WorkflowEngineTest {
                 node("end","END","output","{{route.result}}")),edge("start","route"),branch("end",null,true)));
         assertThat(engine.execute("v1", "refund contains refund").output()).isEqualTo("true");
     }
-    private void stored(WorkflowDraftRequest graph) throws Exception {
+    private WorkflowVersion stored(WorkflowDraftRequest graph) throws Exception {
         String published=WorkflowPublishedGraph.write(graph,JSON);
-        when(app.requireVersion("v1")).thenReturn(new WorkflowVersion("v1","w1",1,1,published,WorkflowPublishedGraph.checksum(published), Instant.now()));
+        var version=new WorkflowVersion("v1","w1",1,1,published,WorkflowPublishedGraph.checksum(published), Instant.now());
+        when(app.requireVersion("v1")).thenReturn(version);
+        return version;
     }
 }

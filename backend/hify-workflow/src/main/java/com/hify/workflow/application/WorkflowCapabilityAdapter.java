@@ -35,4 +35,10 @@ public class WorkflowCapabilityAdapter implements WorkflowCapabilityPort {
     public WorkflowRunResponse execute(String workflowVersionId, String input, com.hify.common.ExecutionControl control) {
         return engine.execute(workflowVersionId, input, control);
     }
+
+    @Override
+    public WorkflowRunResponse executePinned(String workflowVersionId, String expectedChecksum, String input,
+                                             com.hify.common.ExecutionControl control) {
+        return engine.executePinned(workflowVersionId, expectedChecksum, input, control);
+    }
 }

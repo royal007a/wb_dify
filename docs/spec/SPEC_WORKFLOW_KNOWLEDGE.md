@@ -15,11 +15,13 @@
 ## 执行与兼容
 
 - 执行前重新计算整个 DSL 的 checksum，并检查 KNOWLEDGE 发布 envelope 与快照形状；Agent 绑定与发布获取单个 Workflow 能力时也执行同一校验，旧图不再能新发布进 Agent。草稿列表的批量摘要只是展示当前版本信息，不是执行授权。
+- SPEC-KNOWLEDGE-INTEGRITY-003补充：Agent调用同时比较其固定checksum与同一加载WorkflowVersion的checksum；即使DSL和行内checksum被一起修改，也不能改变旧Agent会话执行。直接版本试跑没有Agent快照，不作该比较。缺失/不符为定义冲突，Chat归WORKFLOW_ERROR且无助手/执行行；细节和数据库写权限边界见`SPEC_KNOWLEDGE_INTEGRITY.md`。
 - 旧知识版本未冻结、缺少服务端 envelope（包括 60e74c8 的过渡格式）或字段非法时，直接 Workflow HTTP 409，不创建执行记录、不就地修补 DSL/checksum。必须先重新发布 Workflow，再重新发布 Agent，并创建新会话；只发布 Workflow 不会改变旧 AgentVersion 或旧会话。旧会话保留原版本并拒绝执行，不自动换绑。纯 TEMPLATE/CONDITION 等旧图只要 checksum/图合法则照常运行。Chat 的执行前异常归类仍属 SPEC-WORKFLOW-RECOVERY-001，不能把直接接口 409 外推为父 Run 错误码。
 - KNOWLEDGE 节点通过公开 KnowledgeRetrievalPort.searchSnapshot 读取冻结版本，不调用可变库 search。比较 corpus ID、knowledgeBaseId、revision、manifest、count，然后校验成员总数、成员摘要清单和 canonical content 的 SHA-256。
 - PostgreSQL 读取校验和检索在同一个 REPEATABLE_READ 事务里；缺成员、错摘要、错知识库、原文被替换都失败，不静默丢掉异常分块后继续 END。rank 仍使用 pgvector/关键词策略；后续候选过滤与空结果门禁见 SPEC_KNOWLEDGE_FINISH.md。
 - 普通 searchRevision 也验证冻结清单和原文。摘要是完整性检测，不是防御有数据库写权限者的签名；向量仍是派生索引，本片没有加入向量内容签名。跨次查询之间重建 embedding/升级算法可能改变排序和 topK，不能把“冻结语料原文/成员”称为“永久固定检索结果”。
 - 数据库产品判断通过 JdbcTemplate ConnectionCallback 复用事务连接，不在持有检索连接时额外借连接；元数据访问失败直接失败，不静默退回 H2 排序。
+- 同样的连接复用与失败关闭规则由SPEC-KNOWLEDGE-INTEGRITY-003扩展至索引：识别在删除旧分块前完成，故障不冒充H2或成功，数据库仍可提交时记录FAILED。
 - 取消、期限、关闭控制仍包围冻结检索；本片不宣称 PostgreSQL JDBC 能可靠响应线程中断。
 
 ## 归档与引用

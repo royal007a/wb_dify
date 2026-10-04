@@ -65,7 +65,8 @@ class WorkflowSettlementIntegrationTest {
                 "edges":[{"edgeKey":"a","sourceNodeKey":"start","targetNodeKey":"end"}]}
                 """.formatted(suffix);
         String workflow=workflows.create(json.readValue(dsl,WorkflowDraftRequest.class));
-        String version=workflows.publish(workflow).id();
+        var publication=workflows.publish(workflow);
+        String version=publication.id();
         String agent=agents.create(new AgentUpsertRequest("settlement-"+suffix,"","execute workflow","mock","hify-mock",0.2,2048,6,10,List.of(),true));
         agents.replaceWorkflow(agent,new AgentWorkflowBindingRequest(workflow));agents.publish(agent);
         if(fail)assertThat(db.update("update knowledge_corpus_versions set manifest_digest=? where knowledge_base_id=?",
@@ -82,7 +83,7 @@ class WorkflowSettlementIntegrationTest {
         doAnswer(invocation->{
             Object result=invocation.callRealMethod();returned.countDown();
             assertThat(release.await(10,TimeUnit.SECONDS)).isTrue();return result;
-        }).when(executor).execute(eq(version),eq("input"),any());
+        }).when(executor).executePinned(eq(version),eq(publication.checksum()),eq("input"),any());
         String run=service.create(conversation,suffix,"input").run().getId();
         try {
             assertThat(returned.await(10,TimeUnit.SECONDS)).isTrue();

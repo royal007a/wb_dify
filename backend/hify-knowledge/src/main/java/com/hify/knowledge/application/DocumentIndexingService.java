@@ -6,7 +6,7 @@ import com.hify.knowledge.domain.KnowledgeDocument;
 import com.hify.knowledge.infrastructure.DocumentIndexTaskRepository;
 import com.hify.knowledge.infrastructure.KnowledgeBaseRepository;
 import com.hify.knowledge.infrastructure.KnowledgeDocumentRepository;
-import org.springframework.context.event.EventListener;
+import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,6 @@ import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.HexFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -49,8 +48,8 @@ public class DocumentIndexingService {
             task.running("hify-local"); document.processing(); tasks.save(task); documents.save(document);
             List<RecursiveTextChunker.Chunk> chunks=chunker.split(document.getCanonicalContent(),base.getChunkSize(),base.getChunkOverlap());
             if(chunks.isEmpty()) throw new IllegalArgumentException("文档没有可索引文本");
-            jdbc.update("DELETE FROM document_chunks WHERE document_id = ? AND document_version = ?",documentId,document.getDocumentVersion());
             boolean postgres=isPostgres();
+            jdbc.update("DELETE FROM document_chunks WHERE document_id = ? AND document_version = ?",documentId,document.getDocumentVersion());
             for(RecursiveTextChunker.Chunk chunk:chunks){
                 float[] embedding=KnowledgeEmbedding.embed(chunk.content()); String literal=KnowledgeEmbedding.literal(embedding);
                 String id=UUID.randomUUID().toString(); String digest=digest(chunk.content());
@@ -73,7 +72,21 @@ public class DocumentIndexingService {
         }
     }
 
-    private boolean isPostgres(){try(var connection=jdbc.getDataSource().getConnection()){return connection.getMetaData().getDatabaseProductName().toLowerCase(Locale.ROOT).contains("postgresql");}catch(Exception e){return false;}}
+    private boolean isPostgres() {
+        try {
+            // JdbcTemplate reuses the transaction-bound connection; never borrow a second one
+            // while holding the indexing transaction, or infer H2 from a metadata failure.
+            return jdbc.execute((ConnectionCallback<Boolean>) connection -> {
+                String product=connection.getMetaData().getDatabaseProductName();
+                if("PostgreSQL".equalsIgnoreCase(product))return true;
+                if("H2".equalsIgnoreCase(product))return false;
+                throw new IllegalStateException("Unsupported indexing database");
+            });
+        } catch(Exception failure) {
+            // This message is persisted and returned by document management APIs.
+            throw new IllegalStateException("无法确认索引数据库类型",failure);
+        }
+    }
     private String digest(String value){try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value.getBytes(java.nio.charset.StandardCharsets.UTF_8)));}catch(Exception e){throw new IllegalStateException(e);}}
     private String safe(Exception exception){String value=exception.getMessage();if(value==null||value.isBlank())value=exception.getClass().getSimpleName();return value.substring(0,Math.min(900,value.length()));}
 }

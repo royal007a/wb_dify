@@ -34,10 +34,24 @@ public class WorkflowEngine {
 
  // Each repository call commits a small state change. Do not hold a DB connection while waiting on IO.
  public WorkflowRunResponse execute(String versionId,String input,ExecutionControl control){
+  return executeVersion(versionId,input,control,null);
+ }
+
+ public WorkflowRunResponse executePinned(String versionId,String expectedChecksum,String input,ExecutionControl control){
+  if(expectedChecksum==null||expectedChecksum.isBlank())
+   throw new WorkflowDefinitionException(ErrorCode.CONFLICT,"Agent 缺少固定 Workflow 校验和，请重新发布 Workflow、Agent 并新建会话");
+  return executeVersion(versionId,input,control,expectedChecksum);
+ }
+
+ private WorkflowRunResponse executeVersion(String versionId,String input,ExecutionControl control,String expectedChecksum){
   com.hify.common.TextInput.requireNoNul(versionId,input);
   control=control.withShutdown(lifecycle::isStopping);
   control.throwIfSuspended();
-  WorkflowVersion version=application.requireVersion(versionId); WorkflowDraftRequest draft=WorkflowPublishedGraph.read(version,json);
+  WorkflowVersion version=application.requireVersion(versionId);
+  // Compare and parse the SAME loaded version; a separate preflight lookup would race a change.
+  if(expectedChecksum!=null&&!expectedChecksum.equals(version.getChecksum()))
+   throw new WorkflowDefinitionException(ErrorCode.CONFLICT,"Workflow 与 Agent 固定校验和不匹配，请重新发布 Workflow、Agent 并新建会话");
+  WorkflowDraftRequest draft=WorkflowPublishedGraph.read(version,json);
   validator.validate(draft);
   draft.nodes().stream().filter(WorkflowKnowledgeSnapshots::isKnowledge).forEach(WorkflowKnowledgeSnapshots::require);
   Map<String,WorkflowNodeSpec> nodeMap=new LinkedHashMap<>();draft.nodes().forEach(n->nodeMap.put(n.nodeKey(),n));Map<String,List<WorkflowEdgeSpec>> edgeMap=new HashMap<>();for(var e:draft.edges())edgeMap.computeIfAbsent(e.sourceNodeKey(),k->new ArrayList<>()).add(e);
