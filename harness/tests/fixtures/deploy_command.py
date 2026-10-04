@@ -3,6 +3,7 @@
 import json
 import os
 import signal
+import re
 from pathlib import Path
 import sys
 import time
@@ -38,12 +39,23 @@ elif name == 'runuser':
     elif 'psql' in args:
         sql = args[-1]
         if 'flyway_schema_history' in sql:
-            print('t' if 'bool_and' in sql else '21|t\n22|t\n23|t')
+            if 'string_agg' in sql:
+                phase='AFTER' if (root/'stopped').exists() else 'BEFORE'
+                default=','.join(map(str,range(1,25 if phase=='AFTER' else 24)))+'|true'
+                print(os.environ.get('DEPLOY_FIXTURE_SCHEMA_'+phase,default))
+            else:
+                print('t' if 'bool_and' in sql else '21|t\n22|t\n23|t')
         else:
-            assert 'agent_runs' in sql
+            match=re.search(r'FROM\s+(agent_runs|workflow_runs|document_index_tasks)\b',sql,re.I)
+            assert match,sql
+            table=match.group(1)
             late = os.environ.get('DEPLOY_FIXTURE_LATE', '')
             if (root / 'stopped').exists() and late:
-                print('1' if late == 'agent' or 'workflow_runs' in sql else '0')
+                if late=='query-error':sys.exit(2)
+                table_for={'agent':'agent_runs','workflow':'workflow_runs','index-pending':'document_index_tasks','index-running':'document_index_tasks'}
+                selected=table_for[late]==table
+                if late=='index-pending':selected=selected and "'PENDING'" in sql
+                print('1' if selected else '0')
             else:
                 print('0')
 elif name == 'curl':

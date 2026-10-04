@@ -9,13 +9,14 @@ import tarfile
 import tempfile
 import time
 import unittest
+import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
 class DeployInstallerTest(unittest.TestCase):
-    def fixture(self, temp):
+    def fixture(self, temp, jar_entries=None):
         root = Path(temp)
         app = root / 'opt/hify'
         release = app / 'releases/spec-verify-test'
@@ -41,7 +42,20 @@ class DeployInstallerTest(unittest.TestCase):
         }.items():
             target = package / path
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(value)
+            if path.endswith('.jar'):
+                if jar_entries == 'broken':
+                    target.write_bytes(b'broken jar')
+                else:
+                    entries = jar_entries if jar_entries is not None else [
+                        (f'BOOT-INF/classes/db/migration/V{i}__fixture.'+('class' if i == 8 else 'sql'), b'fixture')
+                        for i in range(1,25)]
+                    with zipfile.ZipFile(target, 'w') as archive:
+                        archive.writestr('META-INF/MANIFEST.MF', 'Manifest-Version: 1.0\n')
+                        for name, data in entries:
+                            archive.writestr(name, data)
+                    (root / 'new.jar').write_bytes(target.read_bytes())
+            else:
+                target.write_text(value)
         with tarfile.open(release / 'release.tar.gz', 'w:gz') as archive:
             for target in package.rglob('*'):
                 if target.is_file():
@@ -96,8 +110,8 @@ class DeployInstallerTest(unittest.TestCase):
                     calls = self.calls(root)
                     self.assertIn(['systemctl', ['start', 'hify']], calls)
                     self.assertEqual(calls.count(['systemctl', ['stop', 'hify']]), 1 if stage == 'late' else 2)
-                    self.assertEqual((app / 'backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar').read_text(),
-                                     'old jar' if stage == 'late' else 'new jar')
+                    self.assertEqual((app / 'backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar').read_bytes(),
+                                     b'old jar' if stage == 'late' else (root / 'new.jar').read_bytes())
 
     def test_invalid_preflight_never_stops_service(self):
         for shell in self.shells():
@@ -205,11 +219,13 @@ class DeployInstallerTest(unittest.TestCase):
             dump = next(i for i, (name, args) in enumerate(calls) if name == 'runuser' and 'pg_dump' in args)
             self.assertLess(stop, dump)
             checks = [args[-1] for name, args in calls if name == 'runuser' and 'count(*)' in args[-1]]
-            self.assertEqual(len(checks), 2)
-            self.assertTrue(all('workflow_runs' in sql for sql in checks))
+            self.assertEqual(len(checks), 6)
+            for table in ('agent_runs', 'workflow_runs', 'document_index_tasks'):
+                self.assertEqual(sum('FROM '+table in sql for sql in checks), 2)
+            self.assertTrue(all("'PENDING','RUNNING'" in sql for sql in checks if 'document_index_tasks' in sql))
 
     def test_late_running_agent_or_workflow_aborts_before_migration_and_restarts_old(self):
-        for kind in ('agent', 'workflow'):
+        for kind in ('agent', 'workflow', 'index-pending', 'index-running', 'query-error'):
             with self.subTest(kind=kind), tempfile.TemporaryDirectory() as temp:
                 root, app, release, script, env = self.fixture(temp)
                 env['DEPLOY_FIXTURE_LATE'] = kind
@@ -219,6 +235,32 @@ class DeployInstallerTest(unittest.TestCase):
                 self.assertEqual((app / 'backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar').read_text(), 'old jar')
                 self.assertFalse((release / 'database-before.dump').exists())
                 self.assertFalse(any(name == 'runuser' and 'pg_dump' in args for name, args in self.calls(root)))
+
+    def test_artifact_migrations_are_checked_before_stop_and_bound_after_start(self):
+        entries=[(f'BOOT-INF/classes/db/migration/V{i}__fixture.sql',b'select 1;') for i in range(1,25)]
+        for shell in self.shells():
+            for defect in ('broken', 'empty', 'gap', 'duplicate', 'bad-name', 'downgrade', 'failed-db'):
+                with self.subTest(shell=shell, defect=defect), tempfile.TemporaryDirectory() as temp:
+                    altered={'broken':'broken','empty':[], 'gap':entries[1:],
+                             'duplicate':entries+[('BOOT-INF/classes/db/migration/V1__duplicate.sql',b'select 1;')],
+                             'bad-name':entries+[('BOOT-INF/classes/db/migration/V025__bad.sql',b'select 1;')]}.get(defect,entries)
+                    root, app, release, script, env=self.fixture(temp,altered)
+                    if defect=='downgrade':env['DEPLOY_FIXTURE_SCHEMA_BEFORE']=','.join(map(str,range(1,26)))+'|true'
+                    if defect=='failed-db':env['DEPLOY_FIXTURE_SCHEMA_BEFORE']='1,2|false'
+                    result=subprocess.run([shell,str(script),str(release)],env=env,capture_output=True,timeout=30)
+                    self.assertNotEqual(result.returncode,0,defect)
+                    self.assertFalse(any(name=='systemctl' for name,args in self.calls(root)),self.calls(root))
+                    self.assertEqual((root/'service').read_text(),'active')
+                    self.assertFalse((release/'database-before.dump').exists())
+            for applied in (23,24):
+                with self.subTest(shell=shell,applied=applied), tempfile.TemporaryDirectory() as temp:
+                    root,app,release,script,env=self.fixture(temp)
+                    env['DEPLOY_FIXTURE_SCHEMA_AFTER']=','.join(map(str,range(1,applied+1)))+'|true'
+                    result=subprocess.run([shell,str(script),str(release)],env=env,capture_output=True,timeout=30)
+                    self.assertEqual(result.returncode,0 if applied==24 else 1,result.stderr)
+                    self.assertEqual((root/'service').read_text(),'active' if applied==24 else 'inactive')
+                    self.assertGreater((release/'database-before.dump').stat().st_size,0)
+                    self.assertEqual((app/'backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar').read_bytes(),(root/'new.jar').read_bytes())
 
     def test_health_failure_preserves_backup_and_stops_new_service_without_db_restore(self):
         with tempfile.TemporaryDirectory() as temp:

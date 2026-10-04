@@ -46,7 +46,9 @@ systemd-run --unit=hify-upgrade-20261004 --property=Type=oneshot --setenv=HIFY_D
 journalctl -u hify-upgrade-20261004 --no-pager
 ```
 
-以上是运行方式示例，不声称该unit已在132执行。脚本必须由受信发布流程上传并校验；为每次发布使用新unit名和新目录，不覆盖旧恢复点。默认健康轮询60次，可设1..300，每次curl最多2秒并间隔1秒，**不是硬60秒**。先预检AgentRun与直接Workflow，再停止旧实例并重新检查；迟到请求可能被中断，未收敛则在换jar/迁移前中止并启动旧实例。预检不是入口维护锁，不承诺无停机升级。
+以上是运行方式示例，不声称该unit已在132执行。脚本必须由受信发布流程上传并校验；为每次发布使用新unit名和新目录，不覆盖旧恢复点。默认健康轮询60次，可设1..300，每次curl最多2秒并间隔1秒，**不是硬60秒**。先分别预检AgentRun、直接Workflow的RUNNING及索引任务的PENDING/RUNNING，再停止旧实例并重新检查；embedding网络阶段任务可能仍为PENDING，不能只检查RUNNING。每张表独立查询，查询失败不当作0。迟到请求可能被中断，未收敛则在换jar/迁移前中止并启动旧实例。预检不是入口维护锁，不承诺无停机升级。
+
+安装器要求Python 3，从待发布Spring Boot jar的`BOOT-INF/classes/db/migration/`读取SQL/Java迁移名称、检查条目CRC、唯一且连续的V1起整数版本序列；Java内部类必须有对应父类，未知布局、空/重复/缺号迁移直接拒绝。单条迁移最多1MiB、总计最多16MiB。这是本仓库产物布局约束，不是通用Flyway解析器。停止服务前要求数据库成功版本序列是产物的非空前缀，拒绝降级；启动后要求完整序列一致且全部成功，不再写死V23。实际迁移内容和checksum仍由Flyway校验，静态预检不保证迁移必然成功，也不会执行jar。
 
 成功点之前HUP/INT/TERM转为非0退出并进入一次失败处置；shell等待子命令时可能延迟处理，不是硬实时保障。收尾先保存原退出码并关闭errexit，服务恢复动作在诊断之前，stderr关闭/EIO不得跳过它或覆盖原退出码；systemctl自身失败仍只能尽力恢复。SIGKILL、断电、内核/磁盘故障不可捕获。替换应用之前失败尝试重新启动旧服务；替换后失败保留数据库、主密钥和恢复点，停止新服务等待人工评估（可导致持续停服）。nginx片段按备份恢复并先nginx -t；previous-dist只是恢复材料，**不会自动回退静态目录**，不能据此称应用/静态/数据库原子回滚。不得在新状态或新schema上盲启旧jar。备份在同盘，不是异地容灾；本机空间不足应由运维处理，不让脚本删除其他服务/历史恢复点。
 
@@ -56,7 +58,7 @@ journalctl -u hify-upgrade-20261004 --no-pager
 
 主流程nginx检查等命令仍可能因SSH stderr断管道而失败，触发迁移后停服；上述systemd-run方式将输出交给journal而非SSH管道，用于降低这项可用性风险。cleanup的PIPE设置不会由systemd传给新Java服务。
 
-上传smoke仅用自建ID清理；超限意外202也先登记ID，清理错误逐项汇总且保留主失败。如果连接在创建成功后、返回ID前断开，脚本无法知道该ID，不会列库全删；需按该次`spec-deploy-*`记录由运维确认。检索断言要求本次文档ID和合成短句，不代表真实语义质量。`--self-signed-test`只对该测试调用禁用证书校验，不是证书固定，也不是生产TLS选项。
+上传smoke要求Python >=3.11，仅用自建ID清理。KB创建和上传都先登记响应中可识别的非空`data`字符串或`data.id`，再校验状态及正常契约，意外200/202或字典响应也会尝试清理；不能识别ID则不猜测。清理错误逐项汇总，存在主失败时用exception note保留原类型和traceback，包括KeyboardInterrupt；不保证清理期间的第二次中断。如果连接在创建成功后、返回ID前断开或响应JSON无法解析，脚本无法知道该ID，不会列库全删；需按该次`spec-deploy-*`记录由运维确认。检索断言要求本次文档ID和合成短句，不代表真实语义质量。`--self-signed-test`只对该测试调用禁用证书校验，不是证书固定，也不是生产TLS选项。
 
 1. 备份并校验恢复点。PostgreSQL 宿主机预装 pgvector 包，并由数据库管理员执行一次
    `CREATE EXTENSION IF NOT EXISTS vector`；应用账号不授予 superuser。
