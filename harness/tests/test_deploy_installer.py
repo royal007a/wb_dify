@@ -2,6 +2,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import shutil
 import subprocess
 import sys
 import tarfile
@@ -64,6 +65,79 @@ class DeployInstallerTest(unittest.TestCase):
 
     def calls(self, root):
         return [json.loads(line) for line in (root / 'calls.jsonl').read_text().splitlines()]
+
+    def shells(self):
+        return ['sh'] + (['dash'] if shutil.which('dash') else [])
+
+    def test_closed_stderr_cannot_skip_recovery_or_replace_original_exit(self):
+        for shell in self.shells():
+            for stage in ('late', 'health'):
+                with self.subTest(shell=shell, stage=stage), tempfile.TemporaryDirectory() as temp:
+                    root, app, release, script, env = self.fixture(temp)
+                    if stage == 'late':
+                        env['DEPLOY_FIXTURE_LATE'] = 'agent'
+                    else:
+                        env['DEPLOY_FIXTURE_CURL_EXIT'] = '7'
+                    result = subprocess.run(
+                        [shell, '-c', 'exec 2>&-; exec "$@"', 'closed-stderr', shell, str(script), str(release)],
+                        env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    self.assertEqual(result.returncode, 1)
+                    self.assertEqual((root / 'service').read_text(), 'active' if stage == 'late' else 'inactive')
+                    calls = self.calls(root)
+                    self.assertIn(['systemctl', ['start', 'hify']], calls)
+                    self.assertEqual(calls.count(['systemctl', ['stop', 'hify']]), 1 if stage == 'late' else 2)
+                    self.assertEqual((app / 'backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar').read_text(),
+                                     'old jar' if stage == 'late' else 'new jar')
+
+    def test_invalid_preflight_never_stops_service(self):
+        for shell in self.shells():
+            for missing in ('0', '000', '301', 'jar', 'index', 'snippet', 'key'):
+                with self.subTest(shell=shell, missing=missing), tempfile.TemporaryDirectory() as temp:
+                    root, app, release, script, env = self.fixture(temp)
+                    paths = {'jar': app / 'backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar',
+                             'index': app / 'frontend/dist/index.html',
+                             'snippet': root / 'etc/nginx/snippets/hify-path.conf',
+                             'key': root / 'etc/hify/mcp-credentials.env'}
+                    if missing in paths:
+                        paths[missing].unlink()  # Only a known synthetic fixture file.
+                    else:
+                        env['HIFY_DEPLOY_HEALTH_ATTEMPTS'] = missing
+                    result = subprocess.run([shell, str(script), str(release)], env=env, capture_output=True)
+                    self.assertNotEqual(result.returncode, 0)
+                    calls = self.calls(root) if (root / 'calls.jsonl').exists() else []
+                    self.assertFalse(any(name == 'systemctl' for name, args in calls), calls)
+                    self.assertEqual((root / 'service').read_text(), 'active')
+                    self.assertFalse((release / 'database-before.dump').exists())
+
+    def test_signal_after_success_does_not_stop_or_revert_healthy_release(self):
+        for shell in self.shells():
+            for sig in (signal.SIGHUP, signal.SIGINT, signal.SIGTERM):
+                with self.subTest(shell=shell, sig=sig), tempfile.TemporaryDirectory() as temp:
+                    root, app, release, script, env = self.fixture(temp)
+                    env['DEPLOY_FIXTURE_FINAL_SHA_WAIT'] = '1'
+                    process = subprocess.Popen([shell, str(script), str(release)], env=env,
+                                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    try:
+                        deadline = time.monotonic()+5
+                        while not (root / 'waiting').exists() and process.poll() is None and time.monotonic() < deadline:
+                            time.sleep(.01)
+                        self.assertTrue((root / 'waiting').exists())
+                        # The barrier is after actual health, key and static publication checks.
+                        self.assertEqual((root / 'service').read_text(), 'active')
+                        self.assertEqual((app / 'frontend/dist/index.html').read_text(), 'new index')
+                        process.send_signal(sig)
+                        (root / 'release-wait').touch()
+                        stdout, stderr = process.communicate(timeout=5)
+                        self.assertNotEqual(process.returncode, 0)
+                        self.assertEqual((root / 'service').read_text(), 'active')
+                        self.assertEqual((root / 'etc/nginx/snippets/hify-path.conf').read_text(), 'new snippet')
+                        self.assertEqual((app / 'frontend/dist/index.html').read_text(), 'new index')
+                        self.assertEqual(self.calls(root).count(['systemctl', ['stop', 'hify']]), 1)
+                        self.assertNotIn(b'Upgrade halted.', stderr)
+                    finally:
+                        if process.poll() is None:
+                            process.kill()
+                            process.communicate()
 
     def test_success_and_shell_syntax(self):
         subprocess.run(['sh', '-n', str(ROOT / 'deploy/install-spec-release.sh')], check=True)
