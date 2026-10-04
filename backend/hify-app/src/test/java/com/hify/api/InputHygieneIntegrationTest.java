@@ -125,6 +125,127 @@ class InputHygieneIntegrationTest {
                 .content("{\"input\":\"中文🙂\"}"),202).path("data").path("status").asText()).isEqualTo("SUCCEEDED");
     }
 
+    @Test void agentKnowledgeBindingRejectsNulWithoutReplacingExistingBinding() throws Exception {
+        String kb=call(post("/api/v1/knowledge-bases").contentType("application/json")
+                .content(json.createObjectNode().put("name","binding-kb-"+UUID.randomUUID()).toString()),201).path("data").asText();
+        ObjectNode body=tree("{\"bindings\":[{\"knowledgeBaseId\":\""+kb+"\",\"topK\":3,\"priority\":0}]}");
+        ObjectNode replacement=body.deepCopy();((ObjectNode)replacement.at("/bindings/0")).put("topK",5);
+        checkBinding("knowledge-bindings","agent_knowledge_bindings",body,replacement,List.of("/bindings/0/knowledgeBaseId"));
+    }
+
+    @Test void agentMcpBindingRejectsNulWithoutReplacingExistingBinding() throws Exception {
+        // Synthetic READY catalog fixture: tests binding admission, not MCP discovery/network.
+        String server=call(post("/api/v1/mcp-servers").contentType("application/json").content(json.createObjectNode()
+                .put("name","binding-mcp-"+UUID.randomUUID()).put("endpointUrl","http://127.0.0.1:19099/mcp")
+                .put("enabled",true).put("credentialAction","CLEAR").toString()),201).path("data").asText();
+        db.update("update mcp_servers set status='READY',server_revision=1,schema_digest=? where id=?","a".repeat(64),server);
+        db.update("insert into mcp_server_revisions(server_id,server_revision,endpoint_url,schema_digest,created_at) values (?,1,?,?,CURRENT_TIMESTAMP)",
+                server,"http://127.0.0.1:19099/mcp","a".repeat(64));
+        for(String tool:List.of("lookup_order","second_tool"))db.update("""
+                insert into mcp_tool_snapshots(id,server_id,server_revision,tool_name,description,input_schema_json,risk,schema_digest,created_at)
+                values (?,?,1,?,?,'{"type":"object"}','READ',?,CURRENT_TIMESTAMP)
+                """,UUID.randomUUID().toString(),server,tool,"synthetic catalog","b".repeat(64));
+        ObjectNode body=tree("{\"bindings\":[{\"serverId\":\""+server+"\",\"toolNames\":[\"lookup_order\"]}]}");
+        ObjectNode replacement=body.deepCopy();setString(replacement,"/bindings/0/toolNames/0","second_tool");
+        checkBinding("mcp-bindings","agent_mcp_tool_bindings",body,replacement,
+                List.of("/bindings/0/serverId","/bindings/0/toolNames/0"));
+    }
+
+    @Test void agentWorkflowBindingRejectsNulWithoutReplacingExistingBinding() throws Exception {
+        String first=publishedWorkflow(),second=publishedWorkflow();
+        checkBinding("workflow-binding","agent_workflow_bindings",json.createObjectNode().put("workflowId",first),
+                json.createObjectNode().put("workflowId",second),List.of("/workflowId"));
+    }
+
+    @Test void agentToolBindingRejectsNulWithoutReplacingExistingBinding() throws Exception {
+        checkBinding("tools","agent_tool_bindings",tree("{\"toolIds\":[\"calculator\"]}"),
+                tree("{\"toolIds\":[\"current_time\"]}"),List.of("/toolIds/0"));
+    }
+
+    @Test void agentCreateEnabledToolsRejectsNulBeforeWritingAndKeepsValidTools() throws Exception {
+        ObjectNode good=agent();good.putArray("enabledTools").add("calculator");
+        long before=count("agent_definitions"),bindings=count("agent_tool_bindings");
+        ObjectNode bad=good.deepCopy();setString(bad,"/enabledTools/0","invalid"+NUL+"tool");
+        call(post("/api/v1/agents").contentType("application/json").content(bad.toString()),400);
+        assertThatThrownBy(()->direct("agents",null,bad)).isInstanceOfSatisfying(BizException.class,
+                e->assertThat(e.errorCode()).isEqualTo(ErrorCode.PARAM_ERROR));
+        assertThat(count("agent_definitions")).isEqualTo(before);
+        assertThat(count("agent_tool_bindings")).isEqualTo(bindings);
+        String id=call(post("/api/v1/agents").contentType("application/json").content(good.toString()),201).path("data").asText();
+        assertThat(db.queryForList("select tool_name from agent_tool_bindings where agent_id=?",String.class,id)).containsExactly("calculator");
+    }
+
+    @Test void workflowDeepConfigKeysAndArraysRejectNulWithoutChangingStoredGraph() throws Exception {
+        ObjectNode good=workflow().put("name","nested-"+UUID.randomUUID());
+        ((ObjectNode)good.at("/nodes/1/config")).set("metadata",json.readTree("{\"items\":[{\"label\":\"中文🙂 literal \\\\u0000\",\"enabled\":true,\"count\":7}]}"));
+        String id=call(post("/api/v1/workflows").contentType("application/json").content(good.toString()),201).path("data").asText();
+        JsonNode original=call(get("/api/v1/workflows/"+id),200);
+        assertThat(original.path("data").path("nodes").get(1).path("config")).isEqualTo(good.at("/nodes/1/config"));
+        long before=count("workflows");
+        for(boolean key:List.of(false,true)) {
+            ObjectNode bad=good.deepCopy();ObjectNode nested=(ObjectNode)bad.at("/nodes/1/config/metadata/items/0");
+            if(key)nested.put("invalid"+NUL,"value");else nested.putArray("deeper").add("invalid"+NUL);
+            call(post("/api/v1/workflows").contentType("application/json").content(bad.toString()),400);
+            call(put("/api/v1/workflows/"+id).contentType("application/json").content(bad.toString()),400);
+            for(String target:java.util.Arrays.asList(null,id))assertThatThrownBy(()->direct("workflows",target,bad))
+                    .isInstanceOfSatisfying(BizException.class,e->assertThat(e.errorCode()).isEqualTo(ErrorCode.PARAM_ERROR));
+            assertThat(count("workflows")).isEqualTo(before);
+            assertThat(call(get("/api/v1/workflows/"+id),200)).isEqualTo(original);
+        }
+        ((ObjectNode)good.at("/nodes/1/config/metadata/items/0")).put("label","更新🙂");
+        call(put("/api/v1/workflows/"+id).contentType("application/json").content(good.toString()),200);
+        assertThat(call(get("/api/v1/workflows/"+id),200).path("data").path("nodes").get(1).path("config"))
+                .isEqualTo(good.at("/nodes/1/config"));
+    }
+
+    private void checkBinding(String route,String table,ObjectNode good,ObjectNode replacement,List<String> paths)throws Exception {
+        String id=call(post("/api/v1/agents").contentType("application/json").content(agent().toString()),201).path("data").asText();
+        String url="/api/v1/agents/"+id+"/"+route;
+        JsonNode first=call(put(url).contentType("application/json").content(good.toString()),200).path("data");
+        assertThat(first.isContainerNode()).isTrue();assertThat(first.size()).isPositive();
+        JsonNode original=call(get("/api/v1/agents/"+id),200);
+        var rows=db.queryForList("select * from "+table+" where agent_id=?",id);assertThat(rows).hasSize(1);
+        for(String path:paths){
+            ObjectNode bad=good.deepCopy();setString(bad,path,"invalid"+NUL+"tail");
+            call(put(url).contentType("application/json").content(bad.toString()),400);
+            assertThatThrownBy(()->directBinding(route,id,bad)).isInstanceOfSatisfying(BizException.class,
+                    e->assertThat(e.errorCode()).isEqualTo(ErrorCode.PARAM_ERROR));
+            assertThat(call(get("/api/v1/agents/"+id),200)).isEqualTo(original);
+            assertThat(db.queryForList("select * from "+table+" where agent_id=?",id)).isEqualTo(rows);
+        }
+        // Internal callers cannot evade path-id admission; no MockMvc/container-path claim.
+        assertThatThrownBy(()->directBinding(route,id+NUL,good)).isInstanceOfSatisfying(BizException.class,
+                e->assertThat(e.errorCode()).isEqualTo(ErrorCode.PARAM_ERROR));
+        assertThat(call(get("/api/v1/agents/"+id),200)).isEqualTo(original);
+        JsonNode changed=call(put(url).contentType("application/json").content(replacement.toString()),200).path("data");
+        assertThat(changed).isNotEqualTo(first);
+        assertThat(db.queryForList("select * from "+table+" where agent_id=?",id)).hasSize(1).isNotEqualTo(rows);
+    }
+
+    private void directBinding(String route,String id,ObjectNode body)throws Exception {
+        switch(route){
+            case "knowledge-bindings" -> agents.replaceKnowledge(id,json.treeToValue(body,com.hify.agent.api.AgentKnowledgeBindingRequest.class));
+            case "mcp-bindings" -> agents.replaceMcpTools(id,json.treeToValue(body,com.hify.agent.api.AgentMcpBindingRequest.class));
+            case "workflow-binding" -> agents.replaceWorkflow(id,json.treeToValue(body,com.hify.agent.api.AgentWorkflowBindingRequest.class));
+            case "tools" -> agents.replaceTools(id,json.treeToValue(body,com.hify.agent.api.AgentToolBindingRequest.class));
+            default -> throw new AssertionError(route);
+        }
+    }
+    private ObjectNode agent()throws Exception{return tree("""
+            {"name":"agent","instructions":"test","providerId":"mock","modelId":"hify-mock","temperature":0.2,
+             "maxTokens":1024,"maxTurns":3,"maxContextTurns":3,"enabledTools":[],"enabled":true}
+            """).put("name","binding-agent-"+UUID.randomUUID());}
+    private String publishedWorkflow()throws Exception {
+        String id=call(post("/api/v1/workflows").contentType("application/json")
+                .content(workflow().put("name","binding-flow-"+UUID.randomUUID()).toString()),201).path("data").asText();
+        call(post("/api/v1/workflows/"+id+"/versions"),200);return id;
+    }
+    private void setString(ObjectNode body,String path,String value){
+        int slash=path.lastIndexOf('/');JsonNode parent=body.at(path.substring(0,slash));String key=path.substring(slash+1);
+        if(parent.isArray())((com.fasterxml.jackson.databind.node.ArrayNode)parent).set(Integer.parseInt(key),json.getNodeFactory().textNode(value));
+        else ((ObjectNode)parent).put(key,value);
+    }
+
     private void checkCrud(String resource,String table,ObjectNode good,List<String> paths) throws Exception {
         good.put("name",good.path("name").asText()+"-"+UUID.randomUUID());
         String url="/api/v1/"+resource;
