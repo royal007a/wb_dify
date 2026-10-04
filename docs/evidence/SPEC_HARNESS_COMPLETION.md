@@ -18,4 +18,10 @@
 - 命令行补测最初把拒绝退出码误写为1，而CLI的ValueError约定是2。只纠正测试的预期退出码，仍断言runner是blocked、有失败证据、不允许completed，没有修改退出行为。
 - 首轮完整Python回归64项有1个失败：未修改的DeployInstallerTest在dash/HUP分支等待5秒后未到达门闩。失败保留于`python-green.log`（文件名不代表结果）；该具名测试不改代码独立重跑通过（26.836秒、包含两种shell/三个信号）。这提示固定等待窗仍有调度敏感性，不称已消除flakiness，也不将窄重跑冒充整轮通过。
 
-完整本次Harness gate尚待补；不改变SPEC-KNOWLEDGE-INTEGRITY-003因Colima磁盘满未通过完整PG门禁的事实。任务状态只看tasks.json。
+## 本次完整Harness gate
+
+代码cee737f；上述run于2026-10-04 04:27:20Z生成schema v3 verification，scope仅harness，五个步骤均exit 0、result/commandResult=passed。完整Python64项通过（115.535秒），包括前述未修改的部署信号测试；首次失败不被覆盖或回溯标绿。Maven未运行，所以testCoverage=not-assessed，Python计数单独写入`gate-summary.json`而不是冒充Maven摘要。
+
+finish在五份日志仍存在时复算并完成；完成后的validate/check-progress也通过。gate-summary记录五份实际日志全部重新计算且一致，三个实现/测试/清单文件SHA与git blob，以及相对测试HEAD的空diff SHA。本次不改backend/frontend/deploy。独立review仍待结论。
+
+不改变SPEC-KNOWLEDGE-INTEGRITY-003因Colima磁盘满未通过完整PG门禁的事实。任务状态只看tasks.json。

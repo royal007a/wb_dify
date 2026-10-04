@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "scope": "isolated Python and fake commands; no Maven/Docker/database/deployment",
+  "baselineCommit": "ba4e63c0885a696a5d3c4a20fc25f5efd224274e",
+  "productionBaselineSha256": "703f0630e69da8261a22df75d604998f4b815d8bb67f0428ecfe33a5bf2d45b7",
+  "testSourceSha256": "911ff7431b1283a3d5a34531ee496e0b03e4b26c3a8a3a3f3ec51f2fd2fc31a5",
+  "legacyInventorySha256": "4ff93c4264edaeb7ada5e6cda2f20367b2f646f2495a6abd13e133e83071c648",
+  "legacyRecordCount": 86,
+  "stages": [
+    {
+      "file": "narrow-red.log",
+      "exitCode": 1,
+      "tests": 14,
+      "sha256": "c9612de83bc1df347bd4c823001ea048b06a295219d0b74372c7e1cdbc6972ba",
+      "meaning": "12 failing assertions, 2 cascading errors after old finish wrongly completed; not 14 independent counterexamples"
+    },
+    {
+      "file": "old-code-counterexamples.log",
+      "exitCode": 1,
+      "tests": 3,
+      "sha256": "4b38d9b450c629674248d84ef05cf37376164f8625179a3a782f5a49ca8d2031",
+      "meaning": "6 failing assertions under ba4e63c harness loaded in memory; current selected tests; isolated fixtures"
+    },
+    {
+      "file": "python-green.log",
+      "exitCode": 1,
+      "tests": 64,
+      "sha256": "cf34a678536de992fa01344c44e7e5c85674adab599779c59b6b5fb3384b0742",
+      "meaning": "1 failure: unchanged dash/HUP installer barrier did not arrive within 5 seconds; filename does not imply success"
+    },
+    {
+      "file": "deploy-signal-rerun.log",
+      "exitCode": 0,
+      "tests": 1,
+      "sha256": "3e381921be2d754e531520b0d15e22beb53a96f720d2b07f08c32f0175110437",
+      "meaning": "Unchanged selected installer signal test passed; not a whole-suite pass"
+    },
+    {
+      "file": "state-green.log",
+      "exitCode": 0,
+      "tests": 19,
+      "sha256": "5d7d3c61733cdf74add7a0fc60f4fcf6c1b10972e7e808a7ed8fa0b131083df3",
+      "meaning": "New and existing state lifecycle/real runner with fake verifier tests"
+    }
+  ]
+}

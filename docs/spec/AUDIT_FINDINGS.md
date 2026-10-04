@@ -126,6 +126,8 @@ SPEC-DEPLOY-002独立review在隔离archive用sh/dash实测9项与边界：新P1
 
 2026-10-04新增复核：HTTP切片fa5f48f..9aac4e7的上传P1归SPEC-UPLOAD-BOUNDARY-001（应用/两nginx没有显式上限，原10MB/JSON承诺不可达）；f64a690门禁旧问题已关闭，恶意/手工改manifest或降级历史schema仍可绕过的两条P2归SPEC-AUDIT-004。reviewer对HTTP仅静态阅读；门禁使用隔离archive+假mvn/XML实测，不等于实际Maven执行。
 
+SPEC-AUDIT-004实现补证：cee737f增加完成时实文件哈希/摘要身份检查、86条精确历史前缀、逐条completed验证；本次64项Python回归和五步harness scope通过，首轮已有dash/HUP测试门闩超时失败仍保留。尚待独立复核，不把防误改描述成对仓库恶意写者的签名保障。便携validate缺ignored日志时不宣称复算过日志，finish不享受这项宽限；见SPEC_HARNESS_COMPLETION。
+
 - API.md 把未实现会话列表、v1 会话详情/消息、tool-definition/dry-run 写成可调用；Workflow更新写成不存在的PATCH。
 - API.md 泛称全写请求幂等键、默认cursor分页、UUIDv7/ULID，均不是当前实现。
 - CURRENT_STATE 仍声称三类能力未绑定 Agent/Chat、流式故障矩阵未做；AGENTS/SPEC仍把已交付画布列为非目标。
