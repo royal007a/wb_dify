@@ -1,0 +1,29 @@
+{
+  "service": "active",
+  "installerResult": "success",
+  "artifacts": {
+    "jar": "028b03602918cd6ca3be3e368a61f5bec1b12421a32a6947bfcad28c9ef5fb46",
+    "index": "e59967190b33b4235393c9da38cdf9aa1e2be2b891bb4fa8925a1e35fa37e44b",
+    "snippet": "6c43b0a0f431ac4fa27ff0f2d48e71c02e4ce15a5aa607dbbc2714d0cf132281",
+    "installer": "93352ed7c3d9eae0b31e9b5a1dc7daed5c3c784d8d4ad4a82e0d481bb74cbf1a"
+  },
+  "backup": {
+    "directory": "/opt/hify/releases/spec-verify-20261004-5f49629",
+    "bytes": 344173,
+    "mode": "0o600",
+    "listPassed": true,
+    "restorePerformed": false
+  },
+  "keyMetadataUnchanged": true,
+  "schema": "23|t",
+  "counts": {
+    "runningRuns": "0",
+    "runningWorkflows": "0",
+    "pendingIndexes": "0",
+    "activeSyntheticKb": "0",
+    "activeSyntheticDocs": "0"
+  },
+  "runStates": "COMPLETED|43",
+  "disk": "Filesystem     1024-blocks     Used Available Capacity Mounted on\n/dev/vda2         40972900 37585032   1626236      96% /",
+  "healthCode": 200
+}

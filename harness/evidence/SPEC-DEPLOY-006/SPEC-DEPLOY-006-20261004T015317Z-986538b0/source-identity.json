@@ -1,0 +1,15 @@
+{
+  "buildHead": "5f4962955cd2afb4fb6abe103fc057f26102a8eb",
+  "verifiedCode": "f0dd1993d4f62d02c5c9a01ee06862433c960474",
+  "backendTree": "c0200f2cad9a25e2d31efb73a6a36cb155024b4d",
+  "frontendTree": "8f83bc4774e6049892447286e0da9057c5c3f397",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "artifacts": {
+    "jar": "028b03602918cd6ca3be3e368a61f5bec1b12421a32a6947bfcad28c9ef5fb46",
+    "index": "e59967190b33b4235393c9da38cdf9aa1e2be2b891bb4fa8925a1e35fa37e44b",
+    "snippet": "6c43b0a0f431ac4fa27ff0f2d48e71c02e4ce15a5aa607dbbc2714d0cf132281",
+    "installer": "93352ed7c3d9eae0b31e9b5a1dc7daed5c3c784d8d4ad4a82e0d481bb74cbf1a",
+    "archive": "2b9f8aa812e93cdf96cecb3c69db18d36548db6d5da317ba413424abbb94575b"
+  },
+  "note": "Package skipTests is not evidence of test execution; verified code independently passed 547 tests."
+}

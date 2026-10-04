@@ -1,0 +1,37 @@
+{
+  "api": "http://127.0.0.1:28080/api/v1",
+  "conversationId": "fc3148ff-37fd-439c-95c3-fb39a9d067e3",
+  "runId": "f6f8e092-2584-492c-a1f1-6bf95d9e33a1",
+  "checks": [
+    {
+      "case": "length20001",
+      "httpStatus": 400,
+      "code": 40000,
+      "lookupStatus": 404
+    },
+    {
+      "case": "messageNul",
+      "httpStatus": 400,
+      "code": 40000,
+      "lookupStatus": 404
+    },
+    {
+      "case": "resumeRunNul",
+      "httpStatus": 400,
+      "code": 40000,
+      "lookupStatus": 404
+    },
+    {
+      "case": "resumeGapNul",
+      "httpStatus": 400,
+      "code": 40000,
+      "lookupStatus": 404
+    }
+  ],
+  "positive": {
+    "state": "COMPLETED",
+    "contains42": true,
+    "sameKeyReplay": 200
+  },
+  "scope": "real deployed PG and Mock model; synthetic conversation/run retained because no delete API"
+}
