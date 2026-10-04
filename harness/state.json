@@ -7,16 +7,16 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-API-BEHAVIOR-001-20261004T000019Z-62dd48a5",
-    "path": "harness/evidence/SPEC-API-BEHAVIOR-001/SPEC-API-BEHAVIOR-001-20261004T000019Z-62dd48a5",
+    "runId": "SPEC-UPLOAD-BOUNDARY-001-20261004T000555Z-a33dd2b2",
+    "path": "harness/evidence/SPEC-UPLOAD-BOUNDARY-001/SPEC-UPLOAD-BOUNDARY-001-20261004T000555Z-a33dd2b2",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "ab46ec5f8eb850641cd8f96d3799f5871476ef44",
-    "headCommit": "b16af2471237b51b67fbb155aac7da4f8bf39163",
-    "recordedAt": "2026-10-04T00:05:13Z",
+    "baselineCommit": "1f5bbfc41c4e09f7398bcf876bf476eeca54ce78",
+    "headCommit": "8827af4ea2440ae50be3a7133b14fec8ca84968c",
+    "recordedAt": "2026-10-04T00:11:45Z",
     "verificationSchemaVersion": 3,
-    "verificationSha256": "a76500449cfe2c87428540fe0e73bacfc28cabdc8c0cd6d17164f31751284ca6"
+    "verificationSha256": "3edff9a33c9c404247e1c6078634bdb12296b5913aeddaff48179a5fe0ea39de"
   },
-  "lastCompletedTaskId": "SPEC-API-BEHAVIOR-001",
-  "updatedAt": "2026-10-04T00:05:13Z"
+  "lastCompletedTaskId": "SPEC-UPLOAD-BOUNDARY-001",
+  "updatedAt": "2026-10-04T00:11:45Z"
 }

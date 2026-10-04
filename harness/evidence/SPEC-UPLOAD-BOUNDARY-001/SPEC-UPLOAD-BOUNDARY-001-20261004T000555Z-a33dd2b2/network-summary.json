@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "baseline": "1f5bbfc",
+  "fixture": "real Tomcat / isolated H2 / both repository nginx templates; only indexing background is mocked",
+  "nginxImageDigest": "sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10",
+  "authoringFailure": {"cause": "Fixture omitted /v1; 404 is not the product red", "logSha256": "92f3fd7d92a0cbab1dfb363552080eb47b789a725784eed7b1f9b47999636771"},
+  "red": {"tests": 3, "failures": 3, "errors": 0, "skipped": 0, "exitCode": 1,
+    "command": "mvn -B -Dapi.version=1.44 -pl hify-app -am -Dtest=UploadBoundaryNetworkTest -Dsurefire.failIfNoSpecifiedTests=false test",
+    "actual": "All three entrypoints rejected 2MiB with 413 instead of 202",
+    "logSha256": "1ceee4e5f74471108c46ea35d85ecea28caaf6785f4cb6e155e1d4adc35d2d03"},
+  "green": {"tests": 10, "failures": 0, "errors": 0, "skipped": 0, "exitCode": 0,
+    "command": "mvn -B -Dapi.version=1.44 -pl hify-app -am -Dtest=UploadBoundaryNetworkTest,HttpErrorSurfaceTest -Dsurefire.failIfNoSpecifiedTests=false test",
+    "logSha256": "2cf8a0b8af06a20e78008800f37ff24eec0a57cfea4ccd340a422081fc8d80f4"},
+  "notRun": ["132 deployment", "TLS", "large document indexing", "unbounded/slow-body reset behavior", "disk-full or concurrent-upload pressure"]
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-UPLOAD-BOUNDARY-001-20261004T000555Z-a33dd2b2",
+  "taskId": "SPEC-UPLOAD-BOUNDARY-001",
+  "status": "completed",
+  "baselineCommit": "1f5bbfc41c4e09f7398bcf876bf476eeca54ce78",
+  "approvalRef": null,
+  "startedAt": "2026-10-04T00:05:55Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "8827af4ea2440ae50be3a7133b14fec8ca84968c",
+  "finishedAt": "2026-10-04T00:11:45Z"
+}
