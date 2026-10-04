@@ -250,9 +250,34 @@
       "updatedAt": "2026-10-03T23:47:43Z"
     },
     {
+      "id": "SPEC-API-BEHAVIOR-002",
+      "title": "澄清管理契约来源并补终态取消和旧会话执行",
+      "description": "ab46ec5..36eaae6静态复核四条P2；不把代码现状自动升格为产品规格。非法resume新key反向对照先随Chat004补齐，其余在本任务验收。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["backend", "harness"],
+      "verifyScopes": ["harness", "backend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-API-BEHAVIOR-001"],
+      "acceptance": [
+        "Workflow分页夹值标为兼容现状，与KB400不一致明确待统一决策；不擅自改变现有API",
+        "COMPLETED/FAILED后取消202、cancelRequestedAt仍null、状态及事件不变",
+        "旧会话钉住Agent版本后解绑并新发布，真实Run仍使用原Workflow版本和checksum",
+        "同key异resume40901有新key同非法resume400对照；原首轮日志SHA无法还原源码的局限写明"
+      ],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-04T00:16:00Z",
+      "updatedAt": "2026-10-04T00:16:00Z"
+    },
+    {
       "id": "SPEC-CHAT-LIFECYCLE-004",
       "title": "补人工重连、澄清放弃与建会话超时边界",
-      "description": "1ce9cfb..daec369静态复验新增四条P2与测试缺口，保持未知取消只查询、不误建Run。",
+      "description": "1ce9cfb..daec369静态复验新增四条P2与测试缺口，保持未知取消只查询、不误建Run；补新key非法resume反向对照。",
       "priority": "P2",
       "status": "pending",
       "scopes": [
@@ -262,6 +287,7 @@
       ],
       "verifyScopes": [
         "harness",
+        "backend",
         "frontend"
       ],
       "risk": "reversible_write",
@@ -274,9 +300,9 @@
         "暂停后人工同步能有界重连SSE而不重发提交，受控浏览器覆盖",
         "放弃resume时不把失去澄清上下文的原文默默作为新任务；取消待确认文案准确",
         "建会话挂住有请求超时和可退出路径，不误称取消成功",
-        "后端补同key异resume的40901和缺header/no-store边界"
+        "后端补同key异resume的40901、新key同非法resume400对照和缺header/no-store边界"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/SPEC-CHAT-LIFECYCLE-004.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],

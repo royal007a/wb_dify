@@ -4,7 +4,7 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-10-04T00:11:45Z`
 - Current task: `none`
-- Counts: pending 17 · running 0 · blocked 1 · completed 61
+- Counts: pending 18 · running 0 · blocked 1 · completed 61
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -66,6 +66,7 @@
 | `SPEC-WORKFLOW-GRAPH-002` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 统一图步数限制与条件语法契约 |
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
+| `SPEC-API-BEHAVIOR-002` | P2 | pending | backend, harness | reversible_write | 澄清管理契约来源并补终态取消和旧会话执行 |
 | `SPEC-AUDIT-002` | P2 | completed | harness, backend | reversible_write | 规格复核补证据等级与可提交测试摘要 |
 | `SPEC-AUDIT-003` | P2 | completed | harness | reversible_write | 封闭验证报告与任务完成入口 |
 | `SPEC-AUDIT-004` | P2 | pending | harness | reversible_write | 补验证摘要实文件绑定与历史兼容清单 |
