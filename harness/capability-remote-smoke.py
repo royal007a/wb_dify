@@ -51,10 +51,11 @@ def workflow(nodes):
     wid = request('POST', '/workflows', graph, 201)['data']
     return wid, request('POST', '/workflows/'+wid+'/versions')['data']
 
-def run(version, inputs):
+def run(version, inputs, expected_nodes):
     result = request('POST', '/workflow-versions/'+version['id']+'/runs',
                      {'input': 'synthetic acceptance', 'inputs': inputs}, 202)['data']
     assert result['status'] == 'SUCCEEDED', (result['id'], result['status'])
+    assert [n['nodeKey'] for n in result['nodes']] == expected_nodes
     assert all(n['status'] == 'SUCCEEDED' for n in result['nodes'])
     persisted = request('GET', '/workflow-runs/'+result['id'])['data']
     # PG timestamps round to microseconds; compare execution facts, not transient
@@ -73,7 +74,7 @@ try:
             {'name':'tiny','type':'number','required':False,'default':1e-7}]}),
         node('end','END',{'output':'{{start.count}}|{{start.flag}}|{{start.tiny}}'})])
     before = request('GET','/workflow-versions/'+version['id'])
-    positive = run(version, {'count':0,'flag':False})
+    positive = run(version, {'count':0,'flag':False}, ['start','end'])
     assert positive['output'] == '0|false|0.0000001'
     for bad in ({'count':'0','flag':False},{'count':0},{'count':None,'flag':False}):
         request('POST','/workflow-versions/'+version['id']+'/runs',
@@ -98,7 +99,7 @@ try:
             'systemPrompt':'Only return the requested digits. Do not explain.',
             'prompt':'Repeat exactly: 42','temperature':0,'maxOutputTokens':256}),
         node('end','END',{'output':'{{llm.result}}'})])
-    result = run(version,{})
+    result = run(version,{},['start','llm','end'])
     assert result['output'].strip() == '42', 'synthetic LLM answer must be 42'
     results.append({'case':'real-doubao-workflow','workflowId':wid,'versionId':version['id'],
                     'runId':result['id'],'output':result['output'],
