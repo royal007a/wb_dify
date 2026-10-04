@@ -180,7 +180,7 @@ class InputHygieneIntegrationTest {
         ((ObjectNode)good.at("/nodes/1/config")).set("metadata",json.readTree("{\"items\":[{\"label\":\"中文🙂 literal \\\\u0000\",\"enabled\":true,\"count\":7}]}"));
         String id=call(post("/api/v1/workflows").contentType("application/json").content(good.toString()),201).path("data").asText();
         JsonNode original=call(get("/api/v1/workflows/"+id),200);
-        assertThat(original.path("data").path("nodes").get(1).path("config")).isEqualTo(good.at("/nodes/1/config"));
+        assertThat(endConfig(original)).isEqualTo(good.at("/nodes/1/config"));
         long before=count("workflows");
         for(boolean key:List.of(false,true)) {
             ObjectNode bad=good.deepCopy();ObjectNode nested=(ObjectNode)bad.at("/nodes/1/config/metadata/items/0");
@@ -194,7 +194,7 @@ class InputHygieneIntegrationTest {
         }
         ((ObjectNode)good.at("/nodes/1/config/metadata/items/0")).put("label","更新🙂");
         call(put("/api/v1/workflows/"+id).contentType("application/json").content(good.toString()),200);
-        assertThat(call(get("/api/v1/workflows/"+id),200).path("data").path("nodes").get(1).path("config"))
+        assertThat(endConfig(call(get("/api/v1/workflows/"+id),200)))
                 .isEqualTo(good.at("/nodes/1/config"));
     }
 
@@ -244,6 +244,10 @@ class InputHygieneIntegrationTest {
         int slash=path.lastIndexOf('/');JsonNode parent=body.at(path.substring(0,slash));String key=path.substring(slash+1);
         if(parent.isArray())((com.fasterxml.jackson.databind.node.ArrayNode)parent).set(Integer.parseInt(key),json.getNodeFactory().textNode(value));
         else ((ObjectNode)parent).put(key,value);
+    }
+    private JsonNode endConfig(JsonNode response){
+        return java.util.stream.StreamSupport.stream(response.path("data").path("nodes").spliterator(),false)
+                .filter(node->"end".equals(node.path("nodeKey").asText())).findFirst().orElseThrow().path("config");
     }
 
     private void checkCrud(String resource,String table,ObjectNode good,List<String> paths) throws Exception {
