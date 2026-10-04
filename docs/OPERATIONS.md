@@ -28,6 +28,10 @@ include `deploy/nginx-path.conf`。该片段将静态资源隔离在 `/hify/`，
 
 ## 3. 备份与恢复
 
+上传默认限制：应用单文件10MiB、整个multipart请求12MiB；deploy/nginx.conf和nginx-path.conf的Hify API location均为12m，并在专用命名location返回HTTP413/JSON41300。修改应用限制时必须同步代理模板和边界测试；不能只换jar后声称代理错误体已更新。共享TLS片段只作用于/hify/api/，不改其他应用的/api/。
+
+请求缓冲（proxy_request_buffering on）与SSE响应缓冲（off）不同：上传可能先落nginx临时目录。部署前检查该目录所在磁盘可用空间、权限和并发预算（每个在途请求最多约12MiB缓冲，仍须额外预留日志/其他业务空间）；单请求上限不是总磁盘配额。Tomcat max-swallow-size为有限16MiB，连接空闲超时仍10s；本地验证有限13MiB请求可读到413，不承诺任意大/慢上传、磁盘满或断连时仍拿到JSON。不要设置无限吞包来换取表面上的413保证。
+
 - PostgreSQL：每日逻辑/物理备份 + WAL/PITR（生产），每月至少一次恢复演练。
 - 文档 volume/object storage：与 DB 备份保持同一恢复点或用 checksum/reindex 修复。
 - Redis 不进入关键恢复路径；可清空后从 DB 重建。

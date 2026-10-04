@@ -87,7 +87,7 @@ public class KnowledgeApplicationService {
     public String upload(String baseId,MultipartFile file){
         KnowledgeBase base=requireBase(baseId); if(!base.isEnabled()) throw new BizException(ErrorCode.CONFLICT,"知识库已停用");
         if(file==null||file.isEmpty()) throw new BizException(ErrorCode.PARAM_ERROR,"文件不能为空");
-        if(file.getSize()>MAX_FILE_SIZE) throw new BizException(ErrorCode.PARAM_ERROR,"文件不能超过 10MB");
+        if(file.getSize()>MAX_FILE_SIZE) throw new BizException(ErrorCode.PAYLOAD_TOO_LARGE);
         String name=file.getOriginalFilename()==null?"document.txt":file.getOriginalFilename();
         String extension=name.contains(".")?name.substring(name.lastIndexOf('.')+1).toLowerCase(Locale.ROOT):"";
         if(!List.of("txt","md","markdown").contains(extension)) throw new BizException(ErrorCode.PARAM_ERROR,"仅支持 TXT/Markdown");

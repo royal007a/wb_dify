@@ -19,7 +19,7 @@
 - NoResourceFoundException不回显路径，返回固定NOT_FOUND文案。
 - Advice单独处理MaxUploadSizeExceededException为41300/413；其他MultipartException解析失败为40000/400；不输出文件名、boundary或原始异常。
 - 新增SSE-only Accept的未知Run订阅和取消负例。`mvn -B -pl hify-app -am -Dtest=HttpErrorSurfaceTest,HttpErrorContractTest -Dsurefire.failIfNoSpecifiedTests=false test`退出0：真实Tomcat/H2的6项、standalone MVC的7项均通过，0跳过。不得将standalone七项当作另七条真实网络测试。
-- 测试中容器file上限1KiB、request上限4KiB，提交2KiB合成正文；证明解析异常协议映射，不是生产超大/弱网上传压力测试。知识模块自身10MB业务校验仍400；Memory及部分旧会话缺资源的400边界未在本切片改动。
+- 测试中容器file上限1KiB、request上限4KiB，提交2KiB合成正文；证明解析异常协议映射，不是生产超大/弱网上传压力测试。当时知识模块虽写有>10MB→400，但生产Servlet默认1MiB先拦截，它并非正常HTTP可达边界；原“业务校验仍400”表述已由复核纠正，后续见SPEC_UPLOAD_BOUNDARY.md。Memory及部分旧会话/resume缺资源400且可能回显id的边界未在本切片改动。
 
 更新API错误码、5条受影响路由的检查要求和候选测试、F34说明以及Harness预期类清单（新增6项，没有降低旧分母）。
 
@@ -28,3 +28,5 @@
 2026-10-04 07:53（Asia/Shanghai），代码提交`9aac4e7`，本任务`verification.json`为schema 3 / strictEvidence / passed，绑定本次runId、HEAD和harness/backend范围。后端新鲜Surefire XML报告79个类、526项执行，failures/errors/skipped/flakyAttempts均为0；Harness Python 31项通过。PG集成类本轮实际执行，没有以H2或跳过代替。原始XML不提交（含进程属性），逐类计数和SHA保存在`backend-tests.tests.json`，日志SHA在verification中。
 
 这是本切片本地测试证据；未做132部署，也不代表全部接口、全部故障排列已经验收。
+
+独立复核fa5f48f..9aac4e7为静态阅读：未知资源/异常选择/未知取消无写入成立；新增上传P1（应用与nginx默认上限及HTML响应）交SPEC-UPLOAD-BOUNDARY-001。原六项中只有stream请求带SSE Accept，取消没有该头，不能说两者都测过；后续专项补齐。解析优先级、有限吞包与默认/error出口也在后续契约明确，不回写本轮六项的实际覆盖。

@@ -48,7 +48,10 @@ class HttpErrorSurfaceTest {
         var stream = HttpRequest.newBuilder(URI.create("http://127.0.0.1:"+port+"/api/v1/runs/"+MARKER+"/events/stream"))
                 .timeout(Duration.ofSeconds(5)).header("Accept", "text/event-stream").GET().build();
         check(client.send(stream,HttpResponse.BodyHandlers.ofString()),404,40400);
-        check(send("POST","/api/v1/runs/"+MARKER+"/cancellations",null,null),404,40400);
+        var cancel=HttpRequest.newBuilder(URI.create("http://127.0.0.1:"+port+"/api/v1/runs/"+MARKER+"/cancellations"))
+                .timeout(Duration.ofSeconds(5)).header("Accept","text/event-stream")
+                .POST(HttpRequest.BodyPublishers.noBody()).build();
+        check(client.send(cancel,HttpResponse.BodyHandlers.ofString()),404,40400);
     }
 
     @Test void multipartParserRejectsOversizeWith413() throws Exception {
@@ -60,6 +63,11 @@ class HttpErrorSurfaceTest {
 
     @Test void malformedMultipartReturnsSafe400() throws Exception {
         check(send("POST","/api/v1/knowledge-bases/missing/documents","multipart/form-data",MARKER),400,40000);
+    }
+
+    @Test void multipartParsingPrecedesRouteAndMediaTypeResolution() throws Exception {
+        check(send("POST","/api/v1/unknown-"+MARKER,"multipart/form-data",MARKER),400,40000);
+        check(send("POST","/api/v1/conversations","multipart/form-data",MARKER),400,40000);
     }
 
     private HttpResponse<String> send(String method,String path,String type,String body) throws Exception {

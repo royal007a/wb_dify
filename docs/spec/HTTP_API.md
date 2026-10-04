@@ -271,11 +271,11 @@
 ### POST /api/v1/knowledge-bases/{id}/documents
 
 - 功能：上传异步索引。
-- 输入：`multipart file (TXT/Markdown)`。
+- 输入：`multipart file (TXT/Markdown; file<=10MiB, whole request<=12MiB)`。
 - 成功：HTTP 202，`Result<String>`。
-- 必测断言/边界：大小/类型/编码/内容；持久任务；失败有状态；Servlet超限41300/413，畸形multipart40000/400，不回显输入。
+- 必测断言/边界：大小/类型/编码/内容；持久任务；失败有状态；Servlet/仓库nginx超限41300/413，畸形multipart40000/400；解析先于路由；巨大/慢请求或连接重置时JSON只尽力提供，未保证所有错误出口无输入回显。
 - 实现：[KnowledgeController](../../backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java)。
-- 候选测试（非逐接口覆盖承诺）：[KnowledgeApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java)；[HttpErrorSurfaceTest](../../backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[KnowledgeApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java)；[HttpErrorSurfaceTest](../../backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java)；[UploadBoundaryNetworkTest](../../backend/hify-app/src/test/java/com/hify/api/UploadBoundaryNetworkTest.java)。
 
 ### POST /api/v1/knowledge-bases/{id}/retrieval-tests
 

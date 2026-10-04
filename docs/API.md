@@ -222,7 +222,7 @@ DELETE   /api/v1/documents/{documentId}
 POST     /api/v1/knowledge-bases/{id}/retrieval-tests
 ```
 
-上传接受 TXT/Markdown，限制单文件大小、总量和 MIME。索引异步语义在单实例内可使用受控 executor，但任务和进度必须持久化；应用重启后可从数据库恢复待处理任务。检索返回 `chunkId/documentId/documentVersion/content/digest/score/rank`，客户端引用必须保存这些字段，不能只保存展示文本。
+上传接受 TXT/Markdown（目前按扩展名和UTF-8内容验证，不保证MIME嗅探）。单文件上限10MiB（10×1024×1024字节），整个multipart请求上限12MiB（含字段/边界）；超限413/41300。不存在跨请求累计配额，不能把单请求上限称为总存储配额。索引异步语义在单实例内可使用受控 executor，但任务和进度必须持久化；应用重启后可从数据库恢复待处理任务。检索返回 `chunkId/documentId/documentVersion/content/digest/score/rank`，客户端引用必须保存这些字段，不能只保存展示文本。
 
 绑定知识的 Chat 在零候选/任一来源失败时不调用模型，分别 FAILED / KNOWLEDGE_NO_EVIDENCE、KNOWLEDGE_RETRIEVAL_FAILED。候选不是已验证答案；最终至少有一个合法 `[K数字]` 且所有所引 canonical chunk/digest 校验成功，才通过来源完整性门禁，否则 NEEDS_INPUT 并保存 Gap。恢复沿用原 K 映射，不重新检索编号。该路径不发送正文 delta，成功终态后回读 Run；普通聊天不变。完成事件的 `answerVerification=SOURCE_REFERENCES_ONLY,semanticClaimsVerified=false` 仅表示引用来源完整，不保证答案属实。向量候选过滤默认 0.5（HIFY_KNOWLEDGE_MIN_VECTOR_SCORE），不作为充分性判定；关键词仍独立召回。Workflow KNOWLEDGE 零候选失败，不继续 END。详细边界见 `spec/SPEC_KNOWLEDGE_FINISH.md`。
 
@@ -306,4 +306,8 @@ Agent 发布时把 MCP 工具映射成稳定 runtime tool name 和 `ToolDefiniti
 | 幂等冲突 | 40901 / HTTP409 |
 | 系统 | 50000 / HTTP500 |
 
-以上为 `ErrorCode` 数字枚举。Provider 失败分类、Run terminalReason 和 Tool errorCode 属于结果/事件字段，不应与 HTTP 错误码混称。未知Run的详情、事件、SSE订阅和取消均返回40400/HTTP404（SSE尚未建立时为application/json），未知路由404不反射请求路径。Memory和部分旧会话入口仍有IllegalArgumentException映射400的历史边界，不能泛称全部资源已统一404。知识文档业务大小/类型/内容限制仍是400参数错误，与Servlet multipart解析上限的413区分。
+以上为 `ErrorCode` 数字枚举。Provider 失败分类、Run terminalReason 和 Tool errorCode 属于结果/事件字段，不应与 HTTP 错误码混称。未知Run的详情、事件、SSE订阅和取消均返回40400/HTTP404（SSE尚未建立时为application/json），未知路由404不反射请求路径。响应已提交的SSE无法再改成JSON错误。
+
+Multipart解析先于路由/媒体类型解析：畸形multipart发往不存在路由或非上传接口也可能先返回400/413，不能无条件期望404/415。文件/请求大小超限统一413；类型/空内容/非法UTF-8等仍400。知识服务内的大小检查是绕过Servlet直接调用时的防御，同样413；不再将它宣称为正常HTTP可达的“>10MB返回400”。两份仓库nginx配置在Hify API入口提供固定JSON 413；必须发布相应代理配置才生效。任意巨大/慢请求、磁盘故障、连接已重置或容器在DispatcherServlet前拒绝等情形，不保证客户端能读到JSON（Tomcat有限吞包16MiB）。
+
+Memory和部分旧会话/resume入口仍有IllegalArgumentException映射400的历史边界，且Memory未知Run与resume未知runId仍可能回显该标识；不能泛称全部资源已统一404或所有错误出口已无输入回显。容器默认/error的path字段未在本切片统一清除。

@@ -514,13 +514,14 @@
       "handler": "KnowledgeController",
       "source": "backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java",
       "purpose": "上传异步索引",
-      "request": "multipart file (TXT/Markdown)",
+      "request": "multipart file (TXT/Markdown; file<=10MiB, whole request<=12MiB)",
       "success": 202,
       "response": "Result<String>",
-      "checks": "大小/类型/编码/内容；持久任务；失败有状态；Servlet超限41300/413，畸形multipart40000/400，不回显输入",
+      "checks": "大小/类型/编码/内容；持久任务；失败有状态；Servlet/仓库nginx超限41300/413，畸形multipart40000/400；解析先于路由；巨大/慢请求或连接重置时JSON只尽力提供，未保证所有错误出口无输入回显",
       "testCandidates": [
         "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java",
-        "backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/UploadBoundaryNetworkTest.java"
       ]
     },
     {
