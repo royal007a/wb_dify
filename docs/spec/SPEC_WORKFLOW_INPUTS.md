@@ -34,4 +34,6 @@ Agent Chat目前只传userMessage：含必填具名字段的Workflow绑定/发�
 
 上线前只读统计旧发布版本START.config含inputs但无inputSchemaFormat的记录；非零必须先解决兼容方案，不能直接切换或修改不可变旧版本。2026-10-04约23:35的132检查为0，只是当次状态，部署前必须再查。
 
+INPUTS-002补强：可选数字未编辑时完全省略该键，即使前端显示的默认值为JS Number近似，服务端仍使用精确发布默认值。只在用户input/change之后提交数字，主动修改成0也发送；清空依然省略，重开/切换版本重置编辑标记。用户主动输入数字仍受JS Number精度限制，不宣称任意精度编辑器。
+
 测试：WorkflowInputsTest有执行前拒绝+合法外部execute一次的mock对照；WorkflowInputsIntegrationTest/H2与Postgres子类验证HTTP契约、零写入与合法+1/+2、schema冻结、Agent绑定拒绝及可选默认真实异步Chat。MockMvc不是真实Tomcat网络。前端workflow-inputs.spec为路由打桩，证明客户端表单/请求，不替代上线验收。模型质量、文件、多模态、Chatflow不在范围。

@@ -7,10 +7,12 @@ const emit=defineEmits<{(e:'update:modelValue',value:boolean):void}>()
 const loading=ref(false), submitting=ref(false), error=ref(''), input=ref('我想申请退款')
 const version=ref<WorkflowVersionDetail>(), fields=ref<WorkflowInputField[]>([]), values=ref<Record<string,string|number|boolean|null|undefined>>({})
 const result=ref<WorkflowRun>()
+const editedNumbers=ref(new Set<string>())
 let generation=0
 watch(()=>[props.modelValue,props.versionId] as const,async ([open,id])=>{
   const token=++generation
   version.value=undefined; fields.value=[]; values.value={}; result.value=undefined; error.value=''; submitting.value=false; loading.value=false
+  editedNumbers.value=new Set()
   if(!open||!id)return
   loading.value=true
   try{
@@ -31,6 +33,9 @@ async function submit(){
   if(!input.value.trim()||input.value.length>20000){error.value='userMessage须为1至20000字符';return}
   const inputs:Record<string,string|number|boolean>={}
   for(const field of fields.value){
+    // JSON.parse/ElInputNumber use IEEE-754. Do not round a published default
+    // on an untouched form: omission lets the server bind its exact snapshot.
+    if(field.type==='number'&&!field.required&&!editedNumbers.value.has(field.name))continue
     const value=values.value[field.name]
     if(value===undefined||value===null){if(field.required){error.value=`请填写 ${field.label??field.name}`;return}continue}
     if(field.type==='text'&&(typeof value!=='string'||value.length>(field.maxLength??2000)||(field.required&&!value.trim()))){error.value=`请检查 ${field.label??field.name} 的文本长度`;return}
@@ -55,7 +60,7 @@ async function submit(){
         <el-form-item label="userMessage" required><el-input v-model="input" aria-label="userMessage" type="textarea" :maxlength="20000"/></el-form-item>
         <el-form-item v-for="field in fields" :key="field.name" :label="field.label??field.name" :required="field.required">
           <el-input v-if="field.type==='text'" :model-value="String(values[field.name]??'')" :aria-label="field.label??field.name" :maxlength="field.maxLength??2000" @update:model-value="values[field.name]=$event"/>
-          <el-input-number v-else-if="field.type==='number'" :model-value="values[field.name] as number|null|undefined" :aria-label="field.label??field.name" :min="-1e12" :max="1e12" @update:model-value="values[field.name]=$event"/>
+          <el-input-number v-else-if="field.type==='number'" :model-value="values[field.name] as number|null|undefined" :aria-label="field.label??field.name" :min="-1e12" :max="1e12" @update:model-value="values[field.name]=$event" @input="editedNumbers.add(field.name)" @change="editedNumbers.add(field.name)"/>
           <el-switch v-else-if="field.type==='boolean'" :model-value="values[field.name]===true" :aria-label="field.label??field.name" @update:model-value="values[field.name]=$event===true"/>
           <el-select v-else-if="field.type==='enum'" :model-value="values[field.name] as string|undefined" :aria-label="field.label??field.name" @update:model-value="values[field.name]=$event"><el-option v-for="option in field.options" :key="option" :label="option" :value="option"/></el-select>
         </el-form-item>

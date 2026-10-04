@@ -1,5 +1,31 @@
 import { expect, test } from '@playwright/test'
 
+test('untouched decimal defaults are omitted while edited zero is sent',async({page})=>{
+  const graph={id:'decimal',name:'精确默认值',publishedVersionId:'decimal-v',nodes:[],edges:[]}
+  const posts:Record<string,unknown>[]=[]
+  await page.route('**/api/v1/workflows**',route=>route.fulfill({json:{code:200,data:[graph],total:1,page:1,size:10}}))
+  await page.route('**/api/v1/workflow-versions/decimal-v',route=>route.fulfill({contentType:'application/json',body:'{"code":200,"data":{"id":"decimal-v","versionNo":1,"nodes":[{"nodeKey":"start","type":"START","name":"开始","config":{"inputs":[{"name":"exact","label":"精确数","type":"number","required":false,"default":0.12345678901234567890123},{"name":"tiny","label":"小数","type":"number","required":false,"default":1e-7}]}}],"edges":[]}}'}))
+  await page.route('**/api/v1/workflow-versions/decimal-v/runs',route=>{
+    posts.push(route.request().postDataJSON().inputs)
+    return route.fulfill({status:202,json:{code:200,data:{id:'decimal-run',status:'SUCCEEDED',output:'server defaults',nodes:[]}}})
+  })
+  await page.goto('./workflows');await page.getByRole('button',{name:'运行',exact:true}).click()
+  const dialog=page.getByRole('dialog',{name:'运行已发布版本'})
+  await expect(dialog.getByRole('spinbutton',{name:'小数',exact:true})).toBeVisible()
+  expect(Number(await dialog.getByRole('spinbutton',{name:'小数',exact:true}).inputValue())).toBe(1e-7)
+  await dialog.getByRole('button',{name:'执行已发布版本'}).click()
+  await expect.poll(()=>posts.length).toBe(1);expect(posts[0]).toEqual({})
+  await dialog.getByRole('spinbutton',{name:'精确数',exact:true}).fill('0')
+  await dialog.getByLabel('userMessage',{exact:true}).click()
+  await dialog.getByRole('button',{name:'执行已发布版本'}).click()
+  await expect.poll(()=>posts.length).toBe(2);expect(posts[1]).toEqual({exact:0})
+  await dialog.getByRole('button',{name:'关闭',exact:true}).click()
+  await page.getByRole('button',{name:'运行',exact:true}).click()
+  await expect(dialog.getByRole('spinbutton',{name:'精确数',exact:true})).toBeVisible()
+  await dialog.getByRole('button',{name:'执行已发布版本'}).click()
+  await expect.poll(()=>posts.length).toBe(3);expect(posts[2]).toEqual({})
+})
+
 const fields=[
   {name:'owner',label:'负责人',type:'text',required:true,maxLength:64},
   {name:'count',label:'数量',type:'number',required:false,default:0},
@@ -25,6 +51,8 @@ test('list and canvas run the published typed schema, preserving false and zero'
   expect(requests).toHaveLength(0)
   await dialog.getByLabel('负责人',{exact:true}).fill('小林')
   await dialog.getByLabel('userMessage',{exact:true}).fill('安排任务')
+  await dialog.getByRole('spinbutton',{name:'数量',exact:true}).fill('1')
+  await dialog.getByRole('spinbutton',{name:'数量',exact:true}).fill('0')
   await dialog.getByRole('button',{name:'执行已发布版本'}).click()
   await expect(dialog.getByText('published answer')).toBeVisible()
   expect(requests).toEqual([{input:'安排任务',inputs:{owner:'小林',count:0,urgent:false,mode:'普通'}}])
