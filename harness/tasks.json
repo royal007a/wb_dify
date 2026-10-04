@@ -30,7 +30,7 @@
         "只改原版Hify产物和既有snippet，不改任何其他站点、不读取密钥或自动删历史目录；SHA/健康/旧新会话/豆包LLM/typed输入/上传有远端证据",
         "明确线上embedding端点未配置、Workflow GET未授权默认拒绝，不冒充所有外部节点已线上验证；完整目标仍由CAPABILITY-DEPLOY-001追踪"
       ],
-      "planPath": "exec-plans/blocked/CAPABILITY-ROLLOUT-001.md",
+      "planPath": "exec-plans/completed/CAPABILITY-ROLLOUT-001.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [

@@ -1,5 +1,7 @@
 # CAPABILITY-ROLLOUT-001
 
+复核后校正：任务已completed；恢复后完成时计划未从blocked移出，本次仅对齐planPath及目录，不改变三次run记录。浏览器补验的非等价覆盖、历史会话版本缺少基线和首轮模型runId缺失见CAPABILITY_ROLLOUT_001.md，不补造历史断言或结果。
+
 用户十小时目标明确授权原版Hify实现、部署、验证。线上无embedding Provider且空间不足以安全新装模型；不静默降低CAPABILITY-DEPLOY-001的全能力验收，拆出已能独立交付的代码上线。请求用户补充长期embedding endpoint；本task不建立长期Mac反向隧道、不开放新网络端口、不修改Provider/MCP策略。
 
 1. 验证a510191六scope passed及源码树等价；包装jar、/hify前端及既有snippet，复制独立review过的安装器2f7e340。

@@ -1,0 +1,10 @@
+{
+  "meaning": "Byte-identical copies of three existing local command logs, attached after review. No new remote commands, deployment, model calls or tests were executed to produce these copies. Publisher-recorded observations, not a signature or independent remote verification.",
+  "copies": [
+    {"file": "remote-preflight.txt", "source": "../CAPABILITY-ROLLOUT-001-20261004T164021Z-fac60c69/remote-preflight.log", "sha256": "8ce7771407ca6b232c37bcbda5b09a0031b8725ca4ba9dfc4da4f40004d886a7"},
+    {"file": "remote-install.txt", "source": "../CAPABILITY-ROLLOUT-001-20261004T164021Z-fac60c69/remote-install.log", "sha256": "bd3e36c0666c8902d74b6e2ebf7d37924da50c4bac38d546c4ce57607905b9e2"},
+    {"file": "remote-final.txt", "source": "../CAPABILITY-ROLLOUT-001-20261004T164805Z-cdfac5e6/remote-final.log", "sha256": "01dc3cbed44a47293db68f0d351d5af78f9a14f0eaa37bd97340ff20339cb104"}
+  ],
+  "credentialHandling": "Only key file inode/size/mtime/mode/owner metadata; no key values or environment contents.",
+  "limitations": "pg_restore --list stdout was discarded by the installer; output here is not a restore exercise. Python test log remains uncommitted. The empty systemd timestamp does not establish a precise cutover time."
+}

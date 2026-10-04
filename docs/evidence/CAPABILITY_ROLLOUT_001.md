@@ -13,14 +13,20 @@
 - 具名输入：`0|false|0.0000001`，三个非法输入400，发布schema回读不变；真实PG执行记录回读一致。
 - 未授权HTTP节点发布400、版本数0；没有打开白名单，不声称线上成功GET已验证。
 - 豆包`doubao-seed-2.1-lite`真实运行START→LLM→END，三节点SUCCEEDED，输出42。补验run `aa901557-9964-409a-a24a-aa0ef1777cb8`，是一次简短通路验证，不是质量/时延benchmark。
-- 上次部署保留的合成会话`be99eb3a…`继续运行得到42，固定Agent版本不变；新会话/幂等、输入NUL拒绝等23项current检查通过。
+- 上次部署保留的合成会话`be99eb3a…`继续运行得到42，本次GET回读的会话版本与新Run版本一致。DEPLOY007没有记录当时的agentVersionId，因此本次证据不能证明它跨发布未变；新会话/幂等、输入NUL拒绝等23项current检查通过。
 - 直连及/hify分别上传2MiB、恰好10MiB返回202，10MiB+1和13MiB返回JSON413/41300；检索仅为bootstrap下合成原文命中，不是语义模型。
 - 显式选Demo的真实浏览器两组场景、5个持久Run全部COMPLETED；计算器391，问候0工具，三次时间问题各1次current_time。同会话多轮固定版本一致。使用Mock，不能当作豆包浏览器测试。
 - 收尾harness78项、typecheck/build通过，7步骤退出0，schema3/aa6ddc2/16:50:21Z。后端没有再次重跑，沿用源码树相同且已独立复核的CAPABILITY-VERIFY-001六scope证据（667/125/34/24，不相加）。收尾本地普通前端构建没有覆盖线上/hify构建产物。
 
 ## 两轮失败完整保留
 
-第一轮164021Z-fac60c69安装成功但验证blocked：能力脚本把旧会话GET误拼成/api/v1，正确是/api；旧浏览器测试默认首项为Demo，线上实际首项为之前创建的售后Workflow Agent。current/prefix/direct和最终身份检查均通过。第二轮164515Z-acab6763修正后能力全过，浏览器容器click未打开选项列表。第三轮164805Z-cdfac5e6通过正常focus/ArrowDown选择Demo，只补浏览器与最终身份并收尾，不第三次调用豆包。没有修改产品去适配测试，也没有放松原工具/答案断言；新增持久Run回读。两次明确记录的豆包调用都在脚本全量能力检查中，不隐瞒自动重试。失败摘要、原日志SHA与blocked历史均保留；原始日志gitignore，不把archive说成可复验远端。
+第一轮164021Z-fac60c69安装成功但验证blocked：能力脚本把旧会话GET误拼成/api/v1，正确是/api；旧浏览器测试默认首项为Demo，线上实际首项为之前创建的售后Workflow Agent。current/prefix/direct和最终身份检查均通过。第二轮164515Z-acab6763修正后能力全过，浏览器容器click未打开选项列表。第三轮164805Z-cdfac5e6通过正常focus/ArrowDown选择Demo，只补浏览器与最终身份并收尾，不第三次调用豆包。没有修改产品去适配测试，但独立smoke只部分覆盖原两条浏览器用例，不是逐条等价替代。原spec没有修改，也没有在线上重跑通过。
+
+浏览器覆盖差异：smoke未核对会话POST响应里的agentVersionId、Run与该会话创建版本的相等关系、streamUrl路径、每轮结束“运行”按钮重新出现，以及时间回答不含“已收到”。默认首项为Demo的断言被有意改成显式选择Demo；不能再以此证明默认选择行为。新增POST 202、GET回读COMPLETED及版本一致检查，但回读的outputMessage仅记录，没有内容断言。多轮UI的COMPLETED/工具数/最后一条回答可能读到上一轮显示，不能把这些UI检查当作严格的逐轮收敛证明。
+
+脚本顺序及首轮失败位置表明两轮都执行了豆包步骤；首轮没有保存runId，只有第二轮有完整的具名运行结果，不能声称两次都有独立可回读的调用证据。第三轮通过SHA绑定复用第二轮capability结果。失败摘要、原日志SHA与blocked历史均保留。
+
+复核后另附`harness/evidence/CAPABILITY-ROLLOUT-001/remote-observations/`：从当时本地留存的preflight/install/final日志逐字节复制的无凭据输出，补足摘要中的实际远端SHA、dump元数据、V24和在途数记录。它们只是发布方保存的观察，不是独立远端复验或签名。其余原始日志仍gitignore；Python78项、pg_restore --list未重跑，不把archive说成可复验远端。三个历史run目录未改写。
 
 ## 未完成边界
 

@@ -1,0 +1,12 @@
+release.tar.gz: OK
+install-spec-release.sh: OK
+smoke-upload.py: OK
+Running as unit: hify-upgrade-20261005-a510191.service
+Result=success
+ExecMainStatus=0
+InactiveEnterTimestamp=
+{"code":200,"message":"success","data":"Hify is running"}dumpBytes=440100 dumpMode=600
+keyMetadata=390186:65:1791034419:600:root
+5ee59af0c9b13bb6cfe62f700813a117f4492268641cb153486ff121c4b1f230  /opt/hify/backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar
+a724db591f56f1774d41d946fd1e4de3081c71cc2161d9abb9c4e79207488794  /opt/hify/frontend/dist/index.html
+6c43b0a0f431ac4fa27ff0f2d48e71c02e4ce15a5aa607dbbc2714d0cf132281  /etc/nginx/snippets/hify-path.conf

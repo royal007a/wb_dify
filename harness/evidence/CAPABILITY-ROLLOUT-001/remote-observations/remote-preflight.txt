@@ -1,0 +1,2 @@
+freeKiB=2307544 requiredKiB=1120165 stagingKiB=221377 oldKiB=84724 dbBytes=14400535
+keyMetadata=390186:65:1791034419:600:root
