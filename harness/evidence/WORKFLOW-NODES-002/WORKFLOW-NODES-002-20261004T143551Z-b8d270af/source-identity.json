@@ -1,0 +1,9 @@
+{
+  "headCommit": "37ecb42060a9777e14bbf9324b81b6078fed2d51",
+  "backendTree": "5e21079a637b281a4e5564e480061391941b7a6f",
+  "frontendTree": "f28712b7dbf67b5fbe86eb4e4dfa1fc0f78b1133",
+  "deployTree": "fd72f546c5559303e9722b220a1839e87fab72dc",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourcePaths": ["backend", "frontend", "deploy"],
+  "meaning": "Source trees and empty tracked diff checked during the gate; only harness state/evidence changed. Not deployment or real-model acceptance."
+}

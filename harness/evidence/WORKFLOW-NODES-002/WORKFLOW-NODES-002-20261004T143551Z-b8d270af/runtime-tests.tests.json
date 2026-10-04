@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "step": "runtime-tests",
+  "invocationId": "2688413f-ca7b-4490-b43e-007d3bcadb3b",
+  "inventorySha256": "fe4b64cf055a55f0efa724a601470741ad1c82cae9e51b2f3d3edd57d631ed8c",
+  "expectedSuites": {
+    "com.hify.runtime.QueryLoopTest": 20,
+    "com.hify.runtime.plan.PlanStateMachineTest": 3,
+    "com.hify.runtime.state.ExecutionContextStateTest": 3,
+    "com.hify.domain.ChildAgentTaskTest": 2,
+    "com.hify.api.RunFlowIntegrationTest": 2,
+    "com.hify.api.ChildAgentTaskIntegrationTest": 2,
+    "com.hify.api.ContextMemoryIntegrationTest": 2
+  },
+  "reportDirectory": "runtime-tests-0w43_1t6/reports",
+  "result": "passed",
+  "tests": {
+    "totals": {
+      "tests": 34,
+      "executed": 34,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "flakyAttempts": 0
+    },
+    "classes": [
+      {
+        "class": "com.hify.api.ChildAgentTaskIntegrationTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 2,
+        "flakyAttempts": 0,
+        "expectedMinimum": 2,
+        "xmlSha256": "74e0b3f5e990214892e01e90f22da946d49e7ff65aa87ac5d82a8029c5486d72"
+      },
+      {
+        "class": "com.hify.api.ContextMemoryIntegrationTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 2,
+        "flakyAttempts": 0,
+        "expectedMinimum": 2,
+        "xmlSha256": "3a26366a77328b8172a307a4c3a72bb077f26f7daaa5093379116e573b34b9fa"
+      },
+      {
+        "class": "com.hify.api.RunFlowIntegrationTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 2,
+        "flakyAttempts": 0,
+        "expectedMinimum": 2,
+        "xmlSha256": "e718c0722f30e8076463c650d051a9e5abacf48faa7fcf9adb50fbc523b561e8"
+      },
+      {
+        "class": "com.hify.domain.ChildAgentTaskTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 2,
+        "flakyAttempts": 0,
+        "expectedMinimum": 2,
+        "xmlSha256": "fad0e707557b1b349ed75a8d8d8661bc969ccd00e7b38b1a6698b9591dd50657"
+      },
+      {
+        "class": "com.hify.runtime.QueryLoopTest",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 20,
+        "flakyAttempts": 0,
+        "expectedMinimum": 20,
+        "xmlSha256": "79583ed1212c6a490b21b38492adee661c5e53c391a380053f8b66c90be9cd09"
+      },
+      {
+        "class": "com.hify.runtime.plan.PlanStateMachineTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 3,
+        "flakyAttempts": 0,
+        "expectedMinimum": 3,
+        "xmlSha256": "29bda2b7c17864f0e98f520f2cb911998aff267aad74b0c7a7d4da86b92f2382"
+      },
+      {
+        "class": "com.hify.runtime.state.ExecutionContextStateTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 3,
+        "flakyAttempts": 0,
+        "expectedMinimum": 3,
+        "xmlSha256": "6b2c240a0d30802aa0540e6d13df2d806f0da765002a7ae1f1d4ce8e19a84873"
+      }
+    ],
+    "underfilledSuites": [],
+    "countMeaning": "Reported testcase/skip records; disabled containers can hide additional intended methods."
+  },
+  "command": [
+    "mvn",
+    "-B",
+    "-Dapi.version=1.44",
+    "-pl",
+    "hify-app",
+    "-am",
+    "-Dtest=com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.domain.ChildAgentTaskTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest",
+    "-Dsurefire.failIfNoSpecifiedTests=false",
+    "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/WORKFLOW-NODES-002/WORKFLOW-NODES-002-20261004T143551Z-b8d270af/runtime-tests-0w43_1t6/reports",
+    "test"
+  ],
+  "commandExitCode": 0
+}

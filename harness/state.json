@@ -7,16 +7,16 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "DIFY-AUDIT-001-20261004T142546Z-5a76c36d",
-    "path": "harness/evidence/DIFY-AUDIT-001/DIFY-AUDIT-001-20261004T142546Z-5a76c36d",
+    "runId": "WORKFLOW-NODES-002-20261004T143551Z-b8d270af",
+    "path": "harness/evidence/WORKFLOW-NODES-002/WORKFLOW-NODES-002-20261004T143551Z-b8d270af",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "4d8fa616e19302bf782b4756661ea015fdf98f6d",
-    "headCommit": "4d8fa616e19302bf782b4756661ea015fdf98f6d",
-    "recordedAt": "2026-10-04T14:27:13Z",
+    "baselineCommit": "37ecb42060a9777e14bbf9324b81b6078fed2d51",
+    "headCommit": "37ecb42060a9777e14bbf9324b81b6078fed2d51",
+    "recordedAt": "2026-10-04T14:47:31Z",
     "verificationSchemaVersion": 3,
-    "verificationSha256": "1049e93577c9bb7d8c94e340f668b1f64c8959ea4a3876ee18058e98205b613c"
+    "verificationSha256": "6b545bf85d905a899bf346d1a808e22b3df8f293cdcc8a62e867a84a993e0cf7"
   },
-  "lastCompletedTaskId": "DIFY-AUDIT-001",
-  "updatedAt": "2026-10-04T14:27:13Z"
+  "lastCompletedTaskId": "WORKFLOW-NODES-002",
+  "updatedAt": "2026-10-04T14:47:31Z"
 }

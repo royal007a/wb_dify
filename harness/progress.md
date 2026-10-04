@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T14:27:13Z`
+- Generated from task state updated at: `2026-10-04T14:47:31Z`
 - Current task: `none`
-- Counts: pending 18 · running 0 · blocked 2 · completed 82
+- Counts: pending 17 · running 0 · blocked 2 · completed 83
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -31,7 +31,7 @@
 | `SPEC-WORKFLOW-CONTROL-001` | P0 | completed | backend, runtime, migration, harness | reversible_write | 传播 Workflow 取消和截止时间并阻止错误成功终态 |
 | `SPEC-WORKFLOW-GRAPH-001` | P0 | completed | backend, harness | reversible_write | 验证 Workflow 路径终止与模板必经变量 |
 | `SPEC-WORKFLOW-KNOWLEDGE-001` | P0 | completed | backend, runtime, harness | reversible_write | 固定 Workflow 知识语料快照并保留历史引用 |
-| `WORKFLOW-NODES-002` | P0 | pending | backend, harness | reversible_write | 外部节点出站特殊网段与超时语义补强 |
+| `WORKFLOW-NODES-002` | P0 | completed | backend, harness | reversible_write | 外部节点出站特殊网段与超时语义补强 |
 | `CAPABILITY-DEPLOY-001` | P1 | pending | harness, frontend | high_risk | 能力补齐完整验收与132重新部署 |
 | `CHAT-DEMO-001` | P1 | completed | backend, frontend, runtime | reversible_write | 修复 Demo 时间问句回显而不调用工具 |
 | `CHAT-DEMO-DEPLOY-001` | P1 | completed | backend, frontend | high_risk | 部署并验证 132 Demo 会话时间修复 |
