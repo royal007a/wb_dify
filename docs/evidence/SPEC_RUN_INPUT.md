@@ -26,3 +26,5 @@
 | browser-green.log | 8d3b9465f578177900d1a5b31741866fcd9d31dc4a33afe2da141b952b61a2ca |
 
 最终harness/backend/frontend门禁另记。输入UTF-16单元不是Unicode码点或UTF-8字节；400/404/500不承诺所有数据库故障均有相同分类。当前没有ACL，页面新会话不等于撤销服务端历史任务。
+
+最终门禁64bda57：2026-10-04T01:21:41Z，schema3、passed，backend 81类543项全部执行，failure/error/skip/flaky均0、underfilled为空；含真实PG PostgresConcurrencyIntegrationTest 6项。Harness45项、前端typecheck/build通过；大bundle警告仍保留。backend摘要SHA`18ecb2d50ef1cd3e1729aa0246f4de70418cab18ac2597d09b2306679a19c033`已按文件重算。source-identity为backend05ee9fac、frontend8f83bc47、源码diff空，未部署。

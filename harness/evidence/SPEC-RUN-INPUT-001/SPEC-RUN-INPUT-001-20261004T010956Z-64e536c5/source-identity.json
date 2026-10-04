@@ -1,0 +1,7 @@
+{
+  "headCommit": "64bda57945fcdcf419c871bfd1ecf8d139d001fd",
+  "backendTree": "05ee9fac46ccd296b3586ca13807d82a7117107a",
+  "frontendTree": "8f83bc4774e6049892447286e0da9057c5c3f397",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "meaning": "Source identity inspected during the gate; only harness state/evidence dirty. This version is not yet deployed."
+}

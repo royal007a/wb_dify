@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-RUN-INPUT-001-20261004T010956Z-64e536c5",
+  "taskId": "SPEC-RUN-INPUT-001",
+  "status": "completed",
+  "baselineCommit": "2ae3c037201497fd76b82c1de9f0fd611b0d595f",
+  "approvalRef": null,
+  "startedAt": "2026-10-04T01:09:56Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "64bda57945fcdcf419c871bfd1ecf8d139d001fd",
+  "finishedAt": "2026-10-04T01:21:41Z"
+}
