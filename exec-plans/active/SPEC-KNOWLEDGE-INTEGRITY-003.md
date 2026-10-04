@@ -1,0 +1,9 @@
+# SPEC-KNOWLEDGE-INTEGRITY-003：索引方言与固定版本校验
+
+基线6e13407。只改本地源码、规格和隔离测试，不连接132或共享数据库，不新增迁移或读取真实凭据。
+
+1. 索引数据库产品识别改用事务感知的JdbcTemplate连接；识别失败不得降成H2并标记DONE。识别在删除旧分块之前完成，H2/PG正常分支保留。用真实事务管理器加计数连接的单测验证只借一次；元数据故障验证文档和任务FAILED且无分块改动，正常两种产品作为正向对照。
+2. Agent绑定执行向Workflow传递已冻结checksum，在加载同一WorkflowVersion后、任何执行行/节点写入前比对，再校验原始DSL摘要。禁止单独预查再重新加载造成TOCTOU；直接版本试跑保留行内完整性校验。缺失或不符按定义冲突拒绝，Chat为WORKFLOW_ERROR，不写助手消息。
+3. H2和真实PG：真实发布Agent/会话先成功执行；随后修改Workflow原始DSL并重算行内checksum，直接版本试跑可证明行内自洽，旧Agent会话必须拒绝且没有新增workflow/node或assistant。正常PG索引额外断言embedding非空，不能仅检查有分块。
+4. 先跑红灯，再修复和窄测；完整backend/harness/migration零skip，更新显式类/方法集合和行为映射，保存脱敏证据及源码身份，交独立复核。
+5. 这只是检测Workflow行与已冻结Agent快照不同，不是数据库写权限攻击者的安全边界；同时篡改两份数据仍超出范围。向量算法不冻结、workflow.started早于校验等已登记项不顺带扩入。

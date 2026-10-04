@@ -713,6 +713,7 @@
       ],
       "verifyScopes": [
         "harness",
+        "backend",
         "migration"
       ],
       "risk": "reversible_write",
@@ -725,7 +726,7 @@
         "索引产品类型检测复用事务连接且故障不伪装索引成功",
         "Agent固定checksum与实际执行版本匹配，不只验证行内DSL/checksum自洽"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/SPEC-KNOWLEDGE-INTEGRITY-003.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],

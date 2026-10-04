@@ -31,3 +31,5 @@
 mymacclaude对2a9ca62..104af66的复核消息om_x100b63287862e0a0c37fc6fca9f73bd：只读源码和调用方，无P0/P1/P2，未运行测试；正式证据复算尚待另行记录。确认HTTP/内部调用没有先trim绕过，null快照保留409，模型工厂正向对照成立。
 
 P3已写入规格：内部模型生成的参数遇NUL也按PARAM_ERROR失败、不做清洗；不能把错误码解释成必然由用户输入造成。已核对history.search与Workflow KNOWLEDGE的调用传播，但本轮没有对应模型输出端到端测试；当前Workflow无LLM节点，不沿用“上游LLM节点输出”的可达性说法。仅路径ID和其他只读管理入口仍未纳入承诺。生产132尚未部署输入卫生001–003。
+
+后续正式收口：mymacclaude回复om_x100b632810db20a8c3fe87b55dc2ee9，报告在6e13407的archive隔离副本实算摘要/portable SHA、源码树及报告JSON/MD逐字节比对，均与本节记录一致；没有重跑Maven或连接132。其撤回Workflow上游LLM节点的不可达例子，保留history.search模型参数提醒。输入卫生001–003独立证据复核均已闭环。
