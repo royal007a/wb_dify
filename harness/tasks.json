@@ -3717,7 +3717,7 @@
         "消息及resume标识中的NUL在写库前返回400且零写入/调度，真实PG回归",
         "非幂等唯一约束仍返回固定安全500，不解析或回显任意数据库报文"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/SPEC-RUN-INPUT-002.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
