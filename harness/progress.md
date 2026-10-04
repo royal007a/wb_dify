@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T01:51:59Z`
+- Generated from task state updated at: `2026-10-04T02:01:39Z`
 - Current task: `none`
-- Counts: pending 21 · running 0 · blocked 0 · completed 70
+- Counts: pending 20 · running 0 · blocked 0 · completed 71
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -49,7 +49,7 @@
 | `SPEC-CHAT-LIFECYCLE-002` | P1 | completed | frontend, runtime, harness | reversible_write | 复核前端Run创建与恢复输入边界 |
 | `SPEC-CHAT-LIFECYCLE-003` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 结果不明提交的身份恢复与安全退出 |
 | `SPEC-DEPLOY-003` | P1 | completed | harness | reversible_write | 消除安装器stderr失败阻止恢复旧服务 |
-| `SPEC-DEPLOY-006` | P1 | pending | harness, frontend | high_risk | 发布已复核Run输入与Chat恢复增量至132 |
+| `SPEC-DEPLOY-006` | P1 | completed | harness, frontend | high_risk | 发布已复核Run输入与Chat恢复增量至132 |
 | `SPEC-HISTORY-RECOVERY-001` | P1 | completed | backend, runtime, migration, harness | reversible_write | 恢复时重放已提交模型响应而非重新生成 |
 | `SPEC-HISTORY-RECOVERY-002` | P1 | completed | backend, runtime, harness | reversible_write | 恢复元数据按JSON语义比较，兼容跨JVM键顺序 |
 | `SPEC-HTTP-ERROR-001` | P1 | completed | backend, harness | reversible_write | 修复真实HTTP负路径的状态码与安全正文 |

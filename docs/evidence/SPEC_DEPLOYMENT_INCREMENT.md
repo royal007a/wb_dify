@@ -35,3 +35,5 @@ HTTPS仍自签，浏览器与该次smoke显式关闭证书验证，非证书指�
 本次成功不能关闭SPEC-DEPLOY-004的异常响应ID清理、未来V24目标自动识别、索引并发准入等边界。索引本轮发起前显式检查无在途任务，不承诺检查与停服间不存在新任务。安装器主流程断管道仍fail-closed，systemd/journal降低该风险，不等于脚本无失败路径。备份同盘且未恢复演练；上传/管理字段NUL仍归INPUT-HYGIENE。未验证真实供应商、复杂MCP、鉴权、多实例、所有接口错误排列。
 
 最终本地harness/frontend门禁另记；既有547项后端证据按源树等价复用，没有声称在本轮重跑Maven测试。
+
+最终本地门禁b231424：schema3、harness/frontend passed，50项Python测试及前端typecheck/build通过。此门禁默认根路径构建，与发布前单独/hify构建分开；远端匹配的是source-identity中发布产物SHA，不是后来根路径构建覆盖的本地dist。应用与前端源码未再改变；上述命令日志SHA见log-summary.json，原始日志不提交。

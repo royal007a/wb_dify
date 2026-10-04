@@ -1,0 +1,10 @@
+{
+  "note": "Raw logs are not committed; hashes do not reconstruct logs. First remote preflight failed before any service stop; rerun succeeded.",
+  "logs": {
+    "package.log": "35c252b605af19823e3b32671ae9be0d03fcfa159a5ad02636221bbc0a6b27c0",
+    "frontend-prefix-build.log": "abe255f0c23cdfd64a51dede483fda4be918cf37b7b6ecd1b1466c32be9e14f1",
+    "remote-start.log": "badbcf41e46611acc74598fd25e49961873b90680ca9e64e7942db1cdd46f811",
+    "remote-start-rerun.log": "dcf30b80aab2eb82885bb11d61cef55f0b88d7093e8845efb9ac126bf136fad4",
+    "browser-132.log": "69e30b36361ce7e67e803b3ac566ce7d1c9c30a72176dadb36dd0cae225f1087"
+  }
+}

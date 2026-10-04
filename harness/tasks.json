@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T01:51:59Z",
+  "updatedAt": "2026-10-04T02:01:39Z",
   "tasks": [
     {
       "id": "SPEC-UPLOAD-BOUNDARY-001",
@@ -3821,7 +3821,7 @@
       "title": "发布已复核Run输入与Chat恢复增量至132",
       "description": "依赖Run输入001/002及安装器SIGPIPE独立复验；单实例停旧备份升级，仅原版Hify。使用当前V23产物，不扩大004尚未实现的未来schema自动识别承诺。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "harness",
         "frontend"
@@ -3844,12 +3844,24 @@
         "健康/静态/真实Run、NUL400与20001长度400、上传边界正反及自身ID清理；原始凭据不读不导出",
         "远端SHA与本地构建逐项一致；不将Mock运行或自签TLS说成真实供应商/公有CA验收"
       ],
-      "planPath": "exec-plans/active/SPEC-DEPLOY-006.md",
+      "planPath": "exec-plans/completed/SPEC-DEPLOY-006.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-DEPLOY-006-20261004T015317Z-986538b0",
+          "path": "harness/evidence/SPEC-DEPLOY-006/SPEC-DEPLOY-006-20261004T015317Z-986538b0",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "5f4962955cd2afb4fb6abe103fc057f26102a8eb",
+          "headCommit": "b231424cc2b0ee5f916289154dea953d94a97b51",
+          "recordedAt": "2026-10-04T02:01:39Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "da5f15b071e13b5cb02e3a4d511f5cdac621eb761104259cc9d77dcfbfe98aff"
+        }
+      ],
       "createdAt": "2026-10-04T01:49:00Z",
-      "updatedAt": "2026-10-04T01:49:00Z"
+      "updatedAt": "2026-10-04T02:01:39Z"
     }
   ]
 }
