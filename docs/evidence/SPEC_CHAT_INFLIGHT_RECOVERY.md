@@ -36,3 +36,7 @@ mvn -B -pl hify-app -am -Dtest=RunSubmissionIdentityTest,RunFlowIntegrationTest 
 ```
 
 完整backend、真实PG和本次真实网络SSE均未验证。runner预检守卫返回75，原始记录保留“task command failed”；tasks.json将实际环境阻碍明确记入blockedReason。恢复空间后必须按原完整范围重新跑runner，不能沿用窄测宣布完成。
+
+## 独立静态复核
+
+mymacclaude复核37aa151..f20bd34：未发现P0/P1/P2，未运行测试；不改变blocked。GET失败后的finally补读与GET先终态/晚到SSE的推演认可，但这两个顺序尚无测试。保留P3：terminalObserved后晚到RUNNING仍可更新activeRun、短窗口可点取消；会话身份未取得时“查询取消结果”只能提示而不查询；aria-busy无可见忙碌指示；人工重放对无ID业务事件无去重保证（此次未查服务端）。这些不是新的完整验收通过结论。

@@ -27,7 +27,7 @@
         "历史清单有固定身份，不可只修改清单扩大兼容；不重写旧测试记录或误称签名保障",
         "验证手改completed状态的可达性，记录协议边界；原四个实测反例先红后绿并保留合法CLI和便携副本正例"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/SPEC-AUDIT-005.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
