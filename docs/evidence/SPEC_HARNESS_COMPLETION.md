@@ -24,4 +24,6 @@
 
 finish在五份日志仍存在时复算并完成；完成后的validate/check-progress也通过。gate-summary记录五份实际日志全部重新计算且一致，三个实现/测试/清单文件SHA与git blob，以及相对测试HEAD的空diff SHA。本次不改backend/frontend/deploy。独立review仍待结论。
 
+另把证据提交ef4b1e3用`git archive`导出到新临时目录，运行`harness.py --root <副本> validate`和`check-progress`均退出0；该副本没有本任务的任何*.log。此项实际验证便携元数据回读，不是重新运行测试，未复算不存在的原始日志。完成时缺日志必须拒绝仍由具名用例独立验证。
+
 不改变SPEC-KNOWLEDGE-INTEGRITY-003因Colima磁盘满未通过完整PG门禁的事实。任务状态只看tasks.json。

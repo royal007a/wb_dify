@@ -29,3 +29,5 @@ df7a92b只改测试：恢复原DSL后在同一个旧Agent会话实际发起Chat 
 03:57:00Z定向H2方法1项通过，0失败/错误/skip，Maven退出0；源码树及日志SHA见`harness/evidence/SPEC-KNOWLEDGE-INTEGRITY-003/SPEC-KNOWLEDGE-INTEGRITY-003-20261004T035147Z-fa35246e/narrow-positive-summary.json`。这次runner的stdin结束使保护分支以75退出，未执行verify；H2是随后单独跑的窄测，不能说runner通过或完整门禁通过。新断言尚未在PG执行。
 
 只读`colima ssh -- df -h /var/lib/docker`显示本机Docker盘40G、已用37G、可用258MiB、100%；macOS工作盘仍有48GiB，不能混为一谈。`docker system df`标出的reclaimable不是删除授权。未清理共享镜像/容器/卷、未重启Colima、未连接132。需先释放或扩容本机Colima数据盘，再运行新鲜backend/harness/migration；保留blocked和原失败记录，不降级验收范围。
+
+独立复核补充（2026-10-04）：mymacclaude静态核对df7a92b的恢复后合法Chat精确+1/+3/+1、原答案及旧agentVersionId，认可测试P2关闭。复核方没有运行测试；整个SPEC-KNOWLEDGE-INTEGRITY-003仍blocked，完整backend/harness/migration证据未补，不据此正式收口。
