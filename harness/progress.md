@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T01:45:37Z`
+- Generated from task state updated at: `2026-10-04T01:50:43Z`
 - Current task: `none`
-- Counts: pending 21 · running 0 · blocked 0 · completed 69
+- Counts: pending 21 · running 0 · blocked 1 · completed 69
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -49,6 +49,7 @@
 | `SPEC-CHAT-LIFECYCLE-002` | P1 | completed | frontend, runtime, harness | reversible_write | 复核前端Run创建与恢复输入边界 |
 | `SPEC-CHAT-LIFECYCLE-003` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 结果不明提交的身份恢复与安全退出 |
 | `SPEC-DEPLOY-003` | P1 | completed | harness | reversible_write | 消除安装器stderr失败阻止恢复旧服务 |
+| `SPEC-DEPLOY-006` | P1 | pending | harness, frontend | high_risk | 发布已复核Run输入与Chat恢复增量至132 |
 | `SPEC-HISTORY-RECOVERY-001` | P1 | completed | backend, runtime, migration, harness | reversible_write | 恢复时重放已提交模型响应而非重新生成 |
 | `SPEC-HISTORY-RECOVERY-002` | P1 | completed | backend, runtime, harness | reversible_write | 恢复元数据按JSON语义比较，兼容跨JVM键顺序 |
 | `SPEC-HTTP-ERROR-001` | P1 | completed | backend, harness | reversible_write | 修复真实HTTP负路径的状态码与安全正文 |
@@ -79,7 +80,7 @@
 | `SPEC-CREDENTIAL-BOUNDARY-003` | P2 | completed | backend, harness | reversible_write | 主密钥宽松配置绑定别名不得被误授权 |
 | `SPEC-DEPLOY-002` | P2 | completed | harness | reversible_write | 补强发布脚本中断边界与smoke自身数据清理 |
 | `SPEC-DEPLOY-004` | P2 | pending | harness | reversible_write | 补齐部署schema/索引与非标准smoke响应边界 |
-| `SPEC-DEPLOY-005` | P2 | pending | harness | reversible_write | 收束安装器断管道SIGPIPE边界 |
+| `SPEC-DEPLOY-005` | P2 | blocked | harness | reversible_write | 收束安装器断管道SIGPIPE边界 |
 | `SPEC-HISTORY-RECOVERY-003` | P2 | pending | backend, runtime, harness | reversible_write | 补齐恢复后的计划投影和预算边界 |
 | `SPEC-INPUT-HYGIENE-001` | P2 | pending | backend, harness | reversible_write | 拒绝上传与管理文本中的PG非法NUL |
 | `SPEC-KNOWLEDGE-FINISH-004` | P2 | pending | backend, frontend, runtime, harness | reversible_write | 对齐知识门禁故障分类、检索事件和核验范围展示 |
@@ -98,5 +99,8 @@
 | `SPEC-WORKFLOW-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 关联Workflow执行事实与父Run恢复及异常边界 |
 | `SUBAGENT-001` | P2 | completed | backend, migration, runtime | reversible_write | 建立子 Agent 任务与延迟消费确认 |
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |
+
+## Blocked
+- `SPEC-DEPLOY-005`: verification failed
 
 Regenerate with `python3 harness/harness.py render-progress`; verify with `python3 harness/harness.py check-progress`.
