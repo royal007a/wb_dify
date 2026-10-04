@@ -34,6 +34,63 @@ class WorkflowKnowledgeReviewTest extends WorkflowKnowledgeIntegrationTest {
     @SpyBean KnowledgeRetrievalService source;
     @SpyBean JdbcTemplate jdbcSpy;
 
+    @Test void agentPinnedChecksumRejectsAChangedButInternallyValidWorkflow() throws Exception {
+        String base=base();upload(base,"退货期限是七天。");String wid=workflow(base);
+        var published=publish(wid);String version=published.path("id").asText();
+        String original=versions.findById(version).orElseThrow().getDslJson();
+        String aid=agent(wid);
+        String cid=body(http.perform(post("/api/v1/conversations").contentType("application/json")
+                .content(json.writeValueAsString(Map.of("agentId",aid,"title","checksum fixture")))).andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString()).path("id").asText();
+        var before=runToTerminal(cid);
+        assertThat(before.path("state").asText()).isEqualTo("COMPLETED");
+        assertThat(before.path("outputMessage").asText()).contains("七天");
+        ObjectNode altered=(ObjectNode)json.readTree(original);
+        for(var n:altered.path("nodes"))if(n.path("type").asText().equals("END"))
+            ((ObjectNode)n.path("config")).put("output","changed-dsl-fixture");
+        String changed=json.writeValueAsString(altered);
+        assertThat(sha(changed)).isNotEqualTo(published.path("checksum").asText());
+        db.update("update workflow_versions set dsl_json=?,checksum=? where id=?",changed,sha(changed),version);
+        // Positive counterexample: row checksum and DSL are internally valid, direct version execution works.
+        assertThat(execute(version).path("output").asText()).isEqualTo("changed-dsl-fixture");
+        int workflowCount=db.queryForObject("select count(*) from workflow_runs where workflow_version_id=?",Integer.class,version);
+        int nodeCount=db.queryForObject("select count(*) from workflow_node_runs",Integer.class);
+        int assistantCount=db.queryForObject("select count(*) from chat_messages where conversation_id=? and role='assistant'",Integer.class,cid);
+        var failed=runToTerminal(cid);
+        assertThat(failed.path("state").asText()).isEqualTo("FAILED");
+        assertThat(failed.path("terminalReason").asText()).isEqualTo("WORKFLOW_ERROR");
+        assertThat(failed.path("agentVersionId")).isEqualTo(before.path("agentVersionId"));
+        assertThat(db.queryForObject("select count(*) from workflow_runs where workflow_version_id=?",Integer.class,version)).isEqualTo(workflowCount);
+        assertThat(db.queryForObject("select count(*) from workflow_node_runs",Integer.class)).isEqualTo(nodeCount);
+        assertThat(db.queryForObject("select count(*) from chat_messages where conversation_id=? and role='assistant'",Integer.class,cid)).isEqualTo(assistantCount);
+        // Restore fixture to show rejection did not disable an otherwise valid old conversation.
+        db.update("update workflow_versions set dsl_json=?,checksum=? where id=?",original,published.path("checksum").asText(),version);
+        assertThat(runToTerminal(cid).path("state").asText()).isEqualTo("COMPLETED");
+    }
+
+    @Test void indexingSuccessIncludesTheActualVectorStorage() throws Exception {
+        String base=base(),doc=upload(base,"index-positive-fixture 七天退货");
+        int count=db.queryForObject("select count(*) from document_chunks where document_id=?",Integer.class,doc);
+        assertThat(count).isPositive();
+        assertThat(db.queryForObject("select count(*) from document_chunks where document_id=? and embedding_text is not null",Integer.class,doc)).isEqualTo(count);
+        if(Boolean.TRUE.equals(db.execute((ConnectionCallback<Boolean>)c->c.getMetaData().getDatabaseProductName().equals("PostgreSQL"))))
+            assertThat(db.queryForObject("select count(*) from document_chunks where document_id=? and embedding is not null",Integer.class,doc)).isEqualTo(count);
+        assertThat(db.queryForObject("select state from document_index_tasks where document_id=?",String.class,doc)).isEqualTo("SUCCEEDED");
+    }
+
+    private com.fasterxml.jackson.databind.JsonNode runToTerminal(String cid) throws Exception {
+        String id=body(http.perform(post("/api/v1/conversations/{id}/runs",cid).header("Idempotency-Key",UUID.randomUUID().toString())
+                .contentType("application/json").content("{\"message\":\"退货期限\"}")).andExpect(status().isAccepted())
+                .andReturn().getResponse().getContentAsString()).path("id").asText();
+        long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(10);
+        while(System.nanoTime()<deadline){
+            var value=body(http.perform(get("/api/v1/runs/{id}",id)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+            if(!value.path("state").asText().equals("RUNNING"))return value;
+            Thread.sleep(10);
+        }
+        throw new AssertionError("checksum fixture run timeout");
+    }
+
     @ParameterizedTest @ValueSource(booleans={false,true})
     void legacyGraphCannotPublishAgentEvenWithARealClientChosenCorpus(boolean forged) throws Exception {
         String base=base(), wid=workflow(base), version=publish(wid).path("id").asText(), aid=draftAgent(wid);

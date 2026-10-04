@@ -2,7 +2,7 @@
   "migration-postgres": {
     "com.hify.api.KnowledgeShutdownPostgresTest": 22,
     "com.hify.api.HistoryRecoveryMigrationTest": 1,
-    "com.hify.api.WorkflowKnowledgeReviewPostgresTest": 16,
+    "com.hify.api.WorkflowKnowledgeReviewPostgresTest": 18,
     "com.hify.api.WorkflowTerminalPostgresTest": 1,
     "com.hify.api.RunShutdownPostgresTest": 2,
     "com.hify.api.KnowledgeFinishPostgresTest": 18,
@@ -16,6 +16,7 @@
     "com.hify.api.KnowledgeMemoryPostgresTest": 21
   },
   "backend-tests": {
+    "com.hify.knowledge.application.DocumentIndexingServiceTest": 5,
     "com.hify.api.InputHygieneIntegrationTest": 14,
     "com.hify.api.InputHygienePostgresTest": 14,
     "com.hify.api.ReadInputHygieneIntegrationTest": 4,
@@ -59,13 +60,13 @@
     "com.hify.domain.ChildAgentTaskTest": 2,
     "com.hify.api.WorkflowKnowledgeIntegrationTest": 10,
     "com.hify.api.KnowledgeApiIntegrationTest": 2,
-    "com.hify.api.WorkflowKnowledgeReviewTest": 16,
+    "com.hify.api.WorkflowKnowledgeReviewTest": 18,
     "com.hify.api.RunSubmissionIdentityTest": 14,
     "com.hify.api.KnowledgeAdmissionShutdownTest": 22,
     "com.hify.api.WorkflowSettlementIntegrationTest": 4,
     "com.hify.api.KnowledgeShutdownPostgresTest": 22,
     "com.hify.api.HistoryRecoveryMigrationTest": 1,
-    "com.hify.api.WorkflowKnowledgeReviewPostgresTest": 16,
+    "com.hify.api.WorkflowKnowledgeReviewPostgresTest": 18,
     "com.hify.api.WorkflowTerminalPostgresTest": 1,
     "com.hify.api.RunFlowIntegrationTest": 2,
     "com.hify.api.MavenStructureTest": 2,
