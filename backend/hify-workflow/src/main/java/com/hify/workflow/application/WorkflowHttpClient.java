@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
@@ -46,9 +47,10 @@ public class WorkflowHttpClient {
                     || uri.getUserInfo() != null || uri.getRawQuery() != null || uri.getRawFragment() != null
                     || !uri.equals(uri.normalize()) || value.contains("{") || value.contains("}")
                     || value.indexOf('\\') >= 0 || value.indexOf('\0') >= 0) throw new IllegalArgumentException();
+            // Validate original spelling before OkHttp can normalize away ambiguous provenance.
+            if (WorkflowAddressPolicy.literal(uri.getHost())) WorkflowAddressPolicy.numericAddress(uri.getHost());
             HttpUrl url = Objects.requireNonNull(HttpUrl.parse(value));
-            if (uri.getHost().contains(":") && InetAddress.getByName(uri.getHost()).getAddress().length != 16)
-                throw new IllegalArgumentException(); // Reject mapped notation before URL normalization erases it.
+            if (WorkflowAddressPolicy.literal(url.host())) WorkflowAddressPolicy.numericAddress(url.host());
             // Reject encodings that would change endpoint identity during normalization.
             if (!uri.getRawPath().isEmpty() && !url.encodedPath().equals(uri.getRawPath())) throw new IllegalArgumentException();
             return url.toString();
@@ -90,11 +92,15 @@ public class WorkflowHttpClient {
             @Override public void onResponse(Call ignored, Response response) {
                 try (response) {
                     if (!response.isSuccessful() || response.body() == null) throw new IOException("HTTP status rejected");
+                    if (response.headers("Content-Type").size() != 1) throw new IOException("HTTP content type rejected");
                     MediaType media = response.body().contentType();
                     if (media == null || !(media.type().equals("text") && media.subtype().equals("plain")
                             || media.type().equals("application") && (media.subtype().equals("json") || media.subtype().endsWith("+json"))))
                         throw new IOException("HTTP content type rejected");
-                    if (media.parameter("charset") != null && !"utf-8".equalsIgnoreCase(media.parameter("charset")))
+                    long charsets = java.util.regex.Pattern.compile("(?i)(?:^|;)\\s*charset\\s*=")
+                            .matcher(response.header("Content-Type")).results().count();
+                    if (charsets > 1 || (media.parameter("charset") != null
+                            && !StandardCharsets.UTF_8.equals(Charset.forName(media.parameter("charset")))))
                         throw new IOException("HTTP charset rejected");
                     byte[] bytes = response.body().byteStream().readNBytes(32769);
                     if (bytes.length > 32768) throw new IOException("HTTP response exceeds limit");

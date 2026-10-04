@@ -7,6 +7,35 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.assertj.core.api.Assertions.*;
 
 class WorkflowAddressPolicyTest {
+    @Test void ambiguousNumericSpellingsAreRejectedWithoutCallingResolver() throws Exception {
+        AtomicInteger lookups = new AtomicInteger();
+        for (String host : List.of("0127.0.0.1", "0169.0254.0169.0254", "00000000010.0.0.1", "127.1",
+                "2130706433", "2852039166", "134744072", "0x7f000001", "0x7f.0.0.1", "127.0.0.1.",
+                "1.2.3.256", "1..2.3", "[fe80::1%25eth0]", "::FFFF:127.0.0.1")) {
+            assertThat(WorkflowAddressPolicy.literal(host)).as(host).isTrue();
+            assertThatThrownBy(() -> WorkflowAddressPolicy.numericAddress(host)).as(host).isInstanceOf(UnknownHostException.class);
+            assertThatThrownBy(() -> WorkflowAddressPolicy.checkLiteral(host)).as(host).isInstanceOf(UnknownHostException.class);
+            var dns = WorkflowAddressPolicy.pinnedDns(host, ignored -> {
+                lookups.incrementAndGet(); return List.of(InetAddress.getLoopbackAddress());
+            });
+            assertThatThrownBy(() -> dns.lookup(host)).as(host).isInstanceOf(UnknownHostException.class);
+        }
+        assertThat(lookups).hasValue(0);
+    }
+    @Test void numericConnectionsUseExactlyTheCheckedBytesWithoutResolver() throws Exception {
+        AtomicInteger lookups = new AtomicInteger();
+        for (String host : List.of("127.0.0.1", "10.0.0.1", "8.8.8.8", "::1", "2606:4700:4700::1111")) {
+            WorkflowAddressPolicy.checkLiteral(host);
+            var dns = WorkflowAddressPolicy.pinnedDns(host, ignored -> {
+                lookups.incrementAndGet(); throw new UnknownHostException("resolver must not run");
+            });
+            assertThat(dns.lookup(host)).containsExactly(WorkflowAddressPolicy.numericAddress(host));
+            assertThat(dns.lookup(host)).isSameAs(dns.lookup(host));
+        }
+        assertThat(lookups).hasValue(0);
+        for (String host : List.of("::7f00:1", "::a9fe:a9fe", "64:ff9b::a9fe:a9fe", "2002:a9fe:a9fe::"))
+            assertThatThrownBy(() -> WorkflowAddressPolicy.checkLiteral(host)).as(host).isInstanceOf(UnknownHostException.class);
+    }
     @Test void reservedIpv4IsDeniedEvenWithLiteralGrant() throws Exception {
         for (String ip : List.of("0.1.2.3", "100.64.0.0", "100.96.0.96", "100.100.100.200", "100.127.255.255",
                 "169.254.169.254", "169.254.0.1", "192.0.0.9", "192.0.2.1", "192.88.99.1", "198.18.0.1",

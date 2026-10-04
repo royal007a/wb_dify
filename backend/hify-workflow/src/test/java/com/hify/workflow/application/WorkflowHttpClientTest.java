@@ -19,6 +19,7 @@ class WorkflowHttpClientTest {
     private final AtomicReference<String> contentType = new AtomicReference<>("text/plain; charset=utf-8");
     private final AtomicInteger size = new AtomicInteger(12);
     private final AtomicBoolean chunked = new AtomicBoolean(), stall = new AtomicBoolean();
+    private final AtomicBoolean duplicateContentType = new AtomicBoolean();
     private final CountDownLatch release = new CountDownLatch(1);
     private HttpServer server;
     private ExecutorService workers;
@@ -31,6 +32,7 @@ class WorkflowHttpClientTest {
             received.incrementAndGet();
             try {
                 if (contentType.get() != null) exchange.getResponseHeaders().set("Content-Type", contentType.get());
+                if (duplicateContentType.get()) exchange.getResponseHeaders().add("Content-Type", "text/html");
                 exchange.sendResponseHeaders(200, chunked.get() ? 0 : size.get());
                 if (stall.get()) try { release.await(5, TimeUnit.SECONDS); } catch (InterruptedException interrupted) { Thread.currentThread().interrupt(); }
                 exchange.getResponseBody().write("x".repeat(size.get()).getBytes(StandardCharsets.UTF_8));
@@ -60,15 +62,20 @@ class WorkflowHttpClientTest {
     }
     @Test void responseTypeIsExplicitAndCharsetCannotContradictUtf8() throws Exception {
         var client = client(endpoint, transport());
-        for (String type : List.of("application/json", "application/problem+json", "text/plain", "text/plain; charset=UTF-8")) {
+        for (String type : List.of("application/json", "application/problem+json", "text/plain", "text/plain; charset=UTF-8",
+                "TEXT/PLAIN; CHARSET=utf8", "application/json; charset=\"utf-8\"")) {
             contentType.set(type);
             assertThat(client.get(endpoint, "", Map.of(), ExecutionControl.none())).hasSize(12);
         }
-        for (String type : Arrays.asList(null, "text/html", "application/octet-stream", "application/json; charset=ISO-8859-1")) {
+        for (String type : Arrays.asList(null, "text/html", "application/octet-stream", "application/json; charset=ISO-8859-1",
+                "application/json-seq", "text/plain; charset=gbk", "not-a-media-type", "text/plain; charset=unknown-charset",
+                "text/plain;charset=utf-8;charset=gbk", "text/plain;charset=utf8;CHARSET=utf-8")) {
             contentType.set(type);
             assertThatThrownBy(() -> client.get(endpoint, "", Map.of(), ExecutionControl.none())).isInstanceOf(BizException.class);
         }
-        assertThat(received).hasValue(8);
+        duplicateContentType.set(true); contentType.set("text/plain");
+        assertThatThrownBy(() -> client.get(endpoint, "", Map.of(), ExecutionControl.none())).isInstanceOf(BizException.class);
+        assertThat(received).hasValue(17);
     }
     @Test void socketTimeoutIsNodeFailureNotParentDeadlineAndDoesNotRetry() throws Exception {
         var client = client(endpoint, transport().newBuilder().readTimeout(Duration.ofMillis(150)).build());
@@ -79,7 +86,7 @@ class WorkflowHttpClientTest {
                 .isInstanceOf(BizException.class).isNotInstanceOf(WorkflowControl.DeadlineExceeded.class);
         assertThat(parent.isExpired()).isFalse(); assertThat(received).hasValue(2);
     }
-    @Test void dnsRebindingIsRejectedBeforeAnySocketAndLiteralGrantsCannotAllowMetadata() throws Exception {
+    @Test void mixedDnsRecordsAreRejectedBeforeAnySocketAndLiteralGrantsCannotAllowMetadata() throws Exception {
         String host = "http://api.example.com:" + server.getAddress().getPort() + "/read";
         AtomicInteger lookups = new AtomicInteger();
         var transport = transport().newBuilder().dns(name -> {
@@ -94,6 +101,19 @@ class WorkflowHttpClientTest {
             assertThatThrownBy(() -> explicit.requireAllowed(forbidden, "")).isInstanceOf(BizException.class);
         }
         assertThatThrownBy(() -> WorkflowHttpClient.canonical("http://[::ffff:127.0.0.1]/read")).isInstanceOf(BizException.class);
+        assertThat(received).hasValue(0);
+    }
+    @Test void endpointCanonicalizationRejectsAmbiguousIpSpellingsBeforeGrantOrRequest() {
+        for (String host : List.of("0127.0.0.1", "00000000010.0.0.1", "2852039166", "134744072", "127.1",
+                "169.254.43518", "169.254.169.254.", "0xa9.0xfe.0xa9.0xfe", "0x7f000001", "0251.0376.0251.0376",
+                "１２７.0.0.1", "127。0。0。1", "[fe80::1%25eth0]", "[::FFFF:127.0.0.1]", "[0:0:0:0:0:ffff:7f00:1]")) {
+            String target = "http://" + host + "/read";
+            assertThatThrownBy(() -> WorkflowHttpClient.canonical(target)).as(host).isInstanceOf(BizException.class);
+            assertThatThrownBy(() -> client(target, transport())).as(host).isInstanceOf(IllegalStateException.class);
+        }
+        assertThat(WorkflowHttpClient.canonical(endpoint)).isEqualTo(endpoint);
+        assertThat(WorkflowHttpClient.canonical("https://[2606:4700:4700::1111]/read"))
+                .isEqualTo("https://[2606:4700:4700::1111]/read");
         assertThat(received).hasValue(0);
     }
 }
