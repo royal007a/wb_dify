@@ -48,3 +48,15 @@
 ### 7173e55全量红灯（00:37:26Z）
 
 此次verification明确为failed，不得用其他scope通过覆盖：backend在hify-chat提前中止，RunEventBrokerBackpressureTest的blockedSendCannotHoldCommitCallbackOrCollidingRunOrHeartbeat发生Mockito WrongTypeOfReturnValue（List被误用于返回Optional的方法）。测试先subscribe启动worker，随后才修改events mock及替换emitter，存在并发stubbing；不是产品背压断言失败。Maven未进入hify-app，因此摘要因缺类fail-closed，不把0条摘要解释为0失败。独立migration 114、runtime 34、eval 24均零失败/错误/跳过，Harness36与前端构建通过，仍不代表全量通过。原报告和日志SHA完整保留。下一轮将先配置mock，再用responseCommitted门闩放行worker，保留原来的慢发送/提交/碰撞Run/心跳断言，不通过重跑旧竞态来冒充修复。
+
+### 9f40639重跑结果（00:43:34Z）
+
+`harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/`保存本次schema3验证、独立invocation及source identity。9f40639仅改测试：先完成桩配置、用AtomicBoolean门闩阻止sender查库/发送，替换测试emitter后才放行；额外断言放行前没有查询。没有改生产背压策略，也没有删除超时/碰撞/提交/心跳断言。
+
+- `run-task.sh SPEC-VERIFY-001`退出0，harness/backend/frontend/migration/runtime/eval全部passed。
+- backend：81类、539项全部执行，失败/错误/跳过/flaky均0；独立migration：14类114项，runtime：7类34项，eval：7类24项，均零失败/错误/skip/flaky。后3组与backend重叠，不相加计独立测试。
+- Harness Python36项通过；TypeScript和Vite生产构建通过。浏览器39项证据见前一目录，测试修复未改变生产代码，未虚构再次跑浏览器。
+- `python3 harness/behavior_report.py --evidence-dir <本目录>`生成68路由、38功能组、36个具名断言组pass、0fail/0not-run；这36组是所映射的已执行子场景，不是68路由或38功能全部组合通过。每组的remaining、各功能notRun保留真实外部模型、完整浏览器CRUD、复杂MCP协议、132部署及已登记P2等缺口。
+- 原始XML因含JVM属性不提交；逐类摘要和XML SHA可检查。只读复核方可重算提交的摘要SHA，不据未提交的原始日志宣称已复跑。
+
+因此，本地所选自动门禁及具名行为断言通过，规格和证据对齐；不是无缺陷声明。SPEC-RUN-INPUT-001和其他审计P2继续开放。132部署尚未执行，由SPEC-DEPLOY-001独立进行，不以本任务完成替代整个用户目标完成。

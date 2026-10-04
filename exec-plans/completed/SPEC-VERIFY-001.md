@@ -1,5 +1,7 @@
 # 全接口库存、行为与真实PG复验
 
+完成证据：docs/evidence/SPEC_VERIFICATION.md，9f40639全量门禁及方法级报告；历史失败保留。仅本地验证阶段完成，部署由下一任务执行。
+
 2026-10-04恢复，基线34e1a03：此前HTTP红灯、上传入口、门禁可信度、Chat恢复和管理补测已分别完成独立切片并复核。仍保留原失败证据；不把遗留P2或真实外部模型未验收抹成通过。本次只完成新鲜验证报告和本地隔离运行，132由部署任务处理。
 
 1. 在固定提交上执行已有backend/runtime/eval/frontend/Harness及migration门禁。只用隔离H2、Testcontainers PG和合成上游，不读取真实凭据/共享库。记录每步命令/commit/逐类结果，PG零skip；失败保留原始证据。

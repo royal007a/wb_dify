@@ -7,7 +7,7 @@
 
 | ID | 场景与必须断言 | 失败/边界 | 已有入口及核验层 |
 |---|---|---|---|
-| F01 | health 响应 HTTP200 / code200 / 固定文案 | 数据库断开时不能把存活接口误解为就绪 | B: chat；O: Actuator/部署；缺专用 A |
+| F01 | health 响应 HTTP200 / code200 / 固定文案 | 数据库断开时不能把存活接口误解为就绪 | A: RunFlowIntegrationTest中的health断言；B: chat；O: Actuator/部署；不据此证明DB故障时就绪行为 |
 | F02 | Provider CRUD、四种类型、模型显示名/调用ID分离、独立健康 | MOCK 创建拒绝、重复默认模型、缺引用、禁用、重复名、并发 | A: ProviderApiIntegrationTest；P 并发引用需补 |
 | F03 | 凭据只传授权头、管理响应不返回值、失败脱敏；引用/精确目标由管理员批准 | 任意进程引用默认拒绝、主密钥引用永远拒绝、旧数据库记录不能绕过；auth 缺省/更换类型/缺 env；URL 私网/重定向/混合 DNS | U: CredentialReferencePolicyTest、ProviderCredentialBoundaryTest、ProviderUrlPolicyTest、LlmHttpClientTest；A: ProviderApiIntegrationTest；X 未覆盖 |
 | F04 | 三原生+兼容协议文本/tool_calls/result正确配对、流增量重组 | 401/429/5xx、首包前/后错误、断流、取消、超时、无重发 POST | U: NativeProviderModelClientTest、LlmHttpClientTest；不等于 X 四家验收 |
@@ -26,7 +26,7 @@
 | F12 | 事件有序持久、游标归属、终态关闭流；慢客户端不阻塞提交 | 回滚不外发、回调乱序/订阅交错、terminal写失败回滚；全局64连接配额/慢读期限仍有限制 | U: RunEventBrokerTest、RunEventBrokerBackpressureTest；P: PostgresConcurrencyIntegrationTest；真实socket见SPEC_SSE_BACKPRESSURE；B: chat-lifecycle受控事件，不替代代理断线 |
 | F13 | 六出口与 FinishGate：回答、required Claim VERIFIED、无 blocking Gap | 空回答/缺证据/未闭合工具调用/权限禁止 | U: ExecutionContextStateTest、QueryLoopTest、KnowledgeCompletionVerifierTest；Knowledge 候选未验证，canonical 回读仅验证来源，答案语义仍未验证 |
 | F14 | 参数错误 LOCAL_REPLAN；超时有限 RETRY；缺参数 CLARIFY；拒权 INTERRUPT | budget 不重置、失败点≠根因点、无替代 ASK_HUMAN/no-progress | U: PlanStateMachineTest、QueryLoopTest |
-| F15 | 已提交模型/工具结果重放而非重新执行；关闭/取消分开收敛 | 未提交READ可重做；旧/损坏history拒绝；新Run恢复Gap；replan计数/恢复预算缺口 | U/A/P: HistoryReplayTest、HistoryRecoveryIntegrationTest/HistoryRecoveryPostgresTest、RunShutdownIntegrationTest/RunShutdownPostgresTest；同JVM新上下文/反转键序，未fork JVM。关闭时序由latch/ContextClosedEvent控制；审计001/Chat003本轮PG版跳过，不能引用成新鲜PG运行 |
+| F15 | 已提交模型/工具结果重放而非重新执行；关闭/取消分开收敛 | 未提交READ可重做；旧/损坏history拒绝；新Run恢复Gap；replan计数/恢复预算缺口 | U/A/P: HistoryReplayTest、HistoryRecoveryIntegrationTest/HistoryRecoveryPostgresTest、RunShutdownIntegrationTest/RunShutdownPostgresTest；同JVM新上下文/反转键序，未fork JVM。关闭时序由latch/ContextClosedEvent控制；历史审计001/Chat003的PG跳过不回写，新鲜执行另见SPEC_VERIFICATION |
 | F16 | 固定 capability/schema revision、lease 执行前二次校验 | 取消/attempt 变化/审批后漂移不得执行 | U: ToolRuntimeTest；A: MCP immutable snapshot tests |
 | F17 | canonical history operationId 语义幂等，持久化→回读→revision→投影 | 同 ID 异摘要冲突；失败 ack 不提前；原文摘要先校验再比JSON语义，对象键序不敏感/数组有序 | U: QueryLoopTest；A/P: HistoryReplayTest、HistoryRecoveryIntegrationTest/HistoryRecoveryPostgresTest、HistoryRecoveryMigrationTest |
 | F18 | Context 独立 input/output/reserve/safety 预算；先归档后压缩重测 | 即使压缩仍超限拒绝；原文不丢；引用完整 | U/E: ContextManagerTest、ContextManagementEvaluationTest |
@@ -55,7 +55,7 @@
 | F31 | 六个页面导航/表单/分页/空态；Chat代际/取消/同key/Gap/终态补读 | 窄屏/4xx恢复输入/未知提交退出/200即断重连；真实全CRUD未验收 | B: management.spec.ts是mock smoke；chat-lifecycle.spec.ts受控HTTP/SSE，含人工重连保留去重、resume放弃、建会话10秒期限；本轮结果见SPEC_CHAT_MANUAL_RECOVERY。后端查重顺序另由F10全应用MockMvc/H2证明，非网络SSE验收 |
 | F32 | Workflow 画布与 JSON 使用同一 DSL、校验/试跑/diff | 非法连线、编辑未保存、旧版本 diff | B: management.spec.ts 仅打开画布/diff；真实图编辑需补 |
 | F33 | MCP 编辑原ID、Token不回填、关闭清空、保存/替换/清除 | API失败保留本次输入；切换操作不误传 token | B: mcp-edit.spec.ts mock；mcp-edit-live/mcp-token-live opt-in 真实链路 |
-| F34 | Reactor依赖、统一Result/异常、线程池/分页/时间/Redis；饱和Run收敛 | 拒绝/关闭分开；breaker取消不计供应商失败、模型超时计失败；multipart超限413/畸形400 | U/A: CommonContractsTest、AgentCacheIntegrationTest、RunAdmissionIntegrationTest、RunDispatchIntegrationTest、CircuitBreakerServiceTest；HttpErrorSurfaceTest为真实Tomcat/HTTP与multipart解析的6项测试；SPEC_COMMON旧7项仅standalone MVC。两者都不是所有路由的全部4xx |
+| F34 | Reactor依赖、统一Result/异常、线程池/分页/时间/Redis；饱和Run收敛 | 拒绝/关闭分开；breaker取消不计供应商失败、模型超时计失败；multipart超限413/畸形400 | U/A: CommonContractsTest、AgentCacheIntegrationTest、RunAdmissionIntegrationTest、RunDispatchIntegrationTest、CircuitBreakerServiceTest；HttpErrorSurfaceTest为真实Tomcat/HTTP与multipart解析的7项测试；SPEC_COMMON旧7项仅standalone MVC。两者都不是所有路由的全部4xx |
 | F35 | Flyway V1-V23从空库/升级不丢版本，唯一约束/加密存储 | 不能将 Testcontainers skip 当通过；数据真实且隔离 | P: migration scope（具体类和计数见 harness/verify.sh）；不是全部业务的 PG 覆盖 |
 | F36 | 启停脚本、失败清理、PID归属、备份恢复、SSE代理、TLS、前缀 | 不杀其他进程；构建与已部署SHA一致；Token主密钥不可重置 | O: start/stop/deploy 脚本；本轮需重新验证授权范围 |
 | F37 | 版本化评测数据、成功率/召回/覆盖/重复调查/成本延迟 | 测试集与参数不能混用；mock token/延迟不能称真实P95 | E: IntentEvaluationDatasetTest、HistoryRecallEvaluationTest、ContextManagementEvaluationTest；真实供应商效果未验收 |

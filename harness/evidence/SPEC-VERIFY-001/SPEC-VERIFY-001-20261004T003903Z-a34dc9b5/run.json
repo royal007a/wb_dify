@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-VERIFY-001-20261004T003903Z-a34dc9b5",
+  "taskId": "SPEC-VERIFY-001",
+  "status": "completed",
+  "baselineCommit": "5db5f5adaec7e9837a6678a0abdcbbdd99b5a0de",
+  "approvalRef": null,
+  "startedAt": "2026-10-04T00:39:03Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+  "finishedAt": "2026-10-04T00:43:34Z"
+}

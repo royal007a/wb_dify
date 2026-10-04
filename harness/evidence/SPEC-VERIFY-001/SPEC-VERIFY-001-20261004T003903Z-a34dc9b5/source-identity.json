@@ -1,0 +1,9 @@
+{
+  "headCommit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+  "backendTree": "5899367ab1a642763fbf94e16c6a3aad429af5b4",
+  "frontendTree": "6181271f7e6b1e10b74c913395285f9c6e389c94",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "observedBeforeVerification": "git diff -- backend frontend was empty; only harness state/evidence dirty",
+  "browserEvidence": "../SPEC-VERIFY-001-20261004T002745Z-de13ece6/browser-summary.json",
+  "browserProductionCodeDifference": "None: 2c99821..9f40639 changes only tests, harness and docs; 39 browser cases were not rerun after the test-only fix."
+}

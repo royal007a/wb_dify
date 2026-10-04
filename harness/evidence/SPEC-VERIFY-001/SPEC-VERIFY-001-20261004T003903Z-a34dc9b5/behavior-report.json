@@ -1,0 +1,2149 @@
+{
+  "schemaVersion": 1,
+  "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+  "definitionsSha256": "b6a84b257970062224d775e1e86bb2d8fd160a9f0393db26c8d8f51742811274",
+  "routeInventorySha256": "c255ed7d87020255aa96f103fdae12a09664b24d793420363181bcfcf80c429e",
+  "verificationResult": "passed",
+  "cases": [
+    {
+      "caseId": "BIND-KB",
+      "tests": [
+        "AgentApiIntegrationTest#publishesKnowledgeRevisionAndPreparesItBeforeQueryLoop"
+      ],
+      "environment": "Spring MVC/H2",
+      "fixture": "空语料知识绑定和Mock Agent",
+      "expected": "HTTP绑定/发布保留corpusVersionId/manifest，Chat经过知识检索入口",
+      "remaining": "不证明答案正确或来源失败事件顺序",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "AgentApiIntegrationTest#publishesKnowledgeRevisionAndPreparesItBeforeQueryLoop": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "MCP-READBACK",
+      "tests": [
+        "McpServerApiIntegrationTest#listsCurrentToolsAndArchiveRemovesOnlyTheActiveServer"
+      ],
+      "environment": "Spring MVC/H2/local HTTP",
+      "fixture": "新建独立Server和两个合成工具",
+      "expected": "目录先空后两条且与发现结果相同；归档后列表消失、详情/工具404",
+      "remaining": "不证明已发布旧快照在归档后的运行资格；无共享数据",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "McpServerApiIntegrationTest#listsCurrentToolsAndArchiveRemovesOnlyTheActiveServer": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "RUN",
+      "tests": [
+        "RunFlowIntegrationTest#createsIdempotentRunAndPersistsToolEvents"
+      ],
+      "environment": "Spring MVC/H2",
+      "fixture": "Mock模型和calculator",
+      "expected": "health200/code200；Run202、同key200、异体40901；工具/终态事件和持久消息",
+      "remaining": "不是真实供应商、所有取消竞争或132验证",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "RunFlowIntegrationTest#createsIdempotentRunAndPersistsToolEvents": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "PROVIDER",
+      "tests": [
+        "ProviderApiIntegrationTest#deliversCrudModelCatalogAndIndependentHealthCheck",
+        "ProviderApiIntegrationTest#rejectsMockAndMultipleDefaultModels"
+      ],
+      "environment": "Spring MVC/H2/local HTTP",
+      "fixture": "合成鉴权上游",
+      "expected": "CRUD回读、displayName/modelId分离、鉴权不入配置值、独立健康、删除404、非法模型400",
+      "remaining": "真实四家服务与并发引用未覆盖",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "ProviderApiIntegrationTest#deliversCrudModelCatalogAndIndependentHealthCheck": [
+          "pass"
+        ],
+        "ProviderApiIntegrationTest#rejectsMockAndMultipleDefaultModels": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "NATIVE",
+      "tests": [
+        "ProviderApiIntegrationTest#supportsTheThreeNativeProtocols"
+      ],
+      "environment": "Spring MVC/H2/local HTTP",
+      "fixture": "三个协议的合成响应",
+      "expected": "三种连接测试success且请求鉴权头正确",
+      "remaining": "并非三家真实生产模型端到端验收",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "ProviderApiIntegrationTest#supportsTheThreeNativeProtocols": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "CREDENTIAL",
+      "tests": [
+        "CredentialReferencePolicyTest#reservedSecretsCannotBeEnabledEvenByMisconfiguredOperator",
+        "CredentialReferencePolicyTest#relaxedMasterKeyAliasesAndCredentialConfigNamespaceCannotBeGranted",
+        "ProviderApiIntegrationTest#processSecretReferencesAndUnapprovedDestinationsAreRejected"
+      ],
+      "environment": "Unit + Spring MVC/H2",
+      "fixture": "合成属性/引用，不读取真实值",
+      "expected": "保留名/别名与未授权目的地拒绝；旧记录调用不发送凭据",
+      "remaining": "运维误授权任意其他自定义秘密、DNS重绑定仍是边界",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "CredentialReferencePolicyTest#reservedSecretsCannotBeEnabledEvenByMisconfiguredOperator": [
+          "pass"
+        ],
+        "CredentialReferencePolicyTest#relaxedMasterKeyAliasesAndCredentialConfigNamespaceCannotBeGranted": [
+          "pass"
+        ],
+        "ProviderApiIntegrationTest#processSecretReferencesAndUnapprovedDestinationsAreRejected": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "HTTPCLIENT",
+      "tests": [
+        "LlmHttpClientTest#classifiesStreamingAuthenticationRateLimitAndProviderFailures",
+        "LlmHttpClientTest#classifiesMidStreamDisconnectAsRequestFailure",
+        "LlmHttpClientTest#propagatesRunCancellationIntoBlockingPost",
+        "LlmHttpClientTest#refusesRedirectsForBlockingAndStreamingRequests"
+      ],
+      "environment": "Unit/local HTTP",
+      "fixture": "可控上游状态与断流",
+      "expected": "401/429/5xx分类、断流失败、阻塞取消、拒重定向",
+      "remaining": "不代表所有供应商或JDBC都响应中断",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "LlmHttpClientTest#classifiesStreamingAuthenticationRateLimitAndProviderFailures": [
+          "pass"
+        ],
+        "LlmHttpClientTest#classifiesMidStreamDisconnectAsRequestFailure": [
+          "pass"
+        ],
+        "LlmHttpClientTest#propagatesRunCancellationIntoBlockingPost": [
+          "pass"
+        ],
+        "LlmHttpClientTest#refusesRedirectsForBlockingAndStreamingRequests": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "AGENT",
+      "tests": [
+        "AgentApiIntegrationTest#draftPublicationAndConversationUseImmutableVersion",
+        "AgentApiIntegrationTest#validatesParametersAndToolBindings",
+        "AgentApiIntegrationTest#listUsesBoundedBatchQueries"
+      ],
+      "environment": "Spring MVC/H2",
+      "fixture": "Mock Agent草稿/版本",
+      "expected": "草稿CRUD、参数和工具校验、发布快照、旧/新会话版本、批量列表查询",
+      "remaining": "多实例和任意三能力组合未穷举",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "AgentApiIntegrationTest#draftPublicationAndConversationUseImmutableVersion": [
+          "pass"
+        ],
+        "AgentApiIntegrationTest#validatesParametersAndToolBindings": [
+          "pass"
+        ],
+        "AgentApiIntegrationTest#listUsesBoundedBatchQueries": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "ARCHIVE",
+      "tests": [
+        "AgentApiIntegrationTest#archiveRemovesDraftBindingsButPreservesPublishedSnapshot"
+      ],
+      "environment": "Spring MVC/H2",
+      "fixture": "新建Agent及发布版本",
+      "expected": "归档草稿/解绑且保留旧快照，归档名称不复用",
+      "remaining": "真实浏览器全CRUD由独立报告给出",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "AgentApiIntegrationTest#archiveRemovesDraftBindingsButPreservesPublishedSnapshot": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "CATALOG",
+      "tests": [
+        "AgentApiIntegrationTest#exposesStableReadOnlyToolCatalog",
+        "ManagementReadbackIntegrationTest#legacyConversationAndToolCatalogReturnActualFields"
+      ],
+      "environment": "Spring MVC/H2",
+      "fixture": "内置工具与旧会话",
+      "expected": "新旧工具目录精确字段/数量，旧会话id/title/messages回读",
+      "remaining": "不是所有第三方工具schema一致性",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "AgentApiIntegrationTest#exposesStableReadOnlyToolCatalog": [
+          "pass"
+        ],
+        "ManagementReadbackIntegrationTest#legacyConversationAndToolCatalogReturnActualFields": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "DEMO",
+      "tests": [
+        "DemoItemApiIntegrationTest#validatesCreatesPagesUpdatesAndLogicallyDeletes"
+      ],
+      "environment": "Spring MVC/H2",
+      "fixture": "新建DemoItem",
+      "expected": "CRUD、分页校验、时间字段、逻辑删除",
+      "remaining": "参考切片，不属于核心Agent能力",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "DemoItemApiIntegrationTest#validatesCreatesPagesUpdatesAndLogicallyDeletes": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "IDENTITY",
+      "tests": [
+        "RunSubmissionIdentityTest#committedSubmissionReplaysAfterProviderDisabledButDifferentBodyAndNewWorkDoNot",
+        "RunSubmissionIdentityTest#sameKeyWithDifferentResumeIsConflictWithoutAdditionalWork"
+      ],
+      "environment": "Spring MVC/H2/captured executor",
+      "fixture": "已提交Run及禁用Provider",
+      "expected": "停用后同key恢复、异体含resume40901、新key非法resume40000、零重复工作",
+      "remaining": "宽泛DIV catch/超长消息和并发会话删除仍开放",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "RunSubmissionIdentityTest#committedSubmissionReplaysAfterProviderDisabledButDifferentBodyAndNewWorkDoNot": [
+          "pass"
+        ],
+        "RunSubmissionIdentityTest#sameKeyWithDifferentResumeIsConflictWithoutAdditionalWork": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "LOOKUP",
+      "tests": [
+        "RunSubmissionIdentityTest#lookupIsReadOnlyScopedAndUncachedEvenWhenProviderDisabled",
+        "RunSubmissionIdentityTest#missingLookupNeverCreatesAndRejectsInvalidKeys"
+      ],
+      "environment": "Spring MVC/H2",
+      "fixture": "跨会话key/缺header/非法key",
+      "expected": "200/404/400、no-store、零写入/调度、会话隔离",
+      "remaining": "404不证明原POST不会晚到；没有取消墓碑",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "RunSubmissionIdentityTest#lookupIsReadOnlyScopedAndUncachedEvenWhenProviderDisabled": [
+          "pass"
+        ],
+        "RunSubmissionIdentityTest#missingLookupNeverCreatesAndRejectsInvalidKeys": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "CANCEL",
+      "tests": [
+        "RunSubmissionIdentityTest#repeatedAndTerminalCancellationAreIdempotentAndPreCancelDoesNoModelWork",
+        "RunSubmissionIdentityTest#cancellationCannotRewriteAnExistingSuccessOrFailure"
+      ],
+      "environment": "Spring MVC/H2/captured executor",
+      "fixture": "预取消、显式COMPLETED/FAILED终态行及正向事件",
+      "expected": "重复/终态取消202且不改终态；事件不重复、取消前无模型工具工作",
+      "remaining": "不是远端副作用终止或所有正在执行交错",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "RunSubmissionIdentityTest#repeatedAndTerminalCancellationAreIdempotentAndPreCancelDoesNoModelWork": [
+          "pass"
+        ],
+        "RunSubmissionIdentityTest#cancellationCannotRewriteAnExistingSuccessOrFailure": [
+          "pass",
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "SSE",
+      "tests": [
+        "SseNetworkIsolationTest#nonReadingSocketCannotHoldTransactionsOrAnotherRunAndIsTimedOut",
+        "SseNetworkIsolationTest#foreignAndUnknownCursorReturnJson400AndZeroCursorReplays",
+        "SseNetworkIsolationTest#subscriptionLimitFailsFastAndDoesNotQueueMoreWorkers"
+      ],
+      "environment": "真实Tomcat/socket/H2",
+      "fixture": "2名额、1s无进展超时、合成事件",
+      "expected": "慢客户端不占提交/连接；外部游标400；满额50300且不排队；释放订阅",
+      "remaining": "不是默认64连接容量演练；慢读180s硬期限/公平配额仍未保证",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "SseNetworkIsolationTest#nonReadingSocketCannotHoldTransactionsOrAnotherRunAndIsTimedOut": [
+          "pass"
+        ],
+        "SseNetworkIsolationTest#foreignAndUnknownCursorReturnJson400AndZeroCursorReplays": [
+          "pass"
+        ],
+        "SseNetworkIsolationTest#subscriptionLimitFailsFastAndDoesNotQueueMoreWorkers": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "ADMISSION",
+      "tests": [
+        "RunAdmissionIntegrationTest#capacityRejectionIsTerminalAndIdempotentlyReplayableWithoutLeakingExecutorDetails",
+        "RunAdmissionIntegrationTest#recoveryRejectionDoesNotAbortTheRestOfThePendingRuns",
+        "RunAdmissionIntegrationTest#persistedCancellationRacingAdmissionWinsTheRejection"
+      ],
+      "environment": "Spring MVC/H2/真实有界拒绝执行器",
+      "fixture": "latch占满池",
+      "expected": "202 FAILED/EXECUTOR_REJECTED，同key200；SSE重放；取消优先；后续行继续",
+      "remaining": "终态写库失败、恢复积压超104策略另列开放项",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "RunAdmissionIntegrationTest#capacityRejectionIsTerminalAndIdempotentlyReplayableWithoutLeakingExecutorDetails": [
+          "pass"
+        ],
+        "RunAdmissionIntegrationTest#recoveryRejectionDoesNotAbortTheRestOfThePendingRuns": [
+          "pass"
+        ],
+        "RunAdmissionIntegrationTest#persistedCancellationRacingAdmissionWinsTheRejection": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "GATE",
+      "tests": [
+        "ExecutionContextStateTest#finishGateEvaluatesExecutablePlanCriteria",
+        "ExecutionContextStateTest#finishGateRejectsOpenGapAndMissingEvidenceCoverage",
+        "QueryLoopTest#searchIsNavigationOnlyAndCannotFinishWithoutCanonicalDetail"
+      ],
+      "environment": "Unit",
+      "fixture": "显式Claim/Gap/导航证据",
+      "expected": "开放缺口和未验证必需证据阻止FINISH，search不是canonical证据",
+      "remaining": "普通聊天无required claim可完成；非语义正确性证明",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "ExecutionContextStateTest#finishGateEvaluatesExecutablePlanCriteria": [
+          "pass"
+        ],
+        "ExecutionContextStateTest#finishGateRejectsOpenGapAndMissingEvidenceCoverage": [
+          "pass"
+        ],
+        "QueryLoopTest#searchIsNavigationOnlyAndCannotFinishWithoutCanonicalDetail": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "REPLAN",
+      "tests": [
+        "QueryLoopTest#locallyReplansInvalidCalculatorArgumentsAndTracksDistinctCauseCoordinates",
+        "QueryLoopTest#retriesTransientCalculatorFailureWithoutReplanning",
+        "QueryLoopTest#clarifiesAfterRepeatedInvalidActionMakesNoProgress",
+        "QueryLoopTest#permissionDenialUsesInterruptExitAndKeepsEvidence"
+      ],
+      "environment": "Unit",
+      "fixture": "确定性模型/工具错误",
+      "expected": "LOCAL_REPLAN/RETRY/CLARIFY/INTERRUPT正确区分并保留证据",
+      "remaining": "非真实Agent自主规划效果；恢复replan ID/观察计数仍有缺口",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "QueryLoopTest#locallyReplansInvalidCalculatorArgumentsAndTracksDistinctCauseCoordinates": [
+          "pass"
+        ],
+        "QueryLoopTest#retriesTransientCalculatorFailureWithoutReplanning": [
+          "pass"
+        ],
+        "QueryLoopTest#clarifiesAfterRepeatedInvalidActionMakesNoProgress": [
+          "pass"
+        ],
+        "QueryLoopTest#permissionDenialUsesInterruptExitAndKeepsEvidence": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "HISTORY",
+      "tests": [
+        "HistoryReplayTest#replayChecksCanonicalDigestPrefixAndAppendShape",
+        "HistoryReplayTest#recoveryMetadataIsBoundToCanonicalDigestAndCannotBeChanged",
+        "HistoryReplayTest#recoverySemanticChangesStillConflict",
+        "HistoryReplayTest#legacyToolHistoryIsNotSilentlyExecutedAgain"
+      ],
+      "environment": "Spring/H2",
+      "fixture": "合成history与digest篡改",
+      "expected": "摘要/前缀校验，旧工具拒绝重执行，值/类型/数组变化冲突",
+      "remaining": "未fork JVM；未提交READ可重做；不提供写副作用exactly-once",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "HistoryReplayTest#replayChecksCanonicalDigestPrefixAndAppendShape": [
+          "pass"
+        ],
+        "HistoryReplayTest#recoveryMetadataIsBoundToCanonicalDigestAndCannotBeChanged": [
+          "pass"
+        ],
+        "HistoryReplayTest#recoverySemanticChangesStillConflict": [
+          "pass",
+          "pass",
+          "pass"
+        ],
+        "HistoryReplayTest#legacyToolHistoryIsNotSilentlyExecutedAgain": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "SHUTDOWN",
+      "tests": [
+        "RunShutdownIntegrationTest#interruptedModelIsRecoverableAfterActualApplicationRestart",
+        "RunShutdownIntegrationTest#explicitCancellationBeforeShutdownRemainsCancelledAndIsNotRecovered",
+        "RunShutdownIntegrationTest#computedModelResultCommitsDuringRealShutdownAndIsNotReplayed"
+      ],
+      "environment": "H2/同JVM多个Spring上下文",
+      "fixture": "latch/关闭事件受控时序",
+      "expected": "关闭≠取消，重启前留interrupted，真实取消原因不被重启补写，计算完结果可提交",
+      "remaining": "不是kill-9/真实fork JVM；Chat跨重启总预算未保证；PG独立类另由完整门禁执行",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "RunShutdownIntegrationTest#interruptedModelIsRecoverableAfterActualApplicationRestart": [
+          "pass"
+        ],
+        "RunShutdownIntegrationTest#explicitCancellationBeforeShutdownRemainsCancelledAndIsNotRecovered": [
+          "pass"
+        ],
+        "RunShutdownIntegrationTest#computedModelResultCommitsDuringRealShutdownAndIsNotReplayed": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "LEASE",
+      "tests": [
+        "ToolRuntimeTest#revalidatesLeaseAfterPermissionAndBeforeExecution",
+        "ToolRuntimeTest#rejectsWorkBeforeToolExecutionWhenRunIsCancelled",
+        "ToolRuntimeTest#capabilitySnapshotIsDeterministicAndOwnerRevisionIsPinned"
+      ],
+      "environment": "Unit",
+      "fixture": "本地lease/权限/取消",
+      "expected": "副作用前执行资格复查、取消拒绝、能力摘要确定",
+      "remaining": "不是持久分布式lease",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "ToolRuntimeTest#revalidatesLeaseAfterPermissionAndBeforeExecution": [
+          "pass"
+        ],
+        "ToolRuntimeTest#rejectsWorkBeforeToolExecutionWhenRunIsCancelled": [
+          "pass"
+        ],
+        "ToolRuntimeTest#capabilitySnapshotIsDeterministicAndOwnerRevisionIsPinned": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "CONTEXT",
+      "tests": [
+        "ContextManagerTest#computesIndependentInputOutputReserveAndSafetyBudget",
+        "ContextManagerTest#archivesLargeToolResultsBeforeCompactionAndKeepsRecoveryPointer",
+        "ContextManagerTest#rejectsContextThatStillExceedsBudgetAfterCompaction"
+      ],
+      "environment": "Unit",
+      "fixture": "合成上下文与归档器",
+      "expected": "独立预算、先归档后压缩、仍超限拒绝",
+      "remaining": "字符估算不是供应商精确token/cost",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "ContextManagerTest#computesIndependentInputOutputReserveAndSafetyBudget": [
+          "pass"
+        ],
+        "ContextManagerTest#archivesLargeToolResultsBeforeCompactionAndKeepsRecoveryPointer": [
+          "pass"
+        ],
+        "ContextManagerTest#rejectsContextThatStillExceedsBudgetAfterCompaction": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "MEMORY",
+      "tests": [
+        "ContextMemoryIntegrationTest#derivesVerifiableDetailsAndSourceBoundStructuredSummaryFromCanonicalHistory",
+        "ContextMemoryIntegrationTest#layersRecentTurnsAndRequiresSearchThenCanonicalDetailForVerifiedEvidence"
+      ],
+      "environment": "Spring MVC/H2",
+      "fixture": "合成暗号、calculator、真实history索引",
+      "expected": "来源摘要、冲突/摘要错误、search→detail原文回读与导航/验证区分",
+      "remaining": "PG截断后过滤的质量损失、缺普通ref正向对照另列",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "ContextMemoryIntegrationTest#derivesVerifiableDetailsAndSourceBoundStructuredSummaryFromCanonicalHistory": [
+          "pass"
+        ],
+        "ContextMemoryIntegrationTest#layersRecentTurnsAndRequiresSearchThenCanonicalDetailForVerifiedEvidence": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "MEMORY-GATE",
+      "tests": [
+        "KnowledgeMemoryBoundaryTest#withheldFinalTextIsNotPublishedThroughAnyMemorySurface",
+        "KnowledgeMemoryBoundaryTest#historyCommittedBeforeVerificationIsNotReadableWhileRunIsRunning",
+        "KnowledgeMemoryBoundaryTest#knowledgeRunDoesNotCreateNewRawMemoryIndex"
+      ],
+      "environment": "Spring MVC/H2",
+      "fixture": "人为补旧索引、未校验知识正文",
+      "expected": "memory/catalog/search/detail隔离，RUNNING阶段不漏正文，canonical历史仍在",
+      "remaining": "搜索缺普通Run正向对照；知识Run压缩被关闭",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "KnowledgeMemoryBoundaryTest#withheldFinalTextIsNotPublishedThroughAnyMemorySurface": [
+          "pass"
+        ],
+        "KnowledgeMemoryBoundaryTest#historyCommittedBeforeVerificationIsNotReadableWhileRunIsRunning": [
+          "pass"
+        ],
+        "KnowledgeMemoryBoundaryTest#knowledgeRunDoesNotCreateNewRawMemoryIndex": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "CHILD",
+      "tests": [
+        "ChildAgentTaskIntegrationTest#consumesOnlyAfterParentRunHasCommittedSuccessfully",
+        "ChildAgentTaskIntegrationTest#restartMarksMissingExecutorsLostAndRecordsARecoveryDecision"
+      ],
+      "environment": "Spring/H2",
+      "fixture": "受控父子任务状态",
+      "expected": "父提交成功后消费、缺执行者收敛lost并记录",
+      "remaining": "没有真实子Agent worker；恢复监听器顺序未验收",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "ChildAgentTaskIntegrationTest#consumesOnlyAfterParentRunHasCommittedSuccessfully": [
+          "pass"
+        ],
+        "ChildAgentTaskIntegrationTest#restartMarksMissingExecutorsLostAndRecordsARecoveryDecision": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "INTENT",
+      "tests": [
+        "IntentRoutingApiIntegrationTest#exposesDeterministicDecisionWithoutInvokingTheConfiguredModel",
+        "IntentRoutingApiIntegrationTest#rejectsBlankInputBeforeRouting"
+      ],
+      "environment": "Spring MVC/H2",
+      "fixture": "规则预览",
+      "expected": "确定性决策且模型零调用，空输入400",
+      "remaining": "不接管Run，不是模型效果验收",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "IntentRoutingApiIntegrationTest#exposesDeterministicDecisionWithoutInvokingTheConfiguredModel": [
+          "pass"
+        ],
+        "IntentRoutingApiIntegrationTest#rejectsBlankInputBeforeRouting": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "TIME",
+      "tests": [
+        "RunFlowIntegrationTest#demoConversationHandlesGreetingThenRepeatedTimeAndCalculatorTurns"
+      ],
+      "environment": "Spring MVC/H2",
+      "fixture": "Mock多轮Demo",
+      "expected": "问候不调用工具，重复问时间与计算每轮使用新调用",
+      "remaining": "不是真实LLM多轮推理质量",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "RunFlowIntegrationTest#demoConversationHandlesGreetingThenRepeatedTimeAndCalculatorTurns": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "KB",
+      "tests": [
+        "ManagementReadbackIntegrationTest#knowledgeCrudAndDocumentPaginationHavePositiveAndArchivedControls",
+        "KnowledgeApiIntegrationTest#uploadsIndexesRetrievesAndArchivesCanonicalEvidence",
+        "KnowledgeApiIntegrationTest#rejectsUnsupportedFilesAndInvalidChunkPolicy"
+      ],
+      "environment": "Spring MVC/H2",
+      "fixture": "合成TXT/MD/hash embedding",
+      "expected": "CRUD回读、上传索引/分块/检索、冻结归档回读、停用和非法文件/策略拒绝",
+      "remaining": "H2不证明PG向量SQL；真实embedding/无答案准确率未评测",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "ManagementReadbackIntegrationTest#knowledgeCrudAndDocumentPaginationHavePositiveAndArchivedControls": [
+          "pass"
+        ],
+        "KnowledgeApiIntegrationTest#uploadsIndexesRetrievesAndArchivesCanonicalEvidence": [
+          "pass"
+        ],
+        "KnowledgeApiIntegrationTest#rejectsUnsupportedFilesAndInvalidChunkPolicy": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "UPLOAD",
+      "tests": [
+        "UploadBoundaryNetworkTest#directApplicationAcceptsUpToTenMibAndRejectsFileOrRequestOverflow",
+        "UploadBoundaryNetworkTest#bothNginxEntrypointsPreserveUploadAndSafeJsonLimits"
+      ],
+      "environment": "真实Tomcat + nginx两模板/H2",
+      "fixture": "生产限制、合成文件、indexer mock",
+      "expected": "2MiB接受，直连精确10MiB接受，10MiB+1/13MiB安全JSON41300",
+      "remaining": "两代理精确10MiB未单测；132实际配置/磁盘另验；不证明大文件索引",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "UploadBoundaryNetworkTest#directApplicationAcceptsUpToTenMibAndRejectsFileOrRequestOverflow": [
+          "pass"
+        ],
+        "UploadBoundaryNetworkTest#bothNginxEntrypointsPreserveUploadAndSafeJsonLimits": [
+          "pass",
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "KNOWLEDGE-GATE",
+      "tests": [
+        "KnowledgeFinishIntegrationTest#emptyBoundCorpusNeverCallsModelOrStoresAssistant",
+        "KnowledgeFinishIntegrationTest#missingOrInventedFinalReferencesRequireClarification",
+        "KnowledgeFinishIntegrationTest#validReferenceChecksSourcesNotSemanticTruth",
+        "KnowledgeFinishIntegrationTest#resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain"
+      ],
+      "environment": "Spring/H2",
+      "fixture": "受控模型与知识源",
+      "expected": "空库模型零调用，伪引用澄清，恢复K映射且不重检索，来源回读",
+      "remaining": "不校验答案语义；DB故障转Gap、部分来源事件口径仍开放",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "KnowledgeFinishIntegrationTest#emptyBoundCorpusNeverCallsModelOrStoresAssistant": [
+          "pass"
+        ],
+        "KnowledgeFinishIntegrationTest#missingOrInventedFinalReferencesRequireClarification": [
+          "pass"
+        ],
+        "KnowledgeFinishIntegrationTest#validReferenceChecksSourcesNotSemanticTruth": [
+          "pass"
+        ],
+        "KnowledgeFinishIntegrationTest#resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "WORKFLOW",
+      "tests": [
+        "WorkflowApiIntegrationTest#publishesImmutableVersionAndExecutesBothBranchesWithTrace",
+        "WorkflowApiIntegrationTest#rejectsBranchLocalVariablesOnSaveAndUpdate",
+        "WorkflowApiIntegrationTest#rejectsOldInvalidPublishedGraphWithoutRewritingSnapshot",
+        "ManagementReadbackIntegrationTest#workflowReadbackAndArchiveRetainTheExactPublishedVersion"
+      ],
+      "environment": "Spring MVC/H2",
+      "fixture": "确定性分支DSL与旧非法图",
+      "expected": "CRUD/校验/发布/版本/运行详情、两分支、旧版本稳定、非法必经变量拒绝、归档保留版本",
+      "remaining": "全角空格/旧转义/标点兼容、异常投影仍开放",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "WorkflowApiIntegrationTest#publishesImmutableVersionAndExecutesBothBranchesWithTrace": [
+          "pass"
+        ],
+        "WorkflowApiIntegrationTest#rejectsBranchLocalVariablesOnSaveAndUpdate": [
+          "pass"
+        ],
+        "WorkflowApiIntegrationTest#rejectsOldInvalidPublishedGraphWithoutRewritingSnapshot": [
+          "pass"
+        ],
+        "ManagementReadbackIntegrationTest#workflowReadbackAndArchiveRetainTheExactPublishedVersion": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "PINNED",
+      "tests": [
+        "ManagementReadbackIntegrationTest#agentWorkflowUnbindChangesOnlyDraftAndNewPublication",
+        "AgentApiIntegrationTest#freezesWorkflowVersionAndRoutesChatThroughDeterministicExecutor",
+        "WorkflowRunControlIntegrationTest#publicCancellationStopsBlockedWorkflowAndProducesOnlyCancelledRun"
+      ],
+      "environment": "Spring MVC/H2/异步执行器",
+      "fixture": "真实旧会话Run、确定性Workflow、阻塞节点",
+      "expected": "解绑后旧会话仍运行旧版本/checksum，取消阻止后续节点",
+      "remaining": "数据库重算checksum攻击、已成功Workflow崩溃后重复执行不在保证内",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "ManagementReadbackIntegrationTest#agentWorkflowUnbindChangesOnlyDraftAndNewPublication": [
+          "pass"
+        ],
+        "AgentApiIntegrationTest#freezesWorkflowVersionAndRoutesChatThroughDeterministicExecutor": [
+          "pass"
+        ],
+        "WorkflowRunControlIntegrationTest#publicCancellationStopsBlockedWorkflowAndProducesOnlyCancelledRun": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "MCP",
+      "tests": [
+        "McpServerApiIntegrationTest#discoversVersionedToolsAndOnlyExecutesReadTools",
+        "McpServerApiIntegrationTest#connectionEditsRequireDiscoveryButRenamingDoesNot",
+        "McpServerApiIntegrationTest#keepsPublishedAgentVersionOnItsFrozenSchemaAfterServerDrift"
+      ],
+      "environment": "Spring MVC/H2/local HTTP",
+      "fixture": "合成MCP JSON-RPC服务",
+      "expected": "发现revision、READ调用/schema校验/写工具拒绝、改连接需重发现、旧版本保留schema",
+      "remaining": "部分用例直接调ToolRuntime，不是所有Chat链路；完整MCP conformance未实现",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "McpServerApiIntegrationTest#discoversVersionedToolsAndOnlyExecutesReadTools": [
+          "pass"
+        ],
+        "McpServerApiIntegrationTest#connectionEditsRequireDiscoveryButRenamingDoesNot": [
+          "pass"
+        ],
+        "McpServerApiIntegrationTest#keepsPublishedAgentVersionOnItsFrozenSchemaAfterServerDrift": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "MCP-TOKEN",
+      "tests": [
+        "McpCredentialIntegrationTest#tokenIsEncryptedNeverReturnedAndKeepReplaceClearAreExplicit",
+        "McpCredentialIntegrationTest#frozenAgentVersionKeepsOldAuthorizationAndRemoteEchoIsRedacted",
+        "McpCredentialIntegrationTest#frozenPublishedRevisionWithUnapprovedLegacyReferenceSendsNoHttp"
+      ],
+      "environment": "Spring MVC/H2/local HTTP",
+      "fixture": "假Token/独立测试主密钥",
+      "expected": "加密只写、KEEP/替换/清除、旧快照旧凭据、回显脱敏、未批准旧引用零请求",
+      "remaining": "旧快照仍可解密非全局撤销；真实密钥不参与本次验证；PG类独立门禁",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "McpCredentialIntegrationTest#tokenIsEncryptedNeverReturnedAndKeepReplaceClearAreExplicit": [
+          "pass"
+        ],
+        "McpCredentialIntegrationTest#frozenAgentVersionKeepsOldAuthorizationAndRemoteEchoIsRedacted": [
+          "pass"
+        ],
+        "McpCredentialIntegrationTest#frozenPublishedRevisionWithUnapprovedLegacyReferenceSendsNoHttp": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "ERRORS",
+      "tests": [
+        "HttpErrorSurfaceTest#frameworkErrorsHaveExactSafeJsonContracts",
+        "HttpErrorSurfaceTest#missingRunAndEventsReturnSafeNotFound",
+        "HttpErrorSurfaceTest#missingStreamAndCancellationReturnSafeNotFound",
+        "HttpErrorSurfaceTest#multipartParsingPrecedesRouteAndMediaTypeResolution"
+      ],
+      "environment": "真实Tomcat/H2",
+      "fixture": "合成无效请求与压低的multipart限额",
+      "expected": "400/404/405/415精确JSON码、SSE Accept负例、multipart优先级",
+      "remaining": "不是逐路由每个4xx排列；超长消息/FK40900、memory/resume异常回显仍开放",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "HttpErrorSurfaceTest#frameworkErrorsHaveExactSafeJsonContracts": [
+          "pass"
+        ],
+        "HttpErrorSurfaceTest#missingRunAndEventsReturnSafeNotFound": [
+          "pass"
+        ],
+        "HttpErrorSurfaceTest#missingStreamAndCancellationReturnSafeNotFound": [
+          "pass"
+        ],
+        "HttpErrorSurfaceTest#multipartParsingPrecedesRouteAndMediaTypeResolution": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    },
+    {
+      "caseId": "EVAL",
+      "tests": [
+        "IntentEvaluationDatasetTest#evaluatesRuleOnlyBaselineAgainstVersionedChineseDataset",
+        "HistoryRecallEvaluationTest#versionedRecallDatasetTriggersAndValidatesSemanticRrfUpgrade",
+        "ContextManagementEvaluationTest#meetsSemanticSafetyThresholdsInAdditionToReducingTokens"
+      ],
+      "environment": "Unit/offline synthetic datasets",
+      "fixture": "120条意图/12条toy召回/合成context",
+      "expected": "固定数据质量/安全断言与可复跑指标",
+      "remaining": "非真实embedding/LLM质量或端到端p95成本，不能外推到线上",
+      "commit": "9f40639c9e58a46639532d0f9c12c8f115714a49",
+      "command": [
+        "mvn",
+        "-B",
+        "-Dapi.version=1.44",
+        "-pl",
+        "hify-app",
+        "-am",
+        "-Dtest=com.hify.api.AgentApiIntegrationTest,com.hify.api.AgentCacheIntegrationTest,com.hify.api.AgentToolBindingMigrationTest,com.hify.api.ApiContractInventoryTest,com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.DemoItemApiIntegrationTest,com.hify.api.HistoryRecoveryIntegrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.HistoryReplayTest,com.hify.api.HttpErrorSurfaceTest,com.hify.api.IntentRoutingApiIntegrationTest,com.hify.api.KnowledgeAdmissionShutdownTest,com.hify.api.KnowledgeApiIntegrationTest,com.hify.api.KnowledgeFinishIntegrationTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryBoundaryTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.ManagementReadbackIntegrationTest,com.hify.api.MavenStructureTest,com.hify.api.McpCredentialCipherTest,com.hify.api.McpCredentialIntegrationTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.McpProtocolClientReliabilityTest,com.hify.api.McpServerApiIntegrationTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.ProviderApiIntegrationTest,com.hify.api.RunAdmissionIntegrationTest,com.hify.api.RunDispatchIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.api.RunShutdownIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.RunSubmissionIdentityTest,com.hify.api.SseNetworkIsolationTest,com.hify.api.UploadBoundaryNetworkTest,com.hify.api.WorkflowApiIntegrationTest,com.hify.api.WorkflowGraphBoundaryIntegrationTest,com.hify.api.WorkflowKnowledgeIntegrationTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowKnowledgeReviewTest,com.hify.api.WorkflowRunControlIntegrationTest,com.hify.api.WorkflowSettlementIntegrationTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest,com.hify.application.KnowledgeCompletionVerifierTest,com.hify.application.RunEventBrokerBackpressureTest,com.hify.application.RunEventBrokerTest,com.hify.application.RunWorkflowControlTest,com.hify.common.CircuitBreakerServiceTest,com.hify.common.CommonContractsTest,com.hify.common.CredentialReferencePolicyTest,com.hify.common.ExecutionShutdownTest,com.hify.common.HttpErrorContractTest,com.hify.common.LlmHttpClientTest,com.hify.common.ProviderDeadlineTest,com.hify.domain.ChildAgentTaskTest,com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.provider.application.ProviderUrlPolicyTest,com.hify.provider.runtime.ProviderCredentialBoundaryTest,com.hify.runtime.MockModelClientTest,com.hify.runtime.NativeProviderModelClientTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.ToolRuntimeTest,com.hify.runtime.context.ContextManagementEvaluationTest,com.hify.runtime.context.ContextManagerTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest,com.hify.workflow.application.WorkflowControlTest,com.hify.workflow.application.WorkflowEngineTest,com.hify.workflow.application.WorkflowExecutionContextTest,com.hify.workflow.application.WorkflowExpressionTest,com.hify.workflow.application.WorkflowGraphValidatorTest",
+        "-Dsurefire.failIfNoSpecifiedTests=false",
+        "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests-09jxj_75/reports",
+        "test"
+      ],
+      "status": "pass",
+      "actual": {
+        "IntentEvaluationDatasetTest#evaluatesRuleOnlyBaselineAgainstVersionedChineseDataset": [
+          "pass"
+        ],
+        "HistoryRecallEvaluationTest#versionedRecallDatasetTriggersAndValidatesSemanticRrfUpgrade": [
+          "pass"
+        ],
+        "ContextManagementEvaluationTest#meetsSemanticSafetyThresholdsInAdditionToReducingTokens": [
+          "pass"
+        ]
+      },
+      "evidence": "harness/evidence/SPEC-VERIFY-001/SPEC-VERIFY-001-20261004T003903Z-a34dc9b5/backend-tests.tests.json"
+    }
+  ],
+  "routes": [
+    {
+      "route": "GET /api/conversations/{id}",
+      "assertionCases": [
+        "CATALOG"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/tools",
+      "assertionCases": [
+        "CATALOG"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/agents",
+      "assertionCases": [
+        "AGENT"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/agents",
+      "assertionCases": [
+        "AGENT"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "DELETE /api/v1/agents/{agentId}",
+      "assertionCases": [
+        "ARCHIVE"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/agents/{agentId}",
+      "assertionCases": [
+        "AGENT"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "PUT /api/v1/agents/{agentId}",
+      "assertionCases": [
+        "AGENT"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "PUT /api/v1/agents/{agentId}/knowledge-bindings",
+      "assertionCases": [
+        "BIND-KB"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "PUT /api/v1/agents/{agentId}/mcp-bindings",
+      "assertionCases": [
+        "MCP"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/agents/{agentId}/publications",
+      "assertionCases": [
+        "AGENT"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "PUT /api/v1/agents/{agentId}/tools",
+      "assertionCases": [
+        "AGENT"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/agents/{agentId}/versions",
+      "assertionCases": [
+        "AGENT"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "DELETE /api/v1/agents/{agentId}/workflow-binding",
+      "assertionCases": [
+        "PINNED"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "PUT /api/v1/agents/{agentId}/workflow-binding",
+      "assertionCases": [
+        "PINNED"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/conversations",
+      "assertionCases": [
+        "RUN"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/conversations/{conversationId}/runs",
+      "assertionCases": [
+        "RUN",
+        "IDENTITY",
+        "ADMISSION"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/conversations/{conversationId}/runs/by-key",
+      "assertionCases": [
+        "LOOKUP"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/demo-items",
+      "assertionCases": [
+        "DEMO"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/demo-items",
+      "assertionCases": [
+        "DEMO"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "DELETE /api/v1/demo-items/{id}",
+      "assertionCases": [
+        "DEMO"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/demo-items/{id}",
+      "assertionCases": [
+        "DEMO"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "PUT /api/v1/demo-items/{id}",
+      "assertionCases": [
+        "DEMO"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "DELETE /api/v1/documents/{id}",
+      "assertionCases": [
+        "KB"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/documents/{id}",
+      "assertionCases": [
+        "KB"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/documents/{id}/chunks",
+      "assertionCases": [
+        "KB"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/health",
+      "assertionCases": [
+        "RUN"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/intent-decisions",
+      "assertionCases": [
+        "INTENT"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/knowledge-bases",
+      "assertionCases": [
+        "KB"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/knowledge-bases",
+      "assertionCases": [
+        "KB"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "DELETE /api/v1/knowledge-bases/{id}",
+      "assertionCases": [
+        "KB"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/knowledge-bases/{id}",
+      "assertionCases": [
+        "KB"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "PUT /api/v1/knowledge-bases/{id}",
+      "assertionCases": [
+        "KB"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/knowledge-bases/{id}/documents",
+      "assertionCases": [
+        "KB"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/knowledge-bases/{id}/documents",
+      "assertionCases": [
+        "KB",
+        "UPLOAD"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/knowledge-bases/{id}/retrieval-tests",
+      "assertionCases": [
+        "KB"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/mcp-servers",
+      "assertionCases": [
+        "MCP-TOKEN",
+        "MCP-READBACK"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/mcp-servers",
+      "assertionCases": [
+        "MCP",
+        "MCP-TOKEN"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "DELETE /api/v1/mcp-servers/{id}",
+      "assertionCases": [
+        "MCP-READBACK"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/mcp-servers/{id}",
+      "assertionCases": [
+        "MCP"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "PUT /api/v1/mcp-servers/{id}",
+      "assertionCases": [
+        "MCP"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/mcp-servers/{id}/tools",
+      "assertionCases": [
+        "MCP-READBACK"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/mcp-servers/{id}/tools:refresh",
+      "assertionCases": [
+        "MCP"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/mcp-servers/{id}/tools/{toolName}:call",
+      "assertionCases": [
+        "MCP"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/providers",
+      "assertionCases": [
+        "PROVIDER"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/providers",
+      "assertionCases": [
+        "PROVIDER"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "DELETE /api/v1/providers/{providerId}",
+      "assertionCases": [
+        "PROVIDER"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/providers/{providerId}",
+      "assertionCases": [
+        "PROVIDER"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "PUT /api/v1/providers/{providerId}",
+      "assertionCases": [
+        "PROVIDER"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/providers/{providerId}/connection-tests",
+      "assertionCases": [
+        "PROVIDER",
+        "NATIVE"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/runs/{runId}",
+      "assertionCases": [
+        "RUN"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/runs/{runId}/cancellations",
+      "assertionCases": [
+        "CANCEL",
+        "ERRORS"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/runs/{runId}/events",
+      "assertionCases": [
+        "RUN"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/runs/{runId}/events/stream",
+      "assertionCases": [
+        "SSE"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/runs/{runId}/memory",
+      "assertionCases": [
+        "MEMORY-GATE"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/runs/{runId}/memory/details/{refId}",
+      "assertionCases": [
+        "MEMORY",
+        "MEMORY-GATE"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/runs/{runId}/memory/search",
+      "assertionCases": [
+        "MEMORY",
+        "MEMORY-GATE"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/tools",
+      "assertionCases": [
+        "CATALOG"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/workflow-runs/{id}",
+      "assertionCases": [
+        "WORKFLOW",
+        "PINNED"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/workflow-versions/{id}",
+      "assertionCases": [
+        "WORKFLOW"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/workflow-versions/{id}/runs",
+      "assertionCases": [
+        "WORKFLOW"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/workflows",
+      "assertionCases": [
+        "WORKFLOW"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/workflows",
+      "assertionCases": [
+        "WORKFLOW"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "DELETE /api/v1/workflows/{id}",
+      "assertionCases": [
+        "WORKFLOW"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/workflows/{id}",
+      "assertionCases": [
+        "WORKFLOW"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "PUT /api/v1/workflows/{id}",
+      "assertionCases": [
+        "WORKFLOW"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/workflows/{id}/validations",
+      "assertionCases": [
+        "WORKFLOW"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "GET /api/v1/workflows/{id}/versions",
+      "assertionCases": [
+        "WORKFLOW"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    },
+    {
+      "route": "POST /api/v1/workflows/{id}/versions",
+      "assertionCases": [
+        "WORKFLOW"
+      ],
+      "behaviorStatus": "mapped-subcases-only",
+      "remaining": "Not a claim that every error/state combination of this route passed."
+    }
+  ],
+  "features": [
+    {
+      "id": "F01",
+      "cases": [
+        "RUN"
+      ],
+      "notRun": "数据库故障与全依赖就绪；health只是存活"
+    },
+    {
+      "id": "F02",
+      "cases": [
+        "PROVIDER"
+      ],
+      "notRun": "真实模型与所有并发引用"
+    },
+    {
+      "id": "F03",
+      "cases": [
+        "CREDENTIAL"
+      ],
+      "notRun": "DNS固定解析/运维误配外部自定义秘密"
+    },
+    {
+      "id": "F04",
+      "cases": [
+        "NATIVE",
+        "HTTPCLIENT"
+      ],
+      "notRun": "真实四家供应商协议完整验收"
+    },
+    {
+      "id": "F05",
+      "cases": [
+        "AGENT",
+        "CATALOG"
+      ],
+      "notRun": "真实浏览器全部Agent CRUD"
+    },
+    {
+      "id": "F06",
+      "cases": [
+        "AGENT",
+        "ARCHIVE",
+        "PINNED",
+        "MCP"
+      ],
+      "notRun": "三类能力任意组合；checksum纵深防御"
+    },
+    {
+      "id": "F07",
+      "cases": [
+        "AGENT",
+        "PINNED"
+      ],
+      "notRun": "多实例滚动重叠"
+    },
+    {
+      "id": "F08",
+      "cases": [
+        "DEMO"
+      ],
+      "notRun": "全组合压力与数据库故障"
+    },
+    {
+      "id": "F09",
+      "cases": [
+        "RUN",
+        "SSE"
+      ],
+      "notRun": "真实模型/代理故障全排列；本地浏览器单列"
+    },
+    {
+      "id": "F10",
+      "cases": [
+        "IDENTITY",
+        "LOOKUP"
+      ],
+      "notRun": "SPEC-RUN-INPUT-001宽泛DIV分类、刷新丢失页面身份"
+    },
+    {
+      "id": "F11",
+      "cases": [
+        "CANCEL",
+        "HTTPCLIENT",
+        "PINNED"
+      ],
+      "notRun": "远端副作用及JDBC强制中断；所有调用2s SLA"
+    },
+    {
+      "id": "F12",
+      "cases": [
+        "SSE"
+      ],
+      "notRun": "64正常标签容量/公平配额/慢读硬期限"
+    },
+    {
+      "id": "F13",
+      "cases": [
+        "GATE",
+        "KNOWLEDGE-GATE"
+      ],
+      "notRun": "答案语义真实性"
+    },
+    {
+      "id": "F14",
+      "cases": [
+        "REPLAN"
+      ],
+      "notRun": "真实模型计划质量"
+    },
+    {
+      "id": "F15",
+      "cases": [
+        "HISTORY",
+        "SHUTDOWN"
+      ],
+      "notRun": "fork JVM、kill-9、重启总budget/replan计数"
+    },
+    {
+      "id": "F16",
+      "cases": [
+        "LEASE",
+        "MCP"
+      ],
+      "notRun": "分布式lease/写审批"
+    },
+    {
+      "id": "F17",
+      "cases": [
+        "HISTORY"
+      ],
+      "notRun": "恶意DB写入者/外部写exactly-once"
+    },
+    {
+      "id": "F18",
+      "cases": [
+        "CONTEXT"
+      ],
+      "notRun": "精确token和金额预算"
+    },
+    {
+      "id": "F19",
+      "cases": [
+        "MEMORY",
+        "MEMORY-GATE"
+      ],
+      "notRun": "PG先截断过滤质量、普通ref正向对照"
+    },
+    {
+      "id": "F20",
+      "cases": [
+        "CHILD"
+      ],
+      "notRun": "真实子Agent worker及启动监听顺序"
+    },
+    {
+      "id": "F21",
+      "cases": [
+        "INTENT",
+        "EVAL"
+      ],
+      "notRun": "在线主链路调度/shadow"
+    },
+    {
+      "id": "F22",
+      "cases": [
+        "TIME"
+      ],
+      "notRun": "真实模型；本地真实浏览器单列"
+    },
+    {
+      "id": "F23",
+      "cases": [
+        "KB",
+        "UPLOAD"
+      ],
+      "notRun": "大文件完整索引/并发归档；索引isPostgres失败分支"
+    },
+    {
+      "id": "F24",
+      "cases": [
+        "KB"
+      ],
+      "notRun": "真实embedding效果；原文冻结不等于向量/排序冻结；PG专项另列完整门禁"
+    },
+    {
+      "id": "F25",
+      "cases": [
+        "KNOWLEDGE-GATE",
+        "MEMORY-GATE"
+      ],
+      "notRun": "语义grounding/来源失败事件口径/DB转Gap"
+    },
+    {
+      "id": "F26",
+      "cases": [
+        "WORKFLOW"
+      ],
+      "notRun": "全角空格、旧转义与裸标点迁移"
+    },
+    {
+      "id": "F27",
+      "cases": [
+        "PINNED",
+        "KNOWLEDGE-GATE"
+      ],
+      "notRun": "成功落盘后崩溃的Workflow复用"
+    },
+    {
+      "id": "F28",
+      "cases": [
+        "MCP"
+      ],
+      "notRun": "完整MCP session/SSE conformance与真实第三方"
+    },
+    {
+      "id": "F29",
+      "cases": [
+        "MCP-TOKEN",
+        "CREDENTIAL"
+      ],
+      "notRun": "全局撤销/密钥轮换恢复演练；浏览器结果单列"
+    },
+    {
+      "id": "F30",
+      "cases": [
+        "CREDENTIAL",
+        "HTTPCLIENT",
+        "MCP"
+      ],
+      "notRun": "DNS rebinding窗口/完整出站网络隔离"
+    },
+    {
+      "id": "F31",
+      "cases": [],
+      "notRun": "浏览器独立结果，不由Java计数推断；真实全CRUD未穷举"
+    },
+    {
+      "id": "F32",
+      "cases": [],
+      "notRun": "受控画布/diff smoke见浏览器结果；真实编辑全链路未验收"
+    },
+    {
+      "id": "F33",
+      "cases": [],
+      "notRun": "MCP编辑和Token由browser-live独立证明，不由本表推断"
+    },
+    {
+      "id": "F34",
+      "cases": [
+        "ERRORS",
+        "ADMISSION",
+        "HTTPCLIENT"
+      ],
+      "notRun": "不是每条路由全部错误组合"
+    },
+    {
+      "id": "F35",
+      "cases": [],
+      "notRun": "看本次migration-postgres独立零skip清单；非所有PG并发排列"
+    },
+    {
+      "id": "F36",
+      "cases": [],
+      "notRun": "132重新发布尚未执行；备份恢复演练未完成"
+    },
+    {
+      "id": "F37",
+      "cases": [
+        "EVAL"
+      ],
+      "notRun": "真实LLM/RAG准确率、端到端延迟和费用"
+    },
+    {
+      "id": "F38",
+      "cases": [],
+      "notRun": "harness独立命令记录；不防恶意伪造manifest，AUDIT-004开放"
+    }
+  ],
+  "meaning": "Only named assertions get pass/fail/not-run. Routes and F01-F38 are not blanket passes. Known residuals and external/deployment gaps remain explicit."
+}

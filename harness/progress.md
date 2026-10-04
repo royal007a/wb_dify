@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T00:37:26Z`
+- Generated from task state updated at: `2026-10-04T00:43:34Z`
 - Current task: `none`
-- Counts: pending 17 · running 0 · blocked 1 · completed 63
+- Counts: pending 17 · running 0 · blocked 0 · completed 64
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -27,7 +27,7 @@
 | `SPEC-CREDENTIAL-BOUNDARY-001` | P0 | completed | backend, runtime, harness | reversible_write | 凭据引用只允许管理员配置的引用与目标绑定 |
 | `SPEC-DEPLOY-001` | P0 | pending | harness, backend, frontend, migration | high_risk | 发布验收修复并验证 132 与本地 |
 | `SPEC-SSE-COMMIT-001` | P0 | completed | backend, runtime, harness | reversible_write | 修复SSE提交时序与Run终态事件原子性 |
-| `SPEC-VERIFY-001` | P0 | blocked | harness, backend, frontend, migration, runtime, eval | reversible_write | 执行全功能矩阵并修复发现的问题 |
+| `SPEC-VERIFY-001` | P0 | completed | harness, backend, frontend, migration, runtime, eval | reversible_write | 执行全功能矩阵并修复发现的问题 |
 | `SPEC-WORKFLOW-CONTROL-001` | P0 | completed | backend, runtime, migration, harness | reversible_write | 传播 Workflow 取消和截止时间并阻止错误成功终态 |
 | `SPEC-WORKFLOW-GRAPH-001` | P0 | completed | backend, harness | reversible_write | 验证 Workflow 路径终止与模板必经变量 |
 | `SPEC-WORKFLOW-KNOWLEDGE-001` | P0 | completed | backend, runtime, harness | reversible_write | 固定 Workflow 知识语料快照并保留历史引用 |
@@ -89,8 +89,5 @@
 | `SPEC-WORKFLOW-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 关联Workflow执行事实与父Run恢复及异常边界 |
 | `SUBAGENT-001` | P2 | completed | backend, migration, runtime | reversible_write | 建立子 Agent 任务与延迟消费确认 |
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |
-
-## Blocked
-- `SPEC-VERIFY-001`: verification failed
 
 Regenerate with `python3 harness/harness.py render-progress`; verify with `python3 harness/harness.py check-progress`.
