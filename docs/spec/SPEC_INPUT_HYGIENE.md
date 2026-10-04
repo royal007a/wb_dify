@@ -24,4 +24,17 @@
 
 该矩阵不覆盖所有JSON/query/header/path输入、Demo参考CRUD、上传后的模型/MCP返回值、历史数据清洗、未绑定工具业务参数。没有全局Jackson替换器或自动数据库清洗；没有前端浏览器/生产发布证据时，不得声称132已修复本项。
 
-首轮未覆盖Agent的knowledge-bindings、mcp-bindings、workflow-binding和tools写入口，由SPEC-INPUT-HYGIENE-002补强。读路径retrieval-tests、memory/search及意图路由归SPEC-INPUT-HYGIENE-003；archive/publish/clearWorkflow等仅路径ID的入口不在本矩阵（真实容器路径拒绝未测）。不能概称“所有Agent端点已覆盖”。
+首轮未覆盖Agent的knowledge-bindings、mcp-bindings、workflow-binding和tools写入口，由SPEC-INPUT-HYGIENE-002补强。archive/publish/clearWorkflow等仅路径ID的入口不在本矩阵（真实容器路径拒绝未测）。不能概称“所有Agent端点已覆盖”。
+
+## SPEC-INPUT-HYGIENE-003：选定读路径
+
+| 入口 | 拒绝实际NUL的字符串 | 准入边界 |
+|---|---|---|
+| POST knowledge-bases/{id}/retrieval-tests；service search | knowledgeBaseId、query | 查询KB/候选之前 |
+| service searchRevision / searchSnapshot | corpusVersionId或快照id/knowledgeBaseId/manifestDigest、query | 查询冻结成员之前；空快照仍为既有409 |
+| POST runs/{id}/memory/search；HistoryRecallService.search | runId、query、entity | 查询Run与trim之前，不把边界NUL静默去掉 |
+| POST intent-decisions；IntentRoutingApplicationService.decide | agentId、input | 查询Agent/Provider、创建模型客户端之前 |
+
+以上HTTP坏正文返回400/40000，直接service为PARAM_ERROR且错误不回显输入。现有空白/时间窗/长度规则不变；没有全局字符替换。只包含反斜杠u0000的字面量不是实际NUL。
+
+`ReadInputHygieneIntegrationTest`和真实PG子类各4场景：活动及冻结知识检索先证明能命中本次已索引文档，memory先完成Mock Run并证明历史匹配本次marker，意图先证明合法模糊输入确实能进入Mock模型工厂，再断言坏参数零工厂调用。坏查询前后Run/消息/文档/索引任务/语料快照数量不变；同时检查HTTP与公开service。内部service参数的id负例不代表真实Tomcat对%00的网络测试。没有证明路径/query参数的普遍容器行为，也没有扩大到所有管理只读接口或模型/MCP返回值。

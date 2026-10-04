@@ -27,6 +27,7 @@ public class IntentRoutingApplicationService {
     }
 
     public IntentDecision decide(String agentId, String input) {
+        com.hify.common.TextInput.requireNoNul(agentId, input);
         AgentRuntimeSnapshot agent = agents.requirePublished(agentId);
         ProviderRuntimeConfig provider = providers.requireEnabled(agent.providerId());
         String model = agent.modelId() == null || agent.modelId().isBlank()

@@ -2,6 +2,7 @@ package com.hify.knowledge.application;
 
 import com.hify.common.BizException;
 import com.hify.common.ErrorCode;
+import com.hify.common.TextInput;
 import com.hify.knowledge.api.KnowledgeChunkResponse;
 import com.hify.knowledge.api.KnowledgeCitation;
 import com.hify.knowledge.api.KnowledgeCorpusSnapshot;
@@ -43,6 +44,7 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     @Override
     @Transactional(readOnly=true)
     public List<KnowledgeCitation> search(String knowledgeBaseId,String query,int topK){
+        TextInput.requireNoNul(knowledgeBaseId, query);
         if(query==null||query.isBlank())throw new BizException(ErrorCode.PARAM_ERROR,"检索问题不能为空");
         var base=knowledge.requireBase(knowledgeBaseId); if(!base.isEnabled())throw new BizException(ErrorCode.CONFLICT,"知识库已停用");
         return rank(query,topK,activeRows(knowledgeBaseId),knowledgeBaseId,null);
@@ -83,6 +85,7 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     @Override
     @Transactional(readOnly=true,isolation=Isolation.REPEATABLE_READ)
     public List<KnowledgeCitation> searchRevision(String corpusVersionId,String query,int topK) {
+        TextInput.requireNoNul(corpusVersionId, query);
         if(query==null||query.isBlank())throw new BizException(ErrorCode.PARAM_ERROR,"检索问题不能为空");
         KnowledgeCorpusSnapshot snapshot=requireSnapshot(corpusVersionId);
         return rank(query,topK,verifiedRows(snapshot),null,corpusVersionId);
@@ -92,6 +95,7 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     @Transactional(readOnly=true,isolation=Isolation.REPEATABLE_READ)
     public List<KnowledgeCitation> searchSnapshot(KnowledgeCorpusSnapshot expected,String query,int topK) {
         if(expected==null)throw new BizException(ErrorCode.CONFLICT,"缺少发布知识快照，请重新发布");
+        TextInput.requireNoNul(expected.id(), expected.knowledgeBaseId(), expected.manifestDigest(), query);
         if(query==null||query.isBlank())throw new BizException(ErrorCode.PARAM_ERROR,"检索问题不能为空");
         KnowledgeCorpusSnapshot actual=requireSnapshot(expected.id());
         if(!actual.equals(expected))throw new BizException(ErrorCode.CONFLICT,"知识语料快照摘要或身份不匹配");

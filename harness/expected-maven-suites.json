@@ -18,6 +18,8 @@
   "backend-tests": {
     "com.hify.api.InputHygieneIntegrationTest": 14,
     "com.hify.api.InputHygienePostgresTest": 14,
+    "com.hify.api.ReadInputHygieneIntegrationTest": 4,
+    "com.hify.api.ReadInputHygienePostgresTest": 4,
     "com.hify.common.TextInputTest": 2,
     "com.hify.api.UploadBoundaryNetworkTest": 3,
     "com.hify.api.ManagementReadbackIntegrationTest": 4,

@@ -76,6 +76,8 @@
 
 输入卫生补充（F05/F09/F23/F26/F28/F34）：按`SPEC_INPUT_HYGIENE.md`逐写入入口验证实际U+0000为400/40000、合法UTF8正向通过、坏创建/更新零改动。`InputHygieneIntegrationTest`及`InputHygienePostgresTest`包含HTTP和application直接调用；001的8个具名子场景加002的6个绑定/深层配置场景均加入behavior-cases，不以H2成功代替PG验证。范围外的读查询、外部返回值和历史数据不据此声称完成。
 
+003另加4个具名读准入场景（ReadInputHygieneIntegrationTest/ReadInputHygienePostgresTest）：活动/冻结知识、memory/search和意图的HTTP/公开service前置NUL拒绝；以真实索引命中、实际Mock Run历史命中、模型工厂正向对照排除空断言。只映射确实经过的HTTP路由，冻结service无独立路由；其他读接口及容器路径仍不据此宣称覆盖。
+
 每次验证记录 `caseId / commit / environment / fixture / command / expected / actual / status / evidence`。status 只取 pass/fail/not-run；not-run 需原因，不能以“测试类存在”填 pass。
 最少三层独立报告：68个接口库存一致性（新增只读身份查询；历史审计为67）；F01-F38行为矩阵；本地/132部署验收。任何外部真实模型、真实 MCP 凭据缺失均单列，不以 mock 外推。未通过项归入后续原子任务，不删规格降低分母。
 

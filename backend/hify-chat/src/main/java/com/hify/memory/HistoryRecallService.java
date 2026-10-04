@@ -41,6 +41,7 @@ public class HistoryRecallService {
 
     /** P0 lexical/time/entity retrieval. Scores are deterministic and independent of an embedding service. */
     public SearchResult search(String runId, SearchQuery request) {
+        com.hify.common.TextInput.requireNoNul(runId, request.query(), request.entity());
         AgentRun run = runs.findById(runId)
                 .orElseThrow(() -> new IllegalArgumentException("Run not found: " + runId));
         SearchQuery query = request.normalized();
