@@ -4,6 +4,39 @@
   "updatedAt": "2026-10-04T00:05:13Z",
   "tasks": [
     {
+      "id": "SPEC-UPLOAD-BOUNDARY-001",
+      "title": "统一真实应用与两种代理入口的上传上限",
+      "description": "复现HTTP复核P1：默认1MiB及nginx HTML 413与10MB文档契约冲突。显式配置文件10MiB、请求12MiB，代理固定JSON超限；通过真实Tomcat和独立nginx验证。",
+      "priority": "P1", "status": "pending",
+      "scopes": ["backend", "harness"], "verifyScopes": ["harness", "backend"],
+      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
+      "dependsOn": ["SPEC-HTTP-ERROR-001", "SPEC-API-BEHAVIOR-001"],
+      "acceptance": [
+        "真实2MiB合法上传直连及两份nginx入口成功，10MiB文件边界有断言",
+        "文件超10MiB和请求超12MiB返回413/41300固定JSON；不将任意大/慢请求连接重置承诺为JSON",
+        "两种nginx模板实际启动校验，路径代理仅改测试upstream不改生产上限/错误页",
+        "SSE Accept取消及multipart优先级补测，修正不可达10MB业务校验和旧memory/resume回显文案",
+        "零skip后端及结构化证据交只读复核；不改132服务，部署另走授权任务"
+      ],
+      "planPath": "exec-plans/active/SPEC-UPLOAD-BOUNDARY-001.md", "checkpoint": null,
+      "blockedReason": null, "evidence": [], "createdAt": "2026-10-04T00:06:00Z", "updatedAt": "2026-10-04T00:06:00Z"
+    },
+    {
+      "id": "SPEC-AUDIT-004",
+      "title": "补验证摘要实文件绑定与历史兼容清单",
+      "description": "承接f64a690复验两个P2：finish仅看manifest字段；validate仅最后一条且schema可降级。防误写增强，不宣称防有仓库写权限的恶意伪造。",
+      "priority": "P2", "status": "pending", "scopes": ["harness"], "verifyScopes": ["harness"],
+      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
+      "dependsOn": ["SPEC-AUDIT-003"],
+      "acceptance": [
+        "finish复算实际日志/摘要SHA并验证tests.json的result/invocationId；缺失或篡改拒绝",
+        "已记录历史runId显式白名单之外completed必须有v3证据；降schema/追加假历史/清空证据拒绝",
+        "31项既有回归保留，补对方隔离伪造反例，不改历史测试结果或误称旧PG通过"
+      ],
+      "planPath": null, "checkpoint": null, "blockedReason": null, "evidence": [],
+      "createdAt": "2026-10-04T00:06:00Z", "updatedAt": "2026-10-04T00:06:00Z"
+    },
+    {
       "id": "SPEC-API-BEHAVIOR-001",
       "title": "补齐管理读写与取消幂等的行为断言",
       "description": "针对全接口库存中只有候选类、缺直接断言的管理路由和取消/幂等恢复语义，补全应用MockMvc加隔离H2集成用例；不把库存匹配当行为通过。",

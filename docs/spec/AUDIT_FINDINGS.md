@@ -112,6 +112,8 @@ G切片独立复核：无P0/P1；P2-1指出受保护命名空间漏掉项目实�
 
 ## 已核对的文档漂移
 
+2026-10-04新增复核：HTTP切片fa5f48f..9aac4e7的上传P1归SPEC-UPLOAD-BOUNDARY-001（应用/两nginx没有显式上限，原10MB/JSON承诺不可达）；f64a690门禁旧问题已关闭，恶意/手工改manifest或降级历史schema仍可绕过的两条P2归SPEC-AUDIT-004。reviewer对HTTP仅静态阅读；门禁使用隔离archive+假mvn/XML实测，不等于实际Maven执行。
+
 - API.md 把未实现会话列表、v1 会话详情/消息、tool-definition/dry-run 写成可调用；Workflow更新写成不存在的PATCH。
 - API.md 泛称全写请求幂等键、默认cursor分页、UUIDv7/ULID，均不是当前实现。
 - CURRENT_STATE 仍声称三类能力未绑定 Agent/Chat、流式故障矩阵未做；AGENTS/SPEC仍把已交付画布列为非目标。
