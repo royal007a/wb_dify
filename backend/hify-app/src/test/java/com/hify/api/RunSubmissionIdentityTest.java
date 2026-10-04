@@ -37,7 +37,9 @@ class RunSubmissionIdentityTest {
     @Autowired ObjectMapper json;
     @Autowired JdbcTemplate jdbc;
     @Autowired CacheManager caches;
-    @Autowired AgentRunRepository runs;
+    @org.springframework.boot.test.mock.mockito.SpyBean AgentRunRepository runs;
+    @org.springframework.boot.test.mock.mockito.SpyBean com.hify.provider.api.ProviderQueryService providers;
+    @Autowired com.hify.application.RunApplicationService service;
     @Autowired ChatMessageRepository messages;
     @Autowired RunEventRepository events;
     @Autowired RunEventBroker broker;
@@ -121,6 +123,81 @@ class RunSubmissionIdentityTest {
         assertThat(messages.count()).isEqualTo(messageCount);
         assertThat(events.count()).isEqualTo(eventCount);
         verify(executor,times(1)).execute(any());
+    }
+
+    @Test void messageLimitRejectsBeforeWritesAndAcceptsTheExactBoundary() throws Exception {
+        String conversation=conversation();
+        long beforeRuns=runs.count(),beforeMessages=messages.count(),beforeEvents=events.count();
+        JsonNode rejected=create(conversation,UUID.randomUUID().toString(),"x".repeat(20001),400);
+        assertThat(rejected.path("code").asInt()).isEqualTo(40000);
+        assertThat(rejected.toString()).doesNotContain("insert", "VARCHAR", "x".repeat(20));
+        assertThat(runs.count()).isEqualTo(beforeRuns);
+        assertThat(messages.count()).isEqualTo(beforeMessages);
+        assertThat(events.count()).isEqualTo(beforeEvents);
+        verifyNoInteractions(executor);
+        JsonNode accepted=create(conversation,UUID.randomUUID().toString(),"x".repeat(20000),202);
+        assertThat(accepted.path("inputMessage").asText()).hasSize(20000);
+        assertThat(runs.count()).isEqualTo(beforeRuns+1);
+        assertThat(messages.count()).isEqualTo(beforeMessages+1);
+        verify(executor,times(1)).execute(any());
+    }
+
+    @Test void deletingConversationAfterAdmissionReadIsNotAnIdempotencyConflict() throws Exception {
+        String conversation=conversation();
+        long beforeRuns=runs.count(),beforeMessages=messages.count(),beforeEvents=events.count();
+        var entered=new java.util.concurrent.CountDownLatch(1);
+        var release=new java.util.concurrent.CountDownLatch(1);
+        doAnswer(call->{
+            Object result=call.callRealMethod(); entered.countDown();
+            assertThat(release.await(5,java.util.concurrent.TimeUnit.SECONDS)).isTrue(); return result;
+        }).when(providers).requireEnabled("mock");
+        var pool=java.util.concurrent.Executors.newSingleThreadExecutor();
+        try {
+            var response=pool.submit(()->create(conversation,UUID.randomUUID().toString(),"hello",404));
+            assertThat(entered.await(5,java.util.concurrent.TimeUnit.SECONDS)).isTrue();
+            // Separate connection commits deletion after create already read the row.
+            assertThat(jdbc.update("delete from conversations where id=?",conversation)).isEqualTo(1);
+            release.countDown();
+            assertThat(response.get(10,java.util.concurrent.TimeUnit.SECONDS).path("code").asInt()).isEqualTo(40400);
+            assertThat(runs.count()).isEqualTo(beforeRuns);
+            assertThat(messages.count()).isEqualTo(beforeMessages);
+            assertThat(events.count()).isEqualTo(beforeEvents);
+            verifyNoInteractions(executor);
+        } finally {release.countDown();pool.shutdownNow();}
+    }
+
+    @Test void anotherUniqueConstraintIsSafeFailureNotReplay() throws Exception {
+        String conversation=conversation();
+        long beforeRuns=runs.count(),beforeMessages=messages.count(),beforeEvents=events.count();
+        var cause=new org.hibernate.exception.ConstraintViolationException("synthetic SQL secret",
+                new java.sql.SQLException("synthetic SQL secret","23505"),"uq_unrelated");
+        doThrow(new org.springframework.dao.DataIntegrityViolationException("synthetic SQL secret",cause))
+                .when(runs).saveAndFlush(any());
+        JsonNode rejected=create(conversation,UUID.randomUUID().toString(),"hello",500);
+        assertThat(rejected.path("code").asInt()).isEqualTo(50000);
+        assertThat(rejected.toString()).doesNotContain("SQL", "secret", "uq_unrelated", "converge");
+        assertThat(runs.count()).isEqualTo(beforeRuns);
+        assertThat(messages.count()).isEqualTo(beforeMessages);
+        assertThat(events.count()).isEqualTo(beforeEvents);
+        verifyNoInteractions(executor);
+    }
+
+    @Test void h2SameKeyRaceStillConvergesWithOneUserMessageAndDispatch() throws Exception {
+        String conversation=conversation(), key=UUID.randomUUID().toString();
+        var barrier=new java.util.concurrent.CyclicBarrier(2);
+        doAnswer(call->{Object result=call.callRealMethod();barrier.await(5,java.util.concurrent.TimeUnit.SECONDS);return result;})
+                .when(providers).requireEnabled("mock");
+        var pool=java.util.concurrent.Executors.newFixedThreadPool(2);
+        try {
+            var a=pool.submit(()->service.create(conversation,key,"hello"));
+            var b=pool.submit(()->service.create(conversation,key,"hello"));
+            var first=a.get(10,java.util.concurrent.TimeUnit.SECONDS);
+            var second=b.get(10,java.util.concurrent.TimeUnit.SECONDS);
+            assertThat(first.run().getId()).isEqualTo(second.run().getId());
+            assertThat(first.replayed()).isNotEqualTo(second.replayed());
+            assertThat(messages.findByConversationIdOrderByCreatedAtAsc(conversation)).hasSize(1);
+            verify(executor,times(1)).execute(any());
+        } finally {pool.shutdownNow();}
     }
 
     @Test void repeatedAndTerminalCancellationAreIdempotentAndPreCancelDoesNoModelWork() throws Exception {

@@ -144,6 +144,40 @@ test('poll-based clarification recovers Gap references from persisted events', a
   expect((await created).postDataJSON().resume).toEqual({ runId: 'run-1', gapIds: ['gap-1'] })
 })
 
+test('definitively rejected resume cannot loop or become a new task without fresh input', async ({ page }) => {
+  await page.route('**/api/v1/runs/run-1', route => route.fulfill({ json: run('NEEDS_INPUT', '请补充参数') }))
+  await page.route('**/api/v1/runs/run-1/events', route => route.fulfill({ json: [
+    { id: 1, sequence: 1, type: 'continuation.decided', payload: JSON.stringify({ action: 'CLARIFY', gapIds: ['gap-1'] }) },
+  ] }))
+  await begin(page)
+  await emit(page, 'run.needs_input', {}, '1')
+  await expect(page.locator('.chat-toolbar p')).toContainText('NEEDS_INPUT')
+  let rejected = 0
+  await page.route('**/api/v1/conversations/conversation-1/runs', route => {
+    rejected++
+    expect(route.request().postDataJSON().resume).toEqual({ runId: 'run-1', gapIds: ['gap-1'] })
+    return route.fulfill({ status: 409, json: { code: 40900, message: 'Resume Run is not waiting for input' } })
+  })
+  const input = page.getByPlaceholder('输入消息；例如：计算 17 * 23')
+  await input.fill('参数为 7')
+  await page.getByRole('button', { name: '运行', exact: true }).click()
+  await expect(page.locator('.chat-toolbar p')).toContainText('澄清恢复被拒绝')
+  await expect(page.getByRole('button', { name: '运行', exact: true })).toBeDisabled()
+  await expect(page.getByRole('button', { name: '新会话' })).toBeEnabled()
+  await page.getByRole('button', { name: '新会话' }).click()
+  await expect(input).toHaveValue('')
+  await expect(page.getByRole('button', { name: '运行', exact: true })).toBeDisabled()
+  expect(rejected).toBe(1)
+  await page.route('**/api/v1/conversations/conversation-1/runs', route => {
+    expect(route.request().postDataJSON()).not.toHaveProperty('resume')
+    return route.fulfill({ status: 202, json: run('RUNNING') })
+  })
+  await input.fill('重新描述一个完整任务')
+  const request = page.waitForRequest(req => req.method() === 'POST' && req.url().endsWith('/runs'))
+  await page.getByRole('button', { name: '运行', exact: true }).click()
+  expect((await request).postDataJSON().message).toBe('重新描述一个完整任务')
+})
+
 test('cancel during the second creation targets only its late Run response', async ({ page }) => {
   await begin(page)
   await emit(page, 'run.completed', {}, '1')
