@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "headCommit": "104af66ba28105a53a014d4cd42ee99a5a556178",
+  "verificationFinishedAt": "2026-10-04T03:11:56Z",
+  "invocationId": "c8328574-7864-4515-bc39-84eb058d2a7f",
+  "commands": {
+    "fromXml": [
+      "python3",
+      "harness/behavior_report.py",
+      "--evidence-dir",
+      "harness/evidence/SPEC-INPUT-HYGIENE-003/SPEC-INPUT-HYGIENE-003-20261004T025954Z-48c4e6fd",
+      "--export-methods",
+      "harness/evidence/SPEC-INPUT-HYGIENE-003/SPEC-INPUT-HYGIENE-003-20261004T025954Z-48c4e6fd/method-evidence.json"
+    ],
+    "offline": [
+      "python3",
+      "harness/behavior_report.py",
+      "--evidence-dir",
+      "harness/evidence/SPEC-INPUT-HYGIENE-003/SPEC-INPUT-HYGIENE-003-20261004T025954Z-48c4e6fd",
+      "--method-evidence",
+      "harness/evidence/SPEC-INPUT-HYGIENE-003/SPEC-INPUT-HYGIENE-003-20261004T025954Z-48c4e6fd/method-evidence.json"
+    ]
+  },
+  "sha256": {
+    "backend-tests.tests.json": "4d8af68d96af9628ac55457207e9f11469bf535867c864102d7e89d7f935e53d",
+    "method-evidence.json": "087a27313b094c971a638b29911d9b6a150ee5ec090e13ed407a88a822b364c3",
+    "behavior-report.json": "b2af97cd754343e2c4ba76489f1c0aa4b7419f79b2b7b516d8fe7026cdde87c1",
+    "behavior-report.md": "1078ffb68047063fb874fc402f4c0ef978e881a7fdecdfc12c293014022cf26c"
+  },
+  "jsonByteIdentical": true,
+  "markdownByteIdentical": true,
+  "meaning": "Fresh XML export and portable offline recomputation agree byte-for-byte. Offline recomputation is not another test run. SHA detects accidental change, not a signature or source authenticity; verification does not automatically validate observed. Raw XML properties, stdout and failure bodies are excluded."
+}

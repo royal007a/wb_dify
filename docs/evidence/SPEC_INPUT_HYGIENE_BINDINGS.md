@@ -23,3 +23,5 @@
 证据在`harness/evidence/SPEC-INPUT-HYGIENE-002/SPEC-INPUT-HYGIENE-002-20261004T024435Z-01f55785/`；报告50个具名子场景pass，68路由/38功能组不是整体通过；脱敏输入离线重算JSON/MD逐字节相同，reproduction.json记录SHA/命令。原始XML和日志不提交。
 
 独立复核om_x100b632fb09f44a4dfa26b2dd8d8033为静态阅读，未重跑测试：P2-1/P2-3修复，无P0/P1/P2，正式摘要复算另行记录。保留P3：每种绑定测试只有单个元素，多元素后项非法的全列表预检只由代码阅读证明；archive/publish/clearWorkflow仅路径ID及内部null列表的普遍参数契约不在本片。不能把“真实容器一般拒绝%00”的推断当成本轮HTTP网络证据；没有测试Tomcat URI拒绝行为。未部署132。
+
+后续正式收口：mymacclaude回复交接消息om_x100b6328406100a0c021f9ee209fc6c，报告在2a9ca62的archive隔离副本实际复算tests/method-evidence SHA、源码树，以及portable离线JSON/MD，均与上述记录一致（50子场景pass、0fail/not-run）。这是独立证据复算，不是重跑Maven；两条P3仍保留，读路径由003另行验证。

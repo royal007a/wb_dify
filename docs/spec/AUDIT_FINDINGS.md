@@ -112,7 +112,7 @@ G切片独立复核：无P0/P1；P2-1指出受保护命名空间漏掉项目实�
 
 ## 已核对的文档漂移
 
-Run输入002静态复核f0dd199无P0/P1，结构化PG字段优先、NUL进入事务前拒绝；全量结果独立记录。上传/基本管理文本NUL在add75ed补强，2f37ae0再补四类Agent绑定入口/测试覆盖，本地577项后端零skip，未部署132；输入卫生002独立静态复核无P0/P1/P2，P3边界见SPEC_INPUT_HYGIENE_BINDINGS。检索/memory/意图读路径归003。安装器d6d67c6的stderr关闭P1经隔离sh/dash实测关闭，最终active检查stdout EPIPE和cleanup日志SIGPIPE归SPEC-DEPLOY-005，不声称断管道已解决。
+Run输入002静态复核f0dd199无P0/P1，结构化PG字段优先、NUL进入事务前拒绝；全量结果独立记录。上传/基本管理文本NUL在add75ed补强，2f37ae0再补四类Agent绑定入口/测试覆盖，独立archive复算关闭，P3边界见SPEC_INPUT_HYGIENE_BINDINGS。104af66补选定检索/memory/意图读准入，本地585项后端零skip，003静态复核无P0/P1/P2，最终证据复算待另记；内部模型文本按参数错误拒绝不清洗、未做来源分类属于P3边界，见SPEC_INPUT_HYGIENE_READS。输入卫生001–003均未部署132。安装器d6d67c6的stderr关闭P1经隔离sh/dash实测关闭，最终active检查stdout EPIPE和cleanup日志SIGPIPE已由609829e独立复验并上线；主流程断管道仍可能fail-closed中止，不能声称全链路已解决。
 
 SPEC-RUN-INPUT-001增量64bda57：HTTP/直接service超限预检，指定23505唯一约束才重放，回滚后会话不存在404、其他完整性错误500；明确拒绝resume有新会话出口且不自动恢复澄清文本。旧3个后端409反例及浏览器失效循环先红后绿，最终543项后端/32受控浏览器见SPEC_RUN_INPUT。未部署；独立review静态阅读、摘要SHA与源码树核对无P0/P1，未重跑测试。PG约束名经Hibernate依赖英文报文、NUL输入PG500归SPEC-RUN-INPUT-002；原重复gapId撑爆P2已撤回（record先distinct/50上限、未知gap落库前拒绝）。历史反例段落保留。
 

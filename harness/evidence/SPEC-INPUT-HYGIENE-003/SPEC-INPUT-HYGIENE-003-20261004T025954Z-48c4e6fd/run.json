@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-INPUT-HYGIENE-003-20261004T025954Z-48c4e6fd",
+  "taskId": "SPEC-INPUT-HYGIENE-003",
+  "status": "completed",
+  "baselineCommit": "065fc87d31b8b489e457781b7fd6fadabe9efb74",
+  "approvalRef": null,
+  "startedAt": "2026-10-04T02:59:54Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "104af66ba28105a53a014d4cd42ee99a5a556178",
+  "finishedAt": "2026-10-04T03:11:56Z"
+}

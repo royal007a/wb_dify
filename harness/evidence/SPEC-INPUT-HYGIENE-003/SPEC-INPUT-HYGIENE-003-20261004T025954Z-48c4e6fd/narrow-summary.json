@@ -1,0 +1,23 @@
+{
+  "runs": [
+    {
+      "log": "narrow-red.log",
+      "exitCode": 1,
+      "sha256": "e15b49e96f6e3701d6671f2b95ae70faf3ff150b10e769544fc993e5f6bbb96e",
+      "meaning": "8 run/8 failures/0 skips. PG knowledge/intent return 500; memory prefix NUL silently trimmed and returns 200."
+    },
+    {
+      "log": "narrow-red-interior.log",
+      "exitCode": 1,
+      "sha256": "d062d326d4953b7b5e892cd2b20bccbe848f29489174d16ef52880a2f173382d",
+      "meaning": "Interior NUL first: 8 run/8 failures/0 skips. PG three HTTP read paths 500; frozen service DB exception."
+    },
+    {
+      "log": "narrow-green.log",
+      "exitCode": 0,
+      "sha256": "58d63addc486729db5b5728fe359e3769d3c1122e33595f032bd4a35ab7f5dd7",
+      "meaning": "8 tests: H2 4 + PG 4, zero failure/error/skip, all interior/prefix/suffix variants completed."
+    }
+  ],
+  "boundary": "Disposable PG/H2 and local Mock model. No browser, real provider or 132."
+}

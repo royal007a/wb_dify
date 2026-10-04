@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T02:56:20Z",
+  "updatedAt": "2026-10-04T03:11:56Z",
   "tasks": [
     {
       "id": "SPEC-UPLOAD-BOUNDARY-001",
@@ -3889,7 +3889,7 @@
       "title": "检索记忆和意图读路径NUL输入策略",
       "description": "001复核P2-2范围外反例：retrieval-tests query、memory/search query、意图agentId等NUL参数可能在PG报500；须单独限定入口并验证，容器层路径变量拒绝不以MockMvc代替。",
       "priority": "P2",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "harness"
@@ -3908,12 +3908,24 @@
         "列明读路径的NUL错误契约，H2和真实PG query/意图参数负例返回400而非500且不触发模型",
         "合法读请求正向对照；声明路径变量在真实HTTP容器与MockMvc下的不同证据边界"
       ],
-      "planPath": "exec-plans/active/SPEC-INPUT-HYGIENE-003.md",
+      "planPath": "exec-plans/completed/SPEC-INPUT-HYGIENE-003.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-INPUT-HYGIENE-003-20261004T025954Z-48c4e6fd",
+          "path": "harness/evidence/SPEC-INPUT-HYGIENE-003/SPEC-INPUT-HYGIENE-003-20261004T025954Z-48c4e6fd",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "065fc87d31b8b489e457781b7fd6fadabe9efb74",
+          "headCommit": "104af66ba28105a53a014d4cd42ee99a5a556178",
+          "recordedAt": "2026-10-04T03:11:56Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "919e32579dbb589bb57f4519221ce15971f9ec2d89998715b0b5c5a80cb46714"
+        }
+      ],
       "createdAt": "2026-10-04T02:42:00Z",
-      "updatedAt": "2026-10-04T02:42:00Z"
+      "updatedAt": "2026-10-04T03:11:56Z"
     },
     {
       "id": "SPEC-DEPLOY-006",
