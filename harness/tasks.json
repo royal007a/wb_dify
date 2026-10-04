@@ -3821,7 +3821,7 @@
         "真实PG上传a NUL b返回400并且无文档/索引任务残留；普通UTF8正向通过",
         "逐入口明确NUL规则、HTTP/service校验和无写入断言，不以H2通过替代PG验证"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/SPEC-INPUT-HYGIENE-001.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
