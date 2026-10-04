@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "CAPABILITY-ROLLOUT-001-20261004T164515Z-acab6763",
+  "taskId": "CAPABILITY-ROLLOUT-001",
+  "status": "blocked",
+  "baselineCommit": "2f2180600360bb29132fe70a0fe8be1cc48edf98",
+  "approvalRef": "goal:2026-10-04T22:14:00+08:00:ten-hour-hify-implement-deploy-verify",
+  "startedAt": "2026-10-04T16:45:15Z",
+  "exitCode": 1,
+  "reason": "task command failed",
+  "headCommit": "2f2180600360bb29132fe70a0fe8be1cc48edf98",
+  "finishedAt": "2026-10-04T16:45:56Z"
+}

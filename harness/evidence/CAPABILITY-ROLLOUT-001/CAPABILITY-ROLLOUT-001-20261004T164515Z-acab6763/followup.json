@@ -1,0 +1,17 @@
+{
+  "firstRun": "harness/evidence/CAPABILITY-ROLLOUT-001/CAPABILITY-ROLLOUT-001-20261004T164021Z-fac60c69",
+  "installationRepeated": false,
+  "failures": [
+    "browser"
+  ],
+  "stats": {
+    "runningRuns": 0,
+    "runningWorkflows": 0,
+    "activeIndexTasks": 0,
+    "schemaVersion": 24,
+    "allMigrationsSucceeded": true
+  },
+  "artifactShaMatch": true,
+  "keyMetadataUnchanged": true,
+  "secondModelCall": "Explicit rerun of corrected smoke; first model assertion already passed."
+}

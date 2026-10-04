@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Post-install validation only: never install, migrate, restart, or reconfigure."""
+import argparse
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -12,8 +14,17 @@ first = root/'harness/evidence/CAPABILITY-ROLLOUT-001/CAPABILITY-ROLLOUT-001-202
 artifacts = json.loads((first/'local-artifacts.json').read_text())['artifacts']
 subprocess.run(['git','diff','--quiet','a510191','--','backend','frontend','deploy'],cwd=root,check=True)
 failures = []
-for name, command in [('capability',['python3','harness/capability-remote-smoke.py']),
-                      ('browser',['node','harness/capability-browser-smoke.cjs'])]:
+parser = argparse.ArgumentParser()
+parser.add_argument('--browser-only', action='store_true')
+args = parser.parse_args()
+capability_reuse = None
+checks = [('capability',['python3','harness/capability-remote-smoke.py'])]
+if args.browser_only:
+    capability_reuse = 'harness/evidence/CAPABILITY-ROLLOUT-001/CAPABILITY-ROLLOUT-001-20261004T164515Z-acab6763/smoke-capability.json'
+    assert hashlib.sha256((root/capability_reuse).read_bytes()).hexdigest() == 'ac443f0a30680224d9071ce9fb8603ac8fa2a99d9f6758d3215ac7f4809482b2'
+    checks = []
+checks.append(('browser',['node','harness/capability-browser-smoke.cjs']))
+for name, command in checks:
     with (evidence/(name+'.log')).open('w') as log:
         result = subprocess.run(command,cwd=root,stdout=log,stderr=subprocess.STDOUT,timeout=240)
     if result.returncode:
@@ -46,6 +57,7 @@ after = [line for line in result.stdout.splitlines() if line.startswith('keyMeta
 assert len(before) == 1 and before == after
 (evidence/'followup.json').write_text(json.dumps({'firstRun':str(first.relative_to(root)),
     'installationRepeated':False,'failures':failures,'stats':stats,'artifactShaMatch':True,
-    'keyMetadataUnchanged':True,'secondModelCall':'Explicit rerun of corrected smoke; first model assertion already passed.'},indent=2)+'\n')
+    'keyMetadataUnchanged':True,'capabilityReuse':capability_reuse,
+    'modelCallThisRun':not args.browser_only},indent=2)+'\n')
 assert not failures, failures
 print('Post-install checks passed; no installation or configuration repeated.',flush=True)

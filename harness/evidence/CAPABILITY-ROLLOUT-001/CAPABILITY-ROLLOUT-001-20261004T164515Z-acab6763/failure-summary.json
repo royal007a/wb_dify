@@ -1,0 +1,11 @@
+{
+  "result": "blocked",
+  "capability": "passed; four cases including real Doubao and legacy synthetic conversation",
+  "capabilitySha256": "ac443f0a30680224d9071ce9fb8603ac8fa2a99d9f6758d3215ac7f4809482b2",
+  "browser": "Selection container click did not open list; no business assertions reached. Standalone readonly probe confirmed normal focus + ArrowDown exposes Demo option.",
+  "browserLogSha256": "a2ec1e0c13a0f3e9b12b9da454e43f1f595d86205ff1c8bde310f6dfad4a7bc1",
+  "rawLogsCommitted": false,
+  "installationRepeated": false,
+  "remoteFinal": "healthy, original uploaded SHA unchanged, V24 successful, no running tasks",
+  "next": "Browser-only followup, no third Doubao call"
+}

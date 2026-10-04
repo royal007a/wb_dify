@@ -17,8 +17,11 @@ const base = 'https://118.196.123.132/hify/';
       await page.goto(base + 'chat');
       await expect(page.getByRole('heading', { name: '对话' })).toBeVisible();
       const select = page.locator('.chat-toolbar .el-select');
-      await expect(select).not.toHaveClass(/is-disabled/);
-      await select.click();
+      await expect(select).toContainText('· v', { timeout: 15000 });
+      // Readonly input is covered by its displayed label. Normal keyboard
+      // interaction opens the list without force clicks or mutating Vue state.
+      await page.getByRole('combobox').focus();
+      await page.getByRole('combobox').press('ArrowDown');
       await page.getByRole('option', { name: /^Demo Agent · v\d+$/ }).click();
       await expect(select).toContainText('Demo Agent · v');
       await expect(page.locator('.message.assistant').first()).toContainText('本地规则模拟');

@@ -1,0 +1,52 @@
+{
+  "checksCompleted": [
+    {
+      "case": "typed-inputs",
+      "workflowId": "4a5eedd9-bf17-4fff-ae95-a8127c3d22a4",
+      "versionId": "f3c4791d-5d17-40f3-b60e-92ffe0483699",
+      "runId": "e69048e6-581c-4d58-96f3-124cb2071f2c",
+      "output": "0|false|0.0000001",
+      "rejections": 3
+    },
+    {
+      "case": "unapproved-http-publication",
+      "workflowId": "22f28a0a-923f-402e-8637-2654b6f733d0",
+      "httpStatus": 400,
+      "versions": 0
+    },
+    {
+      "case": "real-doubao-workflow",
+      "workflowId": "ee690295-77b0-4fd9-aaa1-a25a7273f539",
+      "versionId": "afab9d3c-0513-455a-856f-717c5557b4db",
+      "runId": "aa901557-9964-409a-a24a-aa0ef1777cb8",
+      "output": "42",
+      "nodes": [
+        {
+          "key": "start",
+          "status": "SUCCEEDED"
+        },
+        {
+          "key": "llm",
+          "status": "SUCCEEDED"
+        },
+        {
+          "key": "end",
+          "status": "SUCCEEDED"
+        }
+      ]
+    },
+    {
+      "case": "previous-synthetic-conversation",
+      "conversationId": "be99eb3a-34cc-4fdf-94fc-4d492e362151",
+      "runId": "7782883c-c2fc-4524-b3e4-97faffa7d250",
+      "agentVersionId": "d1322f26-0f72-4d69-87ee-c70fcb4d7980",
+      "output": "工具执行完成，结果是：{\"ok\":true,\"result\":\"42\"}"
+    }
+  ],
+  "ownedWorkflows": [
+    "4a5eedd9-bf17-4fff-ae95-a8127c3d22a4",
+    "22f28a0a-923f-402e-8637-2654b6f733d0",
+    "ee690295-77b0-4fd9-aaa1-a25a7273f539"
+  ],
+  "primaryErrorType": null
+}
