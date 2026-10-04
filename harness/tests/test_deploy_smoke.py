@@ -54,8 +54,8 @@ class FakeApi:
             return Response(201, data='own-kb')
         if path.endswith('/retrieval-tests'):
             return Response(200, data=[{
-                'documentId': 'someone-else' if self.bad_retrieval else 'doc1',
-                'content': 'unrelated' if self.bad_retrieval else 'Hify synthetic upload boundary evidence.'}])
+                'documentId': 'someone-else' if self.bad_retrieval == 'id' else 'doc1',
+                'content': 'unrelated' if self.bad_retrieval == 'text' else 'Hify synthetic upload boundary evidence.'}])
         if path.endswith('/documents'):
             size = len(req.data.split(b'\r\n\r\n', 1)[1].rsplit(b'\r\n--', 1)[0])
             if size <= 10*1024**2 or self.unexpected_accept:
@@ -105,10 +105,12 @@ class DeploySmokeTest(unittest.TestCase):
         self.assertEqual(api.deleted, ['/documents/doc1', '/documents/doc2', '/knowledge-bases/own-kb'])
 
     def test_nonempty_but_wrong_document_and_text_fails(self):
-        api = FakeApi(bad_retrieval=True)
-        with self.assertRaisesRegex(AssertionError, 'retrieval'):
-            self.run_smoke(api)
-        self.assertEqual(len(api.deleted), 3)
+        for defect in ('id', 'text'):
+            with self.subTest(defect=defect):
+                api = FakeApi(bad_retrieval=defect)
+                with self.assertRaisesRegex(AssertionError, 'retrieval'):
+                    self.run_smoke(api)
+                self.assertEqual(len(api.deleted), 3)
 
 
 if __name__ == '__main__':

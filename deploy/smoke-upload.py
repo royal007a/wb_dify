@@ -3,9 +3,11 @@
 import argparse
 import json
 import ssl
+import sys
 import time
 import urllib.error
 import urllib.request
+from urllib.parse import quote
 import uuid
 
 
@@ -42,22 +44,25 @@ def main():
     check(status == 201, 'create isolated KB')
     kb = base['data']
     owned = []
+    phrase = b'Hify synthetic upload boundary evidence.'
     try:
         for size in (2*1024**2, 10*1024**2, 10*1024**2+1, 13*1024**2):
             boundary = 'hify-synthetic-boundary'
             prefix = ('--'+boundary+'\r\nContent-Disposition: form-data; name="file"; filename="boundary.txt"\r\n'
                       'Content-Type: text/plain\r\n\r\n').encode()
             # Full byte size with only one small meaningful chunk: no 10MiB indexing load.
-            phrase = b'Hify synthetic upload boundary evidence.'
             body = prefix + phrase + b' '*(size-len(phrase)) + ('\r\n--'+boundary+'--\r\n').encode()
             status, headers, result = request('POST', '/knowledge-bases/'+kb+'/documents', body,
                                               'multipart/form-data; boundary='+boundary)
             expected = 202 if size <= 10*1024**2 else 413
+            # A regression may accept an oversized file. Own its returned ID before
+            # asserting status/content type, so the failure does not leak test data.
+            if status == 202 and isinstance(result.get('data'), str) and result['data']:
+                owned.append(result['data'])
             check(status == expected, 'upload status for '+str(size))
             check('application/json' in headers.get('Content-Type',''), 'JSON upload response')
             if expected == 202:
                 doc = result['data']
-                owned.append(doc)
                 status, _, readback = request('GET', '/documents/'+doc)
                 check(status == 200 and readback['data']['fileSize'] == size, 'persisted file size')
                 for _ in range(40):
@@ -71,14 +76,28 @@ def main():
             results.append({'bytes': size, 'httpStatus': expected, 'resultCode': result['code']})
         status, _, retrieved = request('POST', '/knowledge-bases/'+kb+'/retrieval-tests',
                                         {'query': 'Hify synthetic upload boundary evidence.', 'topK': 3})
-        check(status == 200 and len(retrieved.get('data',[])) > 0, 'real indexed retrieval')
+        candidates = retrieved.get('data', [])
+        check(status == 200 and bool(candidates) and all(
+            candidate.get('documentId') in owned and phrase.decode() in candidate.get('content', '')
+            for candidate in candidates), 'retrieval must return own indexed synthetic text')
         results.append({'retrieval': 'pass', 'scope': 'bootstrap embedding; exact synthetic text, not semantic quality'})
     finally:
-        for doc in owned:
-            status, _, _ = request('DELETE', '/documents/'+doc)
-            check(status == 200, 'archive own document')
-        status, _, _ = request('DELETE', '/knowledge-bases/'+kb)
-        check(status == 200, 'archive own KB')
+        primary = sys.exc_info()[1]
+        failures = []
+        targets = ['/documents/'+quote(doc, safe='') for doc in dict.fromkeys(owned)]
+        targets.append('/knowledge-bases/'+quote(kb, safe=''))
+        for target in targets:
+            try:
+                status, _, result = request('DELETE', target)
+                check(status == 200 and result.get('code') == 200, 'archive response')
+            except Exception as error:
+                # Attempt every own ID; never enumerate/delete pre-existing data.
+                failures.append({'target': target, 'errorType': type(error).__name__})
+        if failures:
+            detail = 'cleanup failed: '+json.dumps(failures)
+            if primary is not None:
+                raise RuntimeError(str(primary)+'; '+detail) from primary
+            raise RuntimeError(detail)
     print(json.dumps({'api': args.api, 'tlsCertificateValidation': not args.self_signed_test,
                       'checks': results, 'cleanup': 'own synthetic documents and KB archived'}, indent=2))
 

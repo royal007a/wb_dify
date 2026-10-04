@@ -2,6 +2,9 @@
 # Upgrade only the existing single-instance Hify installation. Never provision keys.
 set -eu
 release=${1:?absolute release directory required}
+health_attempts=${HIFY_DEPLOY_HEALTH_ATTEMPTS:-60}
+case "$health_attempts" in ''|*[!0-9]*) exit 2 ;; esac
+test "$health_attempts" -ge 1 && test "$health_attempts" -le 300
 case "$release" in /opt/hify/releases/spec-verify-*) ;; *) exit 2 ;; esac
 case "$release" in *..*|*[!a-zA-Z0-9/_-]*) exit 2 ;; esac
 test "$(id -u)" = 0
@@ -15,7 +18,10 @@ test -f /etc/systemd/system/hify.service.d/20-mcp-credentials.conf
 key_identity=$(stat -c '%i:%s:%Y:%a:%U' "$key")
 test ! -e "$release/previous.jar"
 test "$(df -Pk /opt/hify | awk 'NR==2 {print $4}')" -ge 800000
-test "$(runuser -u postgres -- psql -d hify -Atqc "SELECT count(*) FROM agent_runs WHERE state='RUNNING'")" = 0
+assert_no_running() {
+  test "$(runuser -u postgres -- psql -d hify -Atqc "SELECT (SELECT count(*) FROM agent_runs WHERE state='RUNNING') + (SELECT count(*) FROM workflow_runs WHERE status='RUNNING')")" = 0
+}
+assert_no_running
 umask 077
 chmod 700 "$release"
 (cd "$release" && sha256sum -c release.sha256)
@@ -36,12 +42,15 @@ cutover=0
 nginx_changed=0
 on_exit() {
   result=$?
+  trap - EXIT HUP INT TERM
   if [ "$result" -ne 0 ]; then
     if [ "$nginx_changed" -eq 1 ]; then
-      cp -p "$release/previous-nginx.conf" "$snippet"
-      nginx -t && systemctl reload nginx || true
+      if cp -p "$release/previous-nginx.conf" "$snippet" && nginx -t; then
+        systemctl reload nginx || true
+      fi
     fi
     if [ "$cutover" -eq 0 ]; then
+      printf 'Upgrade stopped before application replacement; restarting old service. Backup: %s\n' "$release" >&2
       systemctl start hify || true
     else
       systemctl stop hify || true
@@ -51,9 +60,16 @@ on_exit() {
   exit "$result"
 }
 trap on_exit EXIT
+trap 'exit 129' HUP
+trap 'exit 130' INT
+trap 'exit 143' TERM
 # Take a consistent pre-migration backup with the old writer stopped.
 systemctl stop hify
 test "$(systemctl is-active hify || true)" = inactive
+# Recheck after the old writer has stopped: preflight is not an admission lock.
+# Unsettled Chat or direct Workflow work must be recovered by the old service,
+# not migrated here. This can interrupt a late arrival; it is not zero downtime.
+assert_no_running
 runuser -u postgres -- pg_dump --format=custom hify > "$release/database-before.dump"
 test -s "$release/database-before.dump"
 pg_restore --list "$release/database-before.dump" > /dev/null
@@ -62,7 +78,7 @@ install -m 644 "$release/incoming/backend/hify-app/target/hify-app-0.1.0-SNAPSHO
 mv "$jar.next" "$jar"
 systemctl start hify
 healthy=0
-for attempt in $(seq 1 60); do
+for attempt in $(seq 1 "$health_attempts"); do
   if curl -fs --max-time 2 http://127.0.0.1:28080/api/v1/health > /dev/null; then healthy=1; break; fi
   sleep 1
 done
@@ -81,4 +97,4 @@ systemctl is-active hify
 sha256sum "$jar" "$snippet" "$dist/index.html"
 runuser -u postgres -- psql -d hify -Atqc "SELECT version,success FROM flyway_schema_history WHERE version IN ('21','22','23') ORDER BY installed_rank"
 printf 'Upgrade healthy; backup=%s; key metadata unchanged\n' "$release"
-trap - EXIT
+trap - EXIT HUP INT TERM

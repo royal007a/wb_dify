@@ -39,6 +39,19 @@ include `deploy/nginx-path.conf`。该片段将静态资源隔离在 `/hify/`，
 
 ## 4. 发布与回滚
 
+原版132既有systemd部署使用`deploy/install-spec-release.sh`，不得使用首次安装脚本重新生成MCP主密钥。建议通过独立的transient unit运行，避免SSH断线终止安装进程，例如在已校验的发布目录及脚本就位后执行：
+
+```sh
+systemd-run --unit=hify-upgrade-20261004 --property=Type=oneshot --setenv=HIFY_DEPLOY_HEALTH_ATTEMPTS=120 /bin/sh /opt/hify/releases/spec-verify-20261004-a66be9e/install-spec-release.sh /opt/hify/releases/spec-verify-20261004-a66be9e
+journalctl -u hify-upgrade-20261004 --no-pager
+```
+
+以上是运行方式示例，不声称该unit已在132执行。脚本必须由受信发布流程上传并校验；为每次发布使用新unit名和新目录，不覆盖旧恢复点。默认健康轮询60次，可设1..300，每次curl最多2秒并间隔1秒，**不是硬60秒**。先预检AgentRun与直接Workflow，再停止旧实例并重新检查；迟到请求可能被中断，未收敛则在换jar/迁移前中止并启动旧实例。预检不是入口维护锁，不承诺无停机升级。
+
+HUP/INT/TERM转为非0退出并进入一次失败处置；shell等待子命令时可能延迟处理，不是硬实时保障。SIGKILL、断电、内核/磁盘故障不可捕获。替换应用之前失败尝试重新启动旧服务；替换后失败保留数据库、主密钥和恢复点，停止新服务等待人工评估（可导致持续停服）。nginx片段按备份恢复并先nginx -t；previous-dist只是恢复材料，**不会自动回退静态目录**，不能据此称应用/静态/数据库原子回滚。不得在新状态或新schema上盲启旧jar。备份在同盘，不是异地容灾；本机空间不足应由运维处理，不让脚本删除其他服务/历史恢复点。
+
+上传smoke仅用自建ID清理；超限意外202也先登记ID，清理错误逐项汇总且保留主失败。如果连接在创建成功后、返回ID前断开，脚本无法知道该ID，不会列库全删；需按该次`spec-deploy-*`记录由运维确认。检索断言要求本次文档ID和合成短句，不代表真实语义质量。`--self-signed-test`只对该测试调用禁用证书校验，不是证书固定，也不是生产TLS选项。
+
 1. 备份并校验恢复点。PostgreSQL 宿主机预装 pgvector 包，并由数据库管理员执行一次
    `CREATE EXTENSION IF NOT EXISTS vector`；应用账号不授予 superuser。
 2. 执行向后兼容迁移；应用先兼容旧/新 schema。Flyway V13 负责 embedding 列、旧目录回填和 HNSW，
