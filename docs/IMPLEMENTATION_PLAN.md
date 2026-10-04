@@ -65,6 +65,8 @@
 
 ## Phase 5：JSON Workflow
 
+2026-10-04十小时目标扩展：WORKFLOW-INPUTS-001在既有发布DSL内增加有界标量输入schema及按发布版本生成的试跑表单；保持Agent固定版本与执行前校验，不加入循环/任意代码/文件。执行计划见同名exec-plan，验收以Harness为准。
+
 2026-09-21 启动 `WORKFLOW-001`：在课程 node/edge + VariablePool 基础上增加不可变发布版本、digest 和运行记录；先完成确定性节点闭环，再开放 LLM/Tool 节点。
 
 - 版本化 DSL 与 Start/LLM/Tool/Knowledge/Condition/End 节点。

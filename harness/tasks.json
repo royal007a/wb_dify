@@ -192,7 +192,7 @@
         "下游安全引用命名输入，旧userMessage工作流行为不变",
         "控制台按发布输入schema呈现试运行表单，真实HTTP正反例与前端验证通过，不宣称文件/多模态/Chatflow会话变量已支持"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/WORKFLOW-INPUTS-001.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
