@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T16:45:56Z`
+- Generated from task state updated at: `2026-10-04T16:50:21Z`
 - Current task: `none`
-- Counts: pending 17 · running 0 · blocked 3 · completed 89
+- Counts: pending 17 · running 0 · blocked 2 · completed 90
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -33,7 +33,7 @@
 | `SPEC-WORKFLOW-KNOWLEDGE-001` | P0 | completed | backend, runtime, harness | reversible_write | 固定 Workflow 知识语料快照并保留历史引用 |
 | `WORKFLOW-NODES-002` | P0 | completed | backend, harness | reversible_write | 外部节点出站特殊网段与超时语义补强 |
 | `CAPABILITY-DEPLOY-001` | P1 | pending | harness, frontend | high_risk | 能力补齐完整验收与132重新部署 |
-| `CAPABILITY-ROLLOUT-001` | P1 | blocked | harness, frontend | high_risk | 已验收能力代码部署132并验证非embedding线上链路 |
+| `CAPABILITY-ROLLOUT-001` | P1 | completed | harness, frontend | high_risk | 已验收能力代码部署132并验证非embedding线上链路 |
 | `CAPABILITY-VERIFY-001` | P1 | completed | harness, migration, backend, runtime, eval, frontend | reversible_write | 语义、外部Workflow与具名输入发布前完整验收 |
 | `CHAT-DEMO-001` | P1 | completed | backend, frontend, runtime | reversible_write | 修复 Demo 时间问句回显而不调用工具 |
 | `CHAT-DEMO-DEPLOY-001` | P1 | completed | backend, frontend | high_risk | 部署并验证 132 Demo 会话时间修复 |
@@ -119,7 +119,6 @@
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |
 
 ## Blocked
-- `CAPABILITY-ROLLOUT-001`: task command failed
 - `SPEC-KNOWLEDGE-INTEGRITY-003`: 本机Colima数据盘100%、仅余258MiB，PG初始化No space left on device；df7a92b精确计数H2窄测通过，完整backend/migration待释放空间后重跑
 - `SPEC-CHAT-LIFECYCLE-005`: Colima Docker数据盘100%/约256MiB可用，完整backend门禁未运行；f20bd34已通过34项受控浏览器、17项H2与frontend/harness七步，但不能替代frontend/backend/harness完整验收。runner预检返回75，未部署。
 

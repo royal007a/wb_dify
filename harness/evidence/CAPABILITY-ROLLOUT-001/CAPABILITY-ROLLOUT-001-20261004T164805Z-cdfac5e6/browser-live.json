@@ -1,0 +1,46 @@
+{
+  "base": "https://118.196.123.132/hify/",
+  "tlsCertificateValidation": false,
+  "checks": [
+    {
+      "case": "calculator",
+      "conversationId": "a797fd23-d0eb-4623-aee2-8e37a0fe32f5",
+      "agentVersionId": "d1322f26-0f72-4d69-87ee-c70fcb4d7980",
+      "runs": [
+        {
+          "id": "d80d21c6-7ab1-469c-9141-5615b691c29e",
+          "state": "COMPLETED",
+          "output": "工具执行完成，结果是：{\"ok\":true,\"result\":\"391\"}"
+        }
+      ]
+    },
+    {
+      "case": "clock",
+      "conversationId": "d36d6d78-c417-4642-887d-b46c334a04e2",
+      "agentVersionId": "d1322f26-0f72-4d69-87ee-c70fcb4d7980",
+      "runs": [
+        {
+          "id": "f56b00ed-5e4e-4eec-ae8b-1578f771fad2",
+          "state": "COMPLETED",
+          "output": "当前是 Hify Demo Agent（本地规则模拟，未调用真实大模型）。\n\n可以试试 “现在几点？” 或 “计算 12.5 * 4”，验证工具调用。通用问答请配置真实模型并发布 Agent，再新建会话。"
+        },
+        {
+          "id": "b1e02aeb-1776-45ce-ae1a-31c09f4a8c55",
+          "state": "COMPLETED",
+          "output": "工具执行完成，结果是：{\"ok\":true,\"result\":\"2026-10-05T00:48:18.375705744+08:00\"}"
+        },
+        {
+          "id": "1ab8b000-e16f-4050-ab11-ecff6fa28c50",
+          "state": "COMPLETED",
+          "output": "工具执行完成，结果是：{\"ok\":true,\"result\":\"2026-10-05T00:48:19.731089645+08:00\"}"
+        },
+        {
+          "id": "b956d625-d50c-4647-908d-1ba937d388d7",
+          "state": "COMPLETED",
+          "output": "工具执行完成，结果是：{\"ok\":true,\"result\":\"2026-10-05T00:48:21.485791593+08:00\"}"
+        }
+      ]
+    }
+  ],
+  "scope": "Explicit Demo selection; real deployed backend, Mock model. Synthetic conversations retained."
+}

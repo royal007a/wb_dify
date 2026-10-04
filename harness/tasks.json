@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T16:45:56Z",
+  "updatedAt": "2026-10-04T16:50:21Z",
   "tasks": [
     {
       "id": "CAPABILITY-ROLLOUT-001",
       "title": "已验收能力代码部署132并验证非embedding线上链路",
       "description": "从CAPABILITY-DEPLOY-001拆出可执行发布：语义模型长期endpoint尚缺，不能宣称线上语义ready；先发布同树代码/V24，验证豆包LLM、具名输入、旧会话、上传及基础健康。",
       "priority": "P1",
-      "status": "blocked",
+      "status": "completed",
       "scopes": [
         "harness",
         "frontend"
@@ -32,7 +32,7 @@
       ],
       "planPath": "exec-plans/blocked/CAPABILITY-ROLLOUT-001.md",
       "checkpoint": null,
-      "blockedReason": "task command failed",
+      "blockedReason": null,
       "evidence": [
         {
           "runId": "CAPABILITY-ROLLOUT-001-20261004T164021Z-fac60c69",
@@ -51,10 +51,21 @@
           "baselineCommit": "2f2180600360bb29132fe70a0fe8be1cc48edf98",
           "headCommit": "2f2180600360bb29132fe70a0fe8be1cc48edf98",
           "recordedAt": "2026-10-04T16:45:56Z"
+        },
+        {
+          "runId": "CAPABILITY-ROLLOUT-001-20261004T164805Z-cdfac5e6",
+          "path": "harness/evidence/CAPABILITY-ROLLOUT-001/CAPABILITY-ROLLOUT-001-20261004T164805Z-cdfac5e6",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "aa6ddc2c7442c2b7eed493174bafd759bdba06e4",
+          "headCommit": "aa6ddc2c7442c2b7eed493174bafd759bdba06e4",
+          "recordedAt": "2026-10-04T16:50:21Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "e3a1ebbd4dd4f5dd48f73777eec4fb552471ae8cd2a2dae9885da271d3ccc0f1"
         }
       ],
       "createdAt": "2026-10-04T16:25:00Z",
-      "updatedAt": "2026-10-04T16:45:56Z"
+      "updatedAt": "2026-10-04T16:50:21Z"
     },
     {
       "id": "SPEC-DEPLOY-008",

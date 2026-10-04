@@ -1,0 +1,16 @@
+{
+  "firstRun": "harness/evidence/CAPABILITY-ROLLOUT-001/CAPABILITY-ROLLOUT-001-20261004T164021Z-fac60c69",
+  "installationRepeated": false,
+  "failures": [],
+  "stats": {
+    "runningRuns": 0,
+    "runningWorkflows": 0,
+    "activeIndexTasks": 0,
+    "schemaVersion": 24,
+    "allMigrationsSucceeded": true
+  },
+  "artifactShaMatch": true,
+  "keyMetadataUnchanged": true,
+  "capabilityReuse": "harness/evidence/CAPABILITY-ROLLOUT-001/CAPABILITY-ROLLOUT-001-20261004T164515Z-acab6763/smoke-capability.json",
+  "modelCallThisRun": false
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "CAPABILITY-ROLLOUT-001-20261004T164805Z-cdfac5e6",
+  "taskId": "CAPABILITY-ROLLOUT-001",
+  "status": "completed",
+  "baselineCommit": "aa6ddc2c7442c2b7eed493174bafd759bdba06e4",
+  "approvalRef": "goal:2026-10-04T22:14:00+08:00:ten-hour-hify-implement-deploy-verify",
+  "startedAt": "2026-10-04T16:48:05Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "aa6ddc2c7442c2b7eed493174bafd759bdba06e4",
+  "finishedAt": "2026-10-04T16:50:21Z"
+}

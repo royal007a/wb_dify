@@ -1,5 +1,7 @@
 # Hify 当前实现边界
 
+最新132增量发布：2026-10-05 00:40窗口后安装a510191同源码树重新构建产物，00:50:21 CST收尾通过；见`evidence/CAPABILITY_ROLLOUT_001.md`。V24全部成功、service active/health200、在途三表0，jar5ee59af0/indexa724db59。真实豆包工作流输出42、具名输入/旧会话/上传边界及显式Demo浏览器2组5个Run通过；收尾harness78项和frontend通过。两轮验证脚本红灯保留，没有再次安装或迁移。语义代码已上线但没有线上embedding Provider，成功HTTP GET也未配置授权，不能称全部外部能力已上线可用。TLS自签、无登录、磁盘95%约1.98GiB、备份未恢复仍是边界。以下段落保留各时间点历史事实，不代表当前仍停留V23。
+
 最新本地完整增量验收：2026-10-05 00:20:46 CST，a510191六scope通过，backend96类667项、migration15类125项、runtime34项、eval24项均零失败/错误/skip/flaky，harness78项；另行受控浏览器42/42、本机真实bge-m3三条合成改写及GET→qwen串联通过。Inputs002未编辑数字默认值补强、DEPLOY004产物V24目标与索引PENDING准入均通过。见`evidence/CAPABILITY_VERIFY_001.md`，原始日志不提交，不把路由映射和三条检索当全面质量验收。132仍是下述42db727/V23，尚未配置线上embedding Provider；本地新代码不等于已经发布。
 
 2026-10-04 22点后增量：Dify官方逐篇差距映射见 `competitors/2026-10-04-dify.md`。本地已有SEMANTIC-001小型库语义检索与Workflow LLM/受控GET节点；特殊网段SSRF和前导零IPv4已在NODES-002/003修复、独立有界复核。WORKFLOW-INPUTS-001新增发布冻结的文本/数字/布尔/枚举输入及共用表单；0fc126f完整harness/backend/frontend于15:48:21Z通过，backend96类667项零失败/错误/skip/flaky，Harness74项，另行受控浏览器4/4；首轮门禁红灯保留。未编辑数字默认值的浏览器精度补强归INPUTS-002，HTTP内部防御剩余归HTTP-004。以上均未部署132；安装器必须先完成DEPLOY-004对V24的产物准入。下段42db727指最近一次线上完整发布基线，不代表新HEAD全部部署。
@@ -52,7 +54,7 @@
 - MCP 当前使用受约束的 Streamable HTTP JSON-RPC 子集并关闭重定向；正式对接复杂 session/SSE/MRTR 服务前仍需接入官方 Java SDK 并跑 MCP conformance suite。
 - JPA 到 MyBatis-Plus 的全仓 Repository 迁移；Provider 与 DemoItem 已迁移，Agent/Chat/Run 仍保留 JPA，禁止一次性重写。
 - Intent Router 的真实 Provider 离线评测、shadow 事件和主链路 dispatch；当前 rule-only v2 Top1 为 82.50%（unknown recall 100%），模型层已有契约与单测但尚无真实成本/延迟数据。
-- Workflow 已有显式条件分支和不可变发布版本，但尚无 LLM/Tool 节点、统一候选排序/选择记录、双层 TAO、真实子 Agent worker/调度器和阶段/全局回滚；当前只有子任务持久状态与延迟消费协议。
+- Workflow 已有显式条件分支、不可变发布版本、LLM/精确授权GET和具名输入；尚无通用Tool节点、统一候选排序/选择记录、双层TAO、真实子Agent worker/调度器和阶段/全局回滚；子任务仍只有持久状态与延迟消费协议。
 - write 工具的 planDigest 确认、side-effect ledger、幂等执行和 compensation；checkpoint 不能替代这些机制。
 - 原版没有 hify-cc 的父子文档、动态多路/迭代 RetrievalSession 评测成果；必须针对本仓库独立做数据与质量基线，不能借用另一个仓库的分数。
 
