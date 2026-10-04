@@ -37,4 +37,6 @@ by-key缺失/非法请求头的400也设置no-store和Vary。POST查重命中仍
 
 ## 可执行证据
 
+SPEC-RUN-INPUT-001：此前非unknown的resume提交被明确4xx拒绝后，清除resumeState并设置不可恢复提示；保留新会话出口，禁止同一失效resume无限重发，也不自动恢复该次澄清文本作为新任务。已有用户另行编辑的草稿不被覆盖。结果不明之后的4xx仍需保留pending身份，不能将未知提交当作已拒绝。
+
 `frontend/e2e/chat-lifecycle.spec.ts`：真实浏览器/Vue，HTTP和EventSource受控。002原21项及003退出/lookup/短断线扩展；不等于真实后端SSE、事务、网络代理或模型验证。后端同key唯一性由RunFlow/PostgresConcurrency测试独立证明，停用Provider后身份恢复由RunSubmissionIdentityTest证明。证据分别见 `docs/evidence/SPEC_CHAT_LIFECYCLE_REVIEW.md` 和 `docs/evidence/SPEC_CHAT_SUBMISSION_RECOVERY.md`。

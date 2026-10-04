@@ -126,8 +126,15 @@ async function submitPending(token = generation) {
     const definiteRejection = error instanceof ChatHttpError && [400, 401, 403, 404, 405, 406, 409, 415, 422].includes(error.status)
     if (definiteRejection && !pending.unknown) {
       pendingSubmission.value = undefined
-      if (!message.value.trim()) message.value = pending.text
-      status.value = '提交被拒绝'
+      if (pending.resume) {
+        // Do not retry a stale Gap or silently turn its answer into a fresh task.
+        resumeState.value = undefined
+        resumeUnavailable.value = true
+        status.value = '澄清恢复被拒绝；请新建会话并重新描述完整任务，未自动重发澄清回答'
+      } else {
+        if (!message.value.trim()) message.value = pending.text
+        status.value = '提交被拒绝'
+      }
     } else {
       pending.unknown = true
       status.value = !pending.conversation

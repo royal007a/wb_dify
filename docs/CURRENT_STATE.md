@@ -66,7 +66,7 @@
 
 以下反例尚未由上述专项关闭，具体状态在tasks.json，不以本页另建状态板：
 
-- 发布故障路径：SPEC-DEPLOY-002登记安装器信号、停止前准入窗口、静态备份不恢复、迁移后停服人工评估，以及smoke弱检索断言/清理失败；132成功smoke不能关闭这些反例。
+- 发布故障路径：SPEC-DEPLOY-002本地补强后review仍发现stderr写失败阻止恢复旧服务的P1，归SPEC-DEPLOY-003，426de39安装器禁止后续发布直至修复复验；非标准smoke响应/索引静默/schema目标归SPEC-DEPLOY-004。132当前已健康部署不受影响，也不证明这些故障路径安全。
 
 - 总验收补录：管理分页400/夹值尚未统一（SPEC-API-PAGINATION-001）；在途GET下人工重连、取消查询按钮名、跨会话提示、失效resume循环（SPEC-CHAT-LIFECYCLE-005/RUN-INPUT-001）；send阻塞后再次提交断言、报告partial传播与脱敏可复算输入（SPEC-VERIFY-002）。
 

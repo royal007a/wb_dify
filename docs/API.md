@@ -118,6 +118,10 @@ GET    /api/v1/runs/{runId}/events/stream
 
 恢复不会让旧 Run 从终态回退；服务创建一个带 `resumedFromRunId/resolvedGapIds` 的新 Run。源 Run 必须属于同一 Conversation、状态为 `NEEDS_INPUT` 且存在可恢复 checkpoint。未知、已关闭或跨会话 Gap 返回参数错误。
 
+Run输入上限为20000个Java UTF-16代码单元（与Bean Validation/String.length一致，不是UTF-8字节或Unicode码点数）；超过上限在写入前返回400/40000，恰好20000可接受。仅SQLState=23505且约束为uq_run_idempotency（H2为该约束的生成索引）才作为并发幂等重放；其他完整性异常回滚后，如会话已不存在返回404/40400，否则固定500/50000，不回显SQL/约束/输入。现有普通会话不存在入口的400兼容行为不在本片统一变更。
+
+Console在一次此前非unknown的resume提交被明确4xx拒绝后，清除恢复身份、暂停该会话继续发送，提示显式新建会话并重新描述完整任务；不自动恢复该次澄清回答到输入框，不让失效resume反复提交或悄悄变成新任务。若此前结果不明，仍保留原key查找/重放，不能用后来的4xx武断丢弃已提交身份。
+
 取消接口对已存在的终态Run仍返回202及原资源，不修改状态、取消时间戳或追加事件；COMPLETED/FAILED且原本未请求取消时，cancelRequestedAt保持null。这同样是当前HTTP兼容口径的显式记录，并非宣称初版规格已预先规定；不存在的Run仍为404。
 
 Console按一次逻辑提交保留message/resume/Idempotency-Key；响应结果不明时显式同key重试，创建中取消不会误发给上一Run。未知提交的取消只用GET by-key找身份，不再创建Run；找不到不能宣称取消成功。允许明确“放弃等待（不取消服务端）”，解除页面等待但不自动重发，后台可能继续；带resume时不自动恢复失去上下文的澄清文本。创建会话和Run各有10秒客户端请求期限，不表示服务端取消。短断线暂停后的人工同步可为同一Run重连SSE，保留事件去重，不重发POST。非澄清终态清除resume，NEEDS_INPUT按持久事件取Gap；缺Gap时提示新建会话，不无限同步或暗中重发。页面内状态及跨页面/多标签边界见 `spec/SPEC_CHAT_LIFECYCLE.md`。

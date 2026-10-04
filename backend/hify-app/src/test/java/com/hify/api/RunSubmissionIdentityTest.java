@@ -131,6 +131,10 @@ class RunSubmissionIdentityTest {
         JsonNode rejected=create(conversation,UUID.randomUUID().toString(),"x".repeat(20001),400);
         assertThat(rejected.path("code").asInt()).isEqualTo(40000);
         assertThat(rejected.toString()).doesNotContain("insert", "VARCHAR", "x".repeat(20));
+        org.assertj.core.api.Assertions.assertThatThrownBy(()->service.create(
+                conversation, UUID.randomUUID().toString(), "x".repeat(20001)))
+                .isInstanceOfSatisfying(com.hify.common.BizException.class,
+                        error->assertThat(error.errorCode()).isEqualTo(com.hify.common.ErrorCode.PARAM_ERROR));
         assertThat(runs.count()).isEqualTo(beforeRuns);
         assertThat(messages.count()).isEqualTo(beforeMessages);
         assertThat(events.count()).isEqualTo(beforeEvents);

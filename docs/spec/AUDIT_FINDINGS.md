@@ -112,6 +112,8 @@ G切片独立复核：无P0/P1；P2-1指出受保护命名空间漏掉项目实�
 
 ## 已核对的文档漂移
 
+SPEC-DEPLOY-002独立review在隔离archive用sh/dash实测9项与边界：新P1为stderr关闭时on_exit的printf因set-e中止，旧服务无法恢复（SPEC-DEPLOY-003）；0/000健康次数与成功后信号也归003。响应200或dict ID遗漏、KB类型、中断错误、假SQL区分、V23写死/索引RUNNING归SPEC-DEPLOY-004。未连接132，426de39脚本禁止再次发布直至P1复验。
+
 132发布eeb385e..3e47d13独立review无P0/P1（未远端验证）。SPEC-DEPLOY-002跟踪六条P2：后迁移失败停服/60s等待可用性；SSH/HUP/INT/TERM处理；静态备份不自动恢复的计划漂移（本次仅纠正文案）；停止前新Run及直接Workflow准入窗口；smoke检索无正文/ID断言；超限意外202漏登记及逐项清理中断。TLS仅合成测试关闭校验、同盘备份及96%磁盘为明确边界，不能冒充固定证书/恢复演练。
 
 2026-10-04总验收eeb385e独立复核无P1，四条P2不推翻本轮通过：SPEC-VERIFY-002跟踪send已阻塞后再次publish的直接断言、路由随子场景partial以及可离线复算方法报告；SPEC-API-PAGINATION-001跟踪管理分页契约差异，未做产品决策；SPEC-CHAT-LIFECYCLE-005跟踪在途GET下人工重连、取消查询按钮名、跨会话来源文案、失效resume循环（最后一项亦见RUN-INPUT-001）。报告目前mapped-subcases-only不是通过标志，原始XML未提交所以仅凭Git不能重算，边界不隐藏。

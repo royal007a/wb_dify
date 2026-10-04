@@ -12,6 +12,7 @@ import com.hify.infra.ConversationRepository;
 import com.hify.infra.RunEventRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -110,7 +111,7 @@ public class RunController {
     }
 
     public record CreateConversation(@NotBlank String agentId, String title) {}
-    public record CreateRun(@NotBlank String message, @Valid ResumeInput resume) {}
+    public record CreateRun(@NotBlank @Size(max = 20000) String message, @Valid ResumeInput resume) {}
     public record ResumeInput(@NotBlank String runId, List<@NotBlank String> gapIds) {}
 
     public record RunView(String id, String conversationId, String state, String terminalReason,

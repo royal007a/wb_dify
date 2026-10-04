@@ -140,6 +140,9 @@ public class RunApplicationService {
     public CreateResult create(String conversationId, String idempotencyKey, String message,
                                ResumeRequest resume) {
         validateIdempotencyKey(idempotencyKey);
+        if (message == null || message.isBlank() || message.length() > 20000) {
+            throw new com.hify.common.BizException(com.hify.common.ErrorCode.PARAM_ERROR);
+        }
         String resumeKey = resume == null ? "" : "\n" + resume.runId() + "\n"
                 + resume.gapIds().stream().sorted().toList();
         String hash = sha256(message + resumeKey);
@@ -151,7 +154,16 @@ public class RunApplicationService {
             // A concurrent request may pass the initial lookup before the winner commits.
             // The database unique constraint is the arbiter; the losing transaction rolls
             // back its user message and resolves to the already-created Run.
-            created = replayExisting(conversationId, idempotencyKey, hash);
+            if (isIdempotencyConstraint(conflict)) {
+                created = replayExisting(conversationId, idempotencyKey, hash);
+            } else if (!conversations.existsById(conversationId)) {
+                // The create transaction has rolled back. A concurrently deleted
+                // parent is not an idempotency collision; never expose SQL diagnostics.
+                throw new com.hify.common.BizException(com.hify.common.ErrorCode.NOT_FOUND);
+            } else {
+                log.warn("Run creation failed an unrelated integrity constraint");
+                throw new com.hify.common.BizException(com.hify.common.ErrorCode.INTERNAL_ERROR);
+            }
         }
 
         if (created == null) throw new IllegalStateException("Could not create Run");
@@ -287,6 +299,24 @@ public class RunApplicationService {
         AgentRun existing = runs.findByConversationIdAndIdempotencyKey(conversationId, idempotencyKey)
                 .orElseThrow(() -> new IllegalStateException("Concurrent Run creation did not converge"));
         return replay(existing, hash);
+    }
+
+    private static boolean isIdempotencyConstraint(Throwable failure) {
+        Set<Throwable> seen = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+        for (Throwable cause = failure; cause != null && seen.add(cause); cause = cause.getCause()) {
+            if (!(cause instanceof org.hibernate.exception.ConstraintViolationException constraint)
+                    || !"23505".equals(constraint.getSQLState())) continue;
+            String name = constraint.getConstraintName();
+            if ("uq_run_idempotency".equalsIgnoreCase(name)) return true;
+            // H2 reports the generated backing index plus an optional ON/VALUES
+            // diagnostic. Only recognize the exact named constraint's index, and
+            // only for an actual H2 exception. Never inspect arbitrary message text.
+            if (name != null && constraint.getSQLException().getClass().getName().startsWith("org.h2.")) {
+                String index = name.toUpperCase(java.util.Locale.ROOT).split(" ON ", 2)[0];
+                if (index.matches("(?:PUBLIC\\.)?UQ_RUN_IDEMPOTENCY_INDEX_[0-9A-F]+")) return true;
+            }
+        }
+        return false;
     }
 
     private CreateResult replay(AgentRun existing, String hash) {

@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T01:06:42Z`
-- Current task: `none`
-- Counts: pending 19 · running 0 · blocked 0 · completed 66
+- Generated from task state updated at: `2026-10-04T01:09:56Z`
+- Current task: `SPEC-RUN-INPUT-001`
+- Counts: pending 20 · running 1 · blocked 0 · completed 66
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -48,6 +48,7 @@
 | `SPEC-API-BEHAVIOR-001` | P1 | completed | backend, harness | reversible_write | 补齐管理读写与取消幂等的行为断言 |
 | `SPEC-CHAT-LIFECYCLE-002` | P1 | completed | frontend, runtime, harness | reversible_write | 复核前端Run创建与恢复输入边界 |
 | `SPEC-CHAT-LIFECYCLE-003` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 结果不明提交的身份恢复与安全退出 |
+| `SPEC-DEPLOY-003` | P1 | pending | harness | reversible_write | 消除安装器stderr失败阻止恢复旧服务 |
 | `SPEC-HISTORY-RECOVERY-001` | P1 | completed | backend, runtime, migration, harness | reversible_write | 恢复时重放已提交模型响应而非重新生成 |
 | `SPEC-HISTORY-RECOVERY-002` | P1 | completed | backend, runtime, harness | reversible_write | 恢复元数据按JSON语义比较，兼容跨JVM键顺序 |
 | `SPEC-HTTP-ERROR-001` | P1 | completed | backend, harness | reversible_write | 修复真实HTTP负路径的状态码与安全正文 |
@@ -77,6 +78,7 @@
 | `SPEC-CREDENTIAL-BOUNDARY-002` | P2 | completed | backend, runtime, harness | reversible_write | 补齐受保护配置命名空间与冻结凭据负向验收 |
 | `SPEC-CREDENTIAL-BOUNDARY-003` | P2 | completed | backend, harness | reversible_write | 主密钥宽松配置绑定别名不得被误授权 |
 | `SPEC-DEPLOY-002` | P2 | completed | harness | reversible_write | 补强发布脚本中断边界与smoke自身数据清理 |
+| `SPEC-DEPLOY-004` | P2 | pending | harness | reversible_write | 补齐部署schema/索引与非标准smoke响应边界 |
 | `SPEC-HISTORY-RECOVERY-003` | P2 | pending | backend, runtime, harness | reversible_write | 补齐恢复后的计划投影和预算边界 |
 | `SPEC-KNOWLEDGE-FINISH-004` | P2 | pending | backend, frontend, runtime, harness | reversible_write | 对齐知识门禁故障分类、检索事件和核验范围展示 |
 | `SPEC-KNOWLEDGE-INTEGRITY-003` | P2 | pending | backend, harness, migration | reversible_write | 补齐索引数据库类型检测及Agent固定Workflow校验和 |
@@ -85,7 +87,7 @@
 | `SPEC-PROVIDER-SAMPLING-001` | P2 | pending | backend, runtime, harness | reversible_write | 区分HTTP实际尝试与Run预算截断的健康采样 |
 | `SPEC-RECOVERY-ADMISSION-001` | P2 | pending | backend, runtime, harness | reversible_write | 恢复扫描的写库故障与容量准入 |
 | `SPEC-RUN-BUDGET-001` | P2 | pending | backend, runtime, harness | reversible_write | 统一聊天与Workflow跨重启的Run预算 |
-| `SPEC-RUN-INPUT-001` | P2 | pending | backend, frontend, harness | reversible_write | 限定Run幂等竞争异常与输入长度 |
+| `SPEC-RUN-INPUT-001` | P2 | running | backend, frontend, harness | reversible_write | 限定Run幂等竞争异常与输入长度 |
 | `SPEC-SSE-BACKPRESSURE-002` | P2 | pending | backend, runtime, harness | reversible_write | SSE公平接入与慢读总时限的确定性验证 |
 | `SPEC-VERIFY-002` | P2 | pending | backend, harness | reversible_write | 补强阻塞期间提交反例与报告传播 |
 | `SPEC-WORKFLOW-GRAPH-003` | P2 | pending | backend, frontend, runtime, harness | reversible_write | 条件空白、旧转义兼容与迁移诊断 |
