@@ -98,6 +98,30 @@
       "updatedAt": "2026-10-04T14:47:31Z"
     },
     {
+      "id": "WORKFLOW-NODES-003",
+      "title": "HTTP数字地址无歧义解析与响应charset补强",
+      "description": "002独立review残余：严格四段十进制IPv4避免前导零/系统DNS回退；补非标准地址和charset回归。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["backend", "harness"],
+      "verifyScopes": ["harness", "backend", "runtime"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["WORKFLOW-NODES-002"],
+      "acceptance": [
+        "数字IPv4只允许四段0至255十进制且无前导零，拒绝整数/缩写/十六进制；literal解析不调用DNS，校验与连接地址一致",
+        "重复charset拒绝，UTF-8别名可用；错误/缺失Content-Type以及特殊地址负例有回归，合法本机GET正向对照保留",
+        "混合DNS测试准确命名，解析一次与全记录校验保持；完整门禁零skip，独立复核，不扩大为TLS实网或部署验收"
+      ],
+      "planPath": "exec-plans/active/WORKFLOW-NODES-003.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-04T14:50:00Z",
+      "updatedAt": "2026-10-04T14:50:00Z"
+    },
+    {
       "id": "WORKFLOW-INPUTS-001",
       "title": "Workflow结构化输入与可复用运行表单",
       "description": "对照Dify课2/quick-start，扩展目前只有userMessage的输入契约，保持旧版本兼容；具体实现先独立设计再开工。",
@@ -117,7 +141,7 @@
       "operation": "workspace_write",
       "approvalRef": null,
       "dependsOn": [
-        "WORKFLOW-NODES-002"
+        "WORKFLOW-NODES-003"
       ],
       "acceptance": [
         "START声明有界文本/数字/布尔/枚举输入，发布快照覆盖schema，缺失/类型/未知字段在网络与写执行行前拒绝",
