@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T02:14:13Z`
+- Generated from task state updated at: `2026-10-04T02:38:33Z`
 - Current task: `none`
-- Counts: pending 19 · running 0 · blocked 0 · completed 72
+- Counts: pending 20 · running 0 · blocked 0 · completed 73
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -82,7 +82,9 @@
 | `SPEC-DEPLOY-004` | P2 | pending | harness | reversible_write | 补齐部署schema/索引与非标准smoke响应边界 |
 | `SPEC-DEPLOY-005` | P2 | completed | harness | reversible_write | 收束安装器断管道SIGPIPE边界 |
 | `SPEC-HISTORY-RECOVERY-003` | P2 | pending | backend, runtime, harness | reversible_write | 补齐恢复后的计划投影和预算边界 |
-| `SPEC-INPUT-HYGIENE-001` | P2 | pending | backend, harness | reversible_write | 拒绝上传与管理文本中的PG非法NUL |
+| `SPEC-INPUT-HYGIENE-001` | P2 | completed | backend, harness | reversible_write | 拒绝上传与管理文本中的PG非法NUL |
+| `SPEC-INPUT-HYGIENE-002` | P2 | pending | backend, harness | reversible_write | 补齐Agent绑定文本准入与深层JSON集成反例 |
+| `SPEC-INPUT-HYGIENE-003` | P2 | pending | backend, harness | reversible_write | 检索记忆和意图读路径NUL输入策略 |
 | `SPEC-KNOWLEDGE-FINISH-004` | P2 | pending | backend, frontend, runtime, harness | reversible_write | 对齐知识门禁故障分类、检索事件和核验范围展示 |
 | `SPEC-KNOWLEDGE-INTEGRITY-003` | P2 | pending | backend, harness, migration | reversible_write | 补齐索引数据库类型检测及Agent固定Workflow校验和 |
 | `SPEC-KNOWLEDGE-LEGACY-001` | P2 | pending | backend, runtime, harness | reversible_write | 旧未固定版本会话恢复不能移除知识门禁 |

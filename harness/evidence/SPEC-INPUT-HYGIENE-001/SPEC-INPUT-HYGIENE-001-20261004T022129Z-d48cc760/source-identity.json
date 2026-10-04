@@ -1,0 +1,8 @@
+{
+  "headCommit": "add75ed624a867d17975a039339990d6784b97a5",
+  "backendTree": "5266955e78c7d4c904f428243ec478d8a0048100",
+  "frontendTree": "8f83bc4774e6049892447286e0da9057c5c3f397",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "status": "M harness/progress.md\n M harness/state.json\n M harness/tasks.json\n?? harness/evidence/SPEC-INPUT-HYGIENE-001/",
+  "note": "Recorded while fresh gate runs; no application/test source edits after add75ed."
+}

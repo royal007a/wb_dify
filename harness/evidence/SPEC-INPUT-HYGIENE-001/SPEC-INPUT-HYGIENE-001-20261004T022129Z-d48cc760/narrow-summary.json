@@ -1,0 +1,58 @@
+{
+  "logs": {
+    "narrow-red.log": "f69121e034b762361523c688c5ce06e89bcdf6cbdeab92239fba0db49addeb21",
+    "postgres-red.log": "988c5ede545f3837b931e6d988e24d7a6d66627630ec4da631ba7a3b47781128",
+    "postgres-red-api144.log": "84a397ad115184f839826321c9ad2429554340c34b8f94b61588b195160a775e",
+    "narrow-green.log": "2f4fc584ab7a8da0d892082f31280603fe38119e659cc3a047fe489a104771f1",
+    "narrow-expanded.log": "3f0838090b2900e605d886156fb62636bd8e1891e5c63bee939668e38e736799"
+  },
+  "results": [
+    {
+      "log": "narrow-red.log",
+      "h2": {
+        "tests": 7,
+        "failures": 7
+      },
+      "postgres": {
+        "tests": 7,
+        "skipped": 7
+      },
+      "acceptedEvidence": false
+    },
+    {
+      "log": "postgres-red.log",
+      "postgres": {
+        "tests": 7,
+        "skipped": 7
+      },
+      "acceptedEvidence": false
+    },
+    {
+      "log": "postgres-red-api144.log",
+      "postgres": {
+        "tests": 7,
+        "executed": 7,
+        "failures": 7,
+        "skipped": 0
+      },
+      "redReproduced": true
+    },
+    {
+      "log": "narrow-green.log",
+      "tests": 14,
+      "executed": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "log": "narrow-expanded.log",
+      "tests": 18,
+      "executed": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "meaning": "Synthetic isolated test data only. Skipped PostgreSQL invocations were not acceptance; raw SQL/error logs not committed."
+}

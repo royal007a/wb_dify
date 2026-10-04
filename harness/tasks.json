@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T02:14:13Z",
+  "updatedAt": "2026-10-04T02:38:33Z",
   "tasks": [
     {
       "id": "SPEC-UPLOAD-BOUNDARY-001",
@@ -3804,7 +3804,7 @@
       "title": "拒绝上传与管理文本中的PG非法NUL",
       "description": "Run输入002复核的范围外P2：UTF8文档含0x00仍合法解码，PG TEXT拒绝22021导致500；会话标题及Agent/Workflow/KB名称描述同类入口需要清点。",
       "priority": "P2",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "backend",
         "harness"
@@ -3821,12 +3821,71 @@
         "真实PG上传a NUL b返回400并且无文档/索引任务残留；普通UTF8正向通过",
         "逐入口明确NUL规则、HTTP/service校验和无写入断言，不以H2通过替代PG验证"
       ],
-      "planPath": "exec-plans/active/SPEC-INPUT-HYGIENE-001.md",
+      "planPath": "exec-plans/completed/SPEC-INPUT-HYGIENE-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [
+        {
+          "runId": "SPEC-INPUT-HYGIENE-001-20261004T022129Z-d48cc760",
+          "path": "harness/evidence/SPEC-INPUT-HYGIENE-001/SPEC-INPUT-HYGIENE-001-20261004T022129Z-d48cc760",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "5af667223bc2c10ea3d5519f341984cb7cac2173",
+          "headCommit": "add75ed624a867d17975a039339990d6784b97a5",
+          "recordedAt": "2026-10-04T02:38:33Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "f3915c2191aa259da2d70544c56e5306adf4c67eb778b24443015d5b05947cb0"
+        }
+      ],
+      "createdAt": "2026-10-04T01:45:00Z",
+      "updatedAt": "2026-10-04T02:38:33Z"
+    },
+    {
+      "id": "SPEC-INPUT-HYGIENE-002",
+      "title": "补齐Agent绑定文本准入与深层JSON集成反例",
+      "description": "输入卫生001独立复核P2-1/P2-3：Agent知识/MCP/Workflow/tools绑定入口在查库及修改之前拒绝NUL，补create enabledTools和嵌套config集成证据；不包含读路径。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["backend", "harness"],
+      "verifyScopes": ["harness", "backend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-INPUT-HYGIENE-001"],
+      "acceptance": [
+        "H2和真实PG：四类Agent绑定HTTP及直接service入口拒绝实际NUL为40000，不替换既有绑定或触碰草稿更新时间",
+        "每类绑定有合法绑定及替换的正向对照；create enabledTools和config深层对象键/数组字符串均有集成负例，合法嵌套JSON可保存",
+        "本轮backend/harness零skip，保留旧代码红灯；文档区分首轮、补强和未部署"
+      ],
+      "planPath": "exec-plans/active/SPEC-INPUT-HYGIENE-002.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
-      "createdAt": "2026-10-04T01:45:00Z",
-      "updatedAt": "2026-10-04T01:45:00Z"
+      "createdAt": "2026-10-04T02:42:00Z",
+      "updatedAt": "2026-10-04T02:42:00Z"
+    },
+    {
+      "id": "SPEC-INPUT-HYGIENE-003",
+      "title": "检索记忆和意图读路径NUL输入策略",
+      "description": "001复核P2-2范围外反例：retrieval-tests query、memory/search query、意图agentId等NUL参数可能在PG报500；须单独限定入口并验证，容器层路径变量拒绝不以MockMvc代替。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["backend", "harness"],
+      "verifyScopes": ["harness", "backend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-INPUT-HYGIENE-001"],
+      "acceptance": [
+        "列明读路径的NUL错误契约，H2和真实PG query/意图参数负例返回400而非500且不触发模型",
+        "合法读请求正向对照；声明路径变量在真实HTTP容器与MockMvc下的不同证据边界"
+      ],
+      "planPath": null,
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-04T02:42:00Z",
+      "updatedAt": "2026-10-04T02:42:00Z"
     },
     {
       "id": "SPEC-DEPLOY-006",
