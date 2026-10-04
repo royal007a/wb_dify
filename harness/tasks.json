@@ -3598,7 +3598,7 @@
         "取消待确认按钮明确仅查询，跨会话来源不暴露更多身份",
         "resume被明确拒绝后有恢复入口，不重发同一个失效resume；与RUN-INPUT验收去重"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/SPEC-CHAT-LIFECYCLE-005.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
