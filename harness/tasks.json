@@ -1,16 +1,20 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T15:30:34Z",
+  "updatedAt": "2026-10-04T15:35:48Z",
   "tasks": [
     {
       "id": "HARNESS-DEPLOY-TIMING-001",
       "title": "部署信号测试门闩等待预算与诊断",
       "description": "WORKFLOW-INPUTS-001完整门禁及单独重跑都在发信号前等待5秒门闩失败；独立观察5.163秒到达且正常退出。只调整隔离fixture等待预算，保留全部服务/退出码/回滚断言，不修改生产安装器。",
       "priority": "P1",
-      "status": "pending",
-      "scopes": ["harness"],
-      "verifyScopes": ["harness"],
+      "status": "completed",
+      "scopes": [
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
@@ -20,12 +24,24 @@
         "sh与dash各HUP/INT/TERM在门闩到达后实际注入；原状态、退出码、stop次数、snippet/index断言不削弱",
         "完整harness通过；保留Inputs首轮失败，不外推业务和部署验收"
       ],
-      "planPath": "exec-plans/active/HARNESS-DEPLOY-TIMING-001.md",
+      "planPath": "exec-plans/completed/HARNESS-DEPLOY-TIMING-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "HARNESS-DEPLOY-TIMING-001-20261004T153341Z-3bf2a2da",
+          "path": "harness/evidence/HARNESS-DEPLOY-TIMING-001/HARNESS-DEPLOY-TIMING-001-20261004T153341Z-3bf2a2da",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "e0a4c5d0efcd767018770ad1c7ef01477f08d341",
+          "headCommit": "e0a4c5d0efcd767018770ad1c7ef01477f08d341",
+          "recordedAt": "2026-10-04T15:35:48Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "21a683301505c12769a08ee9a6af27aab7030e0d4d7d26fa4bf32d6d2235dfa8"
+        }
+      ],
       "createdAt": "2026-10-04T15:33:00Z",
-      "updatedAt": "2026-10-04T15:33:00Z"
+      "updatedAt": "2026-10-04T15:35:48Z"
     },
     {
       "id": "DIFY-AUDIT-001",

@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T15:30:34Z`
+- Generated from task state updated at: `2026-10-04T15:35:48Z`
 - Current task: `none`
-- Counts: pending 18 · running 0 · blocked 3 · completed 84
+- Counts: pending 17 · running 0 · blocked 3 · completed 85
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -40,7 +40,7 @@
 | `DEPLOY-001` | P1 | completed | backend, frontend, migration, runtime, eval | high_risk | 部署摘要与细节召回纵向切片 |
 | `DEPLOY-002` | P1 | completed | backend, frontend, migration, runtime, eval | high_risk | 推送并部署高级能力纵向切片 |
 | `DIFY-AUDIT-001` | P1 | completed | harness | reversible_write | Dify官方逐篇阅读与十小时能力差距审计 |
-| `HARNESS-DEPLOY-TIMING-001` | P1 | pending | harness | reversible_write | 部署信号测试门闩等待预算与诊断 |
+| `HARNESS-DEPLOY-TIMING-001` | P1 | completed | harness | reversible_write | 部署信号测试门闩等待预算与诊断 |
 | `MCP-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付 MCP Server 目录与安全调试闭环 |
 | `MCP-EDIT-001` | P1 | completed | backend, frontend | reversible_write | MCP Server 编辑与凭证引用校验 |
 | `MCP-EDIT-DEPLOY-001` | P1 | completed | frontend, backend | high_risk | 部署 MCP 编辑切片并验收 132 页面 |

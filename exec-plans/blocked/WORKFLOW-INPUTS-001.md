@@ -8,3 +8,10 @@
 4. 单测+H2/真实PG HTTP正反对照：合法类型/默认false和0/自定义START/快照冻结；错误输入零执行行/节点、未知引用发布拒绝、Agent限制；控制台受控浏览器验证快照与请求类型。完整harness/backend/frontend零skip。记录失败与独立review，不以Mock冒充实网。
 
 回滚为应用代码回退，但含新输入schema的发布版本需停用或改回兼容版本，不能让旧引擎静默解释新配置。部署另走CAPABILITY-DEPLOY，需先修SPEC-DEPLOY-004的V24迁移目标。
+
+## 87a815f复核后的补强
+
+- Workflow请求的inputs/config与存储快照局部精确十进制解析，不改变全局Jackson；数值绝对值<=1e12、precision与scale绝对值均<=1000，模板剥离无意义尾零并用普通十进制文本，禁止极端指数膨胀。浏览器数字控件仍为JS Number，明确其精度边界。
+- 必填文本空白与ECMAScript trim对齐（包含NBSP/BOM），长度UTF-16、非NUL控制字符不清洗的边界明示。可选数字清空null视为省略，用发布默认值；HTTP显式null仍拒绝。
+- 补原始JSON高精度/边界/指数、空白/emoji/16字段/嵌套、Agent绑定后Workflow变必填再发布拒绝、迟到版本/运行响应等正反例。
+- 2026-10-04约23:35在132只读查询：旧发布START含inputs且无inputSchemaFormat的记录为0。上线前必须再查，若非0停止切换并制定兼容处理，不能删除旧发布版本。
