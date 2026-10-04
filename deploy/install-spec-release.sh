@@ -45,6 +45,7 @@ cutover=0
 nginx_changed=0
 on_exit() {
   result=$?
+  trap '' PIPE
   # Cleanup must survive stderr EIO/EBADF (for example after SSH disconnect).
   # Preserve the original failure even if recovery or diagnostics also fail.
   set +e
@@ -99,7 +100,7 @@ cp -a "$release/incoming/frontend/dist/assets/." "$dist/assets/"
 install -m 644 "$release/incoming/frontend/dist/index.html" "$dist/index.html.next"
 mv "$dist/index.html.next" "$dist/index.html"
 test "$(stat -c '%i:%s:%Y:%a:%U' "$key")" = "$key_identity"
-systemctl is-active hify
+systemctl is-active --quiet hify
 # All actual success checks are complete. Diagnostic output below may fail or
 # receive a signal; that must not stop a healthy published release.
 trap - EXIT HUP INT TERM
