@@ -4,6 +4,32 @@
   "updatedAt": "2026-10-03T23:53:52Z",
   "tasks": [
     {
+      "id": "SPEC-API-BEHAVIOR-001",
+      "title": "补齐管理读写与取消幂等的行为断言",
+      "description": "针对全接口库存中只有候选类、缺直接断言的管理路由和取消/幂等恢复语义，补全应用MockMvc加隔离H2集成用例；不把库存匹配当行为通过。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["backend", "harness"],
+      "verifyScopes": ["harness", "backend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-HTTP-ERROR-001"],
+      "acceptance": [
+        "知识库列表/详情/更新/归档及文档列表按正文、分页和归档可见性断言",
+        "Workflow列表/版本列表/版本详情/执行回读/归档与Agent解绑保留已发布快照有正负对照",
+        "重复取消与终态再取消均202且无重复事件/消息；预取消不执行模型和工具",
+        "同key不同resume返回40901且不新增Run；旧会话及工具目录实际返回字段可断言",
+        "候选测试映射和最少测试数同步更新，全量backend零skip并记录证据等级"
+      ],
+      "planPath": "exec-plans/active/SPEC-API-BEHAVIOR-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-04T00:00:00Z",
+      "updatedAt": "2026-10-04T00:00:00Z"
+    },
+    {
       "id": "SPEC-HTTP-ERROR-001",
       "title": "修复真实HTTP负路径的状态码与安全正文",
       "description": "恢复SPEC-VERIFY-001的四条HTTP红灯，统一未知Run/路由与multipart解析错误的安全Result，不将客户端错误泛化500。",

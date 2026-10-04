@@ -4,7 +4,7 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-10-03T23:53:52Z`
 - Current task: `none`
-- Counts: pending 16 · running 0 · blocked 1 · completed 59
+- Counts: pending 17 · running 0 · blocked 1 · completed 59
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -45,6 +45,7 @@
 | `PROVIDER-001` | P1 | completed | backend, runtime | reversible_write | 补原生流式故障注入矩阵 |
 | `RECALL-002` | P1 | completed | backend, migration, runtime, eval | reversible_write | 建立召回评测门禁并按证据演进检索 |
 | `SECURITY-001` | P1 | completed | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |
+| `SPEC-API-BEHAVIOR-001` | P1 | pending | backend, harness | reversible_write | 补齐管理读写与取消幂等的行为断言 |
 | `SPEC-CHAT-LIFECYCLE-002` | P1 | completed | frontend, runtime, harness | reversible_write | 复核前端Run创建与恢复输入边界 |
 | `SPEC-CHAT-LIFECYCLE-003` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 结果不明提交的身份恢复与安全退出 |
 | `SPEC-HISTORY-RECOVERY-001` | P1 | completed | backend, runtime, migration, harness | reversible_write | 恢复时重放已提交模型响应而非重新生成 |
