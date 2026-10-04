@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T14:47:31Z",
+  "updatedAt": "2026-10-04T15:04:31Z",
   "tasks": [
     {
       "id": "DIFY-AUDIT-001",
@@ -102,24 +102,68 @@
       "title": "HTTP数字地址无歧义解析与响应charset补强",
       "description": "002独立review残余：严格四段十进制IPv4避免前导零/系统DNS回退；补非标准地址和charset回归。",
       "priority": "P1",
-      "status": "pending",
-      "scopes": ["backend", "harness"],
-      "verifyScopes": ["harness", "backend", "runtime"],
+      "status": "completed",
+      "scopes": [
+        "backend",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "backend",
+        "runtime"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["WORKFLOW-NODES-002"],
+      "dependsOn": [
+        "WORKFLOW-NODES-002"
+      ],
       "acceptance": [
         "数字IPv4只允许四段0至255十进制且无前导零，拒绝整数/缩写/十六进制；literal解析不调用DNS，校验与连接地址一致",
         "重复charset拒绝，UTF-8别名可用；错误/缺失Content-Type以及特殊地址负例有回归，合法本机GET正向对照保留",
         "混合DNS测试准确命名，解析一次与全记录校验保持；完整门禁零skip，独立复核，不扩大为TLS实网或部署验收"
       ],
-      "planPath": "exec-plans/active/WORKFLOW-NODES-003.md",
+      "planPath": "exec-plans/completed/WORKFLOW-NODES-003.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [
+        {
+          "runId": "WORKFLOW-NODES-003-20261004T145552Z-195bbf8a",
+          "path": "harness/evidence/WORKFLOW-NODES-003/WORKFLOW-NODES-003-20261004T145552Z-195bbf8a",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "de8e54ae94d2e8af81d31c135fbdbad8a5466036",
+          "headCommit": "de8e54ae94d2e8af81d31c135fbdbad8a5466036",
+          "recordedAt": "2026-10-04T15:04:31Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "8a1fa8993416c1d6eaf8979526d2a3e982c0e47e49008b9a5d2220ab4ccac78e"
+        }
+      ],
+      "createdAt": "2026-10-04T14:50:00Z",
+      "updatedAt": "2026-10-04T15:04:31Z"
+    },
+    {
+      "id": "WORKFLOW-HTTP-004",
+      "title": "HTTP地址内部解析与扩展charset防御边界",
+      "description": "003独立review残余：不可从HTTP入口触发的IPv6 helper DNS回退、规范化后二次检查缺独立对照、charset*参数策略。当前未发现外部绕过，不能夸称任意内部输入均不DNS。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": ["backend", "harness"],
+      "verifyScopes": ["harness", "backend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["WORKFLOW-NODES-003"],
+      "acceptance": [
+        "IPv6内部helper拒绝畸形数字字符，不落到系统DNS；保留合法IPv6正向对照",
+        "明确规范化后二次检查的防御与可测边界，不虚构可达反例；明确charset*接受或拒绝契约并测试"
+      ],
+      "planPath": null,
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
-      "createdAt": "2026-10-04T14:50:00Z",
-      "updatedAt": "2026-10-04T14:50:00Z"
+      "createdAt": "2026-10-04T15:06:00Z",
+      "updatedAt": "2026-10-04T15:06:00Z"
     },
     {
       "id": "WORKFLOW-INPUTS-001",

@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T14:47:31Z`
+- Generated from task state updated at: `2026-10-04T15:04:31Z`
 - Current task: `none`
-- Counts: pending 18 · running 0 · blocked 2 · completed 83
+- Counts: pending 18 · running 0 · blocked 2 · completed 84
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -75,7 +75,7 @@
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
 | `WORKFLOW-INPUTS-001` | P1 | pending | backend, frontend, harness | reversible_write | Workflow结构化输入与可复用运行表单 |
 | `WORKFLOW-NODES-001` | P1 | completed | backend, frontend, harness | reversible_write | 版本化Workflow LLM与受控HTTP节点 |
-| `WORKFLOW-NODES-003` | P1 | pending | backend, harness | reversible_write | HTTP数字地址无歧义解析与响应charset补强 |
+| `WORKFLOW-NODES-003` | P1 | completed | backend, harness | reversible_write | HTTP数字地址无歧义解析与响应charset补强 |
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
 | `SPEC-API-BEHAVIOR-002` | P2 | completed | backend, harness | reversible_write | 澄清管理契约来源并补终态取消和旧会话执行 |
 | `SPEC-API-PAGINATION-001` | P2 | pending | backend, harness | reversible_write | 确定并统一管理列表分页越界契约 |
@@ -110,6 +110,7 @@
 | `SPEC-WORKFLOW-KNOWLEDGE-002` | P2 | completed | backend, migration, harness | reversible_write | 补齐冻结Workflow发布边界、锁顺序与事务隔离证据 |
 | `SPEC-WORKFLOW-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 关联Workflow执行事实与父Run恢复及异常边界 |
 | `SUBAGENT-001` | P2 | completed | backend, migration, runtime | reversible_write | 建立子 Agent 任务与延迟消费确认 |
+| `WORKFLOW-HTTP-004` | P2 | pending | backend, harness | reversible_write | HTTP地址内部解析与扩展charset防御边界 |
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |
 
 ## Blocked
