@@ -54,6 +54,8 @@ journalctl -u hify-upgrade-20261004 --no-pager
 
 最终active检查使用`systemctl is-active --quiet hify`，避免健康状态检查因stdout断管道误触发回退。on_exit保存退出码后忽略SIGPIPE，使stderr EPIPE与关闭fd一样不能覆盖原退出码；不改变主流程其他输出命令的失败语义。清理期间第二次HUP/INT/TERM仍可能中断清理，必须用持久作业运行并从独立连接核对结果。
 
+主流程nginx检查等命令仍可能因SSH stderr断管道而失败，触发迁移后停服；上述systemd-run方式将输出交给journal而非SSH管道，用于降低这项可用性风险。cleanup的PIPE设置不会由systemd传给新Java服务。
+
 上传smoke仅用自建ID清理；超限意外202也先登记ID，清理错误逐项汇总且保留主失败。如果连接在创建成功后、返回ID前断开，脚本无法知道该ID，不会列库全删；需按该次`spec-deploy-*`记录由运维确认。检索断言要求本次文档ID和合成短句，不代表真实语义质量。`--self-signed-test`只对该测试调用禁用证书校验，不是证书固定，也不是生产TLS选项。
 
 1. 备份并校验恢复点。PostgreSQL 宿主机预装 pgvector 包，并由数据库管理员执行一次
