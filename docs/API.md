@@ -8,6 +8,7 @@
 - JSON 字段使用 `camelCase`；数据库列使用 `snake_case`。
 - 仅创建 Run 强制支持 `Idempotency-Key`；其他写请求目前不承诺幂等键。错误通过 `Result.fail(ErrorCode)` 返回，协议边界完整性见审计 A05。
 - 分页管理表使用 page/pageSize；响应 size/total/page 在顶层。MCP 和历史事件部分接口直接返回完整列表，没有 cursor pagination。
+- 分页越界目前不统一：Knowledge 返回400，Workflow将page夹到至少1、pageSize夹到1..100。这是现有兼容行为记录，不是原规格已经作出的统一产品决策；后续统一需单独决定并说明兼容影响。
 - Instant 时间为 UTC ISO 格式；DemoItem 的 LocalDateTime 为无时区 ISO。大多数 ID 是 UUID 字符串，DemoItem 为 Long，不承诺 UUIDv7/ULID。
 
 当前已发布的 Run API 成功响应直接返回资源；新管理 API 使用 `Result<T>`。错误统一使用 `Result.fail(ErrorCode)`：
@@ -116,6 +117,8 @@ GET    /api/v1/runs/{runId}/events/stream
 ```
 
 恢复不会让旧 Run 从终态回退；服务创建一个带 `resumedFromRunId/resolvedGapIds` 的新 Run。源 Run 必须属于同一 Conversation、状态为 `NEEDS_INPUT` 且存在可恢复 checkpoint。未知、已关闭或跨会话 Gap 返回参数错误。
+
+取消接口对已存在的终态Run仍返回202及原资源，不修改状态、取消时间戳或追加事件；COMPLETED/FAILED且原本未请求取消时，cancelRequestedAt保持null。这同样是当前HTTP兼容口径的显式记录，并非宣称初版规格已预先规定；不存在的Run仍为404。
 
 Console按一次逻辑提交保留message/resume/Idempotency-Key；响应结果不明时显式同key重试，创建中取消不会误发给上一Run。未知提交的取消只用GET by-key找身份，不再创建Run；找不到不能宣称取消成功。允许明确“放弃等待（不取消服务端）”，解除页面等待但不自动重发，后台可能继续；带resume时不自动恢复失去上下文的澄清文本。创建会话和Run各有10秒客户端请求期限，不表示服务端取消。短断线暂停后的人工同步可为同一Run重连SSE，保留事件去重，不重发POST。非澄清终态清除resume，NEEDS_INPUT按持久事件取Gap；缺Gap时提示新建会话，不无限同步或暗中重发。页面内状态及跨页面/多标签边界见 `spec/SPEC_CHAT_LIFECYCLE.md`。
 

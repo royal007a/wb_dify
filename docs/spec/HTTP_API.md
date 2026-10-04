@@ -508,7 +508,7 @@
 - 功能：请求取消。
 - 输入：`runId`。
 - 成功：HTTP 202，`RunView (raw)`。
-- 必测断言/边界：取消持久化且传阻塞调用；已终态不回退；未知Run为40400/HTTP404、安全JSON正文；重复取消与终态再取消均202，不重复事件/消息；不存在Run为404。
+- 必测断言/边界：取消持久化且传阻塞调用；已终态不回退；未知Run为40400/HTTP404、安全JSON正文；当前实现兼容记录（非事前新增产品决定）：重复取消与终态再取消均202，不重复事件/消息；COMPLETED/FAILED后cancelRequestedAt仍为空；不存在Run为404。
 - 实现：[RunController](../../backend/hify-app/src/main/java/com/hify/api/RunController.java)。
 - 候选测试（非逐接口覆盖承诺）：[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)；[PostgresConcurrencyIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java)；[HttpErrorSurfaceTest](../../backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java)；[RunSubmissionIdentityTest](../../backend/hify-app/src/test/java/com/hify/api/RunSubmissionIdentityTest.java)。
 
@@ -575,7 +575,7 @@
 - 功能：分页列图。
 - 输入：`page/pageSize`。
 - 成功：HTTP 200，`PageResult<WorkflowResponse>`。
-- 必测断言/边界：分页/归档边界；page<1按1、pageSize夹在1..100（不是400）。
+- 必测断言/边界：分页/归档边界；当前兼容行为是page<1按1、pageSize夹在1..100（不是400）；与KB非法分页400不一致，统一规则待产品决定，不以现状倒推原规格已批准。
 - 实现：[WorkflowController](../../backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java)。
 - 候选测试（非逐接口覆盖承诺）：[WorkflowApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java)；[AgentApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java)；[ManagementReadbackIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java)。
 

@@ -7,6 +7,11 @@ import com.hify.infra.ChatMessageRepository;
 import com.hify.infra.RunEventRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import com.hify.application.RunEventBroker;
+import com.hify.domain.AgentRun;
+import com.hify.domain.RunState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,6 +40,7 @@ class RunSubmissionIdentityTest {
     @Autowired AgentRunRepository runs;
     @Autowired ChatMessageRepository messages;
     @Autowired RunEventRepository events;
+    @Autowired RunEventBroker broker;
     // Capture dispatch without executing: the HTTP transaction really commits in the database.
     @MockBean(name="runExecutor") Executor executor;
 
@@ -143,6 +149,31 @@ class RunSubmissionIdentityTest {
         assertThat(messages.findByConversationIdOrderByCreatedAtAsc(conversation)).singleElement()
                 .satisfies(message->assertThat(message.getRole()).isEqualTo("user"));
         verify(executor,times(1)).execute(any());
+    }
+
+    @ParameterizedTest @EnumSource(value=RunState.class,names={"COMPLETED","FAILED"})
+    void cancellationCannotRewriteAnExistingSuccessOrFailure(RunState state) throws Exception {
+        // Seed terminal rows explicitly: this tests cancellation's HTTP/DB behavior,
+        // not how the model or workflow reached these states.
+        String conversation=conversation(),id=UUID.randomUUID().toString();
+        AgentRun fixture=new AgentRun(id,conversation,UUID.randomUUID().toString(),"fixture-hash","original",java.time.Instant.now());
+        fixture.finish(state,state==RunState.COMPLETED?"COMPLETED":"MODEL_ERROR","original-result",2,1);
+        runs.saveAndFlush(fixture);
+        broker.publish(id,state==RunState.COMPLETED?"run.completed":"run.failed",java.util.Map.of("state",state.name()));
+        JsonNode before=json.readTree(http.perform(get("/api/v1/runs/{id}",id)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.state").value(state.name())).andReturn().getResponse().getContentAsString());
+        assertThat(before.path("cancelRequestedAt").isNull()).isTrue();
+        assertThat(events.findByRunIdOrderByIdAsc(id)).hasSize(1);
+        long eventCount=events.count(),messageCount=messages.count();
+        for(int attempt=0;attempt<2;attempt++) {
+            JsonNode after=json.readTree(http.perform(post("/api/v1/runs/{id}/cancellations",id)).andExpect(status().isAccepted())
+                    .andReturn().getResponse().getContentAsString());
+            assertThat(after).isEqualTo(before);
+            assertThat(events.count()).isEqualTo(eventCount);
+            assertThat(messages.count()).isEqualTo(messageCount);
+        }
+        assertThat(runs.findById(id).orElseThrow().getCancelRequestedAt()).isNull();
+        verifyNoInteractions(executor);
     }
 
     private String conversation() throws Exception {

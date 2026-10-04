@@ -784,7 +784,7 @@
       "request": "runId",
       "success": 202,
       "response": "RunView (raw)",
-      "checks": "取消持久化且传阻塞调用；已终态不回退；未知Run为40400/HTTP404、安全JSON正文；重复取消与终态再取消均202，不重复事件/消息；不存在Run为404",
+      "checks": "取消持久化且传阻塞调用；已终态不回退；未知Run为40400/HTTP404、安全JSON正文；当前实现兼容记录（非事前新增产品决定）：重复取消与终态再取消均202，不重复事件/消息；COMPLETED/FAILED后cancelRequestedAt仍为空；不存在Run为404",
       "testCandidates": [
         "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",
         "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java",
@@ -946,7 +946,7 @@
       "request": "page/pageSize",
       "success": 200,
       "response": "PageResult<WorkflowResponse>",
-      "checks": "分页/归档边界；page<1按1、pageSize夹在1..100（不是400）",
+      "checks": "分页/归档边界；当前兼容行为是page<1按1、pageSize夹在1..100（不是400）；与KB非法分页400不一致，统一规则待产品决定，不以现状倒推原规格已批准",
       "testCandidates": [
         "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
         "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java",

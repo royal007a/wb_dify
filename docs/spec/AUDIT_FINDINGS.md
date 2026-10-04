@@ -112,6 +112,8 @@ G切片独立复核：无P0/P1；P2-1指出受保护命名空间漏掉项目实�
 
 ## 已核对的文档漂移
 
+2026-10-04 Chat004（83055fb/a2ee546）独立静态review与摘要SHA核对关闭人工重连、澄清放弃、取消文案、建会话超时、缺header缓存头及非法resume误归类。create仍宽泛捕获DataIntegrityViolation：超长消息/并发会话删除可变成40900，归SPEC-RUN-INPUT-001；abort后失败的fulfill不能作为迟到成功响应证据，SPEC_CHAT_MANUAL_RECOVERY已收窄措辞。管理001的夹值契约来源、终态取消种类、旧会话执行与非法resume反向对照归SPEC-API-BEHAVIOR-002，不以旧窄测替代。
+
 2026-10-04新增复核：HTTP切片fa5f48f..9aac4e7的上传P1归SPEC-UPLOAD-BOUNDARY-001（应用/两nginx没有显式上限，原10MB/JSON承诺不可达）；f64a690门禁旧问题已关闭，恶意/手工改manifest或降级历史schema仍可绕过的两条P2归SPEC-AUDIT-004。reviewer对HTTP仅静态阅读；门禁使用隔离archive+假mvn/XML实测，不等于实际Maven执行。
 
 - API.md 把未实现会话列表、v1 会话详情/消息、tool-definition/dry-run 写成可调用；Workflow更新写成不存在的PATCH。

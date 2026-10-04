@@ -20,3 +20,14 @@
 首轮同命令9项中3失败，均为本次测试作者的错误假设，保留在`focused.log`：把真实`/cancellations`写成`/cancel`；把Workflow分页夹值误写成400；把草稿binding误当成已冻结的版本ID。对照Controller/草稿与发布契约后修正用例（`focused-corrected.log`），没有为迎合错误断言改生产代码，也不把这三个失败计成修复了三个产品缺陷。
 
 13条管理路由补候选指针；取消路由补明确语义与直接断言；Workflow分页文档注明与Agent/KB验证边界不同。候选指针仍不代表全部路由故障排列已通过。后续全接口/F01–F38汇总和真实浏览器/132部署由SPEC-VERIFY-001与SPEC-DEPLOY-001另行记录。
+
+## 复核补测：SPEC-API-BEHAVIOR-002
+
+基线`ebd6e08`（计划，生产代码同`83055fb`）。证据根`harness/evidence/SPEC-API-BEHAVIOR-002/SPEC-API-BEHAVIOR-002-20261004T001941Z-31a7040d/`。本次仍无src/main变更；以下是新增证据，不能回溯成首轮已覆盖，也不能算新修复了产品缺陷。
+
+- `cancellationCannotRewriteAnExistingSuccessOrFailure`：两个参数化用例明确种入COMPLETED/FAILED行及一条对应终态事件作为正向对照。真实MVC取消两次均202，完整RunView不变、cancelRequestedAt仍null、事件/消息计数不变、executor零调用。证明终态取消行为，不证明模型如何进入这些终态。
+- `agentWorkflowUnbindChangesOnlyDraftAndNewPublication`：解绑前经HTTP创建钉住旧AgentVersion的会话；解绑并发布新版本后，从旧会话经HTTP创建Run、生产异步执行器实际执行START→END图。回读断言COMPLETED、旧AgentVersion、正文published-answer；workflow.started的版本/checksum和workflow_run详情的版本/digest均与原发布返回精确相同。不是仅回读版本行；不证明数据库被篡改并重算checksum时的防御。
+- 同key不同resume仍40901、零额外工作；新key加同一不存在的resume40000的反向对照已随`83055fb`落地，本次一起重跑。
+- API和HTTP_API将Workflow分页夹值、终态取消202明确标注为现有兼容行为的记录，不据此追认原产品决策；KB400与Workflow夹值的差异仍待统一决策。本次不调整线上行为。
+
+2026-10-04 08:20:46（Asia/Shanghai）窄测BUILD SUCCESS，11项（Management4、Identity7），失败/错误/跳过0；命令同上，日志SHA见本次focused-summary.json。完整Spring/MockMvc与隔离H2；无真实浏览器、外部模型或132验证。一次从backend目录误调仓库根的规格生成器导致路径不存在，随后从根目录重新生成成功；不计作产品失败。全量门禁另记，不以窄测代替。

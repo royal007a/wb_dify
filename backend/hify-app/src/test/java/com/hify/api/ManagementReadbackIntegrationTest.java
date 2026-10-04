@@ -100,7 +100,10 @@ class ManagementReadbackIntegrationTest {
 
     @Test void agentWorkflowUnbindChangesOnlyDraftAndNewPublication() throws Exception {
         String workflow=createWorkflow();
-        String workflowVersion=publishWorkflow(workflow).path("id").asText();
+        JsonNode publishedWorkflow=publishWorkflow(workflow);
+        String workflowVersion=publishedWorkflow.path("id").asText();
+        String workflowChecksum=publishedWorkflow.path("checksum").asText();
+        assertThat(workflowChecksum).hasSize(64);
         String agent=call(post("/api/v1/agents").contentType("application/json").content("""
                 {"name":"unbind-%s","instructions":"test","providerId":"mock","modelId":"hify-mock",
                  "temperature":0.2,"maxTokens":2048,"maxTurns":6,"maxContextTurns":10,"enabledTools":[],"enabled":true}
@@ -108,6 +111,9 @@ class ManagementReadbackIntegrationTest {
         call(put("/api/v1/agents/{id}/workflow-binding",agent).contentType("application/json")
                 .content(json.writeValueAsString(java.util.Map.of("workflowId",workflow))),200);
         String oldVersion=call(post("/api/v1/agents/{id}/publications",agent),200).path("data").path("id").asText();
+        JsonNode oldConversation=call(post("/api/v1/conversations").contentType("application/json")
+                .content(json.writeValueAsString(java.util.Map.of("agentId",agent))),201);
+        assertThat(oldConversation.path("agentVersionId").asText()).isEqualTo(oldVersion);
         assertThat(call(get("/api/v1/agents/{id}",agent),200).path("data").path("workflowBinding").path("workflowId").asText()).isEqualTo(workflow);
         assertThat(agents.requireVersion(oldVersion).workflowBinding().workflowVersionId()).isEqualTo(workflowVersion);
         call(delete("/api/v1/agents/{id}/workflow-binding",agent),200);
@@ -116,6 +122,30 @@ class ManagementReadbackIntegrationTest {
         String newVersion=call(post("/api/v1/agents/{id}/publications",agent),200).path("data").path("id").asText();
         assertThat(agents.requireVersion(newVersion).workflowBinding()).isNull();
         assertThat(agents.requireVersion(oldVersion).workflowBinding().workflowVersionId()).isEqualTo(workflowVersion);
+        assertThat(agents.requireVersion(oldVersion).workflowBinding().checksum()).isEqualTo(workflowChecksum);
+
+        String runId=call(post("/api/v1/conversations/{id}/runs",oldConversation.path("id").asText())
+                .header("Idempotency-Key",UUID.randomUUID().toString()).contentType("application/json")
+                .content("{\"message\":\"hello after unbind\"}"),202).path("id").asText();
+        JsonNode result=awaitRun(runId);
+        assertThat(result.path("state").asText()).isEqualTo("COMPLETED");
+        assertThat(result.path("agentVersionId").asText()).isEqualTo(oldVersion).isNotEqualTo(newVersion);
+        assertThat(result.path("outputMessage").asText()).isEqualTo("published-answer");
+        JsonNode runEvents=call(get("/api/v1/runs/{id}/events",runId),200);
+        JsonNode started=null,completed=null;
+        for(JsonNode event:runEvents) {
+            if(event.path("type").asText().equals("workflow.started")) started=json.readTree(event.path("payload").asText());
+            if(event.path("type").asText().equals("workflow.completed")) completed=json.readTree(event.path("payload").asText());
+        }
+        assertThat(started).isNotNull();
+        assertThat(completed).isNotNull();
+        assertThat(started.path("workflowVersionId").asText()).isEqualTo(workflowVersion);
+        assertThat(started.path("workflowChecksum").asText()).isEqualTo(workflowChecksum);
+        JsonNode execution=call(get("/api/v1/workflow-runs/{id}",completed.path("workflowRunId").asText()),200).path("data");
+        assertThat(execution.path("workflowVersionId").asText()).isEqualTo(workflowVersion);
+        assertThat(execution.path("workflowDigest").asText()).isEqualTo(workflowChecksum);
+        assertThat(execution.path("status").asText()).isEqualTo("SUCCEEDED");
+        assertThat(execution.path("output").asText()).isEqualTo("published-answer");
     }
 
     @Test void legacyConversationAndToolCatalogReturnActualFields() throws Exception {
@@ -139,6 +169,16 @@ class ManagementReadbackIntegrationTest {
                 """.formatted(UUID.randomUUID())),201).path("data").asText();
     }
     private JsonNode publishWorkflow(String id) throws Exception { return call(post("/api/v1/workflows/{id}/versions",id),200).path("data"); }
+    private JsonNode awaitRun(String id) throws Exception {
+        Instant deadline=Instant.now().plusSeconds(5);
+        JsonNode result;
+        do {
+            result=call(get("/api/v1/runs/{id}",id),200);
+            if(!result.path("state").asText().equals("RUNNING")) return result;
+            Thread.sleep(20);
+        } while(Instant.now().isBefore(deadline));
+        throw new AssertionError("Run did not finish: "+id);
+    }
     private JsonNode call(MockHttpServletRequestBuilder request,int status) throws Exception {
         return json.readTree(http.perform(request).andExpect(status().is(status)).andReturn().getResponse().getContentAsString());
     }
