@@ -366,7 +366,7 @@ test('missing lookup on cancel keeps the uncertainty and never sends a creation 
   await page.getByRole('button', { name: '取消', exact: true }).click()
   await expect.poll(() => lookups).toBe(1)
   await expect(page.locator('.chat-toolbar p')).toContainText('未确认取消')
-  await page.getByRole('button', { name: '重试提交结果' }).click()
+  await page.getByRole('button', { name: '查询取消结果' }).click()
   await expect.poll(() => lookups).toBe(2)
   expect(creations).toBe(1)
   await expect(page.getByRole('button', { name: '放弃等待（不取消服务端）' })).toBeEnabled()
@@ -418,6 +418,55 @@ test('repeated opens followed by errors have a finite automatic reconnect budget
   expect(creations).toBe(1)
 })
 
+for (const heldState of ['RUNNING', 'COMPLETED']) {
+  test(`manual retry during an in-flight GET reconnects once and settles once (${heldState})`, async ({ page }) => {
+    let held: import('@playwright/test').Route | undefined, reads = 0, posts = 0
+    page.on('request', req => { if (req.method() === 'POST' && req.url().endsWith('/runs')) posts++ })
+    await page.route('**/api/v1/runs/run-1', route => {
+      reads++
+      if (reads === 1) { held = route; return }
+      return route.fulfill({ json: run('COMPLETED', '唯一的持久化答案') })
+    })
+    await begin(page)
+    const initialAssistants = await page.locator('.message.assistant').count()
+    await emit(page, 'message.delta', { content: '第一段' }, '11')
+    await page.evaluate(() => {
+      const source = (window as unknown as { __streams: Array<{onerror: (e: Event) => void}> }).__streams[0]
+      source.onerror(new Event('error'))
+    })
+    await expect.poll(() => Boolean(held)).toBe(true)
+    await page.evaluate(() => {
+      const source = (window as unknown as { __streams: Array<{onerror: (e: Event) => void}> }).__streams[0]
+      for (let i = 0; i < 5; i++) source.onerror(new Event('error'))
+    })
+    await expect(page.locator('.chat-toolbar p')).toContainText('暂停')
+    // Actual user clicks, without force: a loading overlay must not swallow this intent.
+    await page.getByRole('button', { name: '重试同步' }).click({ timeout: 2000 })
+    await page.getByRole('button', { name: '重试同步' }).click({ timeout: 2000 })
+    await expect.poll(() => page.evaluate(() => (window as unknown as { __streams: unknown[] }).__streams.length),
+      { timeout: 2000 }).toBe(2)
+    expect(reads).toBe(1) // The original GET is still held; clicks coalesce, not concurrent reads.
+    await page.evaluate(() => {
+      const streams = (window as unknown as { __streams: Array<EventTarget & {url: string; closed: boolean; onerror: (e: Event) => void}> }).__streams
+      if (!streams[0].closed || streams[0].url !== streams[1].url) throw new Error('must reconnect the same Run')
+      streams[0].onerror(new Event('error'))
+      streams[0].dispatchEvent(new MessageEvent('message.delta', {data: JSON.stringify({content: '旧流'}), lastEventId: '999'}))
+    })
+    await emit(page, 'message.delta', { content: '第一段' }, '11')
+    await emit(page, 'message.delta', { content: '第二段' }, '12')
+    await expect(page.locator('.message.assistant').last().locator('div')).toHaveText('第一段第二段')
+    await emit(page, 'run.completed', {}, '13')
+    await emit(page, 'run.completed', {}, '13')
+    await held!.fulfill({ json: run(heldState, heldState === 'COMPLETED' ? '唯一的持久化答案' : '') })
+    await expect(page.locator('.chat-toolbar p')).toContainText('COMPLETED')
+    await expect(page.locator('.message.assistant')).toHaveCount(initialAssistants + 1)
+    await expect(page.locator('.message.assistant').last().locator('div')).toHaveText('唯一的持久化答案')
+    await expect(page.getByRole('button', { name: '重试同步' })).not.toBeVisible()
+    expect(reads).toBe(heldState === 'RUNNING' ? 2 : 1)
+    expect(posts).toBe(1)
+  })
+}
+
 test('abandoning an uncertain clarification does not restore it as a contextless new task', async ({ page }) => {
   await page.route('**/api/v1/runs/run-1', route => route.fulfill({ json: run('NEEDS_INPUT', '请补充') }))
   await page.route('**/api/v1/runs/run-1/events', route => route.fulfill({ json: [
@@ -453,7 +502,7 @@ test('cancel intent remains explicit after the pending POST has an unknown resul
   await page.getByRole('button', {name: '取消', exact: true}).click()
   await held!.abort('failed')
   await expect(page.locator('.chat-toolbar p')).toContainText('取消待确认，仅查询')
-  await page.getByRole('button', {name: '重试提交结果'}).click()
+  await page.getByRole('button', {name: '查询取消结果'}).click()
   await expect.poll(() => lookups).toBe(1)
   expect(posts).toBe(1)
 })
@@ -493,7 +542,7 @@ test('lookup can find a late original submission after an earlier miss without P
   await expect(page.getByRole('button', { name: '重试提交结果' })).toBeVisible()
   await page.getByRole('button', { name: '取消', exact: true }).click()
   await expect(page.locator('.chat-toolbar p')).toContainText('未确认取消')
-  await page.getByRole('button', { name: '重试提交结果' }).click()
+  await page.getByRole('button', { name: '查询取消结果' }).click()
   await expect.poll(() => cancelled).toBe(1)
   expect(posts).toBe(1); expect(reads).toBe(2)
 })

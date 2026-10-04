@@ -125,6 +125,42 @@ class RunSubmissionIdentityTest {
         verify(executor,times(1)).execute(any());
     }
 
+    @Test void foreignAndMissingResumeSourcesHaveIdenticalSafeErrorsWithoutWrites() throws Exception {
+        String conversation=conversation(), other=conversation();
+        String source=create(other,UUID.randomUUID().toString(),"source",202).path("id").asText();
+        long beforeRuns=runs.count(),beforeMessages=messages.count(),beforeEvents=events.count();
+        JsonNode previous=null;
+        for (String candidate:java.util.List.of(source,UUID.randomUUID().toString())) {
+            String key=UUID.randomUUID().toString();
+            String body=json.writeValueAsString(java.util.Map.of("message","hello","resume",
+                    java.util.Map.of("runId",candidate,"gapIds",java.util.List.of("gap-1"))));
+            JsonNode rejected=json.readTree(http.perform(post("/api/v1/conversations/{id}/runs",conversation)
+                            .header("Idempotency-Key",key).contentType(MediaType.APPLICATION_JSON).content(body))
+                    .andExpect(status().isBadRequest()).andExpect(jsonPath("$.code").value(40000))
+                    .andExpect(jsonPath("$.message").value(com.hify.common.ErrorCode.PARAM_ERROR.message()))
+                    .andReturn().getResponse().getContentAsString());
+            assertThat(rejected.toString()).doesNotContain(candidate,conversation,other);
+            if(previous!=null) assertThat(rejected).isEqualTo(previous);
+            previous=rejected;
+            http.perform(get("/api/v1/conversations/{id}/runs/by-key",conversation).header("Idempotency-Key",key))
+                    .andExpect(status().isNotFound());
+        }
+        // The same source really exists: within its own conversation, the original state conflict remains.
+        http.perform(post("/api/v1/conversations/{id}/runs",other).header("Idempotency-Key",UUID.randomUUID().toString())
+                        .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(java.util.Map.of(
+                                "message","hello","resume",java.util.Map.of("runId",source,"gapIds",java.util.List.of("gap-1"))))))
+                .andExpect(status().isConflict());
+        assertThat(runs.count()).isEqualTo(beforeRuns);
+        assertThat(messages.count()).isEqualTo(beforeMessages);
+        assertThat(events.count()).isEqualTo(beforeEvents);
+        verify(executor,times(1)).execute(any());
+        // A valid submission changes the same counters used by the rejected requests.
+        create(conversation,UUID.randomUUID().toString(),"new work",202);
+        assertThat(runs.count()).isEqualTo(beforeRuns+1);
+        assertThat(messages.count()).isEqualTo(beforeMessages+1);
+        verify(executor,times(2)).execute(any());
+    }
+
     @Test void messageLimitRejectsBeforeWritesAndAcceptsTheExactBoundary() throws Exception {
         String conversation=conversation();
         long beforeRuns=runs.count(),beforeMessages=messages.count(),beforeEvents=events.count();

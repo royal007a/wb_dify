@@ -481,7 +481,7 @@
 - 功能：异步创建或重放 Run。
 - 输入：`Idempotency-Key + CreateRun(message,resume?)`。
 - 成功：HTTP 202，`RunView (raw; replay HTTP 200)`。
-- 必测断言/边界：同 key 同体200，命中先于可变Provider准入；异体409；resume验证归属和Gap；不重复消息；message最多20000 UTF-16单元，超限或NUL输入400且零写入；PG结构化字段识别指定幂等唯一约束，与本地化报文无关；会话并发删除404、其他完整性错误固定500。
+- 必测断言/边界：同 key 同体200，命中先于可变Provider准入；异体409；resume缺失/跨会话来源统一40000固定参数错误、无ID回显，非NEEDS_INPUT仍409，先校验再写入；Gap校验、不重复消息；message最多20000 UTF-16单元，超限或NUL输入400且零写入；PG结构化字段识别指定幂等唯一约束，与本地化报文无关；会话并发删除404、其他完整性错误固定500。
 - 实现：[RunController](../../backend/hify-app/src/main/java/com/hify/api/RunController.java)。
 - 候选测试（非逐接口覆盖承诺）：[RunSubmissionIdentityTest](../../backend/hify-app/src/test/java/com/hify/api/RunSubmissionIdentityTest.java)；[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)；[PostgresConcurrencyIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java)。
 

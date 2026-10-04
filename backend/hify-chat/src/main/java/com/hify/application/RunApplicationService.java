@@ -285,10 +285,8 @@ public class RunApplicationService {
     private ExecutionCheckpoint prepareResolvedCheckpoint(String conversationId, String newRunId, String input,
                                                          ResumeRequest resume) {
         AgentRun source = runs.findById(resume.runId())
-                .orElseThrow(() -> new IllegalArgumentException("Resume Run not found: " + resume.runId()));
-        if (!source.getConversationId().equals(conversationId)) {
-            throw new IllegalArgumentException("Resume Run belongs to another conversation");
-        }
+                .filter(candidate -> candidate.getConversationId().equals(conversationId))
+                .orElseThrow(() -> new com.hify.common.BizException(com.hify.common.ErrorCode.PARAM_ERROR));
         if (source.getState() != RunState.NEEDS_INPUT) {
             throw new IllegalStateException("Resume Run is not waiting for input");
         }

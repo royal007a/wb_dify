@@ -61,7 +61,7 @@
     "com.hify.api.WorkflowKnowledgeIntegrationTest": 10,
     "com.hify.api.KnowledgeApiIntegrationTest": 2,
     "com.hify.api.WorkflowKnowledgeReviewTest": 19,
-    "com.hify.api.RunSubmissionIdentityTest": 14,
+    "com.hify.api.RunSubmissionIdentityTest": 15,
     "com.hify.api.KnowledgeAdmissionShutdownTest": 22,
     "com.hify.api.WorkflowSettlementIntegrationTest": 4,
     "com.hify.api.KnowledgeShutdownPostgresTest": 22,

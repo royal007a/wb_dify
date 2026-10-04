@@ -330,7 +330,7 @@ function listen(run: Run, token: number) {
   }
 
   retryRead = async () => {
-    if (!current() || reading) return
+    if (!current()) return
     if (syncTimer) clearTimeout(syncTimer)
     syncTimer = undefined
     polls = 0
@@ -347,6 +347,8 @@ function listen(run: Run, token: number) {
       for (const [type, listener] of listeners) source.addEventListener(type, listener)
       bindConnection(source)
     }
+    // A held GET must not discard manual recovery. reconcile coalesces clicks
+    // into one follow-up read; autoPaused above prevents duplicate new streams.
     await reconcile()
   }
   const finish = () => {
@@ -457,8 +459,8 @@ function parsePayload(raw: string): Record<string, unknown> {
         <el-input v-model="message" type="textarea" :rows="2" placeholder="输入消息；例如：计算 17 * 23" />
         <div class="composer-actions">
           <span>{{ selectedAgent?.name ?? '未选择 Agent' }}<small v-if="pinnedVersionId"> · 固定版本 {{ pinnedVersionId.slice(0, 8) }}</small></span>
-          <el-button v-if="syncIssue" :loading="syncingRun" @click="retrySync">重试同步</el-button>
-          <el-button v-if="pendingSubmission?.unknown" :loading="submitting" @click="submitPending()">重试提交结果</el-button>
+          <el-button v-if="syncIssue" :aria-busy="syncingRun" @click="retrySync">重试同步</el-button>
+          <el-button v-if="pendingSubmission?.unknown" :loading="submitting" @click="submitPending()">{{ pendingSubmission.cancelRequested ? '查询取消结果' : '重试提交结果' }}</el-button>
           <el-button v-if="pendingSubmission?.unknown" :disabled="submitting" @click="abandonSubmission">放弃等待（不取消服务端）</el-button>
           <el-button v-if="running || pendingSubmission" type="danger" @click="cancel">取消</el-button>
           <el-button v-else type="primary" class="primary-gradient" native-type="submit" :disabled="submitting || syncIssue || resumeUnavailable || !message.trim() || !selectedAgentId">运行</el-button>

@@ -242,7 +242,7 @@
       "request": "Idempotency-Key + CreateRun(message,resume?)",
       "success": 202,
       "response": "RunView (raw; replay HTTP 200)",
-      "checks": "同 key 同体200，命中先于可变Provider准入；异体409；resume验证归属和Gap；不重复消息；message最多20000 UTF-16单元，超限或NUL输入400且零写入；PG结构化字段识别指定幂等唯一约束，与本地化报文无关；会话并发删除404、其他完整性错误固定500",
+      "checks": "同 key 同体200，命中先于可变Provider准入；异体409；resume缺失/跨会话来源统一40000固定参数错误、无ID回显，非NEEDS_INPUT仍409，先校验再写入；Gap校验、不重复消息；message最多20000 UTF-16单元，超限或NUL输入400且零写入；PG结构化字段识别指定幂等唯一约束，与本地化报文无关；会话并发删除404、其他完整性错误固定500",
       "testCandidates": [
         "backend/hify-app/src/test/java/com/hify/api/RunSubmissionIdentityTest.java",
         "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",

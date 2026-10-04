@@ -120,6 +120,8 @@ GET    /api/v1/runs/{runId}/events/stream
 
 恢复不会让旧 Run 从终态回退；服务创建一个带 `resumedFromRunId/resolvedGapIds` 的新 Run。源 Run 必须属于同一 Conversation、状态为 `NEEDS_INPUT` 且存在可恢复 checkpoint。未知、已关闭或跨会话 Gap 返回参数错误。
 
+新key的resume来源不存在或不属于当前会话时，统一400/40000、固定“参数错误”，不回显runId；同会话来源非NEEDS_INPUT仍409。该校验在写消息、Run及checkpoint之前，不改变已命中幂等键先比对请求摘要的顺序。
+
 Run输入上限为20000个Java UTF-16代码单元（与Bean Validation/String.length一致，不是UTF-8字节或Unicode码点数）；超过上限在写入前返回400/40000，恰好20000可接受。仅SQLState=23505且约束为uq_run_idempotency（H2为该约束的生成索引）才作为并发幂等重放；其他完整性异常回滚后，如会话已不存在返回404/40400，否则固定500/50000，不回显SQL/约束/输入。现有普通会话不存在入口的400兼容行为不在本片统一变更。
 
 Run创建的message、conversationId、Idempotency-Key、resume.runId/gapIds含NUL（U+0000）时，数据库访问前拒绝400/40000。PG唯一冲突读取驱动结构化SQLState/constraint字段，不依赖lc_messages；存在PG诊断时优先于Hibernate的报文解析结果，缺字段不猜测。H2兼容路径保持原行为。
@@ -321,4 +323,4 @@ Agent 发布时把 MCP 工具映射成稳定 runtime tool name 和 `ToolDefiniti
 
 Multipart解析先于路由/媒体类型解析：畸形multipart发往不存在路由或非上传接口也可能先返回400/413，不能无条件期望404/415。文件/请求大小超限统一413；类型/空内容/非法UTF-8等仍400。知识服务内的大小检查是绕过Servlet直接调用时的防御，同样413；不再将它宣称为正常HTTP可达的“>10MB返回400”。两份仓库nginx配置在Hify API入口提供固定JSON 413；必须发布相应代理配置才生效。任意巨大/慢请求、磁盘故障、连接已重置或容器在DispatcherServlet前拒绝等情形，不保证客户端能读到JSON（Tomcat有限吞包16MiB）。
 
-Memory和部分旧会话/resume入口仍有IllegalArgumentException映射400的历史边界，且Memory未知Run与resume未知runId仍可能回显该标识；不能泛称全部资源已统一404或所有错误出口已无输入回显。容器默认/error的path字段未在本切片统一清除。
+Memory和部分旧会话入口仍有IllegalArgumentException映射400的历史边界，Memory未知Run仍可能回显该标识；resume来源不存在/跨会话的文案已由SPEC-CHAT-LIFECYCLE-005统一，不能泛称全部资源已统一404或所有错误出口已无输入回显。容器默认/error的path字段未在本切片统一清除。
