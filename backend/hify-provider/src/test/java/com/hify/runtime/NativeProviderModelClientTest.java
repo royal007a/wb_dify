@@ -34,6 +34,26 @@ class NativeProviderModelClientTest {
 
     @AfterEach void stop() { if (server != null) server.stop(0); }
 
+    @Test void explicitOutputBudgetIsMappedWithoutChangingLegacyDefaults() throws Exception {
+        AtomicReference<JsonNode> captured = new AtomicReference<>();
+        String baseUrl=serve("/", exchange -> {
+            captured.set(json.readTree(exchange.getRequestBody()));
+            respond(exchange,"{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"OK\"}}],\"content\":[{\"type\":\"text\",\"text\":\"OK\"}],\"candidates\":[{\"content\":{\"parts\":[{\"text\":\"OK\"}]}}]}");
+        });
+        for(ProviderType type:List.of(ProviderType.OPENAI,ProviderType.ANTHROPIC,ProviderType.GEMINI)) {
+            ModelClient client=switch(type){
+                case OPENAI -> new OpenAiCompatibleModelClient(config(type,baseUrl),json,http(),resilience(),codec(),credential());
+                case ANTHROPIC -> new AnthropicModelClient(config(type,baseUrl),json,http(),resilience(),codec(),credential());
+                default -> new GeminiModelClient(config(type,baseUrl),json,http(),resilience(),codec(),credential());
+            };
+            assertThat(client.generate(new ModelRequest("budget",0,List.of(RuntimeMessage.user("hi")),List.of(),com.hify.common.ExecutionControl.none(),123)).content()).isEqualTo("OK");
+            assertThat(type==ProviderType.GEMINI?captured.get().path("generationConfig").path("maxOutputTokens").asInt():captured.get().path("max_tokens").asInt()).isEqualTo(123);
+            client.generate(new ModelRequest("budget",0,List.of(RuntimeMessage.user("hi")),List.of()));
+            if(type==ProviderType.ANTHROPIC)assertThat(captured.get().path("max_tokens").asInt()).isEqualTo(1024);
+            else assertThat(type==ProviderType.GEMINI?captured.get().path("generationConfig").has("maxOutputTokens"):captured.get().has("max_tokens")).isFalse();
+        }
+    }
+
     @Test
     void mapsAnthropicToolUseAndResult() throws Exception {
         AtomicInteger calls = new AtomicInteger();

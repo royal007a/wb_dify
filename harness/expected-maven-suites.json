@@ -17,6 +17,7 @@
     "com.hify.api.KnowledgeMemoryPostgresTest": 21
   },
   "backend-tests": {
+    "com.hify.api.WorkflowExternalNodesIntegrationTest": 11,
     "com.hify.api.SemanticKnowledgeIntegrationTest": 7,
     "com.hify.api.SemanticKnowledgePostgresTest": 7,
     "com.hify.knowledge.application.DocumentIndexingServiceTest": 5,
@@ -36,7 +37,7 @@
     "com.hify.common.HttpErrorContractTest": 7,
     "com.hify.common.CredentialReferencePolicyTest": 6,
     "com.hify.runtime.MockModelClientTest": 13,
-    "com.hify.runtime.NativeProviderModelClientTest": 6,
+    "com.hify.runtime.NativeProviderModelClientTest": 7,
     "com.hify.provider.runtime.ProviderCredentialBoundaryTest": 2,
     "com.hify.provider.application.ProviderUrlPolicyTest": 3,
     "com.hify.runtime.ToolRuntimeTest": 6,

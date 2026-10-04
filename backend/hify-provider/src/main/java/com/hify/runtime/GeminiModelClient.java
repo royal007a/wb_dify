@@ -50,7 +50,8 @@ public class GeminiModelClient implements ModelClient {
         body.put("contents", request.messages().stream()
                 .filter(message -> !"system".equals(message.role()))
                 .map(message -> toContent(message, toolNames)).toList());
-        body.put("generationConfig", Map.of("temperature", request.temperature()));
+        body.put("generationConfig", request.maxOutputTokens() == null ? Map.of("temperature", request.temperature())
+                : Map.of("temperature", request.temperature(), "maxOutputTokens", request.maxOutputTokens()));
         if (!request.tools().isEmpty()) body.put("tools", List.of(Map.of("functionDeclarations",
                 request.tools().stream().map(this::toTool).toList())));
 
@@ -100,7 +101,8 @@ public class GeminiModelClient implements ModelClient {
                 List.of(Map.of("text", String.join("\n\n", system)))));
         body.put("contents", request.messages().stream().filter(message -> !"system".equals(message.role()))
                 .map(message -> toContent(message, toolNames)).toList());
-        body.put("generationConfig", Map.of("temperature", request.temperature()));
+        body.put("generationConfig", request.maxOutputTokens() == null ? Map.of("temperature", request.temperature())
+                : Map.of("temperature", request.temperature(), "maxOutputTokens", request.maxOutputTokens()));
         if (!request.tools().isEmpty()) body.put("tools", List.of(Map.of("functionDeclarations",
                 request.tools().stream().map(this::toTool).toList())));
 

@@ -58,6 +58,8 @@ hify:
   max-tool-calls: 12
   max-replans: 2
   max-retries: 1
+  workflow:
+    http-allowed-endpoints: ${HIFY_WORKFLOW_HTTP_ALLOWED_ENDPOINTS:[]}
   knowledge:
     min-vector-score: ${HIFY_KNOWLEDGE_MIN_VECTOR_SCORE:0.5}
   intent:

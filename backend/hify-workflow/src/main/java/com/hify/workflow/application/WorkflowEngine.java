@@ -24,9 +24,11 @@ public class WorkflowEngine {
  private final java.util.concurrent.Executor ioExecutor;
  private final Duration timeout;
  private final ExecutionLifecycle lifecycle;
+ private final WorkflowExternalNodes external;
  public WorkflowEngine(WorkflowApplicationService application,WorkflowRunRepository runs,WorkflowNodeRunRepository nodeRuns,KnowledgeRetrievalPort knowledge,ObjectMapper json,WorkflowGraphValidator validator,java.util.concurrent.Executor ioExecutor,Duration timeout){this(application,runs,nodeRuns,knowledge,json,validator,ioExecutor,timeout,new ExecutionLifecycle());}
+ public WorkflowEngine(WorkflowApplicationService application,WorkflowRunRepository runs,WorkflowNodeRunRepository nodeRuns,KnowledgeRetrievalPort knowledge,ObjectMapper json,WorkflowGraphValidator validator,java.util.concurrent.Executor ioExecutor,Duration timeout,ExecutionLifecycle lifecycle){this(application,runs,nodeRuns,knowledge,json,validator,ioExecutor,timeout,lifecycle,null);}
  @org.springframework.beans.factory.annotation.Autowired
- public WorkflowEngine(WorkflowApplicationService application,WorkflowRunRepository runs,WorkflowNodeRunRepository nodeRuns,KnowledgeRetrievalPort knowledge,ObjectMapper json,WorkflowGraphValidator validator,@Qualifier("workflowIoExecutor") java.util.concurrent.Executor ioExecutor,@Value("${hify.workflow.timeout:60s}") Duration timeout,ExecutionLifecycle lifecycle){this.application=application;this.runs=runs;this.nodeRuns=nodeRuns;this.knowledge=knowledge;this.json=json;this.validator=validator;this.ioExecutor=ioExecutor;this.timeout=timeout;this.lifecycle=lifecycle;}
+ public WorkflowEngine(WorkflowApplicationService application,WorkflowRunRepository runs,WorkflowNodeRunRepository nodeRuns,KnowledgeRetrievalPort knowledge,ObjectMapper json,WorkflowGraphValidator validator,@Qualifier("workflowIoExecutor") java.util.concurrent.Executor ioExecutor,@Value("${hify.workflow.timeout:60s}") Duration timeout,ExecutionLifecycle lifecycle,WorkflowExternalNodes external){this.application=application;this.runs=runs;this.nodeRuns=nodeRuns;this.knowledge=knowledge;this.json=json;this.validator=validator;this.ioExecutor=ioExecutor;this.timeout=timeout;this.lifecycle=lifecycle;this.external=external;}
 
  public WorkflowRunResponse execute(String versionId,String input){
   return execute(versionId,input,ExecutionControl.withTimeout(timeout,()->false));
@@ -53,6 +55,7 @@ public class WorkflowEngine {
    throw new WorkflowDefinitionException(ErrorCode.CONFLICT,"Workflow 与 Agent 固定校验和不匹配，请重新发布 Workflow、Agent 并新建会话");
   WorkflowDraftRequest draft=WorkflowPublishedGraph.read(version,json);
   validator.validate(draft);
+  if(external!=null)external.requirePublished(draft);
   draft.nodes().stream().filter(WorkflowKnowledgeSnapshots::isKnowledge).forEach(WorkflowKnowledgeSnapshots::require);
   Map<String,WorkflowNodeSpec> nodeMap=new LinkedHashMap<>();draft.nodes().forEach(n->nodeMap.put(n.nodeKey(),n));Map<String,List<WorkflowEdgeSpec>> edgeMap=new HashMap<>();for(var e:draft.edges())edgeMap.computeIfAbsent(e.sourceNodeKey(),k->new ArrayList<>()).add(e);
   String current=nodeMap.values().stream().filter(n->n.type().equalsIgnoreCase("START")).findFirst().orElseThrow().nodeKey();
@@ -109,6 +112,7 @@ public class WorkflowEngine {
  @Transactional(readOnly=true) public WorkflowRunResponse get(String id){return response(runs.findById(id).orElseThrow(()->new BizException(ErrorCode.NOT_FOUND,"Workflow Run 不存在")));}
  private NodeOutcome executeNode(WorkflowNodeSpec node,WorkflowExecutionContext ctx,ExecutionControl control){JsonNode c=node.config();String type=node.type().toUpperCase(Locale.ROOT);return switch(type){
   case "START" -> new NodeOutcome(null,null);
+  case "LLM", "API_CALL" -> {String value=WorkflowControl.call(control,ioExecutor,()->external.execute(node,ctx,control));ctx.set(node.nodeKey(),text(c,"outputVariable","result"),value);yield new NodeOutcome(null,null);}
   case "TEMPLATE" -> {String value=ctx.resolve(required(c,"template"));String variable=text(c,"outputVariable","result");ctx.set(node.nodeKey(),variable,value);yield new NodeOutcome(null,null);}
   case "CONDITION" -> {boolean result=evaluate(required(c,"expression"),ctx);ctx.set(node.nodeKey(),text(c,"outputVariable","result"),result);yield new NodeOutcome(result,null);}
   case "KNOWLEDGE" -> {var snapshot=WorkflowKnowledgeSnapshots.require(node);String query=ctx.resolve(required(c,"query"));int topK=c.path("topK").asInt(3);var citations=WorkflowControl.call(control,ioExecutor,()->knowledge.searchSnapshot(snapshot,query,topK));if(citations.isEmpty())throw new BizException(ErrorCode.CONFLICT,"KNOWLEDGE_NO_EVIDENCE: 未检索到可用知识候选，工作流不能继续生成回答");ctx.set(node.nodeKey(),text(c,"outputVariable","citations"),citations);yield new NodeOutcome(null,null);}

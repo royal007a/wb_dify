@@ -39,7 +39,7 @@ public class AnthropicModelClient implements ModelClient {
     public RuntimeMessage generate(ModelRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("model", request.model());
-        body.put("max_tokens", 1024);
+        body.put("max_tokens", request.maxOutputTokens() == null ? 1024 : request.maxOutputTokens());
         body.put("temperature", request.temperature());
         List<String> system = request.messages().stream()
                 .filter(message -> "system".equals(message.role()))
@@ -139,7 +139,7 @@ public class AnthropicModelClient implements ModelClient {
     private Map<String, Object> requestBody(ModelRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("model", request.model());
-        body.put("max_tokens", 1024);
+        body.put("max_tokens", request.maxOutputTokens() == null ? 1024 : request.maxOutputTokens());
         body.put("temperature", request.temperature());
         List<String> system = request.messages().stream().filter(message -> "system".equals(message.role()))
                 .map(RuntimeMessage::content).filter(value -> value != null && !value.isBlank()).toList();

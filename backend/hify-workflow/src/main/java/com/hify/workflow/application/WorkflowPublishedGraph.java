@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hify.common.BizException;
 import com.hify.common.ErrorCode;
 import com.hify.workflow.api.WorkflowDraftRequest;
+import com.hify.workflow.api.WorkflowDefinitionException;
 import com.hify.workflow.domain.WorkflowVersion;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -20,6 +21,8 @@ final class WorkflowPublishedGraph {
             ObjectNode root=json.valueToTree(graph);
             if(graph.nodes().stream().anyMatch(WorkflowKnowledgeSnapshots::isKnowledge))
                 root.putObject("publication").put("knowledgeSnapshotFormat",1);
+            if(graph.nodes().stream().anyMatch(WorkflowExternalNodes::isExternal))
+                root.withObject("/publication").put("externalNodeFormat",1);
             return json.writeValueAsString(root);
         } catch(Exception failure){throw new BizException(ErrorCode.PARAM_ERROR,"Workflow JSON 无法序列化");}
     }
@@ -32,6 +35,9 @@ final class WorkflowPublishedGraph {
             if(!(tree instanceof ObjectNode root))throw invalid();
             JsonNode stamp=root.remove("publication");
             WorkflowDraftRequest graph=json.treeToValue(root,WorkflowDraftRequest.class);
+            if(graph.nodes()!=null&&graph.nodes().stream().anyMatch(WorkflowExternalNodes::isExternal)
+                    && (stamp==null||!stamp.path("externalNodeFormat").isInt()||stamp.path("externalNodeFormat").intValue()!=1))
+                throw new WorkflowDefinitionException("外部节点缺少服务端发布标记，请重新发布 Workflow 和 Agent");
             if(graph.nodes()!=null&&graph.nodes().stream().anyMatch(WorkflowKnowledgeSnapshots::isKnowledge)){
                 if(stamp==null||!stamp.path("knowledgeSnapshotFormat").isInt()
                         ||stamp.path("knowledgeSnapshotFormat").intValue()!=1)throw invalid();

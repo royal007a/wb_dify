@@ -11,7 +11,7 @@ import java.util.*;
 @Component
 public class WorkflowGraphValidator {
     public static final int MAX_EXECUTION_STEPS = 50;
-    private static final Set<String> TYPES = Set.of("START", "TEMPLATE", "CONDITION", "KNOWLEDGE", "END");
+    private static final Set<String> TYPES = Set.of("START", "TEMPLATE", "CONDITION", "KNOWLEDGE", "LLM", "API_CALL", "END");
 
     public void validate(WorkflowDraftRequest draft) {
         try {validateGraph(draft);}
@@ -114,6 +114,7 @@ public class WorkflowGraphValidator {
     }
     private List<String> templates(WorkflowNodeSpec node) {
         return switch (type(node)) {
+            case "LLM", "API_CALL" -> WorkflowExternalNodes.validate(node);
             case "TEMPLATE" -> List.of(required(node, "template"));
             case "CONDITION" -> WorkflowExpression.parse(required(node, "expression")).templates();
             case "KNOWLEDGE" -> {

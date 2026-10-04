@@ -39,6 +39,7 @@ public class OpenAiCompatibleModelClient implements ModelClient {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("model", request.model());
         body.put("temperature", request.temperature());
+        if (request.maxOutputTokens() != null) body.put("max_tokens", request.maxOutputTokens());
         body.put("messages", request.messages().stream().map(this::toMessage).toList());
         if (!request.tools().isEmpty()) {
             body.put("tools", request.tools().stream().map(this::toTool).toList());
@@ -75,6 +76,7 @@ public class OpenAiCompatibleModelClient implements ModelClient {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("model", request.model());
         body.put("temperature", request.temperature());
+        if (request.maxOutputTokens() != null) body.put("max_tokens", request.maxOutputTokens());
         body.put("stream", true);
         body.put("stream_options", Map.of("include_usage", true));
         body.put("messages", request.messages().stream().map(this::toMessage).toList());
