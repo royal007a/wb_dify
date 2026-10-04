@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T08:33:39Z`
+- Generated from task state updated at: `2026-10-04T11:20:52Z`
 - Current task: `none`
-- Counts: pending 18 · running 0 · blocked 2 · completed 79
+- Counts: pending 17 · running 0 · blocked 3 · completed 79
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -46,7 +46,7 @@
 | `PROVIDER-001` | P1 | completed | backend, runtime | reversible_write | 补原生流式故障注入矩阵 |
 | `RECALL-002` | P1 | completed | backend, migration, runtime, eval | reversible_write | 建立召回评测门禁并按证据演进检索 |
 | `SECURITY-001` | P1 | completed | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |
-| `SEMANTIC-001` | P1 | pending | backend, frontend, harness | reversible_write | 真实Provider语义向量与版本隔离检索 |
+| `SEMANTIC-001` | P1 | blocked | backend, frontend, harness | reversible_write | 真实Provider语义向量与版本隔离检索 |
 | `SPEC-API-BEHAVIOR-001` | P1 | completed | backend, harness | reversible_write | 补齐管理读写与取消幂等的行为断言 |
 | `SPEC-CHAT-LIFECYCLE-002` | P1 | completed | frontend, runtime, harness | reversible_write | 复核前端Run创建与恢复输入边界 |
 | `SPEC-CHAT-LIFECYCLE-003` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 结果不明提交的身份恢复与安全退出 |
@@ -109,6 +109,7 @@
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |
 
 ## Blocked
+- `SEMANTIC-001`: task interrupted
 - `SPEC-KNOWLEDGE-INTEGRITY-003`: 本机Colima数据盘100%、仅余258MiB，PG初始化No space left on device；df7a92b精确计数H2窄测通过，完整backend/migration待释放空间后重跑
 - `SPEC-CHAT-LIFECYCLE-005`: Colima Docker数据盘100%/约256MiB可用，完整backend门禁未运行；f20bd34已通过34项受控浏览器、17项H2与frontend/harness七步，但不能替代frontend/backend/harness完整验收。runner预检返回75，未部署。
 

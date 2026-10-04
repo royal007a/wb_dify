@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SEMANTIC-001-20261004T104417Z-61ed4dde",
+  "taskId": "SEMANTIC-001",
+  "status": "blocked",
+  "baselineCommit": "4b237cdc2fb065283d0b300177fd59ed8c4ee7ba",
+  "approvalRef": null,
+  "startedAt": "2026-10-04T10:44:17Z",
+  "exitCode": 130,
+  "reason": "task interrupted",
+  "headCommit": "b399efe11d24d83d88bbe37ebd68a69aeeead962",
+  "finishedAt": "2026-10-04T11:20:52Z"
+}
