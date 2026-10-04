@@ -54,21 +54,32 @@ class RunEventBrokerBackpressureTest {
         verify(events,never()).findFirstByRunIdAndEventTypeInOrderByIdAsc(anyString(),any());
         verify(events,never()).findByRunIdAndIdGreaterThanOrderByIdAsc(anyString(),anyLong(),any());
         responseReady.set(true);
-        Future<?> commit = caller.submit(() -> {
-            TransactionSynchronizationManager.initSynchronization();
-            TransactionSynchronizationManager.setActualTransactionActive(true);
-            try {
-                broker.publish("run-Aa","message.delta",Map.of("delta","hello"));
-                TransactionSynchronizationManager.getSynchronizations().forEach(TransactionSynchronization::afterCommit);
-            } finally { TransactionSynchronizationManager.clearSynchronization(); TransactionSynchronizationManager.setActualTransactionActive(false); }
-        });
+        Future<?> commit = caller.submit(() -> publishAndCommit("run-Aa"));
         try {
             assertThat(entered.await(2,TimeUnit.SECONDS)).isTrue();
             commit.get(200,TimeUnit.MILLISECONDS);
             assertThat("run-Aa".hashCode()).isEqualTo("run-BB".hashCode());
+            // These commits start AFTER send entered, while the sender is still blocked.
+            assertThat(release.getCount()).isEqualTo(1);
+            caller.submit(() -> publishAndCommit("run-Aa")).get(200,TimeUnit.MILLISECONDS);
+            caller.submit(() -> publishAndCommit("run-BB")).get(200,TimeUnit.MILLISECONDS);
+            verify(events,times(2)).saveAndFlush(argThat(e -> e.getRunId().equals("run-Aa")));
+            verify(events).saveAndFlush(argThat(e -> e.getRunId().equals("run-BB")));
             caller.submit(() -> broker.subscribe("run-BB",null)).get(200,TimeUnit.MILLISECONDS);
             caller.submit(broker::heartbeat).get(200,TimeUnit.MILLISECONDS);
         } finally { release.countDown(); }
+    }
+
+    void publishAndCommit(String runId) {
+        TransactionSynchronizationManager.initSynchronization();
+        TransactionSynchronizationManager.setActualTransactionActive(true);
+        try {
+            broker.publish(runId,"message.delta",Map.of("delta","hello"));
+            TransactionSynchronizationManager.getSynchronizations().forEach(TransactionSynchronization::afterCommit);
+        } finally {
+            TransactionSynchronizationManager.clearSynchronization();
+            TransactionSynchronizationManager.setActualTransactionActive(false);
+        }
     }
 
     @Test void foreignAndUnknownCursorsAreRejectedBeforeSubscribing() {
