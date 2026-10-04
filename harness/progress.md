@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T16:07:09Z`
+- Generated from task state updated at: `2026-10-04T16:20:46Z`
 - Current task: `none`
-- Counts: pending 17 · running 0 · blocked 2 · completed 88
+- Counts: pending 17 · running 0 · blocked 2 · completed 89
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -33,7 +33,7 @@
 | `SPEC-WORKFLOW-KNOWLEDGE-001` | P0 | completed | backend, runtime, harness | reversible_write | 固定 Workflow 知识语料快照并保留历史引用 |
 | `WORKFLOW-NODES-002` | P0 | completed | backend, harness | reversible_write | 外部节点出站特殊网段与超时语义补强 |
 | `CAPABILITY-DEPLOY-001` | P1 | pending | harness, frontend | high_risk | 能力补齐完整验收与132重新部署 |
-| `CAPABILITY-VERIFY-001` | P1 | pending | harness, migration, backend, runtime, eval, frontend | reversible_write | 语义、外部Workflow与具名输入发布前完整验收 |
+| `CAPABILITY-VERIFY-001` | P1 | completed | harness, migration, backend, runtime, eval, frontend | reversible_write | 语义、外部Workflow与具名输入发布前完整验收 |
 | `CHAT-DEMO-001` | P1 | completed | backend, frontend, runtime | reversible_write | 修复 Demo 时间问句回显而不调用工具 |
 | `CHAT-DEMO-DEPLOY-001` | P1 | completed | backend, frontend | high_risk | 部署并验证 132 Demo 会话时间修复 |
 | `CONSOLE-002` | P1 | completed | frontend, runtime | reversible_write | 交付知识库工作流 MCP 管理台 |
@@ -93,6 +93,7 @@
 | `SPEC-DEPLOY-002` | P2 | completed | harness | reversible_write | 补强发布脚本中断边界与smoke自身数据清理 |
 | `SPEC-DEPLOY-004` | P2 | completed | harness | reversible_write | 补齐部署schema/索引与非标准smoke响应边界 |
 | `SPEC-DEPLOY-005` | P2 | completed | harness | reversible_write | 收束安装器断管道SIGPIPE边界 |
+| `SPEC-DEPLOY-008` | P2 | pending | harness | reversible_write | 部署补强剩余解释器与管道守卫及恢复手册 |
 | `SPEC-HISTORY-RECOVERY-003` | P2 | pending | backend, runtime, harness | reversible_write | 补齐恢复后的计划投影和预算边界 |
 | `SPEC-INPUT-HYGIENE-001` | P2 | completed | backend, harness | reversible_write | 拒绝上传与管理文本中的PG非法NUL |
 | `SPEC-INPUT-HYGIENE-002` | P2 | completed | backend, harness | reversible_write | 补齐Agent绑定文本准入与深层JSON集成反例 |

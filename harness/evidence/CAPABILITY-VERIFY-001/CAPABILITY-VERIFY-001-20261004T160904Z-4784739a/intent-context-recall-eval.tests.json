@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "step": "intent-context-recall-eval",
+  "invocationId": "64d81fc9-872e-49fe-bc4b-9bdcae583d0b",
+  "inventorySha256": "c136f120d4aec14514b22e26c61225f53f5ce6d52a36fc2e0e26fbfc012eba36",
+  "expectedSuites": {
+    "com.hify.memory.HistoryRecallEvaluationTest": 1,
+    "com.hify.runtime.context.ContextManagementEvaluationTest": 1,
+    "com.hify.intent.LayeredIntentRouterTest": 8,
+    "com.hify.intent.DeterministicIntentRouterTest": 6,
+    "com.hify.intent.IntentEvaluationDatasetTest": 1,
+    "com.hify.intent.IntentDecisionTest": 4,
+    "com.hify.intent.StructuredModelIntentClassifierTest": 3
+  },
+  "reportDirectory": "intent-context-recall-eval-viyig_k9/reports",
+  "result": "passed",
+  "tests": {
+    "totals": {
+      "tests": 24,
+      "executed": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "flakyAttempts": 0
+    },
+    "classes": [
+      {
+        "class": "com.hify.intent.DeterministicIntentRouterTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 6,
+        "flakyAttempts": 0,
+        "expectedMinimum": 6,
+        "xmlSha256": "2864f6eba1b89df37f264e1e10c104417f43c462ba3efe9d4aedb7d7cde16b00"
+      },
+      {
+        "class": "com.hify.intent.IntentDecisionTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 4,
+        "flakyAttempts": 0,
+        "expectedMinimum": 4,
+        "xmlSha256": "3d5b39fd1dba1ffa215d8d6988614536fda07fd79b6b05651350351f0a98602d"
+      },
+      {
+        "class": "com.hify.intent.IntentEvaluationDatasetTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 1,
+        "flakyAttempts": 0,
+        "expectedMinimum": 1,
+        "xmlSha256": "461bb2e11ce64848426863de2d6ff55f6e09e2eea9c35bf84dccdd4726eb4963"
+      },
+      {
+        "class": "com.hify.intent.LayeredIntentRouterTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 8,
+        "flakyAttempts": 0,
+        "expectedMinimum": 8,
+        "xmlSha256": "881f92d8ea1021419576d2ba494931c7df4db5339b3f92422290350e54941af4"
+      },
+      {
+        "class": "com.hify.intent.StructuredModelIntentClassifierTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 3,
+        "flakyAttempts": 0,
+        "expectedMinimum": 3,
+        "xmlSha256": "41c864dac198bcf44963a2fd1a39ace490c1f929ca4199143418d871d23e101f"
+      },
+      {
+        "class": "com.hify.memory.HistoryRecallEvaluationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 1,
+        "flakyAttempts": 0,
+        "expectedMinimum": 1,
+        "xmlSha256": "03533300deba91be403ecf56f23b19cdea2055e3105b0b510c40ef9ec395fc36"
+      },
+      {
+        "class": "com.hify.runtime.context.ContextManagementEvaluationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 1,
+        "flakyAttempts": 0,
+        "expectedMinimum": 1,
+        "xmlSha256": "3964a6b070252ef26b329e5f990865f1bd9f70102c70f0088ae4b3b602941947"
+      }
+    ],
+    "underfilledSuites": [],
+    "countMeaning": "Reported testcase/skip records; disabled containers can hide additional intended methods."
+  },
+  "command": [
+    "mvn",
+    "-B",
+    "-Dapi.version=1.44",
+    "-pl",
+    "hify-chat",
+    "-am",
+    "-Dtest=com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.runtime.context.ContextManagementEvaluationTest",
+    "-Dsurefire.failIfNoSpecifiedTests=false",
+    "-Dhify.test.reportsDirectory=/Users/weberzhao/hify/harness/evidence/CAPABILITY-VERIFY-001/CAPABILITY-VERIFY-001-20261004T160904Z-4784739a/intent-context-recall-eval-viyig_k9/reports",
+    "test"
+  ],
+  "commandExitCode": 0
+}

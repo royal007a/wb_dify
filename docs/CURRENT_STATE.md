@@ -1,12 +1,16 @@
 # Hify 当前实现边界
 
+最新本地完整增量验收：2026-10-05 00:20:46 CST，a510191六scope通过，backend96类667项、migration15类125项、runtime34项、eval24项均零失败/错误/skip/flaky，harness78项；另行受控浏览器42/42、本机真实bge-m3三条合成改写及GET→qwen串联通过。Inputs002未编辑数字默认值补强、DEPLOY004产物V24目标与索引PENDING准入均通过。见`evidence/CAPABILITY_VERIFY_001.md`，原始日志不提交，不把路由映射和三条检索当全面质量验收。132仍是下述42db727/V23，尚未配置线上embedding Provider；本地新代码不等于已经发布。
+
 2026-10-04 22点后增量：Dify官方逐篇差距映射见 `competitors/2026-10-04-dify.md`。本地已有SEMANTIC-001小型库语义检索与Workflow LLM/受控GET节点；特殊网段SSRF和前导零IPv4已在NODES-002/003修复、独立有界复核。WORKFLOW-INPUTS-001新增发布冻结的文本/数字/布尔/枚举输入及共用表单；0fc126f完整harness/backend/frontend于15:48:21Z通过，backend96类667项零失败/错误/skip/flaky，Harness74项，另行受控浏览器4/4；首轮门禁红灯保留。未编辑数字默认值的浏览器精度补强归INPUTS-002，HTTP内部防御剩余归HTTP-004。以上均未部署132；安装器必须先完成DEPLOY-004对V24的产物准入。下段42db727指最近一次线上完整发布基线，不代表新HEAD全部部署。
 
 最新完整验收：2026-10-04 08:26:10Z，代码42db727、证据043c18f，六scope通过：backend87类602项、migration118项、runtime34项、eval24项均零失败/错误/skip/flaky（scope重叠不相加），Harness74项、另行受控浏览器38项通过。57具名子场景及脱敏离线重算已独立复核，不能把68路由/38功能组映射称为全部功能通过，见`evidence/SPEC_RELEASE_VERIFY_20261004.md`。默认Colima满盘未清理，改用独立验证profile真实PG完成。旧知识完整性和Chat005的满盘blocked记录保留，不回写历史。当前代码已完整重部署132，08:33:39Z线上检查和harness/frontend收尾通过，见`evidence/SPEC_DEPLOYMENT_FULL_20261004.md`。
 
 初始审计基线：2026-10-03，原版 `/Users/weberzhao/hify`，`973257c`；源码对齐至 `9f40639`（2026-10-04）。下表区分源码存在、专项测试、历史运行，不代表全功能、真实模型或部署全部复验。历史审计001为495项中406通过/89条skip记录，Chat003为498项中409通过/89条skip记录；不回写或将历史skip冒充通过。新一轮SPEC-VERIFY后端539项/81类全部执行且零失败/错误/skip/flaky，包含真实隔离PG；逐方法子场景及其未测边界见 `evidence/SPEC_VERIFICATION.md`。该轮先出现背压测试夹具并发红灯，修复测试后重新全量运行，未掩盖首轮失败。当前验收清单见 `spec/README.md`；反例索引见 `spec/AUDIT_FINDINGS.md`；任务状态只看Harness。2026-09-13初版证据不能当作新功能的运行结果。
 
-## 已实现能力与验证边界
+## 历史基线能力与验证边界
+
+下表保留42db727一轮的基线描述；语义检索、LLM/受控GET节点和具名输入已经由上方增量证据覆盖，不能再用表内旧“未实现”推断当前源码仍不存在这些能力。线上状态以近期部署事实为准。
 
 | 能力 | 代码证据 | 当前边界 |
 |---|---|---|

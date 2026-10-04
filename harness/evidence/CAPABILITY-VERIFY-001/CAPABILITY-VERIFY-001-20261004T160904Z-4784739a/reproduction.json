@@ -1,0 +1,8 @@
+{
+  "offlineCommand": "python3 harness/behavior_report.py --evidence-dir harness/evidence/CAPABILITY-VERIFY-001/CAPABILITY-VERIFY-001-20261004T160904Z-4784739a --method-evidence harness/evidence/CAPABILITY-VERIFY-001/CAPABILITY-VERIFY-001-20261004T160904Z-4784739a/method-evidence.json",
+  "comparison": "Offline JSON and MD compared byte-for-byte with fresh-XML output: equal",
+  "methodEvidenceSha256": "5afe10f007f4aefe3389970f083000a21baec416c2fbb02b99d4c4f531065030",
+  "behaviorJsonSha256": "24cde640170f2ed6259c842014b6b888eafde8194436c408a2791015d2b7d361",
+  "behaviorMarkdownSha256": "d503cb107697a9f135b3939913d1971b9a6ec38a73ac145858b7fd74e1dc9b07",
+  "boundary": "Sanitized method statuses, not a signature. Raw logs and XML are not committed. Route mappings do not claim exhaustive behavior coverage."
+}

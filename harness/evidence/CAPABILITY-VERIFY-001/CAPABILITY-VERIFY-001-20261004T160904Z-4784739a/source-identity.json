@@ -1,0 +1,13 @@
+{
+  "headCommit": "a510191d0df3d7cf59df4c53acbdfe7f258e1d9d",
+  "backendTree": "3b42842e5f0a73185eb5b5127caa0c004f07aaa1",
+  "frontendTree": "98f555b622f7dba41cea62bce3670260bc26a361",
+  "deployTree": "d3b11e660e479c745177f9696e30e5b134802f89",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourcePaths": [
+    "backend",
+    "frontend",
+    "deploy"
+  ],
+  "meaning": "Exact tracked source before/after local live checks; no remote deployment."
+}
