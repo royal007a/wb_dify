@@ -7,16 +7,16 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "WORKFLOW-INPUTS-001-20261004T154206Z-aa4ea297",
-    "path": "harness/evidence/WORKFLOW-INPUTS-001/WORKFLOW-INPUTS-001-20261004T154206Z-aa4ea297",
+    "runId": "WORKFLOW-INPUTS-002-20261004T155241Z-34d2d41d",
+    "path": "harness/evidence/WORKFLOW-INPUTS-002/WORKFLOW-INPUTS-002-20261004T155241Z-34d2d41d",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "0fc126f5c5650241511cf0cdd86c8d4f7f949279",
-    "headCommit": "0fc126f5c5650241511cf0cdd86c8d4f7f949279",
-    "recordedAt": "2026-10-04T15:48:21Z",
+    "baselineCommit": "11965bb23ffe77f8b8518ac1f690c69de0f8e374",
+    "headCommit": "11965bb23ffe77f8b8518ac1f690c69de0f8e374",
+    "recordedAt": "2026-10-04T15:54:13Z",
     "verificationSchemaVersion": 3,
-    "verificationSha256": "ff1aeff947a46ac471b8db7a5a4a7fba779060e2a5c5bc6bcf228efe8c8a3e70"
+    "verificationSha256": "de3120c713ad9f58cf7f3a07cbb366326039cfdc0829249a894278ec9a12b828"
   },
-  "lastCompletedTaskId": "WORKFLOW-INPUTS-001",
-  "updatedAt": "2026-10-04T15:48:21Z"
+  "lastCompletedTaskId": "WORKFLOW-INPUTS-002",
+  "updatedAt": "2026-10-04T15:54:13Z"
 }

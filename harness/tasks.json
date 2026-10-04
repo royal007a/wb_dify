@@ -1,20 +1,28 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T15:48:21Z",
+  "updatedAt": "2026-10-04T15:54:13Z",
   "tasks": [
     {
       "id": "WORKFLOW-INPUTS-002",
       "title": "保留未编辑数字的发布默认值",
       "description": "001复验剩余：可选数字默认值被浏览器Number近似后显式提交。仅用户修改数字时发键，未编辑或清空使用服务端默认；不声称手输任意精度。",
       "priority": "P2",
-      "status": "pending",
-      "scopes": ["frontend", "harness"],
-      "verifyScopes": ["harness", "frontend"],
+      "status": "completed",
+      "scopes": [
+        "frontend",
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness",
+        "frontend"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["WORKFLOW-INPUTS-001"],
+      "dependsOn": [
+        "WORKFLOW-INPUTS-001"
+      ],
       "acceptance": [
         "可选数字未编辑不发键、主动改成0仍发送真实0、清空省略；必填数字仍校验",
         "浏览器覆盖高精度默认值不覆盖与1e-7显示行为，重开表单重置编辑标记；不修改后台或发布快照"
@@ -22,9 +30,21 @@
       "planPath": null,
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "WORKFLOW-INPUTS-002-20261004T155241Z-34d2d41d",
+          "path": "harness/evidence/WORKFLOW-INPUTS-002/WORKFLOW-INPUTS-002-20261004T155241Z-34d2d41d",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "11965bb23ffe77f8b8518ac1f690c69de0f8e374",
+          "headCommit": "11965bb23ffe77f8b8518ac1f690c69de0f8e374",
+          "recordedAt": "2026-10-04T15:54:13Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "de3120c713ad9f58cf7f3a07cbb366326039cfdc0829249a894278ec9a12b828"
+        }
+      ],
       "createdAt": "2026-10-04T15:49:00Z",
-      "updatedAt": "2026-10-04T15:49:00Z"
+      "updatedAt": "2026-10-04T15:54:13Z"
     },
     {
       "id": "HARNESS-DEPLOY-TIMING-001",
