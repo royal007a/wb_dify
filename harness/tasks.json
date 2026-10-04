@@ -3908,7 +3908,7 @@
         "列明读路径的NUL错误契约，H2和真实PG query/意图参数负例返回400而非500且不触发模型",
         "合法读请求正向对照；声明路径变量在真实HTTP容器与MockMvc下的不同证据边界"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/SPEC-INPUT-HYGIENE-003.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
