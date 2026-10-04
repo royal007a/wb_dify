@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T00:56:13Z",
+  "updatedAt": "2026-10-04T01:06:42Z",
   "tasks": [
     {
       "id": "SPEC-UPLOAD-BOUNDARY-001",
@@ -3569,13 +3569,19 @@
       "title": "补强发布脚本中断边界与smoke自身数据清理",
       "description": "132发布review六条P2的独立后续；仅本地脚本与故障夹具，不再次部署。保留迁移后停服人工评估、非零停机和同盘备份的边界。",
       "priority": "P2",
-      "status": "pending",
-      "scopes": ["harness"],
-      "verifyScopes": ["harness"],
+      "status": "completed",
+      "scopes": [
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
-      "dependsOn": ["SPEC-DEPLOY-001"],
+      "dependsOn": [
+        "SPEC-DEPLOY-001"
+      ],
       "acceptance": [
         "HUP/INT/TERM进入一次失败处置，有本地受控信号测试；记录脱离SSH的执行方式、不可捕获信号边界和迁移后停服策略",
         "停止旧实例后复查Agent/Workflow RUNNING，存在未收敛执行则不迁移并恢复旧服务；不宣称预检能提供无停机保证",
@@ -3583,12 +3589,24 @@
         "smoke检索要求本次文档ID与短句，不接受仅非空",
         "每个意外202也先登记自身ID；逐项清理尝试全部ID和KB，汇总失败且保留原始错误；本地假HTTP反例验证"
       ],
-      "planPath": "exec-plans/active/SPEC-DEPLOY-002.md",
+      "planPath": "exec-plans/completed/SPEC-DEPLOY-002.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-DEPLOY-002-20261004T005922Z-a988d37f",
+          "path": "harness/evidence/SPEC-DEPLOY-002/SPEC-DEPLOY-002-20261004T005922Z-a988d37f",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "0f2ab74ee74d74e76ebb23b19b545a90ade634b5",
+          "headCommit": "426de39b02f40d704fc97ca762cf9bd5e18d92d7",
+          "recordedAt": "2026-10-04T01:06:42Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "54c97baa26371f60ad9f313d93e7f884130ecb4b2799d0a8ab79d69d5015db14"
+        }
+      ],
       "createdAt": "2026-10-04T01:01:00Z",
-      "updatedAt": "2026-10-04T01:01:00Z"
+      "updatedAt": "2026-10-04T01:06:42Z"
     }
   ]
 }

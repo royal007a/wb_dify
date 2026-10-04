@@ -7,16 +7,16 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "SPEC-DEPLOY-001-20261004T004451Z-46b22950",
-    "path": "harness/evidence/SPEC-DEPLOY-001/SPEC-DEPLOY-001-20261004T004451Z-46b22950",
+    "runId": "SPEC-DEPLOY-002-20261004T005922Z-a988d37f",
+    "path": "harness/evidence/SPEC-DEPLOY-002/SPEC-DEPLOY-002-20261004T005922Z-a988d37f",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "44976f6dcedf62216f40435111d57c60f54e68a9",
-    "headCommit": "3e47d13390e0b304b761a0236bd099104bd3cbc0",
-    "recordedAt": "2026-10-04T00:56:13Z",
+    "baselineCommit": "0f2ab74ee74d74e76ebb23b19b545a90ade634b5",
+    "headCommit": "426de39b02f40d704fc97ca762cf9bd5e18d92d7",
+    "recordedAt": "2026-10-04T01:06:42Z",
     "verificationSchemaVersion": 3,
-    "verificationSha256": "ffaffbc2658149976aafe74db6e17190901a21b845f88eb39658320245d510c0"
+    "verificationSha256": "54c97baa26371f60ad9f313d93e7f884130ecb4b2799d0a8ab79d69d5015db14"
   },
-  "lastCompletedTaskId": "SPEC-DEPLOY-001",
-  "updatedAt": "2026-10-04T00:56:13Z"
+  "lastCompletedTaskId": "SPEC-DEPLOY-002",
+  "updatedAt": "2026-10-04T01:06:42Z"
 }

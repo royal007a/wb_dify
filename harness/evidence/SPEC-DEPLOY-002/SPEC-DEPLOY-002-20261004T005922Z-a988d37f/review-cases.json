@@ -1,0 +1,16 @@
+{
+  "baseline": "cf7783b",
+  "redTestCommit": "1219026",
+  "codeCommit": "426de39",
+  "scope": "Local synthetic HTTP and shell-command fixtures only; no 132, real credentials, service or database changes",
+  "smokeRed": {"tests": 5, "failures": 4, "logSha256": "f37ab753c2b0b77b6775ce78d6fa7aecc05a82677dfd25d01642dc08a4eb98bb"},
+  "installerBaselineInMemorySubstitution": {"tests": 2, "failingSubtests": 5, "logSha256": "2644d64684dd79023565ef27fefaffb8a9285d98bad171f9f0b8538f49d1f311"},
+  "narrowGreen": {"tests": 9, "failures": 0, "logSha256": "2b7921de28c244e543faf6f1b4990aae94fa4513610a687344bece3594e18833"},
+  "remainingBoundaries": [
+    "Post-cutover failure stops new service for human assessment, no automatic database or static rollback",
+    "Signal traps can be deferred while a child command runs; SIGKILL and power loss are not handled",
+    "Stop/recheck is not an admission lock or zero-downtime release",
+    "Response-lost creation can leave unknown IDs; cleanup does not enumerate or delete unknown records",
+    "Synthetic retrieval is not semantic quality evaluation; no new remote fault drill"
+  ]
+}

@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T00:56:13Z`
+- Generated from task state updated at: `2026-10-04T01:06:42Z`
 - Current task: `none`
-- Counts: pending 20 · running 0 · blocked 0 · completed 65
+- Counts: pending 19 · running 0 · blocked 0 · completed 66
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -76,7 +76,7 @@
 | `SPEC-CHILD-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 核验子任务孤儿扫描与父Run恢复时序 |
 | `SPEC-CREDENTIAL-BOUNDARY-002` | P2 | completed | backend, runtime, harness | reversible_write | 补齐受保护配置命名空间与冻结凭据负向验收 |
 | `SPEC-CREDENTIAL-BOUNDARY-003` | P2 | completed | backend, harness | reversible_write | 主密钥宽松配置绑定别名不得被误授权 |
-| `SPEC-DEPLOY-002` | P2 | pending | harness | reversible_write | 补强发布脚本中断边界与smoke自身数据清理 |
+| `SPEC-DEPLOY-002` | P2 | completed | harness | reversible_write | 补强发布脚本中断边界与smoke自身数据清理 |
 | `SPEC-HISTORY-RECOVERY-003` | P2 | pending | backend, runtime, harness | reversible_write | 补齐恢复后的计划投影和预算边界 |
 | `SPEC-KNOWLEDGE-FINISH-004` | P2 | pending | backend, frontend, runtime, harness | reversible_write | 对齐知识门禁故障分类、检索事件和核验范围展示 |
 | `SPEC-KNOWLEDGE-INTEGRITY-003` | P2 | pending | backend, harness, migration | reversible_write | 补齐索引数据库类型检测及Agent固定Workflow校验和 |
