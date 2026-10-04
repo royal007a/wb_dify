@@ -2078,7 +2078,7 @@
         "本地和 132 的入口、健康、关键纵向切片有运行证据",
         "独立 review 的阻塞问题已关闭或明确向用户报告"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/SPEC-DEPLOY-001.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
