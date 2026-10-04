@@ -31,3 +31,5 @@ python3 harness/behavior_report.py \
 ```
 
 独立审查方在b0e3882隔离archive里实跑报告器9项；背压仅静态复核。其提出的P3（observed未纳入verification本身摘要）继续作为证据边界：本次reproduction另记整个输入SHA，但没有改动已完成的门禁manifest，也不声称自动门禁验证该SHA。
+
+最终独立复验：mymacclaude从d922888导出的archive（无原始XML）执行offline命令，JSON/Markdown与提交内容cmp逐字节一致，三份SHA一致；480个方法选择器中没有XML属性、stdout或失败正文。另核对547项摘要、源码树和空源码diff；未重跑后端。两条报告/测试P2按该证据关闭；P3仍为上述非签名边界。
