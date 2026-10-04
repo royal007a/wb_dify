@@ -7,3 +7,7 @@
 旧实现新增8个subtest失败；修复仅on_exit在保存result后trap空PIPE，以及最终active检查加--quiet。不是全流程忽略SIGPIPE，也不承诺断管道后的诊断一定能输出。绿色与门禁结果待本轮补录。
 
 绿色窄测14项通过，38.423秒。首轮最终门禁因同时登记的下一项SPEC-DEPLOY-006误写operation=deploy（合法枚举为deployment）在harness-state失败；这不是产品或脚本测试失败，记录保留，不将该轮当passed。修正元数据后重新执行独立门禁。
+
+重跑最终门禁：`SPEC-DEPLOY-005-20261004T015109Z-f50d1ff1`，HEAD d7b2300（脚本代码609829e未变），2026-10-04T01:51:59Z、schema3、harness passed，50项Python全过。前一轮失败证据`SPEC-DEPLOY-005-20261004T014624Z-fe130b4d`保留；启动重试时首次因未提交plan自动移到blocked目录被clean-tree检查挡下，提交该移动后才启动，没有执行部署。
+
+原始窄测日志不入库：installer-red SHA `7a4bec7d8f38fc0ac9ab44d991074703d20d204fe7757a81012a915ecc524e11`；deploy-green SHA `1aaaadecc5f34d2ff1c4f1c469b5d23188da4a2dd747060a174eec74c0811340`。SHA不能替代日志或真实systemd/网络测试。

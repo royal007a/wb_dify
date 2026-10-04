@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T01:50:43Z",
+  "updatedAt": "2026-10-04T01:51:59Z",
   "tasks": [
     {
       "id": "SPEC-UPLOAD-BOUNDARY-001",
@@ -3741,7 +3741,7 @@
       "title": "收束安装器断管道SIGPIPE边界",
       "description": "d6d67c6独立复验P1关闭，新增P2：最终is-active的stdout EPIPE拆掉健康新版本；收尾printf stderr EPIPE使原退出码丢失。发布前补quiet及清理期间PIPE忽略。",
       "priority": "P2",
-      "status": "blocked",
+      "status": "completed",
       "scopes": [
         "harness"
       ],
@@ -3761,7 +3761,7 @@
       ],
       "planPath": "exec-plans/blocked/SPEC-DEPLOY-005.md",
       "checkpoint": null,
-      "blockedReason": "verification failed",
+      "blockedReason": null,
       "evidence": [
         {
           "runId": "SPEC-DEPLOY-005-20261004T014624Z-fe130b4d",
@@ -3771,10 +3771,21 @@
           "baselineCommit": "5330c1533f2afcff2e5864aed18abcb824a12db6",
           "headCommit": "609829ede5f6cea40562423ccdd30eac072a9182",
           "recordedAt": "2026-10-04T01:50:43Z"
+        },
+        {
+          "runId": "SPEC-DEPLOY-005-20261004T015109Z-f50d1ff1",
+          "path": "harness/evidence/SPEC-DEPLOY-005/SPEC-DEPLOY-005-20261004T015109Z-f50d1ff1",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "d7b2300b83e83f38cdb8378b4645fba0ad799cf5",
+          "headCommit": "d7b2300b83e83f38cdb8378b4645fba0ad799cf5",
+          "recordedAt": "2026-10-04T01:51:59Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "ad0dec77866800f61d29cc6bab3f3eba478fe1fccefcdf2be227fb91e1b4b6c5"
         }
       ],
       "createdAt": "2026-10-04T01:43:00Z",
-      "updatedAt": "2026-10-04T01:50:43Z"
+      "updatedAt": "2026-10-04T01:51:59Z"
     },
     {
       "id": "SPEC-INPUT-HYGIENE-001",
