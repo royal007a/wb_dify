@@ -2012,7 +2012,7 @@
         "失败先有可复现证据，再补回归修复；迁移门禁无跳过",
         "凭据、用户数据、旧发布版本和取消/replay 的安全边界不退化"
       ],
-      "planPath": "exec-plans/blocked/SPEC-VERIFY-001.md",
+      "planPath": "exec-plans/active/SPEC-VERIFY-001.md",
       "checkpoint": null,
       "blockedReason": "task command failed",
       "evidence": [
