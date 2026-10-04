@@ -1,0 +1,8 @@
+{
+  "headCommit": "b0e38826c7b467c197d473e4fe6c4c05e028f004",
+  "backendTree": "a1f955dba2c2fc31aedac9eaa8b1681dfea62258",
+  "frontendTree": "8f83bc4774e6049892447286e0da9057c5c3f397",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "status": "M docs/CURRENT_STATE.md\n M docs/spec/README.md\n M harness/progress.md\n M harness/state.json\n M harness/tasks.json\n?? harness/evidence/SPEC-VERIFY-002/",
+  "note": "Fresh backend/harness gate running; application, test and reporter source unchanged since b0e3882. Documentation/state edits recorded separately."
+}

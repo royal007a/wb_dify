@@ -14,4 +14,20 @@
 
 这些 SHA 绑定用于发现误拿旧证据和意外变化，不是签名；有仓库写权限的人仍可以同时伪造输入和记录。不能把脱敏输入当成重新执行测试。
 
-本轮完整门禁和具体重算命令见本任务 evidence 目录及后续记录；未完成前不以本段宣称通过。
+## 本轮结果（2026-10-04）
+
+代码 `b0e3882`，门禁于02:14:13Z结束，schema3、backend/harness均passed。后端81类547项全部执行，failures/errors/skipped/flaky均0；背压类3项，最少数量满足。Harness54项通过，其中报告器9项；窄测同样通过。这次未重跑前端/浏览器、独立migration scope、真实供应商或132；没有修改src/main、frontend或deploy。
+
+证据目录：`harness/evidence/SPEC-VERIFY-002/SPEC-VERIFY-002-20261004T020317Z-18c9e471/`。source-identity记录代码树及空源码diff；reproduction.json记录原始窄测日志SHA、脱敏输入SHA、两次命令与输出SHA。
+
+从本次与摘要匹配的XML导出method-evidence.json后，再显式以它重算，behavior-report.json和Markdown逐字节一致：68条路由、38组功能，36个具名子场景pass、0 fail/not-run。路由仍为mapped-subcases-only，不是68条接口所有行为通过。JSON SHA `b6fc59cc…`，Markdown `1503825b…`，脱敏输入 `ce101ea1…`；完整值在reproduction.json。
+
+只需仓库已提交文件的复现命令：
+
+```sh
+python3 harness/behavior_report.py \
+  --evidence-dir harness/evidence/SPEC-VERIFY-002/SPEC-VERIFY-002-20261004T020317Z-18c9e471 \
+  --method-evidence harness/evidence/SPEC-VERIFY-002/SPEC-VERIFY-002-20261004T020317Z-18c9e471/method-evidence.json
+```
+
+独立审查方在b0e3882隔离archive里实跑报告器9项；背压仅静态复核。其提出的P3（observed未纳入verification本身摘要）继续作为证据边界：本次reproduction另记整个输入SHA，但没有改动已完成的门禁manifest，也不声称自动门禁验证该SHA。

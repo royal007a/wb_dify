@@ -7,7 +7,7 @@
 - [HTTP_API.md](HTTP_API.md)：全部显式 `/api` 方法/路径、输入 DTO、成功响应、核心边界、候选测试。
 - [http-api.json](http-api.json)：人工维护的接口契约；`ApiContractInventoryTest` 对 Spring 实际注册集合做双向相等校验，不能只检查文档里的接口存在。
 - [FUNCTION_TESTS.md](FUNCTION_TESTS.md)：跨接口、页面、Runtime、安全、恢复、评测和部署验收矩阵。
-- [behavior-cases.json](behavior-cases.json)：人工核对的精确测试方法/断言、68条路由和F01–F38映射。`harness/behavior_report.py --evidence-dir <本次目录>`仅从与本次摘要SHA匹配的Surefire XML提取方法结果；缺失/跳过为not-run，参数化任一失败为fail。输出behavior-report.json/Markdown，不将整条路由或功能组统称通过。原始XML不提交（含运行环境属性），提交去正文的方法结果及摘要；没有本地XML时不能重新生成方法报告。
+- [behavior-cases.json](behavior-cases.json)：人工核对的精确测试方法/断言、68条路由和F01–F38映射。`harness/behavior_report.py --evidence-dir <本次目录>`从与本次摘要SHA匹配的Surefire XML提取方法结果；缺失/跳过为not-run，参数化任一失败为fail。映射子场景有fail/not-run时路由为partial，全pass也仅为mapped-subcases-only，不将整条路由或功能组统称通过。原始XML不提交（含运行环境属性）；SPEC-VERIFY-002起可用`--export-methods <文件>`导出仅含方法/状态和绑定元数据的输入，并显式以`--method-evidence <文件>`离线重算同样的报告。旧报告没有这种输入，仍不能仅凭提交重算。脱敏输入与摘要的绑定不是签名，不防同时伪造仓库证据。
 - [AUDIT_FINDINGS.md](AUDIT_FINDINGS.md)：可定位的差距与风险。实际任务状态只看 `harness/tasks.json`。
 - [SPEC_RUN_SHUTDOWN.md](SPEC_RUN_SHUTDOWN.md)：应用关闭、用户取消、Workflow 中断与单实例重启恢复契约。
 - [SPEC_WORKFLOW_SETTLEMENT.md](SPEC_WORKFLOW_SETTLEMENT.md)：Workflow 执行事实与父 Run 交付结果分开记录的 v2 投影。

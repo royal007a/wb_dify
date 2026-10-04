@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T02:01:39Z`
+- Generated from task state updated at: `2026-10-04T02:14:13Z`
 - Current task: `none`
-- Counts: pending 20 · running 0 · blocked 0 · completed 71
+- Counts: pending 19 · running 0 · blocked 0 · completed 72
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -93,7 +93,7 @@
 | `SPEC-RUN-INPUT-001` | P2 | completed | backend, frontend, harness | reversible_write | 限定Run幂等竞争异常与输入长度 |
 | `SPEC-RUN-INPUT-002` | P2 | completed | backend, harness | reversible_write | 消除PG本地化约束名及NUL输入500 |
 | `SPEC-SSE-BACKPRESSURE-002` | P2 | pending | backend, runtime, harness | reversible_write | SSE公平接入与慢读总时限的确定性验证 |
-| `SPEC-VERIFY-002` | P2 | pending | backend, harness | reversible_write | 补强阻塞期间提交反例与报告传播 |
+| `SPEC-VERIFY-002` | P2 | completed | backend, harness | reversible_write | 补强阻塞期间提交反例与报告传播 |
 | `SPEC-WORKFLOW-GRAPH-003` | P2 | pending | backend, frontend, runtime, harness | reversible_write | 条件空白、旧转义兼容与迁移诊断 |
 | `SPEC-WORKFLOW-KNOWLEDGE-002` | P2 | completed | backend, migration, harness | reversible_write | 补齐冻结Workflow发布边界、锁顺序与事务隔离证据 |
 | `SPEC-WORKFLOW-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 关联Workflow执行事实与父Run恢复及异常边界 |

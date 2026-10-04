@@ -1,5 +1,7 @@
 # Hify 当前实现边界
 
+最新本地验证：2026-10-04 02:14:13Z，SPEC-VERIFY-002代码b0e3882，后端81类547项零失败/错误/skip/flaky、Harness54项通过；仅补测试/报告，无线上实现变化。36个具名子场景、68条接口/38功能组映射及显式脱敏离线重算见`evidence/SPEC_VERIFICATION_PORTABLE.md`，不将映射称为全功能通过。当前132仍为下述09:56 CST已复核增量。
+
 初始审计基线：2026-10-03，原版 `/Users/weberzhao/hify`，`973257c`；源码对齐至 `9f40639`（2026-10-04）。下表区分源码存在、专项测试、历史运行，不代表全功能、真实模型或部署全部复验。历史审计001为495项中406通过/89条skip记录，Chat003为498项中409通过/89条skip记录；不回写或将历史skip冒充通过。新一轮SPEC-VERIFY后端539项/81类全部执行且零失败/错误/skip/flaky，包含真实隔离PG；逐方法子场景及其未测边界见 `evidence/SPEC_VERIFICATION.md`。该轮先出现背压测试夹具并发红灯，修复测试后重新全量运行，未掩盖首轮失败。当前验收清单见 `spec/README.md`；反例索引见 `spec/AUDIT_FINDINGS.md`；任务状态只看Harness。2026-09-13初版证据不能当作新功能的运行结果。
 
 ## 已实现能力与验证边界
@@ -28,7 +30,7 @@
 | 持久化 | `V1__baseline.sql`、JPA Entity | Flyway + PostgreSQL 16.15 部署验证；H2 只用于本地/测试便利 |
 | Console | `frontend/` | Vue 3 + TypeScript + Vite + Element Plus；六个页面调用API，Workflow同源DSL画布/diff、能力绑定和MCP编辑已实现。management.spec.ts 是模拟路由页面测试，不证明真实CRUD；Chat/MCP另有 opt-in真实服务 smoke |
 | 启停与部署 | `start.sh`、`stop.sh`、`Makefile`、`deploy/up.sh`、`compose.yaml` | 开发态入口 `http://localhost:5173`，容器入口 `http://localhost:8088`；PID、日志、健康轮询和失败回收已验证；本地脚本使用 `pgvector/pgvector:pg16` 以满足 V13 |
-| Chat Playground | 已发布 Agent、固定版本、Tool Loop、SSE/取消、Gap resume | 83055fb的31项受控HTTP/SSE生命周期测试覆盖人工重连、放弃resume、取消文案和建会话10秒期限；未知取消仅GET，放弃脱离旧会话，刷新丢页面身份。SPEC-VERIFY全浏览器39项中仅4项为真实本地后端链路，其余35项打桩。超长输入/DIV误归40900等残余见SPEC-RUN-INPUT-001，不宣称全部失败状态已验收 |
+| Chat Playground | 已发布 Agent、固定版本、Tool Loop、SSE/取消、Gap resume | 83055fb的31项受控HTTP/SSE生命周期测试覆盖人工重连、放弃resume、取消文案和建会话10秒期限；未知取消仅GET，放弃脱离旧会话，刷新丢页面身份。SPEC-VERIFY全浏览器39项中仅4项为真实本地后端链路，其余35项打桩。Run输入001/002已修复超长输入、指定唯一约束识别、NUL及明确拒绝resume的入口，并随09:56增量发布；其他交互残余见SPEC-CHAT-LIFECYCLE-005，不宣称全部失败状态已验收 |
 | 后端工程 | `backend/pom.xml`、10 个子模块 | Maven reactor、统一 Result/异常、MyBatis-Plus/Redis 配置、业务模块空壳和 DemoItem 参考切片已构建验证 |
 | 业务基础组件 | `hify-common`、`hify-demo`、`V2__demo_item.sql` | BaseEntity、分页、校验、ISO 时间、可选 Redis Cache、隔离线程池、LLM HTTP/SSE、provider 级熔断/分类重试和请求日志均有测试或运行证据 |
 
@@ -68,11 +70,11 @@
 
 以下反例尚未由上述专项关闭，具体状态在tasks.json，不以本页另建状态板：
 
-- 发布故障路径：SPEC-DEPLOY-002本地补强后review仍发现stderr写失败阻止恢复旧服务的P1，归SPEC-DEPLOY-003，426de39安装器禁止后续发布直至修复复验；非标准smoke响应/索引静默/schema目标归SPEC-DEPLOY-004。132当前已健康部署不受影响，也不证明这些故障路径安全。
-- Run输入增量64bda57：20000 UTF-16上限、只认指定幂等唯一约束、并发删除会话404及明确拒绝resume的页面出口已由本轮543项后端（含PG）/32项受控浏览器验证，见SPEC_RUN_INPUT；未部署，独立静态复核及摘要SHA核对无P0/P1。剩余PG本地化约束名、NUL输入500归SPEC-RUN-INPUT-002；重复gapId撑爆的反例已撤回。其他Chat恢复P3与全数据库故障排列仍非保证。
-- 独立边界：上传和管理文本中的NUL尚未由Run输入校验覆盖，PG可返回500，归SPEC-INPUT-HYGIENE-001；安装器003的stderr关闭P1已独立复验关闭，但断管道SIGPIPE仍归SPEC-DEPLOY-005，发布前先补强。
+- 发布故障路径：SPEC-DEPLOY-003的stderr写失败P1和005的清理SIGPIPE/最终quiet检查P2已经独立复验，609829e脚本随006成功发布；旧426de39仍不是可用安装器。非标准smoke响应/索引静默/schema目标归SPEC-DEPLOY-004。主流程stderr断管道仍可能fail-closed中止，本次用systemd/journal执行；不宣称所有失败路径安全。
+- Run输入001/002：20000 UTF-16上限、指定幂等唯一约束、并发删除会话404及明确拒绝resume的出口已有543项后端/32项受控浏览器历史证据；f0dd199追加结构化PG约束字段和NUL拦截后547项后端零skip，09:56已部署132并实测。重复gapId撑爆的反例已撤回。其他Chat恢复P3与全数据库故障排列仍非保证。
+- 独立边界：上传和管理文本中的NUL尚未由Run输入校验覆盖，PG可返回500，归SPEC-INPUT-HYGIENE-001；磁盘96%、余量约1.55GiB，下次发布前须明确清理范围或扩容，未擅自删除备份。
 
-- 总验收补录：管理分页400/夹值尚未统一（SPEC-API-PAGINATION-001）；在途GET下人工重连、取消查询按钮名、跨会话提示、失效resume循环（SPEC-CHAT-LIFECYCLE-005/RUN-INPUT-001）；send阻塞后再次提交断言、报告partial传播与脱敏可复算输入（SPEC-VERIFY-002）。
+- 总验收补录：管理分页400/夹值尚未统一（SPEC-API-PAGINATION-001）；在途GET下人工重连、取消查询按钮名、跨会话提示仍归SPEC-CHAT-LIFECYCLE-005，明确拒绝resume循环已随RUN-INPUT-001修复。send阻塞后再次提交断言、报告partial传播与脱敏可复算输入已由SPEC-VERIFY-002本轮门禁补齐，原始XML仍不提交；输入不是签名。
 
 - 知识：部分来源失败仍先发completed；wrapped suspension/数据库故障可能转Gap；索引isPostgres另借连接且失败当H2；Agent记录的Workflow checksum运行时未比对。分别见SPEC-KNOWLEDGE-FINISH-004、SPEC-KNOWLEDGE-INTEGRITY-003。
 - 恢复：Chat每次重启重置完整runTimeout（SPEC-RUN-BUDGET-001）；recallLatency/replanDecisions重置、轮末replan生成新UUID及重复观察事件（SPEC-HISTORY-RECOVERY-003）。
@@ -80,7 +82,7 @@
 - Workflow：执行前异常/成功后读取失败仍可落MODEL_ERROR；END节点SUCCEEDED可与父CANCELLED不同；成功事实落盘后崩溃可重新执行（SPEC-WORKFLOW-RECOVERY-001）。started早于校验而无failed投影归SPEC-WORKFLOW-GRAPH-003。
 - 表达式：全角空格、旧反斜杠解码、旧裸help!/A&B/半角括号版本兼容尚有问题（SPEC-WORKFLOW-GRAPH-003）。
 - 资源边界：SSE每连接独占线程，慢读可延长单次send，180秒不是硬总期限；Run先截止时breaker只释放、不计供应商超时（SPEC-SSE-BACKPRESSURE-002、SPEC-PROVIDER-SAMPLING-001）。
-- 凭据：禁止用-D/JAVA_OPTS传密钥；sun.java.command等进程启动配置不在引用名单保护范围，不能误授权；见OPERATIONS。Chat004旧P2已复核关闭；宽泛DIV捕获、超长消息及明确拒绝resume后的入口归SPEC-RUN-INPUT-001。
+- 凭据：禁止用-D/JAVA_OPTS传密钥；sun.java.command等进程启动配置不在引用名单保护范围，不能误授权；见OPERATIONS。Chat004与Run输入001/002已复核关闭，其他管理文本输入卫生独立记录，不外推这些修复。
 
 - 不删除原型后重写；先用 characterization tests 固定 mock provider、tool call/result 和会话行为。
 - 当前初版优先建立纵向闭环；后续仍按 `PHASE_0_ALIGNMENT.md` 完成多模块和剩余契约，再扩展业务能力。
