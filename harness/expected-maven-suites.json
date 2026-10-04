@@ -16,6 +16,7 @@
     "com.hify.api.KnowledgeMemoryPostgresTest": 21
   },
   "backend-tests": {
+    "com.hify.api.ManagementReadbackIntegrationTest": 4,
     "com.hify.api.HttpErrorSurfaceTest": 6,
     "com.hify.common.CommonContractsTest": 5,
     "com.hify.common.ProviderDeadlineTest": 6,
@@ -53,7 +54,7 @@
     "com.hify.api.WorkflowKnowledgeIntegrationTest": 10,
     "com.hify.api.KnowledgeApiIntegrationTest": 2,
     "com.hify.api.WorkflowKnowledgeReviewTest": 16,
-    "com.hify.api.RunSubmissionIdentityTest": 3,
+    "com.hify.api.RunSubmissionIdentityTest": 5,
     "com.hify.api.KnowledgeAdmissionShutdownTest": 22,
     "com.hify.api.WorkflowSettlementIntegrationTest": 4,
     "com.hify.api.KnowledgeShutdownPostgresTest": 22,

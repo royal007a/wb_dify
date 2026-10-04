@@ -15,7 +15,8 @@
       "response": "ConversationView (raw)",
       "checks": "现有 Console 使用；没有 v1 列表/消息独立接口",
       "testCandidates": [
-        "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java"
       ]
     },
     {
@@ -30,7 +31,8 @@
       "response": "List<ToolDefinition> (raw)",
       "checks": "只有 current_time/calculator；不同于 v1 catalog",
       "testCandidates": [
-        "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java"
       ]
     },
     {
@@ -195,7 +197,8 @@
       "response": "Result<Void>",
       "checks": "只影响草稿；旧版本不清除",
       "testCandidates": [
-        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java"
       ]
     },
     {
@@ -421,7 +424,8 @@
       "response": "PageResult<KnowledgeBaseResponse>",
       "checks": "过滤归档；分页边界",
       "testCandidates": [
-        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java"
       ]
     },
     {
@@ -451,7 +455,8 @@
       "response": "Result<Void>",
       "checks": "新检索不可用；已发布 revision 不变",
       "testCandidates": [
-        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java"
       ]
     },
     {
@@ -466,7 +471,8 @@
       "response": "Result<KnowledgeBaseResponse>",
       "checks": "不存在/归档拒绝",
       "testCandidates": [
-        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java"
       ]
     },
     {
@@ -481,7 +487,8 @@
       "response": "Result<Void>",
       "checks": "策略校验；既有 corpus 快照保持",
       "testCandidates": [
-        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java"
       ]
     },
     {
@@ -496,7 +503,8 @@
       "response": "PageResult<KnowledgeDocumentResponse>",
       "checks": "过滤归档；索引进度",
       "testCandidates": [
-        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java"
       ]
     },
     {
@@ -775,11 +783,12 @@
       "request": "runId",
       "success": 202,
       "response": "RunView (raw)",
-      "checks": "取消持久化且传阻塞调用；已终态不回退；未知Run为40400/HTTP404、安全JSON正文",
+      "checks": "取消持久化且传阻塞调用；已终态不回退；未知Run为40400/HTTP404、安全JSON正文；重复取消与终态再取消均202，不重复事件/消息；不存在Run为404",
       "testCandidates": [
         "backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java",
         "backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java",
-        "backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/RunSubmissionIdentityTest.java"
       ]
     },
     {
@@ -889,7 +898,8 @@
       "checks": "状态/节点输出对应固定 checksum",
       "testCandidates": [
         "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
-        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java"
       ]
     },
     {
@@ -905,7 +915,8 @@
       "checks": "版本 diff 的事实源",
       "testCandidates": [
         "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
-        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java"
       ]
     },
     {
@@ -934,10 +945,11 @@
       "request": "page/pageSize",
       "success": 200,
       "response": "PageResult<WorkflowResponse>",
-      "checks": "分页/归档边界",
+      "checks": "分页/归档边界；page<1按1、pageSize夹在1..100（不是400）",
       "testCandidates": [
         "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
-        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java"
       ]
     },
     {
@@ -969,7 +981,8 @@
       "checks": "不删除已发布版本",
       "testCandidates": [
         "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
-        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java"
       ]
     },
     {
@@ -1033,7 +1046,8 @@
       "checks": "草稿修改不改旧版本",
       "testCandidates": [
         "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
-        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
+        "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java",
+        "backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java"
       ]
     },
     {

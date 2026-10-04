@@ -105,7 +105,7 @@
 - 成功：HTTP 200，`Result<Void>`。
 - 必测断言/边界：只影响草稿；旧版本不清除。
 - 实现：[AgentController](../../backend/hify-app/src/main/java/com/hify/api/AgentController.java)。
-- 候选测试（非逐接口覆盖承诺）：[AgentApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[AgentApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java)；[ManagementReadbackIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java)。
 
 ### PUT /api/v1/agents/{agentId}/workflow-binding
 
@@ -221,7 +221,7 @@
 - 成功：HTTP 200，`PageResult<KnowledgeBaseResponse>`。
 - 必测断言/边界：过滤归档；分页边界。
 - 实现：[KnowledgeController](../../backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java)。
-- 候选测试（非逐接口覆盖承诺）：[KnowledgeApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[KnowledgeApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java)；[ManagementReadbackIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java)。
 
 ### POST /api/v1/knowledge-bases
 
@@ -239,7 +239,7 @@
 - 成功：HTTP 200，`Result<Void>`。
 - 必测断言/边界：新检索不可用；已发布 revision 不变。
 - 实现：[KnowledgeController](../../backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java)。
-- 候选测试（非逐接口覆盖承诺）：[KnowledgeApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[KnowledgeApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java)；[ManagementReadbackIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java)。
 
 ### GET /api/v1/knowledge-bases/{id}
 
@@ -248,7 +248,7 @@
 - 成功：HTTP 200，`Result<KnowledgeBaseResponse>`。
 - 必测断言/边界：不存在/归档拒绝。
 - 实现：[KnowledgeController](../../backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java)。
-- 候选测试（非逐接口覆盖承诺）：[KnowledgeApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[KnowledgeApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java)；[ManagementReadbackIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java)。
 
 ### PUT /api/v1/knowledge-bases/{id}
 
@@ -257,7 +257,7 @@
 - 成功：HTTP 200，`Result<Void>`。
 - 必测断言/边界：策略校验；既有 corpus 快照保持。
 - 实现：[KnowledgeController](../../backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java)。
-- 候选测试（非逐接口覆盖承诺）：[KnowledgeApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[KnowledgeApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java)；[ManagementReadbackIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java)。
 
 ### GET /api/v1/knowledge-bases/{id}/documents
 
@@ -266,7 +266,7 @@
 - 成功：HTTP 200，`PageResult<KnowledgeDocumentResponse>`。
 - 必测断言/边界：过滤归档；索引进度。
 - 实现：[KnowledgeController](../../backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeController.java)。
-- 候选测试（非逐接口覆盖承诺）：[KnowledgeApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[KnowledgeApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/KnowledgeApiIntegrationTest.java)；[ManagementReadbackIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java)。
 
 ### POST /api/v1/knowledge-bases/{id}/documents
 
@@ -295,7 +295,7 @@
 - 成功：HTTP 200，`ConversationView (raw)`。
 - 必测断言/边界：现有 Console 使用；没有 v1 列表/消息独立接口。
 - 实现：[ChatController](../../backend/hify-app/src/main/java/com/hify/api/ChatController.java)。
-- 候选测试（非逐接口覆盖承诺）：[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)；[ManagementReadbackIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java)。
 
 ### GET /api/tools
 
@@ -304,7 +304,7 @@
 - 成功：HTTP 200，`List<ToolDefinition> (raw)`。
 - 必测断言/边界：只有 current_time/calculator；不同于 v1 catalog。
 - 实现：[ChatController](../../backend/hify-app/src/main/java/com/hify/api/ChatController.java)。
-- 候选测试（非逐接口覆盖承诺）：[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)；[ManagementReadbackIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java)。
 
 ## mcp
 
@@ -508,9 +508,9 @@
 - 功能：请求取消。
 - 输入：`runId`。
 - 成功：HTTP 202，`RunView (raw)`。
-- 必测断言/边界：取消持久化且传阻塞调用；已终态不回退；未知Run为40400/HTTP404、安全JSON正文。
+- 必测断言/边界：取消持久化且传阻塞调用；已终态不回退；未知Run为40400/HTTP404、安全JSON正文；重复取消与终态再取消均202，不重复事件/消息；不存在Run为404。
 - 实现：[RunController](../../backend/hify-app/src/main/java/com/hify/api/RunController.java)。
-- 候选测试（非逐接口覆盖承诺）：[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)；[PostgresConcurrencyIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java)；[HttpErrorSurfaceTest](../../backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[RunFlowIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/RunFlowIntegrationTest.java)；[PostgresConcurrencyIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java)；[HttpErrorSurfaceTest](../../backend/hify-app/src/test/java/com/hify/api/HttpErrorSurfaceTest.java)；[RunSubmissionIdentityTest](../../backend/hify-app/src/test/java/com/hify/api/RunSubmissionIdentityTest.java)。
 
 ### GET /api/v1/runs/{runId}/events
 
@@ -550,7 +550,7 @@
 - 成功：HTTP 200，`Result<WorkflowRunResponse>`。
 - 必测断言/边界：状态/节点输出对应固定 checksum。
 - 实现：[WorkflowController](../../backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java)。
-- 候选测试（非逐接口覆盖承诺）：[WorkflowApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java)；[AgentApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[WorkflowApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java)；[AgentApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java)；[ManagementReadbackIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java)。
 
 ### GET /api/v1/workflow-versions/{id}
 
@@ -559,7 +559,7 @@
 - 成功：HTTP 200，`Result<WorkflowVersionDetail>`。
 - 必测断言/边界：版本 diff 的事实源。
 - 实现：[WorkflowController](../../backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java)。
-- 候选测试（非逐接口覆盖承诺）：[WorkflowApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java)；[AgentApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[WorkflowApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java)；[AgentApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java)；[ManagementReadbackIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java)。
 
 ### POST /api/v1/workflow-versions/{id}/runs
 
@@ -575,9 +575,9 @@
 - 功能：分页列图。
 - 输入：`page/pageSize`。
 - 成功：HTTP 200，`PageResult<WorkflowResponse>`。
-- 必测断言/边界：分页/归档边界。
+- 必测断言/边界：分页/归档边界；page<1按1、pageSize夹在1..100（不是400）。
 - 实现：[WorkflowController](../../backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java)。
-- 候选测试（非逐接口覆盖承诺）：[WorkflowApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java)；[AgentApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[WorkflowApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java)；[AgentApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java)；[ManagementReadbackIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java)。
 
 ### POST /api/v1/workflows
 
@@ -595,7 +595,7 @@
 - 成功：HTTP 200，`Result<Void>`。
 - 必测断言/边界：不删除已发布版本。
 - 实现：[WorkflowController](../../backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java)。
-- 候选测试（非逐接口覆盖承诺）：[WorkflowApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java)；[AgentApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[WorkflowApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java)；[AgentApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java)；[ManagementReadbackIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java)。
 
 ### GET /api/v1/workflows/{id}
 
@@ -631,7 +631,7 @@
 - 成功：HTTP 200，`Result<List<WorkflowVersionResponse>>`。
 - 必测断言/边界：草稿修改不改旧版本。
 - 实现：[WorkflowController](../../backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java)。
-- 候选测试（非逐接口覆盖承诺）：[WorkflowApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java)；[AgentApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java)。
+- 候选测试（非逐接口覆盖承诺）：[WorkflowApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java)；[AgentApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java)；[ManagementReadbackIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/ManagementReadbackIntegrationTest.java)。
 
 ### POST /api/v1/workflows/{id}/versions
 

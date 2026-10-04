@@ -96,6 +96,49 @@ class RunSubmissionIdentityTest {
         verifyNoInteractions(executor);
     }
 
+    @Test void sameKeyWithDifferentResumeIsConflictWithoutAdditionalWork() throws Exception {
+        String conversation=conversation(), key=UUID.randomUUID().toString();
+        String id=create(conversation,key,"hello",202).path("id").asText();
+        long runCount=runs.count(),messageCount=messages.count(),eventCount=events.count();
+        http.perform(post("/api/v1/conversations/{id}/runs",conversation).header("Idempotency-Key",key)
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(java.util.Map.of(
+                        "message","hello","resume",java.util.Map.of("runId",UUID.randomUUID().toString(),"gapIds",java.util.List.of("gap-1"))))))
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.code").value(40901));
+        assertThat(create(conversation,key,"hello",200).path("id").asText()).isEqualTo(id);
+        assertThat(runs.count()).isEqualTo(runCount);
+        assertThat(messages.count()).isEqualTo(messageCount);
+        assertThat(events.count()).isEqualTo(eventCount);
+        verify(executor,times(1)).execute(any());
+    }
+
+    @Test void repeatedAndTerminalCancellationAreIdempotentAndPreCancelDoesNoModelWork() throws Exception {
+        java.util.concurrent.atomic.AtomicReference<Runnable> queued=new java.util.concurrent.atomic.AtomicReference<>();
+        doAnswer(invocation->{queued.set(invocation.getArgument(0));return null;}).when(executor).execute(any());
+        String conversation=conversation(), id=create(conversation,UUID.randomUUID().toString(),"hello",202).path("id").asText();
+        assertThat(queued.get()).isNotNull();
+        JsonNode first=json.readTree(http.perform(post("/api/v1/runs/{id}/cancellations",id)).andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.state").value("RUNNING")).andReturn().getResponse().getContentAsString());
+        assertThat(first.path("cancelRequestedAt").asText()).isNotBlank();
+        http.perform(post("/api/v1/runs/{id}/cancellations",id)).andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.cancelRequestedAt").value(first.path("cancelRequestedAt").asText()));
+        assertThat(events.findByRunIdOrderByIdAsc(id)).filteredOn(e->e.getEventType().equals("run.cancel.requested")).hasSize(1);
+
+        queued.get().run(); // Exactly the production dispatch worker, after the HTTP cancellation committed.
+        JsonNode terminal=json.readTree(http.perform(get("/api/v1/runs/{id}",id)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.state").value("CANCELLED")).andExpect(jsonPath("$.terminalReason").value("CANCELLED"))
+                .andReturn().getResponse().getContentAsString());
+        long before=events.count();
+        JsonNode cancelledAgain=json.readTree(http.perform(post("/api/v1/runs/{id}/cancellations",id)).andExpect(status().isAccepted())
+                .andReturn().getResponse().getContentAsString());
+        assertThat(cancelledAgain).isEqualTo(terminal);
+        assertThat(events.count()).isEqualTo(before);
+        assertThat(events.findByRunIdOrderByIdAsc(id)).filteredOn(e->e.getEventType().equals("run.cancelled")).hasSize(1);
+        assertThat(events.findByRunIdOrderByIdAsc(id)).noneMatch(e->e.getEventType().startsWith("model.")||e.getEventType().startsWith("tool."));
+        assertThat(messages.findByConversationIdOrderByCreatedAtAsc(conversation)).singleElement()
+                .satisfies(message->assertThat(message.getRole()).isEqualTo("user"));
+        verify(executor,times(1)).execute(any());
+    }
+
     private String conversation() throws Exception {
         return json.readTree(http.perform(post("/api/v1/conversations").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"agentId\":\"demo-agent\"}")).andExpect(status().isCreated())
