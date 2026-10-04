@@ -34,6 +34,7 @@ public class WorkflowEngine {
 
  // Each repository call commits a small state change. Do not hold a DB connection while waiting on IO.
  public WorkflowRunResponse execute(String versionId,String input,ExecutionControl control){
+  com.hify.common.TextInput.requireNoNul(versionId,input);
   control=control.withShutdown(lifecycle::isStopping);
   control.throwIfSuspended();
   WorkflowVersion version=application.requireVersion(versionId); WorkflowDraftRequest draft=WorkflowPublishedGraph.read(version,json);

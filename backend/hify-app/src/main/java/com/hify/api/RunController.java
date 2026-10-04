@@ -53,6 +53,7 @@ public class RunController {
     @PostMapping("/conversations")
     @ResponseStatus(HttpStatus.CREATED)
     public Conversation createConversation(@Valid @RequestBody CreateConversation request) {
+        com.hify.common.TextInput.requireNoNul(request.agentId(),request.title());
         AgentRuntimeSnapshot version = agents.requirePublished(request.agentId());
         Instant now = Instant.now();
         String title = request.title() == null || request.title().isBlank()

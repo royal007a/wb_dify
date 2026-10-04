@@ -3,6 +3,7 @@ package com.hify.knowledge.application;
 import com.hify.common.BizException;
 import com.hify.common.ErrorCode;
 import com.hify.common.PageResult;
+import com.hify.common.TextInput;
 import com.hify.knowledge.api.KnowledgeBaseRequest;
 import com.hify.knowledge.api.KnowledgeBaseResponse;
 import com.hify.knowledge.api.KnowledgeDocumentResponse;
@@ -48,6 +49,7 @@ public class KnowledgeApplicationService {
 
     @Transactional
     public String create(KnowledgeBaseRequest request) {
+        TextInput.requireNoNul(request.name(),request.description());
         String name=request.name().trim(); if(bases.existsByNameAndArchivedAtIsNull(name)) throw duplicate();
         int size=request.chunkSize()==null?512:request.chunkSize(); int overlap=request.chunkOverlap()==null?64:request.chunkOverlap();
         validateChunking(size,overlap);
@@ -69,6 +71,7 @@ public class KnowledgeApplicationService {
 
     @Transactional
     public void update(String id,KnowledgeBaseRequest request){
+        TextInput.requireNoNul(id,request.name(),request.description());
         KnowledgeBase base=requireBase(id); String name=request.name().trim();
         if(bases.existsByNameAndIdNotAndArchivedAtIsNull(name,id)) throw duplicate();
         int size=request.chunkSize()==null?base.getChunkSize():request.chunkSize();
@@ -85,15 +88,18 @@ public class KnowledgeApplicationService {
 
     @Transactional
     public String upload(String baseId,MultipartFile file){
+        TextInput.requireNoNul(baseId);
         KnowledgeBase base=requireBase(baseId); if(!base.isEnabled()) throw new BizException(ErrorCode.CONFLICT,"知识库已停用");
         if(file==null||file.isEmpty()) throw new BizException(ErrorCode.PARAM_ERROR,"文件不能为空");
         if(file.getSize()>MAX_FILE_SIZE) throw new BizException(ErrorCode.PAYLOAD_TOO_LARGE);
         String name=file.getOriginalFilename()==null?"document.txt":file.getOriginalFilename();
+        TextInput.requireNoNul(name,file.getContentType());
         String extension=name.contains(".")?name.substring(name.lastIndexOf('.')+1).toLowerCase(Locale.ROOT):"";
         if(!List.of("txt","md","markdown").contains(extension)) throw new BizException(ErrorCode.PARAM_ERROR,"仅支持 TXT/Markdown");
         byte[] bytes;
         try{bytes=file.getBytes();}catch(Exception e){throw new BizException(ErrorCode.PARAM_ERROR,"读取上传文件失败");}
-        String content=decodeUtf8(bytes); if(content.isBlank()) throw new BizException(ErrorCode.PARAM_ERROR,"文档内容不能为空");
+        String content=decodeUtf8(bytes); TextInput.requireNoNul(content);
+        if(content.isBlank()) throw new BizException(ErrorCode.PARAM_ERROR,"文档内容不能为空");
         String id=UUID.randomUUID().toString(); Instant now=Instant.now();
         KnowledgeDocument document=new KnowledgeDocument(id,baseId,name,file.getContentType()==null?"text/plain":file.getContentType(),
                 bytes.length,digest(bytes),content,now);

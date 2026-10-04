@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.*; import com.hify.common.*; import com.hi
 public class McpRegistryService {
  private final McpServerRepository servers; private final McpToolSnapshotRepository tools; private final McpServerRevisionRepository revisions; private final McpDebugCallRepository calls; private final McpProtocolClient client; private final McpEndpointGuard guard; private final ObjectMapper json; private final McpCredentialStore credentials;
  public McpRegistryService(McpServerRepository servers,McpToolSnapshotRepository tools,McpServerRevisionRepository revisions,McpDebugCallRepository calls,McpProtocolClient client,McpEndpointGuard guard,ObjectMapper json,McpCredentialStore credentials){this.servers=servers;this.tools=tools;this.revisions=revisions;this.calls=calls;this.client=client;this.guard=guard;this.json=json;this.credentials=credentials;}
- @Transactional public String create(McpServerRequest r){guard.validate(r.endpointUrl());if(servers.existsByName(r.name().trim()))throw new BizException(ErrorCode.CONFLICT,"MCP server name already exists");McpServer s=servers.saveAndFlush(new McpServer(UUID.randomUUID().toString(),r.name().trim(),r.endpointUrl().trim(),null,r.enabled(),Instant.now()));s.update(s.getName(),s.getEndpointUrl(),credentials.apply(s.getId(),null,r),r.enabled());return s.getId();}
+ @Transactional public String create(McpServerRequest r){validateText(r);guard.validate(r.endpointUrl());if(servers.existsByName(r.name().trim()))throw new BizException(ErrorCode.CONFLICT,"MCP server name already exists");McpServer s=servers.saveAndFlush(new McpServer(UUID.randomUUID().toString(),r.name().trim(),r.endpointUrl().trim(),null,r.enabled(),Instant.now()));s.update(s.getName(),s.getEndpointUrl(),credentials.apply(s.getId(),null,r),r.enabled());return s.getId();}
  @Transactional(readOnly=true) public List<McpServerResponse> list(){return servers.findAllByArchivedAtIsNullOrderByCreatedAtDesc().stream().map(this::response).toList();}
  @Transactional(readOnly=true) public McpServerResponse get(String id){return response(server(id));}
  @Transactional public void update(String id,McpServerRequest r){
+  TextInput.requireNoNul(id);validateText(r);
   guard.validate(r.endpointUrl());McpServer s=server(id);
   if(servers.existsByName(r.name().trim())&&!s.getName().equals(r.name().trim()))throw new BizException(ErrorCode.CONFLICT,"MCP server name already exists");
   boolean keeping="KEEP".equals(r.credentialAction()) || (r.credentialAction()==null && r.credentialRef()==null);
@@ -16,6 +17,7 @@ public class McpRegistryService {
   s.update(r.name().trim(),r.endpointUrl().trim(),credentials.apply(id,s.getCredentialRef(),r),r.enabled());
  }
  @Transactional public void archive(String id){server(id).archive();}
+ private void validateText(McpServerRequest r){TextInput.requireNoNul(r.name(),r.endpointUrl(),r.credentialRef(),r.credentialAction(),r.credentialToken());}
  @Transactional public List<McpToolResponse> discover(String id){
   McpServer s=server(id);if(!s.isEnabled())throw new BizException(ErrorCode.CONFLICT,"MCP server is disabled");try{List<McpProtocolClient.RemoteTool> found=client.listTools(s);String catalog=found.stream().sorted(Comparator.comparing(McpProtocolClient.RemoteTool::name)).map(t->t.name()+"\n"+canonical(t.inputSchema())+"\n"+t.risk()).reduce("",(a,b)->a+b+"\n"+b);String digest=sha256(catalog);long revision=s.getServerRevision()+1;Instant now=Instant.now();List<McpToolSnapshot> rows=new ArrayList<>();for(var t:found){String schema=canonical(t.inputSchema());rows.add(new McpToolSnapshot(UUID.randomUUID().toString(),s.getId(),revision,t.name(),t.description(),schema,t.risk(),sha256(t.name()+"\n"+schema+"\n"+t.risk()),now));}tools.saveAll(rows);revisions.save(new McpServerRevision(s.getId(),revision,s.getEndpointUrl(),s.getCredentialRef(),digest,now));s.discovered(revision,digest);return rows.stream().map(this::toolResponse).toList();}catch(RuntimeException e){s.failed(e.getMessage());throw e;}
  }

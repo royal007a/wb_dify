@@ -63,6 +63,7 @@ public class ProviderServiceImpl implements ProviderService, ProviderQueryServic
     @Override
     @Transactional
     public String create(ProviderCreateRequest request) {
+        validateText(request.name(),request.baseUrl(),request.auth(),request.models());
         requireManageable(request.type());
         ensureNameAvailable(request.name(), null);
         ValidatedModels validated = validateModels(request.models());
@@ -114,6 +115,8 @@ public class ProviderServiceImpl implements ProviderService, ProviderQueryServic
     @Transactional
     @CacheEvict(cacheNames = "provider-cache", key = "#publicId")
     public void update(String publicId, ProviderUpdateRequest request) {
+        com.hify.common.TextInput.requireNoNul(publicId);
+        validateText(request.name(),request.baseUrl(),request.auth(),request.models());
         requireManageable(request.type());
         ProviderEntity provider = requireProvider(publicId);
         if (!provider.getType().equals(request.type().name()) && request.auth() == null) {
@@ -131,6 +134,14 @@ public class ProviderServiceImpl implements ProviderService, ProviderQueryServic
         providers.updateById(provider);
         replaceModels(provider.getId(), validated.models());
         resetHealth(provider.getId());
+    }
+
+    private void validateText(String name,String baseUrl,com.hify.provider.api.ProviderAuthInput auth,
+                              List<com.hify.provider.api.ProviderModelInput> models) {
+        com.hify.common.TextInput.requireNoNul(name,baseUrl);
+        if(auth!=null)com.hify.common.TextInput.requireNoNul(auth.credentialRef(),auth.headerName(),auth.prefix());
+        if(models!=null)for(var model:models)if(model!=null)
+            com.hify.common.TextInput.requireNoNul(model.displayName(),model.modelId());
     }
 
     @Override

@@ -36,6 +36,7 @@ class InputHygieneIntegrationTest {
     @Autowired KnowledgeApplicationService knowledge;
     @Autowired com.hify.agent.api.AgentService agents;
     @Autowired com.hify.workflow.application.WorkflowApplicationService workflows;
+    @Autowired com.hify.workflow.application.WorkflowEngine workflowEngine;
     @Autowired com.hify.provider.api.ProviderService providers;
     @Autowired com.hify.mcp.application.McpRegistryService mcp;
 
@@ -108,6 +109,20 @@ class InputHygieneIntegrationTest {
         JsonNode created=call(post("/api/v1/conversations").contentType("application/json")
                 .content(json.createObjectNode().put("agentId","demo-agent").put("title",text).toString()),201);
         assertThat(created.path("title").asText()).isEqualTo(text);
+    }
+
+    @Test void workflowExecutionInputIsRejectedBeforeAnExecutionRowExists() throws Exception {
+        var body=workflow().put("name","run-input-"+UUID.randomUUID());
+        String id=call(post("/api/v1/workflows").contentType("application/json").content(body.toString()),201).path("data").asText();
+        String version=call(post("/api/v1/workflows/{id}/versions",id),200).path("data").path("id").asText();
+        long before=count("workflow_runs");
+        call(post("/api/v1/workflow-versions/{id}/runs",version).contentType("application/json")
+                .content(json.createObjectNode().put("input","a"+NUL+"b").toString()),400);
+        assertThatThrownBy(()->workflowEngine.execute(version,"a"+NUL+"b")).isInstanceOfSatisfying(BizException.class,
+                error->assertThat(error.errorCode()).isEqualTo(ErrorCode.PARAM_ERROR));
+        assertThat(count("workflow_runs")).isEqualTo(before);
+        assertThat(call(post("/api/v1/workflow-versions/{id}/runs",version).contentType("application/json")
+                .content("{\"input\":\"中文🙂\"}"),202).path("data").path("status").asText()).isEqualTo("SUCCEEDED");
     }
 
     private void checkCrud(String resource,String table,ObjectNode good,List<String> paths) throws Exception {

@@ -121,6 +121,8 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     @Override
     @Transactional
     public String create(AgentUpsertRequest request) {
+        com.hify.common.TextInput.requireNoNul(request.name(),request.description(),request.instructions(),request.providerId(),request.modelId());
+        request.enabledTools().forEach(com.hify.common.TextInput::requireNoNul);
         String name = request.name().trim();
         if (agents.existsByName(name)) throw duplicateName();
         String model = providers.requireEnabledModel(request.providerId(), request.modelId());
@@ -191,6 +193,7 @@ public class AgentServiceImpl implements AgentService, AgentQueryService {
     @Override
     @Transactional
     public void update(String id, AgentUpdateRequest request) {
+        com.hify.common.TextInput.requireNoNul(id,request.name(),request.description(),request.instructions(),request.providerId(),request.modelId());
         AgentDefinition agent = requireDraft(id);
         String name = request.name().trim();
         if (agents.existsByNameAndIdNot(name, id)) throw duplicateName();
