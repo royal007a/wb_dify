@@ -12,8 +12,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 ROOT = Path(__file__).resolve().parent.parent
 state = json.loads((ROOT / "harness/state.json").read_text())
-if state.get("currentTaskId") != "WORKFLOW-NODES-001":
-    raise SystemExit("WORKFLOW-NODES-001 must be active")
+if state.get("currentTaskId") not in {"WORKFLOW-NODES-001", "CAPABILITY-VERIFY-001"}:
+    raise SystemExit("A supported workflow verification task must be active")
 evidence = ROOT / state["evidencePath"]
 with socket.socket() as probe:
     probe.bind(("127.0.0.1", 28083))

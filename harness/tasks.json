@@ -4,6 +4,30 @@
   "updatedAt": "2026-10-04T16:07:09Z",
   "tasks": [
     {
+      "id": "CAPABILITY-VERIFY-001",
+      "title": "语义、外部Workflow与具名输入发布前完整验收",
+      "description": "在同一源码树重跑六scope及隔离真实本机模型串联；不复用旧窄测充当新发布证据，不操作132或Dify。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["harness", "migration", "backend", "runtime", "eval", "frontend"],
+      "verifyScopes": ["harness", "migration", "backend", "runtime", "eval", "frontend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["SPEC-DEPLOY-004", "WORKFLOW-INPUTS-002", "WORKFLOW-NODES-003", "SEMANTIC-001"],
+      "acceptance": [
+        "六scope零失败/错误/skip/flaky，同次源码树及摘要身份可核对；scope重复用例不相加",
+        "隔离loopback H2进程重跑真实本机bge-m3三条合成检索及受控GET到真实qwen LLM串联，结束关闭自建进程",
+        "受控浏览器管理/Chat/MCP/具名输入用例通过并明确不等于远端真实业务验收；提交脱敏逐方法可复算输入"
+      ],
+      "planPath": "exec-plans/active/CAPABILITY-VERIFY-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-04T16:08:00Z",
+      "updatedAt": "2026-10-04T16:08:00Z"
+    },
+    {
       "id": "WORKFLOW-INPUTS-002",
       "title": "保留未编辑数字的发布默认值",
       "description": "001复验剩余：可选数字默认值被浏览器Number近似后显式提交。仅用户修改数字时发键，未编辑或清空使用服务端默认；不声称手输任意精度。",
@@ -432,7 +456,8 @@
       "operation": "deployment",
       "approvalRef": "goal:01a07e90-58c6-7f00-8ce1-fc659dd6c39c:2026-10-04-capability-redeploy",
       "dependsOn": [
-        "WORKFLOW-NODES-001"
+        "WORKFLOW-NODES-001",
+        "CAPABILITY-VERIFY-001"
       ],
       "acceptance": [
         "被发布源码有六scope零skip门禁和新增能力测试证据",

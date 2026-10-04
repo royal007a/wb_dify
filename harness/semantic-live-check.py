@@ -14,8 +14,8 @@ import urllib.request
 
 ROOT = Path(__file__).resolve().parent.parent
 state = json.loads((ROOT / "harness/state.json").read_text())
-if state.get("currentTaskId") != "SEMANTIC-001":
-    raise SystemExit("SEMANTIC-001 must be running through run-task.sh")
+if state.get("currentTaskId") not in {"SEMANTIC-001", "CAPABILITY-VERIFY-001"}:
+    raise SystemExit("A supported semantic verification task must be active")
 evidence = ROOT / state["evidencePath"]
 with socket.socket() as probe:
     probe.bind(("127.0.0.1", 28082))
