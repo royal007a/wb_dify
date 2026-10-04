@@ -273,9 +273,9 @@
         "Workflow分页夹值标为兼容现状，与KB400不一致明确待统一决策；不擅自改变现有API",
         "COMPLETED/FAILED后取消202、cancelRequestedAt仍null、状态及事件不变",
         "旧会话钉住Agent版本后解绑并新发布，真实Run仍使用原Workflow版本和checksum",
-        "同key异resume40901有新key同非法resume400对照；原首轮日志SHA无法还原源码的局限写明"
+        "同key异resume40901有新key同非法resume400对照（Chat004已加）；原首轮日志SHA无法还原源码的局限写明"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/SPEC-API-BEHAVIOR-002.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
