@@ -11,3 +11,9 @@ Run创建message/conversationId/key及resume.runId/gapIds先拒绝U+0000，固�
 本地化是合成ServerErrorMessage协议字段测试，**不是安装中文lc_messages后的真实PG实验**。全量门禁将另记真实PG当前locale并发/NUL测试，不以英文PG并发冒充中文locale证据。未改前端、schema或部署。
 
 证据根：`harness/evidence/SPEC-RUN-INPUT-002/SPEC-RUN-INPUT-002-20261004T013652Z-a0e3089e/`；最终门禁待补录。
+
+代码f0dd199最终harness/backend门禁passed：81类547项全部执行，0 failures/errors/skipped/flaky，包含RunSubmissionIdentityTest14项和真实PG PostgresConcurrencyIntegrationTest7项（本次新增NUL）。Harness48项通过；没有重跑前端或浏览器。源码树backend c0200f2c、frontend 8f83bc47、tracked source diff为空，见source-identity.json。
+
+旧代码红灯日志无MockitoException；它先走无关完整性异常返回500，未进入第二次查询。修复后首次候选才触发抽象方法夹具错误，未隐藏：backend-red SHA c57084c0807498d1d972c52eff4e18a469189b07c228641445c86125d9c947ed，首次candidate e2bcbb4db6269b125fa5369d6f13c1a76e7d3fec6b541d97008fb4e0809ceece，修正夹具后的14项green SHA 91b5ae8c32070dc73758ebf08caed6e101a8d8d78af395223c5624ac5943f671。日志不入库，SHA不能重建日志。
+
+独立静态复核f0dd199无P0/P1，结构化字段优先、异常链防循环、H2兼容和NUL事务前拒绝获确认；对方没有运行测试。上传/管理文本NUL500另归SPEC-INPUT-HYGIENE-001，不宣称本次统一了所有字符串输入。未部署。

@@ -1,0 +1,8 @@
+{
+  "headCommit": "f0dd1993d4f62d02c5c9a01ee06862433c960474",
+  "backendTree": "c0200f2cad9a25e2d31efb73a6a36cb155024b4d",
+  "frontendTree": "8f83bc4774e6049892447286e0da9057c5c3f397",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "status": "M docs/CURRENT_STATE.md\n M docs/spec/AUDIT_FINDINGS.md\n D exec-plans/active/SPEC-RUN-INPUT-002.md\n M harness/progress.md\n M harness/state.json\n M harness/tasks.json\n?? exec-plans/active/SPEC-DEPLOY-005.md\n?? exec-plans/completed/SPEC-RUN-INPUT-002.md\n?? harness/evidence/SPEC-RUN-INPUT-002/",
+  "note": "Generated locally while fresh gate runs; no application source edits after code commit."
+}
