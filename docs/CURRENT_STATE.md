@@ -50,7 +50,7 @@
 
 ## 近期部署事实
 
-132 原版入口 `https://118.196.123.132/hify/`，最近一次已记录部署为 `d06034e`，Token适配证据见 `evidence/MCP_TOKEN_INPUT.md`；上表后续审计修复尚未重新部署。`/api/v1/mcp` 是该主机上另一服务，不是 Hify 管理接口；课程 hify-cc 独立。Token主密钥文件不得随部署重建。无登录鉴权，入口访问控制与凭据轮换仍是运维责任。
+132 原版入口 `https://118.196.123.132/hify/`，2026-10-04已从d06034e升级到a66be9e构建（应用源码树与9f40639验收一致），V21–V23成功；详情见 `evidence/SPEC_DEPLOYMENT.md`。直连和/hify上传边界、合成知识检索、3项真实132浏览器通过，不等于全功能/真实模型验收。证书仍自签名，磁盘约1.8GiB余量，teacher_mcp旧env引用未自动授权。`/api/v1/mcp` 是另一服务，不是 Hify 管理接口；hify-cc独立且未改。Token主密钥未重建。无登录鉴权，入口访问控制与凭据轮换仍是运维责任。
 
 ## 现状与目标架构的冲突
 
@@ -65,6 +65,8 @@
 ## 处理原则
 
 以下反例尚未由上述专项关闭，具体状态在tasks.json，不以本页另建状态板：
+
+- 总验收补录：管理分页400/夹值尚未统一（SPEC-API-PAGINATION-001）；在途GET下人工重连、取消查询按钮名、跨会话提示、失效resume循环（SPEC-CHAT-LIFECYCLE-005/RUN-INPUT-001）；send阻塞后再次提交断言、报告partial传播与脱敏可复算输入（SPEC-VERIFY-002）。
 
 - 知识：部分来源失败仍先发completed；wrapped suspension/数据库故障可能转Gap；索引isPostgres另借连接且失败当H2；Agent记录的Workflow checksum运行时未比对。分别见SPEC-KNOWLEDGE-FINISH-004、SPEC-KNOWLEDGE-INTEGRITY-003。
 - 恢复：Chat每次重启重置完整runTimeout（SPEC-RUN-BUDGET-001）；recallLatency/replanDecisions重置、轮末replan生成新UUID及重复观察事件（SPEC-HISTORY-RECOVERY-003）。

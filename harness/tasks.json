@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T00:43:34Z",
+  "updatedAt": "2026-10-04T00:44:51Z",
   "tasks": [
     {
       "id": "SPEC-UPLOAD-BOUNDARY-001",
@@ -2054,7 +2054,7 @@
       "title": "发布验收修复并验证 132 与本地",
       "description": "将通过矩阵的实现发布到原版 Hify；保留数据库和产物回滚基线，核验 sha、迁移、HTTP 与浏览器，禁止改 hify-cc。",
       "priority": "P0",
-      "status": "pending",
+      "status": "running",
       "scopes": [
         "harness",
         "backend",
@@ -2079,11 +2079,17 @@
         "独立 review 的阻塞问题已关闭或明确向用户报告"
       ],
       "planPath": "exec-plans/active/SPEC-DEPLOY-001.md",
-      "checkpoint": null,
+      "checkpoint": {
+        "summary": "task command started",
+        "headCommit": "44976f6dcedf62216f40435111d57c60f54e68a9",
+        "workingTreeHash": "561091ed7669a53609ba6db45b8824b72bb5183062f870b3203a74f76ea14fd1",
+        "evidencePath": "harness/evidence/SPEC-DEPLOY-001/SPEC-DEPLOY-001-20261004T004451Z-46b22950",
+        "updatedAt": "2026-10-04T00:44:51Z"
+      },
       "blockedReason": null,
       "evidence": [],
       "createdAt": "2026-10-03T14:35:00Z",
-      "updatedAt": "2026-10-03T14:35:00Z"
+      "updatedAt": "2026-10-04T00:44:51Z"
     },
     {
       "id": "MCP-TOKEN-DEPLOY-001",
@@ -3460,6 +3466,42 @@
       ],
       "createdAt": "2026-09-23T00:00:00Z",
       "updatedAt": "2026-09-23T15:01:21Z"
+    },
+    {
+      "id": "SPEC-API-PAGINATION-001",
+      "title": "确定并统一管理列表分页越界契约",
+      "description": "独立review指出KB返回400而Workflow夹值仅被记录于已完成任务，需持续开放；统一语义需明确兼容性决策，不能追认现实现为产品要求。",
+      "priority": "P2", "status": "pending",
+      "scopes": ["backend", "harness"], "verifyScopes": ["backend", "harness"],
+      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": ["记录KB/Workflow/Agent分页差异及明确兼容性决策", "按决策逐入口断言0、负值、1、100、101与默认值；不只测当前夹值"],
+      "planPath": null, "checkpoint": null, "blockedReason": null, "evidence": [],
+      "createdAt": "2026-10-04T00:50:00Z", "updatedAt": "2026-10-04T00:50:00Z"
+    },
+    {
+      "id": "SPEC-CHAT-LIFECYCLE-005",
+      "title": "补齐人工恢复残余交互与提示",
+      "description": "总验收review要求显式登记P3：在途GET时人工重试不重连、取消待确认按钮名仍重试提交、跨会话resume与不存在的文案不同；明确拒绝后resumeState循环同时关联SPEC-RUN-INPUT-001。",
+      "priority": "P2", "status": "pending",
+      "scopes": ["frontend", "backend", "harness"], "verifyScopes": ["frontend", "backend", "harness"],
+      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": ["GET在途时人工重试最终重建SSE且不重复终态", "取消待确认按钮明确仅查询，跨会话来源不暴露更多身份", "resume被明确拒绝后有恢复入口，不重发同一个失效resume；与RUN-INPUT验收去重"],
+      "planPath": null, "checkpoint": null, "blockedReason": null, "evidence": [],
+      "createdAt": "2026-10-04T00:50:00Z", "updatedAt": "2026-10-04T00:50:00Z"
+    },
+    {
+      "id": "SPEC-VERIFY-002",
+      "title": "补强阻塞期间提交反例与报告传播",
+      "description": "eeb385e独立review的非阻塞缺口：慢send进入之后再提交的直接证据；路由映射状态不随子场景变partial；仅提交摘要不能离线重算方法报告。",
+      "priority": "P2", "status": "pending",
+      "scopes": ["backend", "harness"], "verifyScopes": ["backend", "harness"],
+      "risk": "reversible_write", "operation": "workspace_write", "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": ["entered.await之后分别publish同Run和另一Run并执行afterCommit，均在有限期限返回", "映射子场景not-run/fail使路由明确partial并有突变测试", "提供脱敏方法级可提交输入或明确不可离线复算边界，不提交XML properties/正文"],
+      "planPath": null, "checkpoint": null, "blockedReason": null, "evidence": [],
+      "createdAt": "2026-10-04T00:50:00Z", "updatedAt": "2026-10-04T00:50:00Z"
     }
   ]
 }

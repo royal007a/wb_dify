@@ -1,0 +1,34 @@
+{
+  "kind": "manual deployment and runtime evidence summary",
+  "target": "https://118.196.123.132/hify/",
+  "buildCommit": "a66be9e6a0266fdce2c90eb94876a5e9afc1e9b2",
+  "backendTree": "5899367ab1a642763fbf94e16c6a3aad429af5b4",
+  "frontendTree": "6181271f7e6b1e10b74c913395285f9c6e389c94",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "jarSha256": "fa44c40e4270506ddfbf11aaa0020e2915b1c9bc976022d3a1369a899659e7bc",
+  "nginxSnippetSha256": "6c43b0a0f431ac4fa27ff0f2d48e71c02e4ce15a5aa607dbbc2714d0cf132281",
+  "indexSha256": "316e07fc2676e8f73b9abcc71fcc4e18a0711a6f485d3ec5d89d6aea0e5c5e3e",
+  "backup": "/opt/hify/releases/spec-verify-20261004-a66be9e/",
+  "databaseDump": {"mode":"0600", "bytes":301080, "listCheck":"passed", "restorePerformed":false},
+  "key": {"readOrReplaced":false, "metadataUnchanged":true, "mode":"0600"},
+  "flyway": {"21":true,"22":true,"23":true},
+  "runtime": {"service":"active", "healthHttp":200, "healthCode":200, "nginxTestExit":0},
+  "uploads": {
+    "direct": {"2097152":202,"10485760":202,"10485761":413,"13631488":413},
+    "httpsPrefix": {"2097152":202,"10485760":202,"10485761":413,"13631488":413},
+    "rejectResultCode":41300, "contentType":"application/json", "indexedRetrieval":"passed, bootstrap synthetic exact text",
+    "cleanup":"only own documents/KB archived; active owned records=0"
+  },
+  "browser": {"passed":3,"failed":0,"skipped":0,"seconds":17.7,"realBackend":true,"model":"Mock","externalMcpCalls":false,"trace":"off"},
+  "tls": {"trustedCertificate":false,"strictCurlExit":60,"selfSignedExplicitlyAcceptedForTests":true},
+  "negativeAttempt": {"phase":"smoke launched before installer completed", "exitCode":1,"errorClass":"ConnectionRefusedError","dataCreated":false,"followup":"installer exited 0, reran both complete paths successfully"},
+  "diskKiB": {"before":2086296,"after":1858008},
+  "logsSha256": {
+    "deployment.log":"9be1f96bfd43d21edcb144a3928690c21f0726c5d1c82579b6a52b6568dc0290",
+    "upload-ready.log":"ab9806cdf323b92fb0ab7e09de323f1e47637b78196f6b624f064c49cf8a7eaf",
+    "browser-132.log":"2e18c270916b7ddbb06f151260a71c60a10ab384d3ed5cc17639bf3268b5c033",
+    "package.log":"7bcf0763c783af7e46948ef83c7fecaf791f32205a72cd5d8820d2506f2c8225",
+    "frontend-release.log":"95dc256cdc280dd58116dc0bfd981bcca9398946c5eb3e54754113483474bf94"
+  },
+  "limits": ["not external LLM/MCP acceptance", "not trusted TLS certificate validation", "not restoration drill", "open P2 remain; see tasks.json"]
+}

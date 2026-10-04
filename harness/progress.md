@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T00:43:34Z`
-- Current task: `none`
-- Counts: pending 17 · running 0 · blocked 0 · completed 64
+- Generated from task state updated at: `2026-10-04T00:44:51Z`
+- Current task: `SPEC-DEPLOY-001`
+- Counts: pending 19 · running 1 · blocked 0 · completed 64
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -25,7 +25,7 @@
 | `SPEC-CHAT-UI-001` | P0 | completed | frontend, harness | reversible_write | 修复流式会话生命周期与终态回读恢复 |
 | `SPEC-COMMON-001` | P0 | completed | backend, harness | reversible_write | 修复 HTTP 客户端错误映射与阻塞调用取消 |
 | `SPEC-CREDENTIAL-BOUNDARY-001` | P0 | completed | backend, runtime, harness | reversible_write | 凭据引用只允许管理员配置的引用与目标绑定 |
-| `SPEC-DEPLOY-001` | P0 | pending | harness, backend, frontend, migration | high_risk | 发布验收修复并验证 132 与本地 |
+| `SPEC-DEPLOY-001` | P0 | running | harness, backend, frontend, migration | high_risk | 发布验收修复并验证 132 与本地 |
 | `SPEC-SSE-COMMIT-001` | P0 | completed | backend, runtime, harness | reversible_write | 修复SSE提交时序与Run终态事件原子性 |
 | `SPEC-VERIFY-001` | P0 | completed | harness, backend, frontend, migration, runtime, eval | reversible_write | 执行全功能矩阵并修复发现的问题 |
 | `SPEC-WORKFLOW-CONTROL-001` | P0 | completed | backend, runtime, migration, harness | reversible_write | 传播 Workflow 取消和截止时间并阻止错误成功终态 |
@@ -67,10 +67,12 @@
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
 | `SPEC-API-BEHAVIOR-002` | P2 | completed | backend, harness | reversible_write | 澄清管理契约来源并补终态取消和旧会话执行 |
+| `SPEC-API-PAGINATION-001` | P2 | pending | backend, harness | reversible_write | 确定并统一管理列表分页越界契约 |
 | `SPEC-AUDIT-002` | P2 | completed | harness, backend | reversible_write | 规格复核补证据等级与可提交测试摘要 |
 | `SPEC-AUDIT-003` | P2 | completed | harness | reversible_write | 封闭验证报告与任务完成入口 |
 | `SPEC-AUDIT-004` | P2 | pending | harness | reversible_write | 补验证摘要实文件绑定与历史兼容清单 |
 | `SPEC-CHAT-LIFECYCLE-004` | P2 | completed | backend, frontend, harness | reversible_write | 补人工重连、澄清放弃与建会话超时边界 |
+| `SPEC-CHAT-LIFECYCLE-005` | P2 | pending | frontend, backend, harness | reversible_write | 补齐人工恢复残余交互与提示 |
 | `SPEC-CHILD-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 核验子任务孤儿扫描与父Run恢复时序 |
 | `SPEC-CREDENTIAL-BOUNDARY-002` | P2 | completed | backend, runtime, harness | reversible_write | 补齐受保护配置命名空间与冻结凭据负向验收 |
 | `SPEC-CREDENTIAL-BOUNDARY-003` | P2 | completed | backend, harness | reversible_write | 主密钥宽松配置绑定别名不得被误授权 |
@@ -84,6 +86,7 @@
 | `SPEC-RUN-BUDGET-001` | P2 | pending | backend, runtime, harness | reversible_write | 统一聊天与Workflow跨重启的Run预算 |
 | `SPEC-RUN-INPUT-001` | P2 | pending | backend, harness | reversible_write | 限定Run幂等竞争异常与输入长度 |
 | `SPEC-SSE-BACKPRESSURE-002` | P2 | pending | backend, runtime, harness | reversible_write | SSE公平接入与慢读总时限的确定性验证 |
+| `SPEC-VERIFY-002` | P2 | pending | backend, harness | reversible_write | 补强阻塞期间提交反例与报告传播 |
 | `SPEC-WORKFLOW-GRAPH-003` | P2 | pending | backend, frontend, runtime, harness | reversible_write | 条件空白、旧转义兼容与迁移诊断 |
 | `SPEC-WORKFLOW-KNOWLEDGE-002` | P2 | completed | backend, migration, harness | reversible_write | 补齐冻结Workflow发布边界、锁顺序与事务隔离证据 |
 | `SPEC-WORKFLOW-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 关联Workflow执行事实与父Run恢复及异常边界 |
