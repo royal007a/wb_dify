@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "url": "https://118.196.123.132/hify/",
+  "releaseDirectory": "/opt/hify/releases/spec-verify-20261004-42db727",
+  "sourceCommit": "42db7278c61f9dcd49f505654341b7f1fceeafc9",
+  "deploymentBaselineCommit": "043c18f26a0e825da7345acc423bff21bca2e009",
+  "backendTree": "85586d8cfe5ce35a3224e51b4c6020a6327a0977",
+  "frontendTree": "1e257aae35618d3175c8d2897070d90c456a9060",
+  "deployTree": "fd72f546c5559303e9722b220a1839e87fab72dc",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "artifacts": {
+    "jar": "3aa5eb39a96ae63979b8c25a9ebc282850bf4e75f8a235ea3ad3079f891df1c4",
+    "index": "81242978a2a27361791ad72c3a633b11bb06443cbd571ff6929bc1af16b76c5b",
+    "snippet": "6c43b0a0f431ac4fa27ff0f2d48e71c02e4ce15a5aa607dbbc2714d0cf132281",
+    "installer": "93352ed7c3d9eae0b31e9b5a1dc7daed5c3c784d8d4ad4a82e0d481bb74cbf1a",
+    "releaseTar": "1e4e3a76e66abf622d0760a63181ef86b7247614465cbec063bccb5988220870"
+  },
+  "installer": {
+    "unit": "hify-upgrade-20261004-0830",
+    "result": "success",
+    "exitCode": 0,
+    "exactUnitTimestampsUnavailable": true
+  },
+  "service": "active",
+  "healthHttp": 200,
+  "allMigrationsSucceeded": true,
+  "runningRuns": 0,
+  "runningWorkflows": 0,
+  "activeIndexTasks": 0,
+  "keyMetadataUnchanged": true,
+  "keyMetadata": "390186:65:1791034419:600:root",
+  "backup": {
+    "bytes": 390349,
+    "mode": "0600",
+    "listPassed": true,
+    "restorePerformed": false
+  },
+  "disk": {
+    "preflightAvailableKiB": 1578028,
+    "finalAvailableKiB": 1347156,
+    "finalUsedPercent": 97
+  },
+  "liveBrowser": {
+    "passed": 3,
+    "durationSeconds": 31.3,
+    "mockModel": true,
+    "tlsCertificateValidation": false
+  },
+  "closingGate": {
+    "finishedAt": "2026-10-04T08:33:39Z",
+    "scopes": [
+      "harness",
+      "frontend"
+    ],
+    "result": "passed",
+    "steps": 7,
+    "pythonTests": 74,
+    "verificationSha256": "25e3fa049b4f9706a5c8977c9cc1a509b7f00c2a3efa1a32c08b91deefc720b3"
+  },
+  "smokes": {
+    "smoke-current.json": {
+      "sha256": "83c8ffc13816268d75cf4d566314d7484062312b8bada8d0361f421624e4af7d",
+      "checks": 23
+    },
+    "smoke-prefix.json": {
+      "sha256": "03c853111bc7826d0ed142e922f31a4f88934a7a98c042190038b164cfb627fe",
+      "checks": 5
+    },
+    "smoke-direct.json": {
+      "sha256": "c840bdc33af06ccf41fff5469255b42a89ddd9ae10ad0b2e9a72b865b16adb81",
+      "checks": 5
+    }
+  },
+  "logSha256": {
+    "browser-live.log": "901a82ebdf6c0cae939a4d87812d16f0416d0ecb3a8a70db81e248051fcf2955",
+    "build-prefix.log": "f63ba1a4a2406c7d91af8d0789a9e4c4519f6f14ef5a0f3f1d71df56d9dc45ae",
+    "command.log": "37c11ba32b49675269e58d904dc1b0f5f7133018fae942204b25f62b3e6ed524",
+    "frontend-build.log": "1df05751e4e9187c7bead076270c929b0a9a56b7f26d65a9d69939d44ded4f39",
+    "frontend-typecheck.log": "150b8f5e6954ae1ebc67a61220fd3b475d89a262b5f342b98838e3dc84fed489",
+    "harness-api-spec.log": "0456d6551eef206c05217007f775b3b7e8fe918df66de019312f60508977f0f0",
+    "harness-progress.log": "53a4a1b7863bea67045d82fe8a1bc53c8c30dd3740b7708ff332a9300796dc18",
+    "harness-python-tests.log": "6948dcc7447ea700d571caf02052869d3d485d65853ea0acc9f0e2f0e547cd16",
+    "harness-shell-syntax.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "harness-state.log": "6b88b9a6057606024a1bf285377c7371051f61b28a1e81d6b68a3fd12bf6cb7b",
+    "local-artifacts.log": "a366ffad11d6ec51d30a27fd1f1d28c44db881ca0a4176ad7088607e072ef2ce",
+    "package.log": "4ccedf1dac8cd5acde805ee479d66203f6246311739ef9a95679f484e53a7878",
+    "remote-final.log": "3d27db7f62887be7e27a4798ac8c12332020828078951defcb67804fc1ab639b",
+    "remote-preflight.log": "7b9945065cc18f4886bae203e71f187b02d511b0ba3b744d38f8fb740e44ebad",
+    "remote-upgrade.log": "5d54f071a1a2fc689cd05dd7372562f9f2c50743af2242765955c0420a52b88d"
+  },
+  "limits": [
+    "Raw logs are ignored; committed summaries do not independently reproduce remote execution.",
+    "Backup listing is not restore validation.",
+    "HTTP direct smoke has no TLS; its tlsCertificateValidation=true field is a generic option flag, not certificate validation evidence.",
+    "No external model evaluation; self-signed TLS validation disabled only in explicit smoke/browser clients.",
+    "No old releases, backups, Docker resources or unrelated services deleted."
+  ],
+  "databaseSchemaVersion": 23
+}

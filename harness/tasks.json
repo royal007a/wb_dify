@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-04T08:26:10Z",
+  "updatedAt": "2026-10-04T08:33:39Z",
   "tasks": [
     {
       "id": "SPEC-AUDIT-005",
@@ -4114,7 +4114,7 @@
       "title": "按最新完整门禁重新发布原版Hify到132",
       "description": "用户明确授权完整重新部署。前置RELEASE-VERIFY全范围通过并绑定同一源码，再构建、备份、发布和真实线上验证；不删旧目录或修改凭据。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "harness",
         "frontend"
@@ -4135,12 +4135,24 @@
         "健康200、产物SHA本地远端一致、真实浏览器Chat、输入卫生400/零写入及上传10MiB边界通过",
         "记录部署时间、URL、运行边界、未验功能与未恢复备份；交独立review，不将Mock称真实模型验收"
       ],
-      "planPath": "exec-plans/active/SPEC-DEPLOY-007.md",
+      "planPath": "exec-plans/completed/SPEC-DEPLOY-007.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "SPEC-DEPLOY-007-20261004T082939Z-1f8dfa88",
+          "path": "harness/evidence/SPEC-DEPLOY-007/SPEC-DEPLOY-007-20261004T082939Z-1f8dfa88",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "043c18f26a0e825da7345acc423bff21bca2e009",
+          "headCommit": "043c18f26a0e825da7345acc423bff21bca2e009",
+          "recordedAt": "2026-10-04T08:33:39Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "25e3fa049b4f9706a5c8977c9cc1a509b7f00c2a3efa1a32c08b91deefc720b3"
+        }
+      ],
       "createdAt": "2026-10-04T08:14:00Z",
-      "updatedAt": "2026-10-04T08:14:00Z"
+      "updatedAt": "2026-10-04T08:33:39Z"
     }
   ]
 }

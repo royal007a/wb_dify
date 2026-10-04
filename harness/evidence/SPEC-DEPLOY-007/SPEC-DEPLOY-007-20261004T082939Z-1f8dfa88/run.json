@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "SPEC-DEPLOY-007-20261004T082939Z-1f8dfa88",
+  "taskId": "SPEC-DEPLOY-007",
+  "status": "completed",
+  "baselineCommit": "043c18f26a0e825da7345acc423bff21bca2e009",
+  "approvalRef": "lark:om_x100b6314d40470a4b2e14a8024c780f",
+  "startedAt": "2026-10-04T08:29:39Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "043c18f26a0e825da7345acc423bff21bca2e009",
+  "finishedAt": "2026-10-04T08:33:39Z"
+}
