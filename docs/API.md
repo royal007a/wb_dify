@@ -4,7 +4,9 @@
 
 创建知识库可提供 `embedding: {"providerId":"...","model":"bge-m3","dimensions":1024}`，Provider 必须为启用的 OpenAI/OpenAI-compatible，模型必须支持 `/embeddings`。返回 `embedding` 仅包含这三个公开字段，不返回鉴权配置。未提供时保留旧 token-hash 兼容模式，不声称语义检索。维度范围 1..4096，Provider 输出不符时索引 FAILED、不产生分块；供应商错误不会回退 hash。新建 UI 默认要求语义配置。
 
-Embedding 配置创建后固定，PUT 改动返回 409；迁移模型须新建库/重传文档/重发 Workflow 与 Agent。语义索引每文档上限4096分块、每批32个。查询采用真实模型向量的精确余弦扫描加词法RRF，不宣称HNSW加速。冻结语料摘要覆盖新增语义向量和profile；旧语料摘要不变。
+Embedding 配置创建后固定（包含 baseUrl/credentialRef），PUT 改动返回 409；迁移模型、地址或凭据引用名须新建库/重传文档/重发 Workflow 与 Agent；原引用指向的凭据值可按运维授权轮换。语义索引每库上限512个活动分块、每批32个；索引超限 FAILED 并提示拆分知识库。查询/冻结读取语义向量前用 SQL 聚合检查：每次最多512个语义分块、向量与 Profile 原始 UTF-8 文本合计24MiB；超限409，提示“请拆分知识库并重新发布”。这是小型知识库的精确余弦扫描加词法RRF，不宣称语义ANN/HNSW加速。混合 hash/semantic 或不同 Profile 的语料拒绝。冻结语料摘要覆盖新增语义向量和profile；旧语料摘要不变。
+
+当前边界：embedding 与对话共享 Provider 熔断器；批次独立45秒预算，取消靠线程中断/关闭信号，不宣称跨批总期限；关停打断索引可能 FAILED，需要重传。私网目标开关作用于所有 Provider，部署需同时使用精确凭据目标授权。模型名由操作者指定，不代表已验证 Provider 模型目录。检索开始与首批索引提交竞争可能返回409要求重试。元数据和调用凭据错误均 fail-closed，无哈希降级。
 
 完整的当前接口清单与验收边界见 [可执行测试规格](spec/README.md)；68个显式 `/api` 方法/路径（含只读提交查询）由 `ApiContractInventoryTest` 与真实 Spring 注册映射双向核对。下文不把规划接口列为已开放。
 

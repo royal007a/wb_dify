@@ -102,4 +102,27 @@ class SemanticKnowledgeIntegrationTest {
         assertThatThrownBy(()->embeddings.embed(profile,List.of("automobile"),ExecutionControl.withTimeout(java.time.Duration.ofSeconds(2),()->true))).isInstanceOf(ExecutionCancelledException.class);
         assertThat(calls.get()).isEqualTo(before);
     }
+    @Test void scaleLimitRejectsBeforeEmbeddingOrVectorParsing()throws Exception{
+        String base=base(provider()),doc=upload(base,"automobile servicing");
+        for(int i=1;i<=512;i++)db.update("INSERT INTO document_chunks(id,knowledge_base_id,document_id,document_version,ordinal,content,content_digest,token_count,embedding_text,semantic_profile,semantic_vector,created_at) SELECT ?,knowledge_base_id,document_id,document_version,?,content,content_digest,token_count,embedding_text,semantic_profile,'not-a-vector',created_at FROM document_chunks WHERE document_id=? AND ordinal=0",UUID.randomUUID().toString(),i,doc);
+        int before=calls.get();
+        assertThatThrownBy(()->retrieval.search(base,"vehicle maintenance",1)).isInstanceOf(BizException.class).hasMessageContaining("请拆分知识库");
+        assertThat(calls.get()).isEqualTo(before);
+    }
+    @Test void mixedHashAndSemanticSpaceIsRejected()throws Exception{
+        String base=base(provider());upload(base,"automobile servicing");String other=upload(base,"orchard irrigation");
+        db.update("UPDATE document_chunks SET semantic_profile=NULL,semantic_vector=NULL WHERE document_id=?",other);
+        assertThatThrownBy(()->retrieval.search(base,"vehicle maintenance",1)).isInstanceOf(BizException.class).hasMessageContaining("混合");
+    }
+    @Test void legacyFrozenDigestAndRetrievalRemainUnchanged()throws Exception{
+        String base=data(http.perform(post("/api/v1/knowledge-bases").contentType("application/json").content(json.writeValueAsString(Map.of("name","legacy-"+UUID.randomUUID(),"chunkSize",128,"chunkOverlap",8))))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).asText();
+        upload(base,"automobile servicing");var frozen=retrieval.freeze(base);
+        var rows=db.queryForList("SELECT id,content_digest FROM document_chunks WHERE knowledge_base_id=? ORDER BY id",base);
+        StringBuilder canonical=new StringBuilder();for(var row:rows)canonical.append(row.get("id")).append(':').append(row.get("content_digest")).append('\n');
+        String oldDigest=HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(canonical.toString().getBytes(StandardCharsets.UTF_8)));
+        assertThat(frozen.manifestDigest()).isEqualTo(oldDigest);
+        int before=calls.get();assertThat(retrieval.searchSnapshot(frozen,"automobile servicing",1)).hasSize(1);
+        assertThat(calls.get()).isEqualTo(before);
+    }
 }

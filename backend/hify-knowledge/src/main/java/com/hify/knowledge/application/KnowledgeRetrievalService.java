@@ -28,6 +28,8 @@ import java.util.UUID;
 @Service
 public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     private static final int RRF_K=60;
+    private static final int MAX_SEMANTIC_CHUNKS=512;
+    private static final long MAX_SEMANTIC_BYTES=24L*1024*1024;
     private final JdbcTemplate jdbc;
     private final KnowledgeApplicationService knowledge;
 
@@ -49,7 +51,8 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
         if(query==null||query.isBlank())throw new BizException(ErrorCode.PARAM_ERROR,"检索问题不能为空");
         var base=knowledge.requireBase(knowledgeBaseId); if(!base.isEnabled())throw new BizException(ErrorCode.CONFLICT,"知识库已停用");
         var vectors=prepareVectors(query,knowledgeBaseId,null);
-        return readTransaction(()->rank(query,topK,activeRows(knowledgeBaseId),knowledgeBaseId,null,vectors));
+        return readTransaction(()->{var rows=activeRows(knowledgeBaseId);
+            return rank(query,topK,rows,knowledgeBaseId,null,vectors,semanticRows(rows));});
     }
 
     @Override
@@ -90,7 +93,7 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
         if(query==null||query.isBlank())throw new BizException(ErrorCode.PARAM_ERROR,"检索问题不能为空");
         var vectors=prepareVectors(query,null,corpusVersionId);
         return readTransaction(()->{KnowledgeCorpusSnapshot snapshot=requireSnapshot(corpusVersionId);
-            return rank(query,topK,verifiedRows(snapshot),null,corpusVersionId,vectors);});
+            return rankVerified(query,topK,snapshot,vectors);});
     }
 
     @Override
@@ -101,7 +104,15 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
         var vectors=prepareVectors(query,null,expected.id());
         return readTransaction(()->{KnowledgeCorpusSnapshot actual=requireSnapshot(expected.id());
             if(!actual.equals(expected))throw new BizException(ErrorCode.CONFLICT,"知识语料快照摘要或身份不匹配");
-            return rank(query,topK,verifiedRows(actual),null,actual.id(),vectors);});
+            return rankVerified(query,topK,actual,vectors);});
+    }
+
+    private List<KnowledgeCitation> rankVerified(String query,int topK,KnowledgeCorpusSnapshot snapshot,Map<String,float[]> vectors){
+        var rows=revisionRows(snapshot.id());var stored=semanticRows(rows);
+        if(rows.size()!=snapshot.chunkCount()||!manifestDigest(rows,stored).equals(snapshot.manifestDigest()))
+            throw new BizException(ErrorCode.CONFLICT,"知识语料清单或摘要不完整");
+        rows.forEach(this::verifyContent);
+        return rank(query,topK,rows,null,snapshot.id(),vectors,stored);
     }
 
     private KnowledgeCorpusSnapshot requireSnapshot(String id) {
@@ -123,28 +134,29 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
         if(!sha256(row.content()).equals(row.digest()))throw new BizException(ErrorCode.CONFLICT,"引用分块原文摘要不匹配");
     }
 
-    private List<KnowledgeCitation> rank(String query,int topK,List<Row> fallbackRows,String baseId,String corpusVersionId,Map<String,float[]> queryVectors){
+    private List<KnowledgeCitation> rank(String query,int topK,List<Row> fallbackRows,String baseId,String corpusVersionId,Map<String,float[]> queryVectors,Map<String,SemanticRow> semanticRows){
         int limit=Math.min(20,Math.max(1,topK)); float[] queryVector=KnowledgeEmbedding.embed(query);
         List<Row> lexical; List<Row> vector;
         if(isPostgres()){
             lexical=corpusVersionId==null?postgresLexical(baseId,query,limit*4):postgresRevisionLexical(corpusVersionId,query,limit*4);
-            vector=corpusVersionId==null?postgresVector(baseId,queryVector,limit*4):postgresRevisionVector(corpusVersionId,queryVector,limit*4);
+            vector=semanticRows.isEmpty()?(corpusVersionId==null?postgresVector(baseId,queryVector,limit*4):postgresRevisionVector(corpusVersionId,queryVector,limit*4)):List.of();
         }else{
             List<Row> all=fallbackRows;
             lexical=new ArrayList<>(all); lexical.sort(Comparator.comparingDouble((Row r)->lexicalScore(query,r.content())).reversed());
             lexical=lexical.stream().filter(r->lexicalScore(query,r.content())>0).limit(limit*4L).toList();
-            vector=new ArrayList<>(all);
+            vector=new ArrayList<>(semanticRows.isEmpty()?all:List.of());
             vector.sort(Comparator.comparingDouble((Row r)->KnowledgeEmbedding.cosine(queryVector,KnowledgeEmbedding.parse(r.embedding()))).reversed());
             vector=vector.stream().filter(r->KnowledgeEmbedding.cosine(queryVector,KnowledgeEmbedding.parse(r.embedding()))>=minVectorScore)
                     .limit(limit*4L).toList();
         }
-        Map<String,SemanticRow> semanticRows=semanticRows(fallbackRows);
         if(!semanticRows.isEmpty()){
+            if(semanticRows.size()!=fallbackRows.size()||semanticRows.values().stream().map(SemanticRow::profile).distinct().count()!=1)
+                throw new BizException(ErrorCode.CONFLICT,"知识库混合了不同Embedding空间，请新建知识库重新索引");
             Map<String,Double> similarity=new HashMap<>();
             for(Row row:fallbackRows){
                 SemanticRow stored=semanticRows.get(row.id());
-                float[] candidate=KnowledgeEmbedding.parse(stored==null?row.embedding():stored.vector());
-                float[] q=stored==null?queryVector:queryVectors.get(stored.profile());
+                float[] candidate=KnowledgeEmbedding.parse(stored.vector());
+                float[] q=queryVectors.get(stored.profile());
                 if(q==null)throw new BizException(ErrorCode.CONFLICT,"Embedding 空间在检索期间变化，请重试");
                 if(q.length!=candidate.length)throw new BizException(ErrorCode.CONFLICT,"知识语义向量维度不匹配");
                 double score=KnowledgeEmbedding.cosine(q,candidate);
@@ -210,7 +222,9 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
             ORDER BY c.embedding <=> CAST(? AS vector) LIMIT ?
             """,(rs,n)->new Row(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getString(8)),versionId,literal,1-minVectorScore,literal,limit);}
     private String manifestDigest(List<Row> rows){
-        Map<String,SemanticRow> semanticRows=semanticRows(rows);
+        return manifestDigest(rows,semanticRows(rows));
+    }
+    private String manifestDigest(List<Row> rows,Map<String,SemanticRow> semanticRows){
         StringBuilder canonical=new StringBuilder();
         for(Row row:rows){canonical.append(row.id()).append(':').append(row.digest()).append('\n');
             var stored=semanticRows.get(row.id());
@@ -220,6 +234,16 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     }
     private Map<String,SemanticRow> semanticRows(List<Row> rows){
         Map<String,SemanticRow> result=new HashMap<>();
+        // Count bytes in SQL before transferring any vector TEXT. Repeat under the read
+        // snapshot so concurrent inserts cannot bypass the earlier pre-network guard.
+        long count=0,bytes=0;
+        for(int from=0;from<rows.size();from+=500){
+            var batch=rows.subList(from,Math.min(rows.size(),from+500));
+            String placeholders=String.join(",",java.util.Collections.nCopies(batch.size(),"?"));
+            long[] totals=jdbc.queryForObject("SELECT COUNT(*),COALESCE(SUM(OCTET_LENGTH(semantic_vector)+OCTET_LENGTH(semantic_profile)),0) FROM document_chunks WHERE semantic_profile IS NOT NULL AND id IN ("+placeholders+")",
+                    (rs,n)->new long[]{rs.getLong(1),rs.getLong(2)},batch.stream().map(Row::id).toArray());
+            count+=totals[0];bytes+=totals[1];checkSemanticSize(count,bytes);
+        }
         for(int from=0;from<rows.size();from+=500){
             var batch=rows.subList(from,Math.min(rows.size(),from+500));
             String placeholders=String.join(",",java.util.Collections.nCopies(batch.size(),"?"));
@@ -230,6 +254,10 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     }
     private record SemanticRow(String profile,String vector){}
     private Map<String,float[]> prepareVectors(String query,String baseId,String corpusId){
+        String scope=corpusId==null?"FROM document_chunks c WHERE c.knowledge_base_id=? AND c.archived_at IS NULL":"FROM document_chunks c JOIN knowledge_corpus_version_chunks vc ON vc.chunk_id=c.id WHERE vc.corpus_version_id=?";
+        long[] size=jdbc.queryForObject("SELECT COUNT(*),COALESCE(SUM(OCTET_LENGTH(c.semantic_vector)+OCTET_LENGTH(c.semantic_profile)),0) "+scope+" AND c.semantic_profile IS NOT NULL",
+                (rs,n)->new long[]{rs.getLong(1),rs.getLong(2)},corpusId==null?baseId:corpusId);
+        checkSemanticSize(size[0],size[1]);
         List<String> profiles=corpusId==null
                 ?jdbc.queryForList("SELECT DISTINCT semantic_profile FROM document_chunks WHERE knowledge_base_id=? AND archived_at IS NULL AND semantic_profile IS NOT NULL",String.class,baseId)
                 :jdbc.queryForList("SELECT DISTINCT c.semantic_profile FROM document_chunks c JOIN knowledge_corpus_version_chunks vc ON vc.chunk_id=c.id WHERE vc.corpus_version_id=? AND c.semantic_profile IS NOT NULL",String.class,corpusId);
@@ -238,6 +266,10 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
         Map<String,float[]> vectors=new HashMap<>();
         for(String profile:profiles)vectors.put(profile,semantic.embed(profile,List.of(query)).get(0));
         return vectors;
+    }
+    private void checkSemanticSize(long count,long bytes){
+        if(count>MAX_SEMANTIC_CHUNKS||bytes>MAX_SEMANTIC_BYTES)
+            throw new BizException(ErrorCode.CONFLICT,"精确语义检索上限为512个分块及24MiB向量/Profile，请拆分知识库并重新发布");
     }
     private <T> T readTransaction(java.util.function.Supplier<T> read){
         if(transactionManager==null)return read.get();

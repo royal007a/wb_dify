@@ -45,12 +45,13 @@ public class DocumentIndexingService {
         if(document==null) return;
         DocumentIndexTask task=tasks.findByDocumentIdAndDocumentVersion(documentId,document.getDocumentVersion()).orElseThrow();
         KnowledgeBase base=bases.findByIdAndArchivedAtIsNull(document.getKnowledgeBaseId()).orElseThrow();
-        List<RecursiveTextChunker.Chunk> chunks=chunker.split(document.getCanonicalContent(),base.getChunkSize(),base.getChunkOverlap());
+        List<RecursiveTextChunker.Chunk> chunks;
         List<float[]> semanticVectors=new java.util.ArrayList<>();
         // Provider IO runs before the write transaction: no DB connection is held while embedding.
         try {
+            chunks=chunker.split(document.getCanonicalContent(),base.getChunkSize(),base.getChunkOverlap());
             if(base.getEmbeddingProfile()!=null){
-                if(chunks.size()>4096)throw new IllegalArgumentException("语义索引超过4096个分块，请拆分文档");
+                if(chunks.size()>512)throw new IllegalArgumentException("语义索引超过512个分块，请拆分知识库");
                 for(int i=0;i<chunks.size();i+=32)
                     semanticVectors.addAll(semantic.embed(base.getEmbeddingProfile(),chunks.subList(i,Math.min(chunks.size(),i+32)).stream().map(RecursiveTextChunker.Chunk::content).toList()));
             }
@@ -71,6 +72,12 @@ public class DocumentIndexingService {
                          List<RecursiveTextChunker.Chunk> chunks,List<float[]> semanticVectors){
         try {
             if(documents.findByIdAndArchivedAtIsNull(documentId).isEmpty()||bases.findByIdAndArchivedAtIsNull(base.getId()).isEmpty())return;
+            if(base.getEmbeddingProfile()!=null){
+                // Serialize admission with other indexes and snapshot publication.
+                jdbc.queryForObject("SELECT id FROM knowledge_bases WHERE id=? FOR UPDATE",String.class,base.getId());
+                Long existing=jdbc.queryForObject("SELECT COUNT(*) FROM document_chunks WHERE knowledge_base_id=? AND archived_at IS NULL AND document_id<>?",Long.class,base.getId(),documentId);
+                if(existing+chunks.size()>512)throw new IllegalArgumentException("精确语义索引上限为512个活动分块，请拆分知识库");
+            }
             task.running("hify-local"); document.processing(); tasks.save(task); documents.save(document);
             if(chunks.isEmpty()) throw new IllegalArgumentException("文档没有可索引文本");
             boolean postgres=isPostgres();
