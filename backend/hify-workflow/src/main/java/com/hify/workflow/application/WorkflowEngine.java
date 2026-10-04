@@ -36,17 +36,22 @@ public class WorkflowEngine {
 
  // Each repository call commits a small state change. Do not hold a DB connection while waiting on IO.
  public WorkflowRunResponse execute(String versionId,String input,ExecutionControl control){
-  return executeVersion(versionId,input,control,null);
+  return executeVersion(versionId,input,null,control,null);
+ }
+
+ public WorkflowRunResponse executeWithInputs(String versionId,String input,JsonNode inputs){
+  return executeVersion(versionId,input,inputs,ExecutionControl.withTimeout(timeout,()->false),null);
  }
 
  public WorkflowRunResponse executePinned(String versionId,String expectedChecksum,String input,ExecutionControl control){
   if(expectedChecksum==null||expectedChecksum.isBlank())
    throw new WorkflowDefinitionException(ErrorCode.CONFLICT,"Agent 缺少固定 Workflow 校验和，请重新发布 Workflow、Agent 并新建会话");
-  return executeVersion(versionId,input,control,expectedChecksum);
+  return executeVersion(versionId,input,null,control,expectedChecksum);
  }
 
- private WorkflowRunResponse executeVersion(String versionId,String input,ExecutionControl control,String expectedChecksum){
+ private WorkflowRunResponse executeVersion(String versionId,String input,JsonNode inputs,ExecutionControl control,String expectedChecksum){
   com.hify.common.TextInput.requireNoNul(versionId,input);
+  if(input==null||input.isBlank()||input.length()>20000)throw new BizException(ErrorCode.PARAM_ERROR,"工作流input须为1至20000字符");
   control=control.withShutdown(lifecycle::isStopping);
   control.throwIfSuspended();
   WorkflowVersion version=application.requireVersion(versionId);
@@ -59,8 +64,10 @@ public class WorkflowEngine {
   draft.nodes().stream().filter(WorkflowKnowledgeSnapshots::isKnowledge).forEach(WorkflowKnowledgeSnapshots::require);
   Map<String,WorkflowNodeSpec> nodeMap=new LinkedHashMap<>();draft.nodes().forEach(n->nodeMap.put(n.nodeKey(),n));Map<String,List<WorkflowEdgeSpec>> edgeMap=new HashMap<>();for(var e:draft.edges())edgeMap.computeIfAbsent(e.sourceNodeKey(),k->new ArrayList<>()).add(e);
   String current=nodeMap.values().stream().filter(n->n.type().equalsIgnoreCase("START")).findFirst().orElseThrow().nodeKey();
+  Map<String,Object> namedInputs=WorkflowInputs.bind(nodeMap.get(current),inputs);
   WorkflowRun run = runs.save(new WorkflowRun(UUID.randomUUID().toString(), versionId, version.getChecksum(), input, Instant.now()));
   WorkflowExecutionContext context = new WorkflowExecutionContext(current, input);
+  for(var entry:namedInputs.entrySet())context.set(current,entry.getKey(),entry.getValue());
   Instant started = Instant.now();
   int sequence = 0;
   boolean reachedEnd = false;

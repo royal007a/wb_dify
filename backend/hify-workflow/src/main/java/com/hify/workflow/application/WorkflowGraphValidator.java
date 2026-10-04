@@ -70,7 +70,7 @@ public class WorkflowGraphValidator {
         }
         if (order.size() != nodes.size()) fail("工作流包含循环或不可达节点");
         Map<String, Set<String>> dominators = new HashMap<>();
-        Map<String, String> outputs = new HashMap<>();
+        Map<String, Set<String>> outputs = new HashMap<>();
         Map<String, Integer> pathLengths = new HashMap<>();
         for (String key : order) {
             var node = nodes.get(key);
@@ -88,12 +88,12 @@ public class WorkflowGraphValidator {
                     int separator = reference.indexOf('.');
                     String owner = reference.substring(0, separator), variable = reference.substring(separator + 1);
                     if (!strict.contains(owner)) fail("模板必须引用必经上游节点: " + key + " -> " + reference);
-                    if (!variable.equals(outputs.get(owner))) fail("模板引用未声明的变量: " + key + " -> " + reference);
+                    if (!outputs.getOrDefault(owner, Set.of()).contains(variable)) fail("模板引用未声明的变量: " + key + " -> " + reference);
                 }
             }
             String output = output(node);
             if (output != null && !WorkflowTemplates.identifier(output)) fail("输出变量名格式无效: " + key);
-            outputs.put(key, output);
+            outputs.put(key, type(node).equals("START") ? WorkflowInputs.variables(node) : output == null ? Set.of() : Set.of(output));
             strict.add(key);
             dominators.put(key, strict);
         }

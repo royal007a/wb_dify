@@ -16,4 +16,5 @@ export const validateWorkflow=(id:string)=>post<void>(`/v1/workflows/${id}/valid
 export const publishWorkflow=(id:string)=>post<WorkflowVersion>(`/v1/workflows/${id}/versions`)
 export const listWorkflowVersions=(id:string)=>get<WorkflowVersion[]>(`/v1/workflows/${id}/versions`)
 export const getWorkflowVersion=(id:string)=>get<WorkflowVersionDetail>(`/v1/workflow-versions/${id}`)
-export const runWorkflow=(versionId:string,input:string)=>post<WorkflowRun>(`/v1/workflow-versions/${versionId}/runs`,{input})
+export interface WorkflowInputField{name:string;label?:string;type:'text'|'number'|'boolean'|'enum';required:boolean;default?:string|number|boolean;maxLength?:number;options?:string[]}
+export const runWorkflow=(versionId:string,input:string,inputs:Record<string,string|number|boolean>={})=>post<WorkflowRun>(`/v1/workflow-versions/${versionId}/runs`,{input,inputs})

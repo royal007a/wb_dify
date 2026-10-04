@@ -23,6 +23,8 @@ final class WorkflowPublishedGraph {
                 root.putObject("publication").put("knowledgeSnapshotFormat",1);
             if(graph.nodes().stream().anyMatch(WorkflowExternalNodes::isExternal))
                 root.withObject("/publication").put("externalNodeFormat",1);
+            if(graph.nodes().stream().anyMatch(WorkflowInputs::declared))
+                root.withObject("/publication").put("inputSchemaFormat",1);
             return json.writeValueAsString(root);
         } catch(Exception failure){throw new BizException(ErrorCode.PARAM_ERROR,"Workflow JSON 无法序列化");}
     }
@@ -35,6 +37,9 @@ final class WorkflowPublishedGraph {
             if(!(tree instanceof ObjectNode root))throw invalid();
             JsonNode stamp=root.remove("publication");
             WorkflowDraftRequest graph=json.treeToValue(root,WorkflowDraftRequest.class);
+            if(graph.nodes()!=null&&graph.nodes().stream().anyMatch(WorkflowInputs::declared)
+                    && (stamp==null||!stamp.path("inputSchemaFormat").isInt()||stamp.path("inputSchemaFormat").intValue()!=1))
+                throw new WorkflowDefinitionException("输入schema缺少服务端发布标记，请重新发布 Workflow 和 Agent");
             if(graph.nodes()!=null&&graph.nodes().stream().anyMatch(WorkflowExternalNodes::isExternal)
                     && (stamp==null||!stamp.path("externalNodeFormat").isInt()||stamp.path("externalNodeFormat").intValue()!=1))
                 throw new WorkflowDefinitionException("外部节点缺少服务端发布标记，请重新发布 Workflow 和 Agent");

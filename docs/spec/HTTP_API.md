@@ -564,9 +564,9 @@
 ### POST /api/v1/workflow-versions/{id}/runs
 
 - 功能：执行确定性图。
-- 输入：`WorkflowRunRequest(input)`。
+- 输入：`WorkflowRunRequest(input, inputs?)；具名标量按发布START.config.inputs校验，详见SPEC_WORKFLOW_INPUTS.md`。
 - 成功：HTTP 202，`Result<WorkflowRunResponse>`。
-- 必测断言/边界：当前同步完成再返回202；节点轨迹；失败/取消。
+- 必测断言/边界：当前同步完成再返回202；节点轨迹；失败/取消；具名输入错误400且零执行行，false/0保持类型，旧userMessage兼容及发布schema不随草稿变化。
 - 实现：[WorkflowController](../../backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java)。
 - 候选测试（非逐接口覆盖承诺）：[WorkflowApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java)；[AgentApiIntegrationTest](../../backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java)。
 

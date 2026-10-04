@@ -270,6 +270,8 @@ KNOWLEDGE 发布时在 config 中生成只读 `knowledgeSnapshot={corpusVersionI
 
 试跑接口目前同步执行后返回 HTTP202，不能据此宣称后台异步队列。
 
+具名输入v1：START.config.inputs可声明最多16个text/number/boolean/enum字段；试跑提交`{input,inputs}`，input仍为userMessage（非空、最多20000字符）。schema纳入发布checksum，控制台表单只读已发布版本。缺必填、未知字段、类型/长度错误、NUL在执行行/网络调用前400拒绝；false/0不被当成缺失。可选字段必须有同类型default。含必填具名输入的版本暂不能绑定Agent Chat（409），可选默认字段可用；详见 `spec/SPEC_WORKFLOW_INPUTS.md`。
+
 Workflow/Node执行状态为RUNNING、SUCCEEDED、FAILED、CANCELLED、TIMED_OUT（V21兼容迁移扩大CHECK约束）。Chat进入Workflow时传入从Run创建时间扣减后的同一预算与取消控制；独立试跑默认60秒（hify.workflow.timeout）。节点前后复查，排队时间计入预算；只读阻塞任务用有界workflowIoExecutor，停止等待时取消Future，协作worker接受中断。取消/超时不启动后续节点，不能保存为助手成功回答。工作流不再跨阻塞IO持有整体数据库事务，节点记录逐步提交，这不意味着外部副作用可回滚。
 
 工作流停止投影为workflow.cancelled/workflow.timed_out；Run对应run.cancelled或run.failed（state=TIMED_OUT、terminalReason=TIMEOUT）。Run终态提交锁行读取持久cancelRequestedAt：先落库的取消优先，先提交的终态不能被后来的取消改写。CPU/SQL驱动不响应中断时，Future取消不等于底层工作已停止；真实数据库取消与SSE事务原子性需各自的验证证据。

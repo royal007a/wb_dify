@@ -927,10 +927,10 @@
       "handler": "WorkflowController",
       "source": "backend/hify-workflow/src/main/java/com/hify/workflow/api/WorkflowController.java",
       "purpose": "执行确定性图",
-      "request": "WorkflowRunRequest(input)",
+      "request": "WorkflowRunRequest(input, inputs?)；具名标量按发布START.config.inputs校验，详见SPEC_WORKFLOW_INPUTS.md",
       "success": 202,
       "response": "Result<WorkflowRunResponse>",
-      "checks": "当前同步完成再返回202；节点轨迹；失败/取消",
+      "checks": "当前同步完成再返回202；节点轨迹；失败/取消；具名输入错误400且零执行行，false/0保持类型，旧userMessage兼容及发布schema不随草稿变化",
       "testCandidates": [
         "backend/hify-app/src/test/java/com/hify/api/WorkflowApiIntegrationTest.java",
         "backend/hify-app/src/test/java/com/hify/api/AgentApiIntegrationTest.java"
