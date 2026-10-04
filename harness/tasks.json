@@ -257,11 +257,13 @@
       "status": "pending",
       "scopes": [
         "backend",
+        "frontend",
         "harness"
       ],
       "verifyScopes": [
         "harness",
-        "backend"
+        "backend",
+        "frontend"
       ],
       "risk": "reversible_write",
       "operation": "workspace_write",
@@ -275,7 +277,7 @@
         "并发删除会话与创建交错有失败反例；保留同key竞争唯一性回归",
         "明确拒绝resume后前端有退出/纠正途径，不把同一个失效resume无限重发"
       ],
-      "planPath": null,
+      "planPath": "exec-plans/active/SPEC-RUN-INPUT-001.md",
       "checkpoint": null,
       "blockedReason": null,
       "evidence": [],
