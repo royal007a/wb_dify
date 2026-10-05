@@ -1,8 +1,43 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-05T06:41:25Z",
+  "updatedAt": "2026-10-05T06:48:00Z",
   "tasks": [
+    {
+      "id": "WORKFLOW-AGGREGATION-002",
+      "title": "聚合复核补强：旧发布金样、独立祖先负例与可编辑JSON草稿",
+      "description": "按379d393独立复核修复配置编辑器非法中间态被回退；补能单独杀死祖先检查突变的测试和固定基线发布DSL。",
+      "priority": "P2",
+      "status": "pending",
+      "scopes": [
+        "harness",
+        "backend",
+        "frontend"
+      ],
+      "verifyScopes": [
+        "harness",
+        "backend",
+        "frontend"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [
+        "WORKFLOW-AGGREGATION-001"
+      ],
+      "acceptance": [
+        "使用7ddff72发布写入路径生成的固定DSL原文和独立SHA回读验证，不以新代码自一致代替旧格式兼容",
+        "候选指向另一END分支的sib时因严格祖先规则拒绝；移除祖先规则时用例失败",
+        "JSON逐字输入保留非法中间态并显示错误；任何节点非法时不允许保存/发布；纠正后精确提交新配置",
+        "backend/harness/frontend显式门禁全部通过，浏览器逐字编辑专项另行记录"
+      ],
+      "planPath": "exec-plans/active/WORKFLOW-AGGREGATION-002.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-05T06:48:00Z",
+      "updatedAt": "2026-10-05T06:48:00Z"
+    },
     {
       "id": "WORKFLOW-AGGREGATION-001",
       "title": "互斥分支变量聚合的发布与执行闭环",
