@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "WORKFLOW-AGGREGATION-002-20261005T065226Z-c0916b1e",
+  "taskId": "WORKFLOW-AGGREGATION-002",
+  "status": "completed",
+  "baselineCommit": "5010e0566c1aa25df93d4ac7b2c0224079b08e60",
+  "approvalRef": null,
+  "startedAt": "2026-10-05T06:52:26Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "5010e0566c1aa25df93d4ac7b2c0224079b08e60",
+  "finishedAt": "2026-10-05T07:02:03Z"
+}

@@ -1,0 +1,14 @@
+{
+  "headCommit": "5010e0566c1aa25df93d4ac7b2c0224079b08e60",
+  "backendTree": "65e0762cc4fc68117aa6b19d1d11c4dfcf43714b",
+  "frontendTree": "86cdd333e9ed90525a486f195365d0db39d9b3a7",
+  "deployTree": "d3b11e660e479c745177f9696e30e5b134802f89",
+  "sourcePaths": [
+    "backend",
+    "frontend",
+    "deploy"
+  ],
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "untrackedSourceFiles": [],
+  "meaning": "Full local harness/backend/frontend gate on committed source; no deployment. Source tree checked clean after gate. Narrow browser and mutation checks are separate evidence."
+}

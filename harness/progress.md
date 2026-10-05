@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-05T06:48:00Z`
+- Generated from task state updated at: `2026-10-05T07:02:03Z`
 - Current task: `none`
-- Counts: pending 18 · running 0 · blocked 2 · completed 91
+- Counts: pending 17 · running 0 · blocked 2 · completed 92
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -115,7 +115,7 @@
 | `SPEC-WORKFLOW-KNOWLEDGE-002` | P2 | completed | backend, migration, harness | reversible_write | 补齐冻结Workflow发布边界、锁顺序与事务隔离证据 |
 | `SPEC-WORKFLOW-RECOVERY-001` | P2 | pending | backend, runtime, harness | reversible_write | 关联Workflow执行事实与父Run恢复及异常边界 |
 | `SUBAGENT-001` | P2 | completed | backend, migration, runtime | reversible_write | 建立子 Agent 任务与延迟消费确认 |
-| `WORKFLOW-AGGREGATION-002` | P2 | pending | harness, backend, frontend | reversible_write | 聚合复核补强：旧发布金样、独立祖先负例与可编辑JSON草稿 |
+| `WORKFLOW-AGGREGATION-002` | P2 | completed | harness, backend, frontend | reversible_write | 聚合复核补强：旧发布金样、独立祖先负例与可编辑JSON草稿 |
 | `WORKFLOW-HTTP-004` | P2 | pending | backend, harness | reversible_write | HTTP地址内部解析与扩展charset防御边界 |
 | `WORKFLOW-INPUTS-002` | P2 | completed | frontend, harness | reversible_write | 保留未编辑数字的发布默认值 |
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |

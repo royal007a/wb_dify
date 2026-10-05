@@ -1,5 +1,7 @@
 # Hify 当前实现边界
 
+2026-10-05 15:02:01 CST本地补强：WORKFLOW-AGGREGATION-002代码5010e05通过harness/backend/frontend（97类685项，零失败/错误/skip/flaky，Python78项，typecheck/build通过）。旧writer固定金样、独立祖先负例及突变、逐字JSON草稿编辑补强已经交付；受控管理浏览器另行3/3。独立静态复核无P0/P1/P2，四类P3保留在`evidence/WORKFLOW_AGGREGATION_002.md`。没有部署132。
+
 2026-10-05 14:41:25 CST本地增量：WORKFLOW-AGGREGATION-001实现379d393，通过harness/backend/frontend显式门禁（97类683项全部执行，失败/错误/skip/flaky均0，Python78项，typecheck/build通过）；另行管理浏览器2项为HTTP打桩。新增标量互斥分支聚合，静态要求每条结构路径恰有一个候选，不是并行join/迭代。没有部署132，独立代码复核进行中。详见`evidence/WORKFLOW_AGGREGATION_001.md`；下方“最新”均为各历史切片当时记录，线上仍以部署段为准。
 
 最新132增量发布：2026-10-05 00:40窗口后安装a510191同源码树重新构建产物，00:50:21 CST收尾通过；见`evidence/CAPABILITY_ROLLOUT_001.md`。V24全部成功、service active/health200、在途三表0，jar5ee59af0/indexa724db59。真实豆包工作流输出42、具名输入/旧会话/上传边界及显式Demo浏览器2组5个Run通过；收尾harness78项和frontend通过。两轮验证脚本红灯保留，没有再次安装或迁移。语义代码已上线但没有线上embedding Provider，成功HTTP GET也未配置授权，不能称全部外部能力已上线可用。TLS自签、无登录、磁盘95%约1.98GiB、备份未恢复仍是边界。以下段落保留各时间点历史事实，不代表当前仍停留V23。

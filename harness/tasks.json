@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-05T06:48:00Z",
+  "updatedAt": "2026-10-05T07:02:03Z",
   "tasks": [
     {
       "id": "WORKFLOW-AGGREGATION-002",
       "title": "聚合复核补强：旧发布金样、独立祖先负例与可编辑JSON草稿",
       "description": "按379d393独立复核修复配置编辑器非法中间态被回退；补能单独杀死祖先检查突变的测试和固定基线发布DSL。",
       "priority": "P2",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "harness",
         "backend",
@@ -31,12 +31,24 @@
         "JSON逐字输入保留非法中间态并显示错误；任何节点非法时不允许保存/发布；纠正后精确提交新配置",
         "backend/harness/frontend显式门禁全部通过，浏览器逐字编辑专项另行记录"
       ],
-      "planPath": "exec-plans/active/WORKFLOW-AGGREGATION-002.md",
+      "planPath": "exec-plans/completed/WORKFLOW-AGGREGATION-002.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "WORKFLOW-AGGREGATION-002-20261005T065226Z-c0916b1e",
+          "path": "harness/evidence/WORKFLOW-AGGREGATION-002/WORKFLOW-AGGREGATION-002-20261005T065226Z-c0916b1e",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "5010e0566c1aa25df93d4ac7b2c0224079b08e60",
+          "headCommit": "5010e0566c1aa25df93d4ac7b2c0224079b08e60",
+          "recordedAt": "2026-10-05T07:02:03Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "7e7a604553b86324c9864ba54801cbfb75d6b82cf7d8ef6879e84c7dd492c707"
+        }
+      ],
       "createdAt": "2026-10-05T06:48:00Z",
-      "updatedAt": "2026-10-05T06:48:00Z"
+      "updatedAt": "2026-10-05T07:02:03Z"
     },
     {
       "id": "WORKFLOW-AGGREGATION-001",

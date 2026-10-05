@@ -1,0 +1,8 @@
+{
+  "offlineCommand": "python3 harness/behavior_report.py --evidence-dir harness/evidence/WORKFLOW-AGGREGATION-002/WORKFLOW-AGGREGATION-002-20261005T065226Z-c0916b1e --method-evidence harness/evidence/WORKFLOW-AGGREGATION-002/WORKFLOW-AGGREGATION-002-20261005T065226Z-c0916b1e/method-evidence.json",
+  "comparison": "Fresh XML and explicit portable regeneration compared using cmp for JSON and MD: both exit 0",
+  "methodEvidenceSha256": "4d68c33e1bf0ca72fac1b0fea3b9ba0964c67ac8416a785ed0a271a6eee086eb",
+  "behaviorJsonSha256": "107be97540dce74ae5600a788d5e24a5f687d2431574576f90d11a1250db12fa",
+  "behaviorMarkdownSha256": "cbd788ef6c653ba8f3aee75b9a34180892ad8cd2389f91916a7af5eeca7ddaa2",
+  "boundary": "57 existing named scenarios; aggregation tests are in verified suite/method manifest, not added to route map. Sanitized projection is not a signature. Raw logs/XML not committed."
+}
