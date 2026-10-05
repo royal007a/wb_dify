@@ -1,5 +1,7 @@
 # Hify 当前实现边界
 
+2026-10-05 14:41:25 CST本地增量：WORKFLOW-AGGREGATION-001实现379d393，通过harness/backend/frontend显式门禁（97类683项全部执行，失败/错误/skip/flaky均0，Python78项，typecheck/build通过）；另行管理浏览器2项为HTTP打桩。新增标量互斥分支聚合，静态要求每条结构路径恰有一个候选，不是并行join/迭代。没有部署132，独立代码复核进行中。详见`evidence/WORKFLOW_AGGREGATION_001.md`；下方“最新”均为各历史切片当时记录，线上仍以部署段为准。
+
 最新132增量发布：2026-10-05 00:40窗口后安装a510191同源码树重新构建产物，00:50:21 CST收尾通过；见`evidence/CAPABILITY_ROLLOUT_001.md`。V24全部成功、service active/health200、在途三表0，jar5ee59af0/indexa724db59。真实豆包工作流输出42、具名输入/旧会话/上传边界及显式Demo浏览器2组5个Run通过；收尾harness78项和frontend通过。两轮验证脚本红灯保留，没有再次安装或迁移。语义代码已上线但没有线上embedding Provider，成功HTTP GET也未配置授权，不能称全部外部能力已上线可用。TLS自签、无登录、磁盘95%约1.98GiB、备份未恢复仍是边界。以下段落保留各时间点历史事实，不代表当前仍停留V23。
 
 最新本地完整增量验收：2026-10-05 00:20:46 CST，a510191六scope通过，backend96类667项、migration15类125项、runtime34项、eval24项均零失败/错误/skip/flaky，harness78项；另行受控浏览器42/42、本机真实bge-m3三条合成改写及GET→qwen串联通过。Inputs002未编辑数字默认值补强、DEPLOY004产物V24目标与索引PENDING准入均通过。见`evidence/CAPABILITY_VERIFY_001.md`，原始日志不提交，不把路由映射和三条检索当全面质量验收。132仍是下述42db727/V23，尚未配置线上embedding Provider；本地新代码不等于已经发布。

@@ -1,0 +1,14 @@
+{
+  "headCommit": "379d393138c395c070ecf2739c16b2b98f486598",
+  "backendTree": "323c0fcc69abab7b502f092f910cfb35e4e38033",
+  "frontendTree": "f47d32b593dbf65ff03ed25034f23aa6e0c5e823",
+  "deployTree": "d3b11e660e479c745177f9696e30e5b134802f89",
+  "sourcePaths": [
+    "backend",
+    "frontend",
+    "deploy"
+  ],
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "untrackedSourceFiles": [],
+  "meaning": "Full local harness/backend/frontend gate on committed source; no deployment. Source tree checked clean before runner and after gate."
+}

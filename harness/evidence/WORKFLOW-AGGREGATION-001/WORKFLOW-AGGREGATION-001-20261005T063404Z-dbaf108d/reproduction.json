@@ -1,0 +1,8 @@
+{
+  "offlineCommand": "python3 harness/behavior_report.py --evidence-dir harness/evidence/WORKFLOW-AGGREGATION-001/WORKFLOW-AGGREGATION-001-20261005T063404Z-dbaf108d --method-evidence harness/evidence/WORKFLOW-AGGREGATION-001/WORKFLOW-AGGREGATION-001-20261005T063404Z-dbaf108d/method-evidence.json",
+  "comparison": "Fresh-XML and offline generated UTF-8 JSON/MD contents compared exactly: equal",
+  "methodEvidenceSha256": "66826437e83a3732fe76ff746d336cceaa68b7b5dcf6fc182e7448e5e8f4bbae",
+  "behaviorJsonSha256": "a5487884013b9153e8310fb1520fc4df4d46c5f68b7ae52d640e0441dbdb9a9e",
+  "behaviorMarkdownSha256": "61c85da2b2f870c3fd936d5f5fdc91de56c3c83aad1b360a4544cd4d4db4628a",
+  "boundary": "57 existing named scenarios; aggregation tests are in the verified suite/method manifest, not added to the route map. Sanitized projection not a signature. Raw logs/XML not committed."
+}

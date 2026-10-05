@@ -7,16 +7,16 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "CAPABILITY-ROLLOUT-001-20261004T164805Z-cdfac5e6",
-    "path": "harness/evidence/CAPABILITY-ROLLOUT-001/CAPABILITY-ROLLOUT-001-20261004T164805Z-cdfac5e6",
+    "runId": "WORKFLOW-AGGREGATION-001-20261005T063404Z-dbaf108d",
+    "path": "harness/evidence/WORKFLOW-AGGREGATION-001/WORKFLOW-AGGREGATION-001-20261005T063404Z-dbaf108d",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "aa6ddc2c7442c2b7eed493174bafd759bdba06e4",
-    "headCommit": "aa6ddc2c7442c2b7eed493174bafd759bdba06e4",
-    "recordedAt": "2026-10-04T16:50:21Z",
+    "baselineCommit": "379d393138c395c070ecf2739c16b2b98f486598",
+    "headCommit": "379d393138c395c070ecf2739c16b2b98f486598",
+    "recordedAt": "2026-10-05T06:41:25Z",
     "verificationSchemaVersion": 3,
-    "verificationSha256": "e3a1ebbd4dd4f5dd48f73777eec4fb552471ae8cd2a2dae9885da271d3ccc0f1"
+    "verificationSha256": "0d44a07e913673458f347ab857279d33ff6628e3d31d0fe909de28ab57f85692"
   },
-  "lastCompletedTaskId": "CAPABILITY-ROLLOUT-001",
-  "updatedAt": "2026-10-04T16:50:21Z"
+  "lastCompletedTaskId": "WORKFLOW-AGGREGATION-001",
+  "updatedAt": "2026-10-05T06:41:25Z"
 }

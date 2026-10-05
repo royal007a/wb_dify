@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-04T16:50:21Z`
+- Generated from task state updated at: `2026-10-05T06:41:25Z`
 - Current task: `none`
-- Counts: pending 18 · running 0 · blocked 2 · completed 90
+- Counts: pending 17 · running 0 · blocked 2 · completed 91
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -76,7 +76,7 @@
 | `SPEC-UPLOAD-BOUNDARY-001` | P1 | completed | backend, harness | reversible_write | 统一真实应用与两种代理入口的上传上限 |
 | `SPEC-WORKFLOW-GRAPH-002` | P1 | completed | backend, frontend, runtime, harness | reversible_write | 统一图步数限制与条件语法契约 |
 | `WORKFLOW-001` | P1 | completed | backend, migration, runtime | reversible_write | 交付版本化工作流与确定性执行引擎 |
-| `WORKFLOW-AGGREGATION-001` | P1 | pending | harness, backend, frontend | reversible_write | 互斥分支变量聚合的发布与执行闭环 |
+| `WORKFLOW-AGGREGATION-001` | P1 | completed | harness, backend, frontend | reversible_write | 互斥分支变量聚合的发布与执行闭环 |
 | `WORKFLOW-INPUTS-001` | P1 | completed | backend, frontend, harness | reversible_write | Workflow结构化输入与可复用运行表单 |
 | `WORKFLOW-NODES-001` | P1 | completed | backend, frontend, harness | reversible_write | 版本化Workflow LLM与受控HTTP节点 |
 | `WORKFLOW-NODES-003` | P1 | completed | backend, harness | reversible_write | HTTP数字地址无歧义解析与响应charset补强 |

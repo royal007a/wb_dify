@@ -1,6 +1,14 @@
 # WORKFLOW-AGGREGATION-001 验证记录
 
-当前范围：本地源码和窄测；完整门禁待补，不是线上交付。设计提交975df82、0cf8545；实现commit由后续门禁head绑定。
+当前范围：本地源码、窄测和完整harness/backend/frontend门禁；不是线上交付。设计提交975df82、0cf8545；实现379d393。
+
+## 完整本地门禁
+
+`WORKFLOW-AGGREGATION-001-20261005T063404Z-dbaf108d` 于2026-10-05 06:41:25Z完成，schema3，head为379d393，invocationId为e0f93cc9-575a-4fc1-905c-312bbbdc2a50，8步全部exit0。后端97类683项全部执行，failures/errors/skipped/flaky均0，underfilled为空；Python78项通过；前端typecheck/build通过。未另跑migration/runtime/eval scope，不把backend内重叠用例相加。
+
+Aggregation12、Engine16、WorkflowApiIntegration7均执行；既有PG类也全部0skip，Docker仅使用colima-hify-verify-20261004。新增聚合HTTP用例仍是H2/MockMvc，不宣称新增聚合专属PG测试。浏览器2项为上面的独立受控窄测，不是frontend scope的组成步骤。
+
+后端摘要SHA重算为5803eb9e…，与verification一致；backend树323c0fcc、frontend树f47d32b5、deploy树d3b11e66。门禁前后源码diff为空、无未跟踪源码。source-identity.json和reproduction.json记录完整身份与SHA。由新鲜XML导出method-evidence，再显式离线生成报告，JSON/MD内容逐字一致：既有57个具名场景pass，0fail/0not-run；没有把新聚合测试添加到路由映射，不宣称68路由全部行为通过。新测试执行证据来自tests.json和method-evidence。原始XML/日志未提交，portable不是签名，也不替代实际测试。
 
 ## 实际运行（2026-10-05）
 
