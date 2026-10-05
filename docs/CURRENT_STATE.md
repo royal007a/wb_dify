@@ -1,5 +1,7 @@
 # Hify 当前实现边界
 
+2026-10-05 16:01:29 CST：WORKFLOW-STRUCTURED-001 代码58f7820已实现，但首轮harness/backend/frontend门禁失败，保持blocked。后端98类704项全部执行，1 failure、2 errors、零skip/flaky，失败在既有关停/重启等待用例，根因尚未确认；Harness78项、typecheck/build通过。本机qwen2.5:0.5b六条固定合成样例6/6通过，仅是独立live证据，不替代完整门禁。静态复核无P0/P1/P2、四条P3保留；没有部署132。见`evidence/WORKFLOW_STRUCTURED_001.md`。
+
 2026-10-05 15:02:01 CST本地补强：WORKFLOW-AGGREGATION-002代码5010e05通过harness/backend/frontend（97类685项，零失败/错误/skip/flaky，Python78项，typecheck/build通过）。旧writer固定金样、独立祖先负例及突变、逐字JSON草稿编辑补强已经交付；受控管理浏览器另行3/3。独立静态复核无P0/P1/P2，四类P3保留在`evidence/WORKFLOW_AGGREGATION_002.md`。没有部署132。
 
 2026-10-05 14:41:25 CST本地增量：WORKFLOW-AGGREGATION-001实现379d393，通过harness/backend/frontend显式门禁（97类683项全部执行，失败/错误/skip/flaky均0，Python78项，typecheck/build通过）；另行管理浏览器2项为HTTP打桩。新增标量互斥分支聚合，静态要求每条结构路径恰有一个候选，不是并行join/迭代。没有部署132，独立代码复核进行中。详见`evidence/WORKFLOW_AGGREGATION_001.md`；下方“最新”均为各历史切片当时记录，线上仍以部署段为准。

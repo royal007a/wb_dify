@@ -1,0 +1,10 @@
+{
+  "headCommit": "58f7820f70d86dfa2e06c807d3bc591c88b51b0a",
+  "backendTree": "57349a094093fdcc3b9727f9d48bb1e38caca914",
+  "frontendTree": "931a8823bf0513777fc88f0d3447daef94e0e71d",
+  "deployTree": "d3b11e660e479c745177f9696e30e5b134802f89",
+  "sourcePaths": ["backend", "frontend", "deploy"],
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "untrackedSourceFiles": [],
+  "meaning": "Committed source of a FAILED full local harness/backend/frontend gate. Separate six-sample live check passed. No deployment or full acceptance claim."
+}

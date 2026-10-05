@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "WORKFLOW-STRUCTURED-001-20261005T072732Z-184c341f",
+  "taskId": "WORKFLOW-STRUCTURED-001",
+  "status": "blocked",
+  "baselineCommit": "58f7820f70d86dfa2e06c807d3bc591c88b51b0a",
+  "approvalRef": null,
+  "startedAt": "2026-10-05T07:27:32Z",
+  "exitCode": 1,
+  "reason": "verification failed",
+  "headCommit": "58f7820f70d86dfa2e06c807d3bc591c88b51b0a",
+  "finishedAt": "2026-10-05T08:01:29Z"
+}

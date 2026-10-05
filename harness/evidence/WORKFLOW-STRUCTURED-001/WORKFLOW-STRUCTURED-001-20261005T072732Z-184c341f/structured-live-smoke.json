@@ -1,0 +1,297 @@
+{
+  "result": "passed",
+  "realModel": "qwen2.5:0.5b",
+  "sampleCount": 6,
+  "schemaRepairRetries": 0,
+  "samples": [
+    {
+      "sample": 1,
+      "repetition": 1,
+      "input": "city Paris; count 2; urgent true; tags travel, work.",
+      "runId": "0d871aed-ba03-49fc-91e6-fbb9c810ca34",
+      "status": "SUCCEEDED",
+      "latencyMs": 9814,
+      "expected": {
+        "city": "Paris",
+        "count": 2,
+        "urgent": true,
+        "tags": [
+          "travel",
+          "work"
+        ]
+      },
+      "actual": {
+        "city": "Paris",
+        "count": 2,
+        "urgent": true,
+        "tags": [
+          "travel",
+          "work"
+        ]
+      },
+      "semanticMatch": true,
+      "nodes": [
+        {
+          "nodeKey": "start",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        },
+        {
+          "nodeKey": "llm",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        },
+        {
+          "nodeKey": "end",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "repetition": 1,
+      "input": "city Tokyo; count 0; urgent false; tags none (empty array).",
+      "runId": "ebf8c5d3-7606-4e58-8445-eda1df99b3e6",
+      "status": "SUCCEEDED",
+      "latencyMs": 309,
+      "expected": {
+        "city": "Tokyo",
+        "count": 0,
+        "urgent": false,
+        "tags": []
+      },
+      "actual": {
+        "city": "Tokyo",
+        "count": 0,
+        "urgent": false,
+        "tags": []
+      },
+      "semanticMatch": true,
+      "nodes": [
+        {
+          "nodeKey": "start",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        },
+        {
+          "nodeKey": "llm",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        },
+        {
+          "nodeKey": "end",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        }
+      ]
+    },
+    {
+      "sample": 3,
+      "repetition": 1,
+      "input": "city Lima; count 1.5; urgent false; tags review.",
+      "runId": "33262cb4-28ef-4f5a-8399-6d0d1c1f0e32",
+      "status": "SUCCEEDED",
+      "latencyMs": 239,
+      "expected": {
+        "city": "Lima",
+        "count": 1.5,
+        "urgent": false,
+        "tags": [
+          "review"
+        ]
+      },
+      "actual": {
+        "city": "Lima",
+        "count": 1.5,
+        "urgent": false,
+        "tags": [
+          "review"
+        ]
+      },
+      "semanticMatch": true,
+      "nodes": [
+        {
+          "nodeKey": "start",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        },
+        {
+          "nodeKey": "llm",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        },
+        {
+          "nodeKey": "end",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "repetition": 2,
+      "input": "city Paris; count 2; urgent true; tags travel, work.",
+      "runId": "98b690ae-b18c-446c-aa51-dd5faa3d2bbc",
+      "status": "SUCCEEDED",
+      "latencyMs": 214,
+      "expected": {
+        "city": "Paris",
+        "count": 2,
+        "urgent": true,
+        "tags": [
+          "travel",
+          "work"
+        ]
+      },
+      "actual": {
+        "city": "Paris",
+        "count": 2,
+        "urgent": true,
+        "tags": [
+          "travel",
+          "work"
+        ]
+      },
+      "semanticMatch": true,
+      "nodes": [
+        {
+          "nodeKey": "start",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        },
+        {
+          "nodeKey": "llm",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        },
+        {
+          "nodeKey": "end",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "repetition": 2,
+      "input": "city Tokyo; count 0; urgent false; tags none (empty array).",
+      "runId": "28e8476d-19bc-4117-ad0b-bfac86cd803c",
+      "status": "SUCCEEDED",
+      "latencyMs": 194,
+      "expected": {
+        "city": "Tokyo",
+        "count": 0,
+        "urgent": false,
+        "tags": []
+      },
+      "actual": {
+        "city": "Tokyo",
+        "count": 0,
+        "urgent": false,
+        "tags": []
+      },
+      "semanticMatch": true,
+      "nodes": [
+        {
+          "nodeKey": "start",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        },
+        {
+          "nodeKey": "llm",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        },
+        {
+          "nodeKey": "end",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        }
+      ]
+    },
+    {
+      "sample": 3,
+      "repetition": 2,
+      "input": "city Lima; count 1.5; urgent false; tags review.",
+      "runId": "b00f55ba-3684-4ea9-8e2b-d82f14ba4656",
+      "status": "SUCCEEDED",
+      "latencyMs": 260,
+      "expected": {
+        "city": "Lima",
+        "count": 1.5,
+        "urgent": false,
+        "tags": [
+          "review"
+        ]
+      },
+      "actual": {
+        "city": "Lima",
+        "count": 1.5,
+        "urgent": false,
+        "tags": [
+          "review"
+        ]
+      },
+      "semanticMatch": true,
+      "nodes": [
+        {
+          "nodeKey": "start",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        },
+        {
+          "nodeKey": "llm",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        },
+        {
+          "nodeKey": "end",
+          "status": "SUCCEEDED",
+          "errorMessage": null
+        }
+      ]
+    }
+  ],
+  "headCommit": "58f7820f70d86dfa2e06c807d3bc591c88b51b0a",
+  "backendTree": "57349a094093fdcc3b9727f9d48bb1e38caca914",
+  "sourceDiffEmpty": true,
+  "scope": "Six predetermined synthetic local-model samples; not a quality benchmark, native constrained decoding, production deployment, or proof of zero transport retries",
+  "acceptance": "All six attempts recorded; at least one schema-valid success; every failed workflow has no END execution. Semantic matches reported separately, not a benchmark gate.",
+  "workflowId": "339f9467-0179-4a9e-bbd9-f4755d1ca71b",
+  "workflowVersionId": "185e39a0-d86d-4513-9b0b-882c787cb2e4",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "city": {
+        "type": "string",
+        "maxLength": 40
+      },
+      "count": {
+        "type": "number"
+      },
+      "urgent": {
+        "type": "boolean"
+      },
+      "tags": {
+        "type": "array",
+        "maxItems": 3,
+        "items": {
+          "type": "string",
+          "maxLength": 40
+        }
+      }
+    },
+    "required": [
+      "city",
+      "count",
+      "urgent",
+      "tags"
+    ],
+    "additionalProperties": false
+  },
+  "schemaValidSuccesses": 6,
+  "failedAttempts": 0,
+  "observedFailureRate": 0.0,
+  "semanticMatches": 6
+}

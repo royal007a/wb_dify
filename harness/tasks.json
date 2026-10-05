@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-05T07:02:03Z",
+  "updatedAt": "2026-10-05T08:01:29Z",
   "tasks": [
     {
       "id": "WORKFLOW-STRUCTURED-001",
       "title": "LLM有界结构化输出与字段消费闭环",
       "description": "参考Dify参数提取和Claude结构化输出契约，实现显式有限JSON Schema子集；不改变旧LLM、全局JSON reader或增加模型自动修复重试。",
       "priority": "P1",
-      "status": "pending",
+      "status": "blocked",
       "scopes": [
         "harness",
         "backend",
@@ -31,12 +31,22 @@
         "字段下游引用仍遵循必经规则；数组不能直接聚合；失败无END/成功助手消息，取消和父deadline分类保持",
         "受控端到端正反例及前端schema提交，backend/harness/frontend门禁零失败/错误/skip/flaky；本机真实模型单列，不部署132"
       ],
-      "planPath": "exec-plans/active/WORKFLOW-STRUCTURED-001.md",
+      "planPath": "exec-plans/blocked/WORKFLOW-STRUCTURED-001.md",
       "checkpoint": null,
-      "blockedReason": null,
-      "evidence": [],
+      "blockedReason": "verification failed",
+      "evidence": [
+        {
+          "runId": "WORKFLOW-STRUCTURED-001-20261005T072732Z-184c341f",
+          "path": "harness/evidence/WORKFLOW-STRUCTURED-001/WORKFLOW-STRUCTURED-001-20261005T072732Z-184c341f",
+          "result": "blocked",
+          "exitCode": 1,
+          "baselineCommit": "58f7820f70d86dfa2e06c807d3bc591c88b51b0a",
+          "headCommit": "58f7820f70d86dfa2e06c807d3bc591c88b51b0a",
+          "recordedAt": "2026-10-05T08:01:29Z"
+        }
+      ],
       "createdAt": "2026-10-05T07:08:00Z",
-      "updatedAt": "2026-10-05T07:08:00Z"
+      "updatedAt": "2026-10-05T08:01:29Z"
     },
     {
       "id": "WORKFLOW-AGGREGATION-002",

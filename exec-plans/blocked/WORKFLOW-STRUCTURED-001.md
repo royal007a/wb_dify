@@ -1,5 +1,9 @@
 # WORKFLOW-STRUCTURED-001：有界结构化LLM输出
 
+## 首轮执行 checkpoint（2026-10-05）
+
+实现58f7820；原子run `WORKFLOW-STRUCTURED-001-20261005T072732Z-184c341f` 最终exit 1、verification failed。backend704项有1 failure/2 errors（关停/重启等待），其余门禁步骤通过；本机真实模型6/6单列。当前任务blocked，不部署。恢复时先诊断三个失败选择器，再用新run完整复验，禁止以窄测覆盖此轮红灯。详见`docs/evidence/WORKFLOW_STRUCTURED_001.md`。
+
 授权：2026-10-05三小时完善目标。先设计、独立review，再实现。前置WORKFLOW-AGGREGATION-002通过；本任务不包含132部署。
 
 ## 用户价值与官方依据

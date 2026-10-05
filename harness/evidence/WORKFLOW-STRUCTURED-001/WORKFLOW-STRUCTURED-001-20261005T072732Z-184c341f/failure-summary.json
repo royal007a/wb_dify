@@ -1,0 +1,23 @@
+{
+  "headCommit": "58f7820f70d86dfa2e06c807d3bc591c88b51b0a",
+  "invocationId": "78aba058-7c21-409b-9580-22cca0d440af",
+  "result": "failed",
+  "finishedAt": "2026-10-05T08:01:29Z",
+  "exitCode": 1,
+  "backend": {"classes": 98, "tests": 704, "executed": 704, "failures": 1, "errors": 2, "skipped": 0, "flakyAttempts": 0},
+  "failures": [
+    {"selector": "com.hify.api.RunShutdownIntegrationTest#startupInterruptsOldWorkflowRowsButNeverNewlyAcceptedExecutions", "kind": "error", "observed": "JUnit TimeoutException after configured 45 seconds"},
+    {"selector": "com.hify.api.RunShutdownIntegrationTest#computedClarificationCommitsDuringShutdownWithoutRestartingTheLoop", "kind": "failure", "observed": "computed.await(10, TimeUnit.SECONDS) returned false at line 61"},
+    {"selector": "com.hify.api.HistoryRecoveryPostgresTest#realRestartReplaysCanonicalOperations(boolean)[2]", "kind": "error", "observed": "JUnit TimeoutException after configured 60 seconds"}
+  ],
+  "otherSteps": "All five harness steps and frontend typecheck/build exited 0; Python 78 tests passed",
+  "live": {"model": "qwen2.5:0.5b", "samples": 6, "schemaValidSuccesses": 6, "semanticMatches": 6, "qualityBenchmark": false, "deployment": false},
+  "sha256": {
+    "verification.json": "1a0be94f76f55429375b343076c30a457e2fd03fa7d643fd30c53fd77473dbce",
+    "backend-tests.tests.json": "dcf2d3db704131dffd127487cb8009ad7e191c0a8c834abdc8ba9ef8a9995483",
+    "structured-live-smoke.json": "ef72deffb063954d754b92501e3e116103fea8eadc11ab6e280947616b9e52f9"
+  },
+  "diagnosis": "Unresolved. Unchanged tests and sampled slow context lifecycle do not prove an environment-only cause. No assertions relaxed and no rerun substituted.",
+  "recoveryCondition": "Diagnose shutdown/restart waits, preserve this failed run, then execute a new full harness/backend/frontend gate with a new evidence directory",
+  "rawEvidenceBoundary": "Local raw logs/XML retained but not committed; this is a sanitized observation summary, not an independent reproduction"
+}
