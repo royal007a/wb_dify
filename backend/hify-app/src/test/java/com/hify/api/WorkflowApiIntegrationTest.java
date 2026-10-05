@@ -23,6 +23,52 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class WorkflowApiIntegrationTest {
  @Autowired MockMvc http; @Autowired ObjectMapper json;
  @Autowired WorkflowVersionRepository versions;
+ @Autowired com.hify.workflow.application.WorkflowApplicationService application;
+
+ @Test void publishedAggregationMergesBothBranchesWithoutChangingTheFrozenDefinition() throws Exception {
+  ObjectNode graph=(ObjectNode)json.readTree(mergedGraph("{{merge.result}}"));
+  ObjectNode agg=((ArrayNode)graph.path("nodes")).addObject();
+  agg.put("nodeKey","merge").put("type","AGGREGATOR").put("name","汇合");
+  agg.putObject("config").putArray("candidates").add("refund.answer").add("other.answer");
+  for(JsonNode e:graph.path("edges"))if(e.path("targetNodeKey").asText().equals("endRefund"))((ObjectNode)e).put("targetNodeKey","merge");
+  ((ArrayNode)graph.path("edges")).addObject().put("edgeKey","merged-end").put("sourceNodeKey","merge").put("targetNodeKey","endRefund").put("defaultBranch",false);
+  String id=body(http.perform(post("/api/v1/workflows").contentType("application/json").content(json.writeValueAsString(graph)))
+    .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();
+  JsonNode version=body(http.perform(post("/api/v1/workflows/{id}/versions",id)).andExpect(status().isOk())
+    .andReturn().getResponse().getContentAsString()).path("data");
+  String vid=version.path("id").asText(), checksum=version.path("checksum").asText();
+  String frozen=versions.findById(vid).orElseThrow().getDslJson();
+  for(String input:java.util.List.of("退货","你好")){
+   JsonNode result=run(vid,input);
+   assertThat(result.path("status").asText()).isEqualTo("SUCCEEDED");
+   assertThat(result.path("workflowDigest").asText()).isEqualTo(checksum);
+   assertThat(result.path("output").asText()).isEqualTo(input.equals("退货")?"退款":"普通");
+   assertThat(result.path("nodes")).hasSize(5);
+   var keys=new java.util.ArrayList<String>();for(JsonNode n:result.path("nodes")){keys.add(n.path("nodeKey").asText());assertThat(n.path("status").asText()).isEqualTo("SUCCEEDED");}
+   assertThat(keys).containsExactly("start","route",input.equals("退货")?"refund":"other","merge","endRefund");
+  }
+  assertThat(application.publishedSnapshots(java.util.List.of(id))).containsKey(id);
+  http.perform(put("/api/v1/workflows/{id}",id).contentType("application/json").content(workflow("changed","changed"))).andExpect(status().isOk());
+  assertThat(run(vid,"退货").path("output").asText()).isEqualTo("退款");
+  var unchanged=versions.findById(vid).orElseThrow();
+  assertThat(unchanged.getDslJson()).isEqualTo(frozen);assertThat(unchanged.getChecksum()).isEqualTo(checksum);
+ }
+
+ @Test void previouslyAcceptedExtensionFieldsRemainPublishedAndVisibleInCapabilityCatalog() throws Exception {
+  ObjectNode old=(ObjectNode)json.readTree(workflow("legacy-refund","legacy-other"));
+  ((ObjectNode)old.path("nodes").get(2).path("config")).put("historicalExtension","do-not-tighten");
+  String id=body(http.perform(post("/api/v1/workflows").contentType("application/json").content(json.writeValueAsString(old)))
+    .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();
+  JsonNode publication=body(http.perform(post("/api/v1/workflows/{id}/versions",id)).andExpect(status().isOk())
+    .andReturn().getResponse().getContentAsString()).path("data");
+  String vid=publication.path("id").asText();
+  var stored=versions.findById(vid).orElseThrow();String raw=stored.getDslJson(), digest=stored.getChecksum();
+  assertThat(application.publishedSnapshots(java.util.List.of(id))).containsKey(id);
+  assertThat(application.publishedSnapshot(id).checksum()).isEqualTo(digest);
+  assertThat(run(vid,"退货").path("output").asText()).isEqualTo("legacy-refund");
+  assertThat(versions.findById(vid).orElseThrow().getDslJson()).isEqualTo(raw);
+  assertThat(versions.findById(vid).orElseThrow().getChecksum()).isEqualTo(digest);
+ }
 
  @Test void rejectsBranchLocalVariablesOnSaveAndUpdate() throws Exception {
   String graph=mergedGraph("{{refund.answer}}");

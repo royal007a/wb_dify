@@ -119,6 +119,7 @@ public class WorkflowEngine {
  @Transactional(readOnly=true) public WorkflowRunResponse get(String id){return response(runs.findById(id).orElseThrow(()->new BizException(ErrorCode.NOT_FOUND,"Workflow Run 不存在")));}
  private NodeOutcome executeNode(WorkflowNodeSpec node,WorkflowExecutionContext ctx,ExecutionControl control){JsonNode c=node.config();String type=node.type().toUpperCase(Locale.ROOT);return switch(type){
   case "START" -> new NodeOutcome(null,null);
+  case "AGGREGATOR" -> {ctx.set(node.nodeKey(),text(c,"outputVariable","result"),WorkflowAggregation.select(node,ctx.snapshot()));yield new NodeOutcome(null,null);}
   case "LLM", "API_CALL" -> {String value=WorkflowControl.call(control,ioExecutor,()->external.execute(node,ctx,control));ctx.set(node.nodeKey(),text(c,"outputVariable","result"),value);yield new NodeOutcome(null,null);}
   case "TEMPLATE" -> {String value=ctx.resolve(required(c,"template"));String variable=text(c,"outputVariable","result");ctx.set(node.nodeKey(),variable,value);yield new NodeOutcome(null,null);}
   case "CONDITION" -> {boolean result=evaluate(required(c,"expression"),ctx);ctx.set(node.nodeKey(),text(c,"outputVariable","result"),result);yield new NodeOutcome(result,null);}

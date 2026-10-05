@@ -11,7 +11,7 @@ import java.util.*;
 @Component
 public class WorkflowGraphValidator {
     public static final int MAX_EXECUTION_STEPS = 50;
-    private static final Set<String> TYPES = Set.of("START", "TEMPLATE", "CONDITION", "KNOWLEDGE", "LLM", "API_CALL", "END");
+    private static final Set<String> TYPES = Set.of("START", "TEMPLATE", "CONDITION", "KNOWLEDGE", "LLM", "API_CALL", "AGGREGATOR", "END");
 
     public void validate(WorkflowDraftRequest draft) {
         try {validateGraph(draft);}
@@ -97,6 +97,10 @@ public class WorkflowGraphValidator {
             strict.add(key);
             dominators.put(key, strict);
         }
+        // Only the new candidate field has optional-ancestor semantics. All templates above
+        // retain the original strict-dominator rule, including downstream aggregate consumers.
+        for (var node : nodes.values()) if (type(node).equals("AGGREGATOR"))
+            WorkflowAggregation.validate(node, order, nodes, predecessors, outputs);
     }
     private void validateBranches(String key, List<WorkflowEdgeSpec> branches) {
         if (branches.stream().filter(WorkflowEdgeSpec::defaultBranch).count() != 1)
@@ -114,6 +118,7 @@ public class WorkflowGraphValidator {
     }
     private List<String> templates(WorkflowNodeSpec node) {
         return switch (type(node)) {
+            case "AGGREGATOR" -> { WorkflowAggregation.candidates(node); yield List.of(); }
             case "LLM", "API_CALL" -> WorkflowExternalNodes.validate(node);
             case "TEMPLATE" -> List.of(required(node, "template"));
             case "CONDITION" -> WorkflowExpression.parse(required(node, "expression")).templates();

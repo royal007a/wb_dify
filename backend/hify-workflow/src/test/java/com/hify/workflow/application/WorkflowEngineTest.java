@@ -22,6 +22,31 @@ class WorkflowEngineTest {
 
     @BeforeEach void saveReturnsPersistedRun() { when(runs.save(any())).thenAnswer(invocation -> invocation.getArgument(0)); }
 
+    @Test void aggregateExecutesOnlySelectedBranchAndKeepsPinnedVersion() throws Exception {
+        var version = stored(WorkflowAggregationTest.graph(WorkflowAggregationTest.merge("left.result", "right.result")));
+        for (String side : List.of("left", "right")) {
+            clearInvocations(nodes);
+            var result = engine.executePinned("v1", version.getChecksum(), side, com.hify.common.ExecutionControl.none());
+            assertThat(result.status()).isEqualTo("SUCCEEDED");
+            assertThat(result.output()).isEqualTo(side.equals("left") ? "L" : "R");
+            assertThat(result.context()).containsEntry("merge.result", result.output());
+            assertThat(result.context()).containsKey(side + ".result")
+                    .doesNotContainKey((side.equals("left") ? "right" : "left") + ".result");
+            verify(nodes, times(10)).save(any()); // five nodes, started and succeeded each
+        }
+    }
+
+    @Test void cancelledAggregateRunRecordsCancellationWithoutExecutingAnyNode() throws Exception {
+        var version = stored(WorkflowAggregationTest.graph(WorkflowAggregationTest.merge("left.result", "right.result")));
+        var control = com.hify.common.ExecutionControl.withTimeout(java.time.Duration.ofSeconds(60), () -> true);
+        var result = engine.executePinned("v1", version.getChecksum(), "left", control);
+        assertThat(result.status()).isEqualTo("CANCELLED");
+        assertThat(result.context()).doesNotContainKeys("left.result", "right.result", "merge.result");
+        verify(runs, times(2)).save(any()); // existing engine creates and settles a cancelled run
+        verify(nodes, never()).save(any());
+        verifyNoInteractions(knowledge);
+    }
+
     @Test void pinnedExecutionValidatesAndUsesTheSameLoadedVersion() throws Exception {
         var first=stored(draft(List.of(node("start","START"),node("end","END","output","original")),edge("start","end")));
         String changed=WorkflowPublishedGraph.write(draft(List.of(node("start","START"),node("end","END","output","different")),edge("start","end")),JSON);
