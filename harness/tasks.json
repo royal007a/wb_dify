@@ -4,6 +4,41 @@
   "updatedAt": "2026-10-05T07:02:03Z",
   "tasks": [
     {
+      "id": "WORKFLOW-STRUCTURED-001",
+      "title": "LLM有界结构化输出与字段消费闭环",
+      "description": "参考Dify参数提取和Claude结构化输出契约，实现显式有限JSON Schema子集；不改变旧LLM、全局JSON reader或增加模型自动修复重试。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": [
+        "harness",
+        "backend",
+        "frontend"
+      ],
+      "verifyScopes": [
+        "harness",
+        "backend",
+        "frontend"
+      ],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [
+        "WORKFLOW-AGGREGATION-002"
+      ],
+      "acceptance": [
+        "schema在发布前严格校验并随DSL冻结；旧无schema发布原文/checksum不变，固定旧LLM金样回归",
+        "全部必填的string/number/boolean/array字符串字段经严格reader和预算验证后原子绑定；重复/尾随/缺失/额外/类型错误fail-closed，无自动模型修复调用",
+        "字段下游引用仍遵循必经规则；数组不能直接聚合；失败无END/成功助手消息，取消和父deadline分类保持",
+        "受控端到端正反例及前端schema提交，backend/harness/frontend门禁零失败/错误/skip/flaky；本机真实模型单列，不部署132"
+      ],
+      "planPath": "exec-plans/active/WORKFLOW-STRUCTURED-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-05T07:08:00Z",
+      "updatedAt": "2026-10-05T07:08:00Z"
+    },
+    {
       "id": "WORKFLOW-AGGREGATION-002",
       "title": "聚合复核补强：旧发布金样、独立祖先负例与可编辑JSON草稿",
       "description": "按379d393独立复核修复配置编辑器非法中间态被回退；补能单独杀死祖先检查突变的测试和固定基线发布DSL。",

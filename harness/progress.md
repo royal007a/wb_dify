@@ -4,7 +4,7 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-10-05T07:02:03Z`
 - Current task: `none`
-- Counts: pending 17 · running 0 · blocked 2 · completed 92
+- Counts: pending 18 · running 0 · blocked 2 · completed 92
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -80,6 +80,7 @@
 | `WORKFLOW-INPUTS-001` | P1 | completed | backend, frontend, harness | reversible_write | Workflow结构化输入与可复用运行表单 |
 | `WORKFLOW-NODES-001` | P1 | completed | backend, frontend, harness | reversible_write | 版本化Workflow LLM与受控HTTP节点 |
 | `WORKFLOW-NODES-003` | P1 | completed | backend, harness | reversible_write | HTTP数字地址无歧义解析与响应charset补强 |
+| `WORKFLOW-STRUCTURED-001` | P1 | pending | harness, backend, frontend | reversible_write | LLM有界结构化输出与字段消费闭环 |
 | `CONSOLE-003` | P2 | completed | frontend | reversible_write | 交付 Workflow 可视化画布与 Agent 能力绑定控制台 |
 | `SPEC-API-BEHAVIOR-002` | P2 | completed | backend, harness | reversible_write | 澄清管理契约来源并补终态取消和旧会话执行 |
 | `SPEC-API-PAGINATION-001` | P2 | pending | backend, harness | reversible_write | 确定并统一管理列表分页越界契约 |
