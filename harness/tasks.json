@@ -4,6 +4,31 @@
   "updatedAt": "2026-10-04T16:50:21Z",
   "tasks": [
     {
+      "id": "WORKFLOW-AGGREGATION-001",
+      "title": "互斥分支变量聚合的发布与执行闭环",
+      "description": "三小时设计审查后先交付确定性分支聚合，不改重试预算、不引入任意DAG并行；Dify第5课仅作为需求参考。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["harness", "backend", "frontend"],
+      "verifyScopes": ["harness", "backend", "frontend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "AGGREGATOR候选为明确的上游node.variable；每条到达路径恰有一个候选生产者，普通模板的必经上游规则不放宽",
+        "两条互斥分支分别执行并汇合，保留0/false/空文本类型和值；不存在或多候选时拒绝，不隐式挑第一个",
+        "发布快照/checksum/Agent钉版本保持不变；旧无聚合图无序列化变化；未选分支不产生执行记录",
+        "前端可编辑候选并经现有发布/试跑入口验证；backend/harness/frontend门禁通过，PG零skip，部署另行准入"
+      ],
+      "planPath": "exec-plans/active/WORKFLOW-AGGREGATION-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-05T06:20:00Z",
+      "updatedAt": "2026-10-05T06:20:00Z"
+    },
+    {
       "id": "CAPABILITY-ROLLOUT-001",
       "title": "已验收能力代码部署132并验证非embedding线上链路",
       "description": "从CAPABILITY-DEPLOY-001拆出可执行发布：语义模型长期endpoint尚缺，不能宣称线上语义ready；先发布同树代码/V24，验证豆包LLM、具名输入、旧会话、上传及基础健康。",
