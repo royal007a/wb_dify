@@ -43,6 +43,27 @@ test('advanced management consoles are routed and data-backed', async ({ page })
   await expect(page.getByText('READY')).toBeVisible()
 })
 
+test('structured LLM schema example sends exact bounded schema without changing prompt (mock HTTP)', async ({ page }) => {
+  let saved: { nodes: Array<{ type: string; config: Record<string, unknown> }> } | undefined
+  await page.route('**/api/v1/workflows/wf-1', async route => {
+    if (route.request().method() !== 'PUT') return route.fallback()
+    saved = route.request().postDataJSON()
+    return route.fulfill({ json: { code: 200, message: 'success', data: null } })
+  })
+  await page.goto('./workflows')
+  await page.getByRole('button', { name: '画布', exact: true }).click()
+  await page.getByRole('button', { name: '＋ LLM', exact: true }).click()
+  const editor = page.locator('.props textarea')
+  await editor.fill(JSON.stringify({ providerId: 'p', modelId: 'm', prompt: '{{start.userMessage}}', maxOutputTokens: 2048, outputVariable: 'answer' }))
+  await page.getByTestId('structured-example').click()
+  await expect(editor).toHaveValue(/"additionalProperties": false/)
+  await page.getByRole('button', { name: '保存并校验', exact: true }).click()
+  await expect.poll(() => saved?.nodes.find(n => n.type === 'LLM')?.config).toEqual({
+    providerId: 'p', modelId: 'm', prompt: '{{start.userMessage}}', maxOutputTokens: 2048, outputVariable: 'answer',
+    outputSchema: { type: 'object', properties: { summary: { type: 'string', maxLength: 1000 }, items: { type: 'array', maxItems: 5, items: { type: 'string', maxLength: 200 } } }, required: ['summary', 'items'], additionalProperties: false },
+  })
+})
+
 test('aggregation config editor sends literal candidates in draft JSON (mock HTTP)', async ({ page }) => {
   let saved: { nodes: Array<{ type: string; config: Record<string, unknown> }> } | undefined
   await page.route('**/api/v1/workflows/wf-1', async route => {

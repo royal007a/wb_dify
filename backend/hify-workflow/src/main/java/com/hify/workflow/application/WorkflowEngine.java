@@ -120,7 +120,17 @@ public class WorkflowEngine {
  private NodeOutcome executeNode(WorkflowNodeSpec node,WorkflowExecutionContext ctx,ExecutionControl control){JsonNode c=node.config();String type=node.type().toUpperCase(Locale.ROOT);return switch(type){
   case "START" -> new NodeOutcome(null,null);
   case "AGGREGATOR" -> {ctx.set(node.nodeKey(),text(c,"outputVariable","result"),WorkflowAggregation.select(node,ctx.snapshot()));yield new NodeOutcome(null,null);}
-  case "LLM", "API_CALL" -> {String value=WorkflowControl.call(control,ioExecutor,()->external.execute(node,ctx,control));ctx.set(node.nodeKey(),text(c,"outputVariable","result"),value);yield new NodeOutcome(null,null);}
+  case "LLM", "API_CALL" -> {
+   String value=WorkflowControl.call(control,ioExecutor,()->external.execute(node,ctx,control));
+   if(WorkflowStructuredOutput.declared(node)){
+    WorkflowControl.check(control);
+    Map<String,Object> values;
+    try{values=WorkflowStructuredOutput.decode(node,value);}catch(RuntimeException invalid){WorkflowControl.check(control);throw invalid;}
+    WorkflowControl.check(control);
+    ctx.setAll(node.nodeKey(),values);
+   }else ctx.set(node.nodeKey(),text(c,"outputVariable","result"),value);
+   yield new NodeOutcome(null,null);
+  }
   case "TEMPLATE" -> {String value=ctx.resolve(required(c,"template"));String variable=text(c,"outputVariable","result");ctx.set(node.nodeKey(),variable,value);yield new NodeOutcome(null,null);}
   case "CONDITION" -> {boolean result=evaluate(required(c,"expression"),ctx);ctx.set(node.nodeKey(),text(c,"outputVariable","result"),result);yield new NodeOutcome(result,null);}
   case "KNOWLEDGE" -> {var snapshot=WorkflowKnowledgeSnapshots.require(node);String query=ctx.resolve(required(c,"query"));int topK=c.path("topK").asInt(3);var citations=WorkflowControl.call(control,ioExecutor,()->knowledge.searchSnapshot(snapshot,query,topK));if(citations.isEmpty())throw new BizException(ErrorCode.CONFLICT,"KNOWLEDGE_NO_EVIDENCE: 未检索到可用知识候选，工作流不能继续生成回答");ctx.set(node.nodeKey(),text(c,"outputVariable","citations"),citations);yield new NodeOutcome(null,null);}

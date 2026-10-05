@@ -93,7 +93,19 @@ public class WorkflowGraphValidator {
             }
             String output = output(node);
             if (output != null && !WorkflowTemplates.identifier(output)) fail("输出变量名格式无效: " + key);
-            outputs.put(key, type(node).equals("START") ? WorkflowInputs.variables(node) : output == null ? Set.of() : Set.of(output));
+            Set<String> declared = new LinkedHashSet<>(type(node).equals("START") ? WorkflowInputs.variables(node) : output == null ? Set.of() : Set.of(output));
+            declared.addAll(WorkflowStructuredOutput.fields(node));
+            outputs.put(key, declared);
+            if (type(node).equals("CONDITION")) {
+                var expression = WorkflowExpression.parse(required(node, "expression"));
+                for (String template : expression.templates()) for (String reference : WorkflowTemplates.references(template)) {
+                    String[] parts = reference.split("\\.");
+                    String fieldType = WorkflowStructuredOutput.fieldType(nodes.get(parts[0]), parts[1]);
+                    if (fieldType.equals("array")) fail("结构化数组不能直接用于条件；文本 contains 不是数组包含判断");
+                    if (expression.singleVariable() && !fieldType.isEmpty() && !fieldType.equals("boolean"))
+                        fail("结构化单变量条件必须是 boolean 字段");
+                }
+            }
             strict.add(key);
             dominators.put(key, strict);
         }

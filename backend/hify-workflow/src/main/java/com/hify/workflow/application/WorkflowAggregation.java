@@ -47,6 +47,8 @@ final class WorkflowAggregation {
                 throw invalid("聚合候选必须是已声明的严格上游输出");
             if ("KNOWLEDGE".equalsIgnoreCase(nodes.get(parts[0]).type()))
                 throw invalid("聚合仅支持标量，不支持知识引用列表");
+            if (WorkflowStructuredOutput.fieldType(nodes.get(parts[0]), parts[1]).equals("array"))
+                throw invalid("聚合仅支持标量，不支持结构化数组字段");
             owners.add(parts[0]);
         }
         // Keep all possible counts, not only max: {0,1} must not be accepted as {1}.

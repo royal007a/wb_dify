@@ -62,7 +62,7 @@ public class WorkflowExternalNodes {
             ExecutionControl bounded = ExecutionControl.withTimeout(remaining, control::isCancelled)
                     .withShutdown(control::isSuspended);
             try {
-                String result = models.generate(profile(node), context.resolve(config.path("systemPrompt").asText("")),
+                String result = models.generate(profile(node), WorkflowStructuredOutput.systemPrompt(node, context.resolve(config.path("systemPrompt").asText(""))),
                         context.resolve(config.path("prompt").asText()), config.path("temperature").asDouble(0.2),
                         config.path("maxOutputTokens").asInt(1024), bounded);
                 checkModelBudget(control, bounded);
@@ -93,7 +93,7 @@ public class WorkflowExternalNodes {
         JsonNode c = node.config();
         TextInput.requireNoNulInJson(c);
         Set<String> allowed = node.type().equalsIgnoreCase("LLM")
-                ? Set.of("providerId", "modelId", "prompt", "systemPrompt", "temperature", "maxOutputTokens", "modelSnapshot", "outputVariable", "__ui")
+                ? Set.of("providerId", "modelId", "prompt", "systemPrompt", "temperature", "maxOutputTokens", "modelSnapshot", "outputVariable", "outputSchema", "__ui")
                 : Set.of("endpoint", "method", "credentialRef", "query", "outputVariable", "__ui");
         c.fieldNames().forEachRemaining(key -> { if (!allowed.contains(key)) fail("节点包含不支持的配置字段"); });
         List<String> templates = new ArrayList<>();
@@ -101,7 +101,7 @@ public class WorkflowExternalNodes {
             fixed(c, "providerId", true); fixed(c, "modelId", true);
             String prompt = text(c, "prompt", true);
             String system = text(c, "systemPrompt", false);
-            if (prompt.length() + system.length() > 16000) fail("LLM 模板超过输入预算");
+            if (prompt.length() + WorkflowStructuredOutput.systemPrompt(node, system).length() > 16000) fail("LLM 模板超过输入预算");
             JsonNode temperature = c.get("temperature"), tokens = c.get("maxOutputTokens");
             if (temperature != null && (!temperature.isNumber() || !Double.isFinite(temperature.asDouble())
                     || temperature.asDouble() < 0 || temperature.asDouble() > 2)) fail("temperature 必须在 0..2");

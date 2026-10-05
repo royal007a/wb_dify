@@ -249,6 +249,8 @@ POST     /api/v1/knowledge-bases/{id}/retrieval-tests
 
 ## 7. Workflow（P1）
 
+LLM 节点可选 `outputSchema`：全部必填的有界 string/number/boolean/字符串数组，严格解析模型响应后才原子写入字段；主输出仍为规范化 JSON 文本。无 schema 的旧节点保持文本行为。格式失败为 Workflow FAILED（Chat 为 WORKFLOW_ERROR），不执行 END、不增加成功助手消息。不是完整 JSON Schema，不剥围栏、不自动修复，也不保证模型永远给出合法格式；完整预算、数字和条件/聚合语义见 `spec/SPEC_WORKFLOW_STRUCTURED.md`。当前切片交付状态以 Harness 为准，不能据此认为 132 已上线。
+
 `AGGREGATOR` 是新增的有界标量分支聚合，不是并行 join。配置为 `{"candidates":["branchA.answer","branchB.answer"],"outputVariable":"result"}`，候选2–16项，不写模板花括号、不trim；每个生产者只列一次，必须来自已声明输出的严格祖先。到达节点的每条结构路径恰经过一个候选；缺候选或一条路径经过多个候选，保存/发布/执行前都拒绝。普通模板仍只能引用必经上游，只有候选列表有此例外。输出保留文本/布尔/精确数字，0、false、空文本不是缺失；知识引用列表不能参与此片聚合。没有schema类型统一转换，也不把输出变成已核验事实。
 
 结构校验把CONDITION的默认边也计为可能路径；即使true/false已穷举、默认在运行中不可达，也不会做表达式可满足性推理。建议默认指向已有候选分支。旧节点不增加字段白名单、旧DSL和checksum不重写。新增聚合发布版本不能交由不支持AGGREGATOR的旧二进制执行；旧版本会从能力目录过滤非法图，因此回滚前必须处理新版本的使用范围，不保证直接回退兼容。详见 `spec/SPEC_WORKFLOW_AGGREGATION.md`。

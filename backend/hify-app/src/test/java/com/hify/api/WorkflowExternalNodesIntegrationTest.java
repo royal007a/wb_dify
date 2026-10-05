@@ -32,6 +32,7 @@ class WorkflowExternalNodesIntegrationTest {
     static final AtomicInteger modelCalls = new AtomicInteger(), httpCalls = new AtomicInteger(), redirectCalls = new AtomicInteger();
     static final AtomicReference<String> mode = new AtomicReference<>("ok"), rawQuery = new AtomicReference<>();
     static final AtomicReference<JsonNode> modelRequest = new AtomicReference<>();
+    static final AtomicReference<String> structuredReply = new AtomicReference<>("{}");
     static volatile CountDownLatch entered = new CountDownLatch(1), release = new CountDownLatch(1);
     static final ExecutorService serverPool = Executors.newCachedThreadPool(r -> { var t=new Thread(r);t.setDaemon(true);return t; });
     static final HttpServer server = start();
@@ -42,7 +43,7 @@ class WorkflowExternalNodesIntegrationTest {
             String current=mode.get();
             if(current.equals("slow")){entered.countDown();try{release.await(5,TimeUnit.SECONDS);}catch(InterruptedException x){Thread.currentThread().interrupt();}}
             Object message = current.equals("tools") ? Map.of("role","assistant","tool_calls",List.of(Map.of("id","x","type","function","function",Map.of("name","danger","arguments","{}"))))
-                    : Map.of("role","assistant","content",current.equals("large")?"x".repeat(32769):"固定模型答案");
+                    : Map.of("role","assistant","content",current.equals("large")?"x".repeat(32769):current.equals("structured")?structuredReply.get():"固定模型答案");
             byte[] body=mapper.writeValueAsBytes(Map.of("choices",List.of(Map.of("message",message))));
             try{e.getResponseHeaders().set("Content-Type","application/json");e.sendResponseHeaders(200,body.length);e.getResponseBody().write(body);}finally{e.close();}
         });
@@ -86,6 +87,113 @@ class WorkflowExternalNodesIntegrationTest {
             List.of(new WorkflowEdgeSpec("e1","entry","external",null,false),new WorkflowEdgeSpec("e2","external","end",null,false)));}
     String publish(String type,ObjectNode config){return workflows.publish(workflows.create(graph(type,config))).id();}
     int rows(String table){return db.queryForObject("select count(*) from "+table,Integer.class);}
+
+    ObjectNode structuredConfig() throws Exception {
+        ObjectNode c=llm();
+        c.set("outputSchema",json.readTree("{\"type\":\"object\",\"properties\":{\"answer\":{\"type\":\"string\"},\"score\":{\"type\":\"number\"},\"ok\":{\"type\":\"boolean\"},\"tags\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}},\"required\":[\"answer\",\"score\",\"ok\",\"tags\"],\"additionalProperties\":false}"));
+        return c;
+    }
+    WorkflowDraftRequest structuredGraph(ObjectNode c) {
+        var g=graph("LLM",c);var ns=new ArrayList<>(g.nodes());
+        ns.set(2,new WorkflowNodeSpec("end","END","end",json.createObjectNode().put("output","{{external.answer}}|{{external.score}}|{{external.ok}}|{{external.tags}}")));
+        return new WorkflowDraftRequest(g.name(),g.description(),g.schemaVersion(),ns,g.edges());
+    }
+    @Test void structuredHttpPublicationFreezesSchemaAndDeliversTypedFields() throws Exception {
+        var graph=structuredGraph(structuredConfig());
+        String id=json.readTree(http.perform(post("/api/v1/workflows").contentType("application/json").content(json.writeValueAsString(graph)))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();
+        String version=json.readTree(http.perform(post("/api/v1/workflows/{id}/versions",id)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data").path("id").asText();
+        String original=db.queryForObject("select dsl_json from workflow_versions where id=?",String.class,version);
+        mode.set("structured");structuredReply.set("{\"answer\":\"42\",\"score\":0.12345678901234567890123,\"ok\":false,\"tags\":[\"a,b\",\"{{do.notExpand}}\"]}");
+        int calls=modelCalls.get();
+        var result=json.readTree(http.perform(post("/api/v1/workflow-versions/{id}/runs",version).contentType("application/json").content("{\"input\":\"extract\"}"))
+                .andExpect(status().isAccepted()).andReturn().getResponse().getContentAsString()).path("data");
+        assertThat(result.path("status").asText()).isEqualTo("SUCCEEDED");
+        assertThat(result.path("output").asText()).isEqualTo("42|0.12345678901234567890123|false|[\"a,b\",\"{{do.notExpand}}\"]");
+        assertThat(result.path("nodes")).hasSize(3);assertThat(modelCalls.get()).isEqualTo(calls+1);
+        assertThat(modelRequest.get().path("messages").get(0).path("content").asText()).contains("Return exactly one JSON object","additionalProperties");
+        assertThat(modelRequest.get().has("response_format")).isFalse();
+        var changed=structuredConfig();((ObjectNode)changed.path("outputSchema").path("properties").path("answer")).put("maxLength",1);
+        workflows.update(id,structuredGraph(changed));
+        assertThat(db.queryForObject("select dsl_json from workflow_versions where id=?",String.class,version)).isEqualTo(original);
+        assertThat(engine.execute(version,"again").status()).isEqualTo("SUCCEEDED");
+        assertThat(engine.execute(workflows.publish(id).id(),"new schema").status()).isEqualTo("FAILED");
+    }
+    @Test void invalidStructuredRepliesFailWithoutPartialVariablesEndOrRepairCall() throws Exception {
+        String version=workflows.publish(workflows.create(structuredGraph(structuredConfig()))).id();
+        mode.set("structured");
+        for(String raw:List.of("{\"answer\":\"secret-reply\",\"score\":0,\"ok\":false}",
+                "{\"answer\":\"secret-reply\",\"score\":0,\"ok\":false,\"tags\":[1]}",
+                "{\"answer\":\"secret-reply\",\"score\":0,\"score\":1,\"ok\":false,\"tags\":[]}",
+                "{\"answer\":\"secret-reply\",\"score\":0,\"ok\":false,\"tags\":[]}{}")) {
+            structuredReply.set(raw);int calls=modelCalls.get();
+            var result=engine.execute(version,"extract");
+            assertThat(result.status()).isEqualTo("FAILED");assertThat(result.output()).isNull();
+            assertThat(result.errorMessage()).isEqualTo("LLM 结构化输出不符合发布 schema，工作流已停止");
+            assertThat(result.context()).containsOnlyKeys("entry.userMessage");
+            assertThat(result.nodes()).hasSize(2);assertThat(result.nodes().get(1).status()).isEqualTo("FAILED");
+            assertThat(modelCalls.get()).isEqualTo(calls+1);
+            assertThat(json.writeValueAsString(result)).doesNotContain("secret-reply");
+        }
+        structuredReply.set("{\"answer\":\"\",\"score\":0,\"ok\":false,\"tags\":[]}");
+        var good=engine.execute(version,"valid control");assertThat(good.status()).isEqualTo("SUCCEEDED");
+        assertThat(good.nodes()).hasSize(3);assertThat(good.context()).containsKey("external.result");
+    }
+    @Test void invalidSchemaIsRejectedBeforeWorkflowWriteOrModelCall() throws Exception {
+        var c=structuredConfig();((ObjectNode)c.path("outputSchema")).put("additionalProperties",true);
+        int before=rows("workflows"),calls=modelCalls.get();
+        http.perform(post("/api/v1/workflows").contentType("application/json").content(json.writeValueAsString(structuredGraph(c))))
+                .andExpect(status().isBadRequest());
+        assertThat(rows("workflows")).isEqualTo(before);assertThat(modelCalls.get()).isEqualTo(calls);
+    }
+    @Test void structuredCancellationAndDeadlineWinOverMalformedLateReply() throws Exception {
+        String version=workflows.publish(workflows.create(structuredGraph(structuredConfig()))).id();
+        mode.set("slow");AtomicBoolean cancel=new AtomicBoolean();var pool=Executors.newSingleThreadExecutor();
+        try {
+            var running=pool.submit(()->engine.execute(version,"wait",ExecutionControl.withTimeout(Duration.ofSeconds(4),cancel::get)));
+            assertThat(entered.await(2,TimeUnit.SECONDS)).isTrue();cancel.set(true);
+            var result=running.get(2,TimeUnit.SECONDS);
+            assertThat(result.status()).isEqualTo("CANCELLED");assertThat(result.context()).containsOnlyKeys("entry.userMessage");
+            assertThat(result.nodes()).hasSize(2);assertThat(result.output()).isNull();
+            release.countDown();entered=new CountDownLatch(1);release=new CountDownLatch(1);
+            var timed=engine.execute(version,"deadline",ExecutionControl.withTimeout(Duration.ofMillis(150),()->false));
+            assertThat(timed.status()).isEqualTo("TIMED_OUT");assertThat(timed.context()).containsOnlyKeys("entry.userMessage");
+            assertThat(timed.output()).isNull();assertThat(timed.errorMessage()).doesNotContain("schema");
+        }finally{release.countDown();pool.shutdownNow();}
+    }
+    @Test void structuredAgentFailureDoesNotDeliverAssistantAndValidControlDoes() throws Exception {
+        String wid=workflows.create(structuredGraph(structuredConfig()));workflows.publish(wid);
+        String aid=json.readTree(http.perform(post("/api/v1/agents").contentType("application/json").content("""
+                {"name":"structured-agent-%s","instructions":"workflow","providerId":"mock","modelId":"hify-mock","temperature":0.2,"maxTokens":2048,"maxTurns":6,"maxContextTurns":10,"enabledTools":[],"enabled":true}
+                """.formatted(UUID.randomUUID()))).andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("data").asText();
+        http.perform(put("/api/v1/agents/{id}/workflow-binding",aid).contentType("application/json").content(json.writeValueAsString(Map.of("workflowId",wid)))).andExpect(status().isOk());
+        http.perform(post("/api/v1/agents/{id}/publications",aid)).andExpect(status().isOk());
+        String cid=json.readTree(http.perform(post("/api/v1/conversations").contentType("application/json").content(json.writeValueAsString(Map.of("agentId",aid,"title","structured fixture"))))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString()).path("id").asText();
+        mode.set("structured");structuredReply.set("{\"answer\":\"ok\",\"score\":0,\"ok\":false,\"tags\":[]}");
+        var positive=structuredChat(cid);assertThat(positive.path("state").asText()).isEqualTo("COMPLETED");
+        assertThat(positive.path("outputMessage").asText()).isEqualTo("ok|0|false|[]");
+        int assistants=db.queryForObject("select count(*) from chat_messages where conversation_id=? and role='assistant'",Integer.class,cid);
+        assertThat(assistants).isEqualTo(1);int calls=modelCalls.get();
+        structuredReply.set("{\"answer\":\"private-invalid-reply\"}");
+        var negative=structuredChat(cid);assertThat(negative.path("state").asText()).isEqualTo("FAILED");
+        assertThat(negative.path("terminalReason").asText()).isEqualTo("WORKFLOW_ERROR");
+        assertThat(modelCalls.get()).isEqualTo(calls+1);
+        assertThat(db.queryForObject("select count(*) from chat_messages where conversation_id=? and role='assistant'",Integer.class,cid)).isEqualTo(assistants);
+        assertThat(negative.toString()).doesNotContain("private-invalid-reply");
+        assertThat(negative.path("agentVersionId")).isEqualTo(positive.path("agentVersionId"));
+    }
+    private JsonNode structuredChat(String cid) throws Exception {
+        String id=json.readTree(http.perform(post("/api/v1/conversations/{id}/runs",cid).header("Idempotency-Key",UUID.randomUUID().toString())
+                .contentType("application/json").content("{\"message\":\"extract\"}")).andExpect(status().isAccepted()).andReturn().getResponse().getContentAsString()).path("id").asText();
+        long until=System.nanoTime()+TimeUnit.SECONDS.toNanos(10);
+        while(System.nanoTime()<until){
+            var run=json.readTree(http.perform(get("/api/v1/runs/{id}",id)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+            if(!run.path("state").asText().equals("RUNNING"))return run;
+            Thread.sleep(10);
+        }
+        throw new AssertionError("structured chat fixture did not settle");
+    }
 
     @Test void llmIsFrozenAtPublicationAndHasPositiveExecutionTrace() throws Exception {
         var config=llm();String version=publish("LLM",config);int before=rows("workflow_runs"), nodes=rows("workflow_node_runs");

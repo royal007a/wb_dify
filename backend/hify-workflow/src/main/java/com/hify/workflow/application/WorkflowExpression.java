@@ -54,6 +54,7 @@ final class WorkflowExpression {
     }
 
     List<String> templates(){return operator==null?List.of(left):List.of(left,right);}
+    boolean singleVariable(){return operator==null;}
     boolean evaluate(WorkflowExecutionContext context){
         String l=context.resolve(left);
         if(operator==null){
