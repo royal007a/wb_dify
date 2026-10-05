@@ -50,7 +50,7 @@
     "com.hify.workflow.application.WorkflowControlTest": 11,
     "com.hify.workflow.application.WorkflowExpressionTest": 4,
     "com.hify.workflow.application.WorkflowGraphValidatorTest": 28,
-    "com.hify.workflow.application.WorkflowAggregationTest": 12,
+    "com.hify.workflow.application.WorkflowAggregationTest": 14,
     "com.hify.workflow.application.WorkflowEngineTest": 16,
     "com.hify.workflow.application.WorkflowExecutionContextTest": 5,
     "com.hify.memory.HistoryRecallEvaluationTest": 1,

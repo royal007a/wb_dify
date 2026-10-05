@@ -36,6 +36,42 @@ class WorkflowAggregationTest {
         rejects(draft(changed, valid.edges().toArray(WorkflowEdgeSpec[]::new)));
     }
 
+    @Test void rejectsSiblingOnAnotherEndEvenThoughCandidateCountsAreExactlyOne() {
+        var g = graph(merge("left.result", "right.result"));
+        var ns = new ArrayList<>(g.nodes());
+        ns.add(node("outer", "CONDITION", "expression", "true"));
+        ns.add(node("sib", "TEMPLATE", "template", "sibling"));
+        ns.add(node("sibEnd", "END", "output", "{{sib.result}}"));
+        var es = new ArrayList<>(g.edges());
+        es.removeIf(e -> e.edgeKey().equals("start-route"));
+        es.add(edge("start", "outer"));
+        es.add(new WorkflowEdgeSpec("outer-route", "outer", "route", "true", false));
+        es.add(new WorkflowEdgeSpec("outer-sib", "outer", "sib", null, true));
+        es.add(edge("sib", "sibEnd"));
+        validator.validate(draft(ns, es.toArray(WorkflowEdgeSpec[]::new)));
+        ns.set(4, merge("left.result", "right.result", "sib.result"));
+        assertThatThrownBy(() -> validator.validate(draft(ns, es.toArray(WorkflowEdgeSpec[]::new))))
+                .isInstanceOf(BizException.class).hasMessageContaining("严格上游输出");
+    }
+
+    @Test void fixedPreAggregationPublicationRetainsRawBytesAndChecksum() throws Exception {
+        String raw;
+        try (var stream = getClass().getResourceAsStream("/workflow/legacy-7ddff72.json")) {
+            assertThat(stream).isNotNull();
+            raw = new String(stream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8).stripTrailing();
+        }
+        String expected = "566f4b6297a4c259beb1c790f73228e60b5a89eb7073ae5f1ac7e4e4bf18e968";
+        assertThat(WorkflowPublishedGraph.checksum(raw)).isEqualTo(expected);
+        var version = new com.hify.workflow.domain.WorkflowVersion("old-v", "old-w", 1, 1,
+                raw, expected, java.time.Instant.EPOCH);
+        var loaded = WorkflowPublishedGraph.read(version, JSON);
+        validator.validate(loaded);
+        assertThat(loaded.nodes().get(2).config().path("historicalExtension").asText()).isEqualTo("retain");
+        assertThat(WorkflowPublishedGraph.write(loaded, JSON)).isEqualTo(raw);
+        assertThat(version.getDslJson()).isEqualTo(raw);
+        assertThat(version.getChecksum()).isEqualTo(expected);
+    }
+
     @Test void rejectsZeroOnOnePathEvenWhenAnotherPathHasOneCandidate() {
         var valid = graph(merge("left.result", "other.result"));
         var ns = new ArrayList<>(valid.nodes());
