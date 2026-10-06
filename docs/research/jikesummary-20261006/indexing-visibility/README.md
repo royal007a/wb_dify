@@ -48,3 +48,13 @@ python3 docs/research/jikesummary-20261006/indexing-visibility/run-probe.py \
 补丁应用于独立 scratch 副本，已用 JDK 17 和原报告 classpath 编译通过；此时没有执行 Spring 或 PostgreSQL。编译后的测试源码 SHA `a3bfcc497a4dd1e984918bd117ed52c8c3a7f6d8655c94d65fbc894f334c6b4d`。主工作树和产品源码未修改。
 
 首轮完整门禁后来因实际红灯和资源压力主动中止，见 `../failed-gate-c45c19a/README.md`；此前“仍在运行”的表述是本探针完成时的阶段记录。后续首先运行原版未插桩方法作为对照，不将编译准备计为 PG 验收通过。
+
+## 原 PostgreSQL 方法的独立对照（已执行）
+
+2026-10-07 02:43:54 CST，终端会话 22712 实际退出 0：固定 c45c19a 的 `WorkflowKnowledgeReviewPostgresTest#indexingMetadataFailurePersistsFailureWithoutDeletingExistingChunks`，1 found / 1 successful / 0 failed、skipped、aborted。使用原构建的测试 class，未应用本目录的 observation patch，未延长原五秒轮询或改断言；主树保持干净。
+
+JUnit Launcher 直接选择这一个方法，依赖来自原 Maven XML 的 classpath；原 test-classes 排在 scratch 编译目录之前，所以载入的父测试没有插桩。JDK 17，`-Xmx512m -XX:ReservedCodeCacheSize=64m -Dspring.test.context.cache.maxSize=1`，自己的 Testcontainers PostgreSQL，Docker context 为 `colima-hify-verify-20261004`。没有跑模型或生产服务，也不是 Maven 全套或干净构建。Spring 启动日志为 427.045 秒，总测试 493.558 秒；改变运行范围和资源条件是诊断变量。
+
+留存边界：`postgres-original-prefix.log` 是工具捕获并逐字保存的前缀（到 02:42:56 的 context 注册），**不是完整日志**；最后一次工具返回的 JUnit 结果另以 `postgres-original-result-excerpt.txt` 摘录。其间 HTTP 请求与启动日志留在会话工具记录，没有拼接冒充完整原日志。后续运行从启动时直接重定向到独立文件，避免依赖会话内存留存。
+
+结论仅限这次原方法通过。它没有复现第一轮失败，也没有故障注入/提交先后的观察点，因此 **不能确认原失败根因，更不能关闭完整门禁红灯**。H2 屏障只证明一种可能机制，仍不作为原 PG 根因证据。不因这次绿灯修改产品或放宽测试。下一次完整验证保留同一原断言；若再次失败，再使用观察补丁区分时序。

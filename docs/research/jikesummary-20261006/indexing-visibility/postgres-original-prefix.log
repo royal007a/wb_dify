@@ -1,0 +1,95 @@
+scope=original PostgreSQL method, bounded JVM, isolated one-method launcher; not a full gate
+head=c45c19a9837b71e9f44113441f23d7d495f55750
+javaLimits=Xmx512m/codeCache64m/contextCache1
+classpathOrder=original Maven classes BEFORE diagnostic output (uninstrumented control)
+sha256=9cf96ed28797f8b71841fc083fcbd5917ddd7564ec822c8bef254157d7d0247e WorkflowKnowledgeReviewTest
+sha256=013fb7d56365b1178ec675bc199e744883941e68b7fdfeac407726378d5b9b01 WorkflowKnowledgeReviewPostgresTest
+02:35:38.603 [main] INFO org.testcontainers.DockerClientFactory -- Testcontainers version: 1.20.6
+02:35:43.457 [main] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Found Docker environment with Environment variables, system properties and defaults. Resolved dockerHost=unix:///Users/weberzhao/.colima/hify-verify-20261004/docker.sock
+02:35:43.525 [main] INFO org.testcontainers.DockerClientFactory -- Docker host IP address is 127.0.0.1
+02:35:43.689 [main] INFO org.testcontainers.DockerClientFactory -- Connected to docker: 
+  Server Version: 29.5.2
+  API Version: 1.54
+  Operating System: Ubuntu 24.04.4 LTS
+  Total Memory: 1958 MB
+02:35:43.969 [main] INFO org.testcontainers.images.PullPolicy -- Image pull policy will be performed by: DefaultPullPolicy()
+02:35:43.993 [main] INFO org.testcontainers.utility.ImageNameSubstitutor -- Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+02:35:45.360 [main] INFO tc.testcontainers/ryuk:0.11.0 -- Creating container for image: testcontainers/ryuk:0.11.0
+02:35:46.648 [main] INFO tc.testcontainers/ryuk:0.11.0 -- Container testcontainers/ryuk:0.11.0 is starting: 0fbee7984c8f4bf21b6d23488e1fd4ac08f5e2f52266f550566ac9215bdd0a9d
+02:35:52.772 [main] INFO tc.testcontainers/ryuk:0.11.0 -- Container testcontainers/ryuk:0.11.0 started in PT7.410654S
+02:35:52.810 [main] INFO org.testcontainers.utility.RyukResourceReaper -- Ryuk started - will monitor and terminate Testcontainers containers on JVM exit
+02:35:52.810 [main] INFO org.testcontainers.DockerClientFactory -- Checking the system...
+02:35:52.812 [main] INFO org.testcontainers.DockerClientFactory -- ✔︎ Docker server version should be at least 1.6.0
+02:35:53.912 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.hify.api.WorkflowKnowledgeReviewPostgresTest]: WorkflowKnowledgeReviewPostgresTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+02:35:58.176 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.hify.HifyApplication for test class com.hify.api.WorkflowKnowledgeReviewPostgresTest
+02:35:59.469 [main] INFO tc.pgvector/pgvector:pg16 -- Creating container for image: pgvector/pgvector:pg16
+02:35:59.908 [main] INFO tc.pgvector/pgvector:pg16 -- Container pgvector/pgvector:pg16 is starting: cba9a1aa53c5e98c034cfa6f597275a49a20ef05df1b9f011f48ae717b4a73ed
+02:36:03.860 [main] INFO tc.pgvector/pgvector:pg16 -- Container pgvector/pgvector:pg16 started in PT4.3916S
+02:36:03.902 [main] INFO tc.pgvector/pgvector:pg16 -- Container is started (JDBC URL: jdbc:postgresql://127.0.0.1:32778/workflow_review?loggerLevel=OFF)
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-10-07T02:36:18.789+08:00 INFO  [main] [requestId=] c.h.a.WorkflowKnowledgeReviewPostgresTest - Starting WorkflowKnowledgeReviewPostgresTest using Java 17.0.19 with PID 39446 (started by weberzhao in /Users/weberzhao/hify/backend/hify-app)
+2026-10-07T02:36:18.795+08:00 INFO  [main] [requestId=] c.h.a.WorkflowKnowledgeReviewPostgresTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-07T02:37:16.943+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-07T02:37:17.223+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-07T02:37:49.740+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 31137 ms. Found 34 JPA repository interfaces.
+2026-10-07T02:38:10.402+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-10-07T02:38:15.761+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2a317af7
+2026-10-07T02:38:15.829+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-10-07T02:38:16.184+08:00 INFO  [main] [requestId=] org.flywaydb.core.FlywayExecutor - Database: jdbc:postgresql://127.0.0.1:32778/workflow_review?loggerLevel=OFF (PostgreSQL 16.15)
+2026-10-07T02:38:17.021+08:00 INFO  [main] [requestId=] o.f.c.i.s.JdbcTableSchemaHistory - Schema history table "public"."flyway_schema_history" does not exist yet
+2026-10-07T02:38:17.031+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbValidate - Successfully validated 24 migrations (execution time 00:00.561s)
+2026-10-07T02:38:17.219+08:00 INFO  [main] [requestId=] o.f.c.i.s.JdbcTableSchemaHistory - Creating Schema History table "public"."flyway_schema_history" ...
+2026-10-07T02:38:17.395+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Current version of schema "public": << Empty Schema >>
+2026-10-07T02:38:17.439+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "1 - baseline"
+2026-10-07T02:38:17.905+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "2 - demo item"
+2026-10-07T02:38:17.952+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "3 - run replan control"
+2026-10-07T02:38:17.987+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "4 - run context state"
+2026-10-07T02:38:18.022+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "5 - provider catalog"
+2026-10-07T02:38:18.101+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "6 - agent publishing"
+2026-10-07T02:38:18.245+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "7 - agent archive and tool bindings"
+2026-10-07T02:38:18.316+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "8 - backfill agent tool bindings"
+2026-10-07T02:38:18.366+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "9 - runtime capability and history"
+2026-10-07T02:38:18.463+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "10 - child agent task protocol"
+2026-10-07T02:38:18.855+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "11 - context memory catalog"
+2026-10-07T02:38:19.001+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "12 - history full text index"
+2026-10-07T02:38:19.048+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "13 - history vector index"
+2026-10-07T02:38:19.459+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "14 - knowledge catalog"
+2026-10-07T02:38:19.558+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "15 - knowledge search indexes"
+2026-10-07T02:38:19.846+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "16 - workflow runtime"
+2026-10-07T02:38:20.155+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "17 - mcp server registry"
+2026-10-07T02:38:20.253+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "18 - agent knowledge capability"
+2026-10-07T02:38:20.533+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "19 - agent workflow mcp capabilities"
+2026-10-07T02:38:20.592+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "20 - mcp encrypted credentials"
+2026-10-07T02:38:20.651+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "21 - workflow control terminal states"
+2026-10-07T02:38:20.742+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "22 - workflow interrupted state"
+2026-10-07T02:38:20.751+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "23 - history operation recovery"
+2026-10-07T02:38:20.772+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "24 - semantic embedding profiles"
+2026-10-07T02:38:21.003+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Successfully applied 24 migrations to schema "public", now at version v24 (execution time 00:01.932s)
+2026-10-07T02:38:22.938+08:00 INFO  [main] [requestId=] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-07T02:38:24.844+08:00 INFO  [main] [requestId=] org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.13.Final
+2026-10-07T02:38:25.439+08:00 INFO  [main] [requestId=] o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-10-07T02:38:30.676+08:00 INFO  [main] [requestId=] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-07T02:38:32.677+08:00 INFO  [main] [requestId=] o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.15
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-07T02:38:54.843+08:00 INFO  [main] [requestId=] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-07T02:38:59.430+08:00 INFO  [main] [requestId=] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-07T02:39:08.068+08:00 INFO  [main] [requestId=] o.s.d.j.r.query.QueryEnhancerFactory - JSqlParser is in classpath; If applicable, JSqlParser will be used.
+2026-10-07T02:39:08.069+08:00 INFO  [main] [requestId=] o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-10-07T02:40:18.570+08:00 WARN  [HikariPool-1 housekeeper] [requestId=] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m2s149ms).
+2026-10-07T02:42:56.891+08:00 INFO  [main] [requestId=] c.b.m.s.MybatisPlusApplicationContextAware - Register ApplicationContext instances org.springframework.web.context.support.GenericWebApplicationContext@3b4825f0
