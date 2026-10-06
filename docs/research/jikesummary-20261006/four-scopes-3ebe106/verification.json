@@ -1,0 +1,337 @@
+{
+  "schemaVersion": 3,
+  "strictEvidence": true,
+  "invocationId": "fe6bb869-1069-426d-b4aa-f75aec62788a",
+  "runId": null,
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "runtime",
+    "eval",
+    "frontend"
+  ],
+  "base": "3ebe106",
+  "headCommit": "3ebe106faf9dec9975ae0bf1115bf777974dcc8f",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "/tmp/hify-four-scopes-20261007.kv2zEE/harness-state.log",
+      "command": [
+        "python3",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/harness.py",
+        "validate"
+      ],
+      "logSha256": "6b88b9a6057606024a1bf285377c7371051f61b28a1e81d6b68a3fd12bf6cb7b"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "/tmp/hify-four-scopes-20261007.kv2zEE/harness-progress.log",
+      "command": [
+        "python3",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/harness.py",
+        "check-progress"
+      ],
+      "logSha256": "53a4a1b7863bea67045d82fe8a1bc53c8c30dd3740b7708ff332a9300796dc18"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "/tmp/hify-four-scopes-20261007.kv2zEE/harness-api-spec.log",
+      "command": [
+        "python3",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/render-api-spec.py",
+        "--check"
+      ],
+      "logSha256": "0456d6551eef206c05217007f775b3b7e8fe918df66de019312f60508977f0f0"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "/tmp/hify-four-scopes-20261007.kv2zEE/harness-python-tests.log",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "logSha256": "125d6b2def2c5b9bb204b6cee3f377eaf0f73e324d0ffa8db9e91d37ef2b905a"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "/tmp/hify-four-scopes-20261007.kv2zEE/harness-shell-syntax.log",
+      "command": [
+        "sh",
+        "-n",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/init.sh",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/verify.sh",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/run-task.sh"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "runtime-tests",
+      "exitCode": 0,
+      "log": "/tmp/hify-four-scopes-20261007.kv2zEE/runtime-tests.log",
+      "command": [
+        "python3",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/maven_step.py",
+        "--root",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree",
+        "--evidence-dir",
+        "/tmp/hify-four-scopes-20261007.kv2zEE",
+        "--step",
+        "runtime-tests",
+        "--invocation-id",
+        "fe6bb869-1069-426d-b4aa-f75aec62788a"
+      ],
+      "logSha256": "621cf15384426d2fc842143221fd5303c8a730c261fa2bcc3be5cf6dc647a11e",
+      "mavenTests": {
+        "totals": {
+          "tests": 35,
+          "executed": 35,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "flakyAttempts": 0
+        },
+        "classes": [
+          {
+            "class": "com.hify.api.ChildAgentTaskIntegrationTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "2efbcf3a57dc9163dacaf4f7101ff9831ed4e0bb5d8bcab65feb7a53c6b89549"
+          },
+          {
+            "class": "com.hify.api.ContextMemoryIntegrationTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "0bfef5e928664ad37d7a71730d731748c4896c3fb747c8141aa58c06ef4a3fd9"
+          },
+          {
+            "class": "com.hify.api.RunFlowIntegrationTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "e7ddf8e561b0bffffc1d21629a004a0b430ac342bbe72e522cf79362c90ee9fd"
+          },
+          {
+            "class": "com.hify.domain.ChildAgentTaskTest",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 2,
+            "flakyAttempts": 0,
+            "expectedMinimum": 2,
+            "xmlSha256": "fc3f5a6dce159f6fd16c760d04fbef61bcd1ef54a91b3ca1ba117c3f73cc4daf"
+          },
+          {
+            "class": "com.hify.runtime.QueryLoopTest",
+            "tests": 21,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 21,
+            "flakyAttempts": 0,
+            "expectedMinimum": 21,
+            "xmlSha256": "3dc0e944bdaedfdb227cac1c9781f0e9860360fc5b1876ee1016b4a0dbb2d925"
+          },
+          {
+            "class": "com.hify.runtime.plan.PlanStateMachineTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "27518b31572fb055da19e284b35f7be63dc29015d452503bc371ee9ddb809205"
+          },
+          {
+            "class": "com.hify.runtime.state.ExecutionContextStateTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "92c69ce400a130ee9c17359b9a2d0da4ab7903eaada67f5fb181bcf4f09a48c2"
+          }
+        ],
+        "underfilledSuites": [],
+        "countMeaning": "Reported testcase/skip records; disabled containers can hide additional intended methods."
+      },
+      "testSummarySha256": "333bd10c1d5d3b820f4ca2f7f1c63d0ed57b43b42303d0bbe39af3e28b19fd66"
+    },
+    {
+      "name": "intent-context-recall-eval",
+      "exitCode": 0,
+      "log": "/tmp/hify-four-scopes-20261007.kv2zEE/intent-context-recall-eval.log",
+      "command": [
+        "python3",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/maven_step.py",
+        "--root",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree",
+        "--evidence-dir",
+        "/tmp/hify-four-scopes-20261007.kv2zEE",
+        "--step",
+        "intent-context-recall-eval",
+        "--invocation-id",
+        "fe6bb869-1069-426d-b4aa-f75aec62788a"
+      ],
+      "logSha256": "4af2e0428fe485a3595cdc9a3ed6df7a56ca599f0aaa35136f3aa73ba997c57b",
+      "mavenTests": {
+        "totals": {
+          "tests": 24,
+          "executed": 24,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "flakyAttempts": 0
+        },
+        "classes": [
+          {
+            "class": "com.hify.intent.DeterministicIntentRouterTest",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 6,
+            "flakyAttempts": 0,
+            "expectedMinimum": 6,
+            "xmlSha256": "17c3e58349bdf5acaa79187acc8a9c12aee2c5de58bdb198ba3c1eb348e8c4c1"
+          },
+          {
+            "class": "com.hify.intent.IntentDecisionTest",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 4,
+            "flakyAttempts": 0,
+            "expectedMinimum": 4,
+            "xmlSha256": "36a2475c02acd0704251db9e972f6b7eff9eaa16214a077c96a9cde5900329f4"
+          },
+          {
+            "class": "com.hify.intent.IntentEvaluationDatasetTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "b745ab2d87d071ea588e9dc9baab49a62375f1970904667dc487a239402b7044"
+          },
+          {
+            "class": "com.hify.intent.LayeredIntentRouterTest",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 8,
+            "flakyAttempts": 0,
+            "expectedMinimum": 8,
+            "xmlSha256": "1ecccbe238c87b9336887b7a7955c6ec2f61a59a3bc682b3bd77d2ab720d5c01"
+          },
+          {
+            "class": "com.hify.intent.StructuredModelIntentClassifierTest",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 3,
+            "flakyAttempts": 0,
+            "expectedMinimum": 3,
+            "xmlSha256": "892068e4ab995fce9797834fd719dec4b7e329b6c91814321f076cdf99c803f7"
+          },
+          {
+            "class": "com.hify.memory.HistoryRecallEvaluationTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "d4fcd88fb8d079576c14f38cac7b20d031d4c02dc2a688442be71b51f449baf0"
+          },
+          {
+            "class": "com.hify.runtime.context.ContextManagementEvaluationTest",
+            "tests": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "executed": 1,
+            "flakyAttempts": 0,
+            "expectedMinimum": 1,
+            "xmlSha256": "4bc45f2840005d39848f07944081f86e7979c602a7ad5593d5b0003460878001"
+          }
+        ],
+        "underfilledSuites": [],
+        "countMeaning": "Reported testcase/skip records; disabled containers can hide additional intended methods."
+      },
+      "testSummarySha256": "d22b2c82e9732da6738518470a36574167e8d22b532526958871fa9a5f09cfd1"
+    },
+    {
+      "name": "frontend-install",
+      "exitCode": 0,
+      "log": "/tmp/hify-four-scopes-20261007.kv2zEE/frontend-install.log",
+      "command": [
+        "sh",
+        "-c",
+        "cd '/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/frontend' && npm ci --no-audit --no-fund"
+      ],
+      "logSha256": "7b528204b83d932f25eac97afe08d56bc3fdfa8b046f331a16b80205ca011a7c"
+    },
+    {
+      "name": "frontend-typecheck",
+      "exitCode": 0,
+      "log": "/tmp/hify-four-scopes-20261007.kv2zEE/frontend-typecheck.log",
+      "command": [
+        "sh",
+        "-c",
+        "cd '/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/frontend' && npm run typecheck"
+      ],
+      "logSha256": "150b8f5e6954ae1ebc67a61220fd3b475d89a262b5f342b98838e3dc84fed489"
+    },
+    {
+      "name": "frontend-build",
+      "exitCode": 0,
+      "log": "/tmp/hify-four-scopes-20261007.kv2zEE/frontend-build.log",
+      "command": [
+        "sh",
+        "-c",
+        "cd '/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/frontend' && npm run build"
+      ],
+      "logSha256": "868c1e0fb75ceee2a0310242738809e17f7cd33fec15ffd3035d0fd3554fac80"
+    }
+  ],
+  "finishedAt": "2026-10-06T22:10:31Z",
+  "commandResult": "passed",
+  "testCoverage": "passed",
+  "resultMeaning": "Selected commands and observed test counts only; not full product or deployment acceptance. Repeated steps are not independent tests."
+}

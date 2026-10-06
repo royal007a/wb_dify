@@ -182,3 +182,14 @@ Control 13、CircuitBreaker 15、HTTP 17、ProviderDeadline 6、Shutdown 4 均�
 此前 common 78项失败与后续诊断原文继续保留。本次只覆盖common模块，不覆盖
 真实PG恢复、应用装配、完整backend/runtime/eval/frontend，也不是六scope验收。
 RunEventBroker 的传输时钟仍未修改，不宣称所有 nanoTime 比较已统一。
+
+### 06:10 非Docker四范围验收
+
+固定3ebe106、工作树源码干净，`verify.sh --scope harness,runtime,eval,frontend`
+同一进程完成，exit 0，schema3 invocation `fe6bb869-1069-426d-b4aa-f75aec62788a`。
+原始日志/manifest和逐类摘要见 `four-scopes-3ebe106/`，verification SHA-256为
+`5475b67899a78f78aa568993964517e85e1ac115af00c5526ad1c8ac90886144`。
+Harness Python实际84项，runtime 35项、eval 24项均零失败/错误/跳过；前端类型检查
+与构建通过，保留大包体警告。没有浏览器测试。runtime中的3类H2集成不是此前的
+关停重启反例，故不能据此关闭那次红灯；backend和migration没有在本轮执行。
+完整六scope与只读review仍是完成条件，任务状态不变；未合并main、未部署。
