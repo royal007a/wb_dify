@@ -1,0 +1,11 @@
+--- a/backend/hify-chat/src/main/java/com/hify/application/RunApplicationService.java
++++ b/backend/hify-chat/src/main/java/com/hify/application/RunApplicationService.java
+@@ -902,7 +902,7 @@
+                 .forEach(binding->{
+                     control.checkActive();
+                     try{
+-                        var result=knowledge.searchRevision(binding.corpusVersionId(),query,binding.topK(),control);
++                        var result=knowledge.searchRevision(binding.corpusVersionId(),query,binding.topK(),ExecutionControl.none());
+                         control.checkActive();
+                         citations.addAll(result);
+                     }catch(RuntimeException failure){

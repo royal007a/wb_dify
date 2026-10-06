@@ -1,0 +1,11 @@
+--- a/backend/hify-chat/src/main/java/com/hify/application/RunApplicationService.java
++++ b/backend/hify-chat/src/main/java/com/hify/application/RunApplicationService.java
+@@ -705,7 +705,7 @@
+             return;
+         }
+         if(exception instanceof ExecutionTimedOutException){
+-            finishTerminal(runId,RunState.TIMED_OUT,TerminalReason.TIMEOUT.name(),"Run timed out.",0,0,false);
++            finishTerminal(runId,RunState.FAILED,TerminalReason.MODEL_ERROR.name(),"Run failed.",0,0,false);
+             return;
+         }
+         if (shutdownInterruption(exception)) {

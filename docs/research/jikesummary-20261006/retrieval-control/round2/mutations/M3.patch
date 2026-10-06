@@ -1,0 +1,12 @@
+--- a/backend/hify-chat/src/main/java/com/hify/runtime/QueryLoop.java
++++ b/backend/hify-chat/src/main/java/com/hify/runtime/QueryLoop.java
+@@ -112,8 +112,7 @@
+                        int completedTurns, int completedToolCalls, boolean resumed,ExecutionControl parentControl) {
+         List<RuntimeMessage> messages = new ArrayList<>(initialMessages);
+         Set<String> seenToolCallIds = existingToolCallIds(initialMessages);
+-        ExecutionControl control = parentControl.boundedBy(policy.timeout())
+-                .withCancellation(policy.cancelled()).withShutdown(lifecycle::isStopping);
++        ExecutionControl control = ExecutionControl.withTimeout(policy.timeout(),policy.cancelled()).withShutdown(lifecycle::isStopping);
+         control.throwIfSuspended();
+         int toolCalls = completedToolCalls;
+         int recallCalls = existingRecallCalls(initialMessages);

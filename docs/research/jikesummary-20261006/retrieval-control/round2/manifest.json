@@ -1,0 +1,173 @@
+{
+  "scope": "isolated javac/JUnit, not Maven gate or deployment",
+  "sourceCommit": "b2514585dc0c28b73c423d707ae2b5c707e23267",
+  "dependencyWorktreeCommit": "c45c19a9837b71e9f44113441f23d7d495f55750",
+  "productionFilesNeverMutated": true,
+  "mutations": [
+    {
+      "id": "M1",
+      "source": "backend/hify-chat/src/main/java/com/hify/application/RunApplicationService.java",
+      "originalSha256": "1b0cebe537f391269b85a9605559b74af89580cb2e998856dcf50b8805224039",
+      "mutantSha256": "fddb96a694c1406ca201ff85e29787020f80ac95eb5cc1866ef1435a1349f8f5",
+      "patchSha256": "763b1358ae6ad101606ca9a41235c632c2a7230b8992081054425e21a9bf4ee1",
+      "logSha256": "1da5c6a0111e21744eda612ce75fed97821a84709eb44865eeb90c72c367560f",
+      "selector": "com.hify.application.RunKnowledgeControlTest",
+      "exitCodeObservedByRunner": 1,
+      "counts": {
+        "found": 5,
+        "successful": 4,
+        "failed": 1,
+        "skipped": 0,
+        "aborted": 0
+      },
+      "failureTypes": [
+        "java.lang.AssertionError"
+      ]
+    },
+    {
+      "id": "M2",
+      "source": "backend/hify-chat/src/main/java/com/hify/application/RunApplicationService.java",
+      "originalSha256": "1b0cebe537f391269b85a9605559b74af89580cb2e998856dcf50b8805224039",
+      "mutantSha256": "34838d6fa7ba658070b438d7ca0c83e99c1764f01685e7f162a774f0d7c3fafd",
+      "patchSha256": "dd10968ce07d74fd7818051161835aa61404dec527267203cea7e95d9078b3e7",
+      "logSha256": "4330999b0f142f8c237a1859da4177377f0653b912b73f1d999e50233347da06",
+      "selector": "com.hify.application.RunKnowledgeControlTest",
+      "exitCodeObservedByRunner": 1,
+      "counts": {
+        "found": 5,
+        "successful": 2,
+        "failed": 3,
+        "skipped": 0,
+        "aborted": 0
+      },
+      "failureTypes": [
+        "org.opentest4j.AssertionFailedError",
+        "org.opentest4j.AssertionFailedError",
+        "java.lang.AssertionError"
+      ]
+    },
+    {
+      "id": "M3",
+      "source": "backend/hify-chat/src/main/java/com/hify/runtime/QueryLoop.java",
+      "originalSha256": "701729af09a1aa5eef1151f8d33f7b7b6cd5385cce7a5d53d80cf0d3c88eb193",
+      "mutantSha256": "29ac54e294fde73c867eb591d61167fa5701a30f8a406adc5f8087c5801ab7b5",
+      "patchSha256": "1991bf74a943003c6556fd319565d72b9f1260834d8f51d53e77430e76c444ec",
+      "logSha256": "1ab4d91a570c2c29c9addd91c48b58b55587a027dc85d98d5e28425074789dd2",
+      "selector": "com.hify.runtime.QueryLoopParentControlTest",
+      "exitCodeObservedByRunner": 1,
+      "counts": {
+        "found": 3,
+        "successful": 0,
+        "failed": 3,
+        "skipped": 0,
+        "aborted": 0
+      },
+      "failureTypes": [
+        "org.opentest4j.AssertionFailedError",
+        "org.opentest4j.AssertionFailedError",
+        "java.lang.AssertionError"
+      ]
+    },
+    {
+      "id": "M4",
+      "source": "backend/hify-knowledge/src/main/java/com/hify/knowledge/application/SemanticEmbeddings.java",
+      "originalSha256": "ed1d758e2bf7eb925f9c01c968590cedd56b2262bb010be7836ac53a0793b726",
+      "mutantSha256": "09de60baf528de7d841ff282f2a4b114c502d55dc2443a01647d8885da621c7d",
+      "patchSha256": "d16a788f89f8b1a3088000a80e24c54354cf1f02ac7715ff059269704352866f",
+      "logSha256": "293d66a1596bd8cf8e6a91ab680eef4768c300f6944e5bc0abb23bcb0742ea1b",
+      "selector": "com.hify.knowledge.application.SemanticEmbeddingControlTest",
+      "exitCodeObservedByRunner": 1,
+      "counts": {
+        "found": 7,
+        "successful": 5,
+        "failed": 2,
+        "skipped": 0,
+        "aborted": 0
+      },
+      "failureTypes": [
+        "java.lang.AssertionError",
+        "java.lang.AssertionError"
+      ]
+    },
+    {
+      "id": "M5",
+      "source": "backend/hify-knowledge/src/main/java/com/hify/knowledge/application/KnowledgeRetrievalService.java",
+      "originalSha256": "00e898e6861d5dc4172af5c93a0dc9eb6232bdcff8e692f5d18c44470d7ee2bf",
+      "mutantSha256": "f1bbde8b1372f500ae773de9a1785fba09a6405d352d2b8c71b9a686dca0fbc9",
+      "patchSha256": "df6ac14d682ca7b30d019f73462bf4b57ef39065975773678da0de0a9576afad",
+      "logSha256": "af29bf8845707aeed845dbdb3a63e92543a957efb1ea44c452408fcc8487c709",
+      "selector": "com.hify.knowledge.application.KnowledgeRetrievalControlTest",
+      "exitCodeObservedByRunner": 1,
+      "counts": {
+        "found": 2,
+        "successful": 1,
+        "failed": 1,
+        "skipped": 0,
+        "aborted": 0
+      },
+      "failureTypes": [
+        "java.lang.AssertionError"
+      ]
+    },
+    {
+      "id": "M6",
+      "source": "backend/hify-common/src/main/java/com/hify/common/ExecutionControl.java",
+      "originalSha256": "3ab5756d3e7baa3d993219538d73805d8ed8c976c4a212c33568f60c3c190199",
+      "mutantSha256": "304e2a26287d4ba57d5e30e1c73b0e9478c0fc5a1fb096413b9b5b08f2f6e71f",
+      "patchSha256": "7bce60f821b089008841e69c7426987dc800654465ed09ead4d5230bd86588fb",
+      "logSha256": "5431bcfb9b62d20d73b6b28288163a952dfddc0ed265a9a79f3fcf0f0df86aea",
+      "selector": "com.hify.common.ExecutionControlTest",
+      "exitCodeObservedByRunner": 1,
+      "counts": {
+        "found": 5,
+        "successful": 3,
+        "failed": 2,
+        "skipped": 0,
+        "aborted": 0
+      },
+      "failureTypes": [
+        "java.lang.AssertionError",
+        "java.lang.AssertionError"
+      ]
+    },
+    {
+      "id": "M7",
+      "source": "backend/hify-chat/src/main/java/com/hify/application/RunApplicationService.java",
+      "originalSha256": "1b0cebe537f391269b85a9605559b74af89580cb2e998856dcf50b8805224039",
+      "mutantSha256": "ec389d4e070dcc2c89ae883f8484936708adb717b318343215e8c5f79c5146df",
+      "patchSha256": "84cf68e8ff0a5caeee57b9918ec00c56f4e6b37a1fb27807b7b771a3fd0544e9",
+      "logSha256": "27099b36a2cc5074144b77de5422508e81125822afa02a517c43d3668d52ecdb",
+      "selector": "com.hify.application.RunKnowledgeControlTest",
+      "exitCodeObservedByRunner": 1,
+      "counts": {
+        "found": 5,
+        "successful": 4,
+        "failed": 1,
+        "skipped": 0,
+        "aborted": 0
+      },
+      "failureTypes": [
+        "org.opentest4j.AssertionFailedError"
+      ]
+    }
+  ],
+  "files": {
+    "mutations/M1.patch": "763b1358ae6ad101606ca9a41235c632c2a7230b8992081054425e21a9bf4ee1",
+    "mutations/M1.log": "1da5c6a0111e21744eda612ce75fed97821a84709eb44865eeb90c72c367560f",
+    "mutations/M2.patch": "dd10968ce07d74fd7818051161835aa61404dec527267203cea7e95d9078b3e7",
+    "mutations/M2.log": "4330999b0f142f8c237a1859da4177377f0653b912b73f1d999e50233347da06",
+    "mutations/M3.patch": "1991bf74a943003c6556fd319565d72b9f1260834d8f51d53e77430e76c444ec",
+    "mutations/M3.log": "1ab4d91a570c2c29c9addd91c48b58b55587a027dc85d98d5e28425074789dd2",
+    "mutations/M4.patch": "d16a788f89f8b1a3088000a80e24c54354cf1f02ac7715ff059269704352866f",
+    "mutations/M4.log": "293d66a1596bd8cf8e6a91ab680eef4768c300f6944e5bc0abb23bcb0742ea1b",
+    "mutations/M5.patch": "df6ac14d682ca7b30d019f73462bf4b57ef39065975773678da0de0a9576afad",
+    "mutations/M5.log": "af29bf8845707aeed845dbdb3a63e92543a957efb1ea44c452408fcc8487c709",
+    "mutations/M6.patch": "7bce60f821b089008841e69c7426987dc800654465ed09ead4d5230bd86588fb",
+    "mutations/M6.log": "5431bcfb9b62d20d73b6b28288163a952dfddc0ed265a9a79f3fcf0f0df86aea",
+    "mutations/M7.patch": "84cf68e8ff0a5caeee57b9918ec00c56f4e6b37a1fb27807b7b771a3fd0544e9",
+    "mutations/M7.log": "27099b36a2cc5074144b77de5422508e81125822afa02a517c43d3668d52ecdb",
+    "http-first.log": "70811f69569d5771418853f23e346ba9b0613da4958488cbd6ca49fefdc76e24",
+    "final-current.log": "9b8797fa7a59b08795d644c333ceba5b27713b60f23a476938038e912c1ee663",
+    "run-service-probe.py": "56f3ef0720beb2dda9de4688c26a616e67211e829635f9d3be6d3c9ad09f7366"
+  }
+}

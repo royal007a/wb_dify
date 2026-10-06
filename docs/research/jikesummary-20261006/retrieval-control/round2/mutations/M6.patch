@@ -1,0 +1,11 @@
+--- a/backend/hify-common/src/main/java/com/hify/common/ExecutionControl.java
++++ b/backend/hify-common/src/main/java/com/hify/common/ExecutionControl.java
+@@ -37,7 +37,7 @@
+     /** A child can tighten a deadline, never restart or extend its parent's budget. */
+     public ExecutionControl boundedBy(Duration timeout) {
+         long childDeadline = withTimeout(timeout, cancelled).deadlineNanos;
+-        return new ExecutionControl(Math.min(deadlineNanos, childDeadline), cancelled, stopping);
++        return new ExecutionControl(childDeadline, cancelled, stopping);
+     }
+ 
+     /** Control exits are not dependency failures; explicit cancellation wins over time. */

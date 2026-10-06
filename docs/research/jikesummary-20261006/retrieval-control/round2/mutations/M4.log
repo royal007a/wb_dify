@@ -1,0 +1,69 @@
+worktreeHead=103b0e0e0f5e76675a0604c9c4c82915a1562e18
+dependencyWorktreeHead=c45c19a9837b71e9f44113441f23d7d495f55750
+isolatedOutput=/tmp/hify-course-20261006.hhEhwt/service-probe-74a2dad_
+sourceSha256=1b0cebe537f391269b85a9605559b74af89580cb2e998856dcf50b8805224039 RunApplicationService.java
+sourceSha256=701729af09a1aa5eef1151f8d33f7b7b6cd5385cce7a5d53d80cf0d3c88eb193 QueryLoop.java
+sourceSha256=3ab5756d3e7baa3d993219538d73805d8ed8c976c4a212c33568f60c3c190199 ExecutionControl.java
+sourceSha256=9ad469dd6af24895d13141c715c51f43caa50df4ab7a302ca788cc30bcb63454 ExecutionTimedOutException.java
+sourceSha256=1d440c769e5f9defaa34e973b90cb6e6a947cb73062f4ba0b6b99fcd33a08a59 KnowledgeRetrievalPort.java
+sourceSha256=09de60baf528de7d841ff282f2a4b114c502d55dc2443a01647d8885da621c7d SemanticEmbeddings.java
+sourceSha256=00e898e6861d5dc4172af5c93a0dc9eb6232bdcff8e692f5d18c44470d7ee2bf KnowledgeRetrievalService.java
+sourceSha256=424324b26864da6d13157e0c887c443bac9686623ceecfa19e2ddd401fcbe850 RunKnowledgeControlTest.java
+sourceSha256=d1b00e59ac0037b983eb822a2483ae24e0991ca10b6ebc47f694ce56a3ee660f QueryLoopParentControlTest.java
+sourceSha256=de43717cef4fa9b910b53db1b0265bb99f2b5afbf6532c0922e05f1169e5341b ExecutionControlTest.java
+sourceSha256=167b620c1973ec919ea1626bc6df3dea2599a993a17bde1e6ff6118751aba31d SemanticEmbeddingControlTest.java
+sourceSha256=b6169f89b335fadfffe74c564e0e8019e625cd5abf08fa602dfc8c4162f0fc5f KnowledgeRetrievalControlTest.java
+sourceSha256=9507361b20fed08ddd1f9bd3840b803afa93463560adb1599a359d14be52aa0c RetrievalEmbeddingHttpTest.java
+sourceSha256=2d0b309ac416446ec4b5e96e77330711e8a3709336937c1675fb1b22acb8703e LightweightTest.java
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+
+Test run finished after 11976 ms
+[         2 containers found      ]
+[         0 containers skipped    ]
+[         2 containers started    ]
+[         0 containers aborted    ]
+[         2 containers successful ]
+[         0 containers failed     ]
+[         7 tests found           ]
+[         0 tests skipped         ]
+[         7 tests started         ]
+[         0 tests aborted         ]
+[         5 tests successful      ]
+[         2 tests failed          ]
+
+
+Failures (2):
+  JUnit Jupiter:SemanticEmbeddingControlTest:childReceivesParentDeadlineAndPreservesCancellationAfterCreation()
+    MethodSource [className = 'com.hify.knowledge.application.SemanticEmbeddingControlTest', methodName = 'childReceivesParentDeadlineAndPreservesCancellationAfterCreation', methodParameterTypes = '']
+    => java.lang.AssertionError: 
+Expecting actual throwable to be an instance of:
+  com.hify.common.ExecutionCancelledException
+but was:
+  java.lang.AssertionError: 
+Expecting actual:
+  44.759127417S
+to be less than or equal to:
+  30S 
+	at com.hify.knowledge.application.SemanticEmbeddingControlTest.lambda$childReceivesParentDeadlineAndPreservesCancellationAfterCreation$0(SemanticEmbeddingControlTest.java:28)
+	at org.mockito.internal.stubbing.StubbedInvocationMatcher.answer(StubbedInvocationMatcher.java:42)
+	at org.mockito.internal.handler.MockHandlerImpl.handle(MockHandlerImpl.java:103)
+	...(74 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsDisplayed)
+       com.hify.knowledge.application.SemanticEmbeddingControlTest.childReceivesParentDeadlineAndPreservesCancellationAfterCreation(SemanticEmbeddingControlTest.java:34)
+       java.base/java.lang.reflect.Method.invoke(Method.java:568)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:SemanticEmbeddingControlTest:cancellationAfterLateProviderFailureWinsOverSourceFailureAndShutdown()
+    MethodSource [className = 'com.hify.knowledge.application.SemanticEmbeddingControlTest', methodName = 'cancellationAfterLateProviderFailureWinsOverSourceFailureAndShutdown', methodParameterTypes = '']
+    => java.lang.AssertionError: 
+Expecting actual throwable to be an instance of:
+  com.hify.common.ExecutionCancelledException
+but was:
+  com.hify.common.ExecutionSuspendedException: Execution interrupted by application shutdown
+	at com.hify.common.ExecutionControl.throwIfSuspended(ExecutionControl.java:64)
+	at com.hify.common.ExecutionControl.throwIfCancelled(ExecutionControl.java:78)
+	at com.hify.knowledge.application.SemanticEmbeddings.check(SemanticEmbeddings.java:42)
+	...(72 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsDisplayed)
+       com.hify.knowledge.application.SemanticEmbeddingControlTest.cancellationAfterLateProviderFailureWinsOverSourceFailureAndShutdown(SemanticEmbeddingControlTest.java:67)
+       java.base/java.lang.reflect.Method.invoke(Method.java:568)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)

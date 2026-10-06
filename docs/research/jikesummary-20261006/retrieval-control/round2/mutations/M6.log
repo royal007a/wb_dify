@@ -1,0 +1,53 @@
+worktreeHead=5ffbf3eec35f203f9d8f51f237e6a367eee07f7a
+dependencyWorktreeHead=c45c19a9837b71e9f44113441f23d7d495f55750
+isolatedOutput=/tmp/hify-course-20261006.hhEhwt/service-probe-q3reg0ly
+sourceSha256=1b0cebe537f391269b85a9605559b74af89580cb2e998856dcf50b8805224039 RunApplicationService.java
+sourceSha256=701729af09a1aa5eef1151f8d33f7b7b6cd5385cce7a5d53d80cf0d3c88eb193 QueryLoop.java
+sourceSha256=304e2a26287d4ba57d5e30e1c73b0e9478c0fc5a1fb096413b9b5b08f2f6e71f ExecutionControl.java
+sourceSha256=9ad469dd6af24895d13141c715c51f43caa50df4ab7a302ca788cc30bcb63454 ExecutionTimedOutException.java
+sourceSha256=1d440c769e5f9defaa34e973b90cb6e6a947cb73062f4ba0b6b99fcd33a08a59 KnowledgeRetrievalPort.java
+sourceSha256=ed1d758e2bf7eb925f9c01c968590cedd56b2262bb010be7836ac53a0793b726 SemanticEmbeddings.java
+sourceSha256=00e898e6861d5dc4172af5c93a0dc9eb6232bdcff8e692f5d18c44470d7ee2bf KnowledgeRetrievalService.java
+sourceSha256=424324b26864da6d13157e0c887c443bac9686623ceecfa19e2ddd401fcbe850 RunKnowledgeControlTest.java
+sourceSha256=d1b00e59ac0037b983eb822a2483ae24e0991ca10b6ebc47f694ce56a3ee660f QueryLoopParentControlTest.java
+sourceSha256=de43717cef4fa9b910b53db1b0265bb99f2b5afbf6532c0922e05f1169e5341b ExecutionControlTest.java
+sourceSha256=167b620c1973ec919ea1626bc6df3dea2599a993a17bde1e6ff6118751aba31d SemanticEmbeddingControlTest.java
+sourceSha256=b6169f89b335fadfffe74c564e0e8019e625cd5abf08fa602dfc8c4162f0fc5f KnowledgeRetrievalControlTest.java
+sourceSha256=9507361b20fed08ddd1f9bd3840b803afa93463560adb1599a359d14be52aa0c RetrievalEmbeddingHttpTest.java
+sourceSha256=2d0b309ac416446ec4b5e96e77330711e8a3709336937c1675fb1b22acb8703e LightweightTest.java
+
+Test run finished after 672 ms
+[         2 containers found      ]
+[         0 containers skipped    ]
+[         2 containers started    ]
+[         0 containers aborted    ]
+[         2 containers successful ]
+[         0 containers failed     ]
+[         5 tests found           ]
+[         0 tests skipped         ]
+[         5 tests started         ]
+[         0 tests aborted         ]
+[         3 tests successful      ]
+[         2 tests failed          ]
+
+
+Failures (2):
+  JUnit Jupiter:ExecutionControlTest:alreadyExpiredParentDoesNotGetAFreshChildBudget()
+    MethodSource [className = 'com.hify.common.ExecutionControlTest', methodName = 'alreadyExpiredParentDoesNotGetAFreshChildBudget', methodParameterTypes = '']
+    => java.lang.AssertionError: 
+Expecting code to raise a throwable.
+       com.hify.common.ExecutionControlTest.alreadyExpiredParentDoesNotGetAFreshChildBudget(ExecutionControlTest.java:20)
+       java.base/java.lang.reflect.Method.invoke(Method.java:568)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:ExecutionControlTest:childCannotExtendParentAndCanTightenItsOwnDeadline()
+    MethodSource [className = 'com.hify.common.ExecutionControlTest', methodName = 'childCannotExtendParentAndCanTightenItsOwnDeadline', methodParameterTypes = '']
+    => java.lang.AssertionError: 
+Expecting actual:
+  47H59M59.999999209S
+to be less than or equal to:
+  23H59M59.999996041S 
+       com.hify.common.ExecutionControlTest.childCannotExtendParentAndCanTightenItsOwnDeadline(ExecutionControlTest.java:13)
+       java.base/java.lang.reflect.Method.invoke(Method.java:568)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)

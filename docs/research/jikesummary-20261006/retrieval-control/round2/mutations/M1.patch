@@ -1,0 +1,11 @@
+--- a/backend/hify-chat/src/main/java/com/hify/application/RunApplicationService.java
++++ b/backend/hify-chat/src/main/java/com/hify/application/RunApplicationService.java
+@@ -443,7 +443,7 @@
+     }
+ 
+     private ExecutionControl runControl(AgentRun run) {
+-        Duration remaining=runTimeout.minus(Duration.between(run.getCreatedAt(),Instant.now()));
++        Duration remaining=runTimeout;
+         if(remaining.isNegative()||remaining.isZero())throw new ExecutionTimedOutException();
+         AtomicBoolean cancelled=cancellations.computeIfAbsent(run.getId(),ignored->new AtomicBoolean());
+         return ExecutionControl.withTimeout(remaining.compareTo(runTimeout)>0?runTimeout:remaining,
