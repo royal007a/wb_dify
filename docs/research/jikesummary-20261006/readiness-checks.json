@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "baseline": "c523f962eeccd9e6f92539c083e5e3852c047154",
+  "scope": "Production Spring actuator configuration with a test-owned H2 database and injected JDBC connection failure; no shared service was stopped",
+  "command": "mvn -o -B -pl hify-app -am -Dtest=ReadinessIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test",
+  "red": {
+    "exitCode": 1, "tests": 2, "failures": 1, "errors": 0, "skipped": 0,
+    "defect": "Root health observed database failure as 503, but readiness returned 200 instead of 503",
+    "logSha256": "bc948477c599c06a894512b1e845312df092a82673752e5733baf9d04f92068e"
+  },
+  "green": {
+    "exitCode": 0, "tests": 2, "failures": 0, "errors": 0, "skipped": 0,
+    "finishedAt": "2026-10-07T00:11:39+08:00",
+    "logSha256": "c6eac5fa32f9b3462e82f4391a3cfb36091192744c1750601a4d8a4e39c022aa",
+    "productionChange": "management.endpoint.health.group.readiness.include=readinessState,db",
+    "assertions": [
+      "Healthy database gives readiness/liveness/root UP",
+      "Injected database connection failure gives root and readiness 503/DOWN while liveness and legacy health remain successful",
+      "Removing the injected connection failure restores readiness and root to UP",
+      "A test-registered optional redis contributor may make root DOWN but does not affect readiness or liveness",
+      "Health response bodies do not expose component details or synthetic credentials/connection exception"
+    ]
+  },
+  "limits": [
+    "Narrow checks on working tree; not the full six-scope gate or external review",
+    "Real PostgreSQL/network blackhole failure timing was not exercised by these tests",
+    "No production deployment, health consumer or automatic restart behavior changed",
+    "Raw logs are retained locally in /tmp/hify-course-20261006.hhEhwt, not committed; hashes cannot reconstruct missing logs"
+  ]
+}

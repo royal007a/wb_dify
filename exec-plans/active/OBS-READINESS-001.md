@@ -20,3 +20,7 @@
 2026-10-06 23:58:58 +08:00 完成窄测：`mvn -o -B -pl hify-app -am -Dtest=ReadinessIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test`。2 项测试，1 failure、0 errors、0 skipped，退出码 1。数据库连接故障后总 health 已返回 503，但 readiness 仍返回 200；失败位置是第 52 行预期 readiness 为 503 的断言。另一个可选依赖隔离测试通过。
 
 这是刻意保留的失败复现，不是已修复或门禁通过。生产配置尚未改动，故障后的后续恢复断言在本轮因提前失败而未执行。原始日志保留于本机临时目录，未提交仓库；SHA-256 为 `bc948477c599c06a894512b1e845312df092a82673752e5733baf9d04f92068e`。完整门禁、修复和复核仍待完成。
+
+## 后续窄测检查点
+
+2026-10-07 00:11:39 +08:00：仅将生产readiness分组设为`readinessState,db`，同一组未修改的测试2/2通过，故障后的liveness、旧接口兼容及恢复断言均执行。新增运维说明区分各探针和现有部署消费方式。证据见`docs/research/jikesummary-20261006/readiness-checks.json`；前节保留的是历史红灯，不是当前窄测结果。完整门禁及外部review仍未完成。

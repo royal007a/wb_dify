@@ -45,6 +45,10 @@ management:
     health:
       probes:
         enabled: true
+      group:
+        readiness:
+          # PostgreSQL is the business source of truth; Redis is an optional cache.
+          include: readinessState,db
   health:
     redis:
       enabled: false

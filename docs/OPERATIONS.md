@@ -68,6 +68,12 @@ journalctl -u hify-upgrade-20261004 --no-pager
 4. 发布后执行 mock provider 对话、工具调用、SSE、取消和检索 smoke test。
 5. 应用可回滚；不可逆数据迁移必须分 expand/backfill/contract 三次发布。
 
+### 存活与就绪（OBS-READINESS-001）
+
+`GET /actuator/health/readiness`只包含`readinessState`和`db`：应用准备接流量且数据库检查成功时为200/UP，数据库连接失败时为503/DOWN。数据库为业务事实源；可降级Redis和付费模型不属于本分组。`GET /actuator/health/liveness`保留进程存活语义，不因数据库故障变红。两者默认不返回组件和异常详情。就绪成功只表示检查时刻可用，不保证后续事务必然成功；底层连接检查的耗时仍受连接池/驱动配置影响，本切片不承诺网络黑洞下的严格响应时限。
+
+旧`GET /api/v1/health`仍返回固定的`Hify is running`，不改变已有客户端契约。总`/actuator/health`仍可能受其他贡献项影响，不等同于上述readiness。已有systemd安装脚本继续使用旧health，compose启动脚本仍使用总health；本切片没有更改部署探针、自动重启策略或生产配置。以后切换流量门禁须单独验证发布失败处理；readiness失败应停止接新流量，不应被直接当作重启进程的依据。
+
 ## 5. 容量假设
 
 50 人、60% 活跃、每人每分钟 2 条消息，用户请求约 1 QPS；RAG/工具放大后仍低。瓶颈是 10-120 秒外部调用占用连接、Provider 限流和 token 成本，而不是 CRUD 吞吐。
