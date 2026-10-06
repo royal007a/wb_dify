@@ -1,0 +1,74 @@
+worktreeHead=a7dc3d160d9681ceedd88a242d7fbb9d97d85e3d
+dependencyWorktreeHead=c45c19a9837b71e9f44113441f23d7d495f55750
+isolatedOutput=/tmp/hify-course-20261006.hhEhwt/service-probe-3qbwij04
+sourceSha256=9da51f6957c9064c780ba49400732a0c84d20486ebd2a2eefc11923f08ee73f2 RunApplicationService.java
+sourceSha256=de9718a8755fa3e356fe735667444133f25186a04518b355e2d5b8b49f155a01 RunKnowledgeControlTest.java
+sourceSha256=47ad1d3c4907bd1beb1db7ca8e2f8c16963ee80893d0b3147f5401503cd677f1 LightweightTest.java
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+
+Test run finished after 12934 ms
+[         3 containers found      ]
+[         0 containers skipped    ]
+[         3 containers started    ]
+[         0 containers aborted    ]
+[         3 containers successful ]
+[         0 containers failed     ]
+[         5 tests found           ]
+[         0 tests skipped         ]
+[         5 tests started         ]
+[         0 tests aborted         ]
+[         2 tests successful      ]
+[         3 tests failed          ]
+
+
+Failures (3):
+  JUnit Jupiter:RunKnowledgeControlTest:cancellationDuringFirstCorpusPreventsSecondCorpusAndLoopAdmission(boolean):[1] false
+    MethodSource [className = 'com.hify.application.RunKnowledgeControlTest', methodName = 'cancellationDuringFirstCorpusPreventsSecondCorpusAndLoopAdmission', methodParameterTypes = 'boolean']
+    => org.opentest4j.AssertionFailedError: 
+Expecting actual:
+  ["corpus-first", "corpus-second"]
+to contain exactly (and in same order):
+  ["corpus-first"]
+but some elements were not expected:
+  ["corpus-second"]
+
+       com.hify.application.RunKnowledgeControlTest.cancellationDuringFirstCorpusPreventsSecondCorpusAndLoopAdmission(RunKnowledgeControlTest.java:53)
+       java.base/java.lang.reflect.Method.invoke(Method.java:568)
+       java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+       java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+       java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+       java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+       java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+       java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+       java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+       java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+       [...]
+  JUnit Jupiter:RunKnowledgeControlTest:cancellationDuringFirstCorpusPreventsSecondCorpusAndLoopAdmission(boolean):[2] true
+    MethodSource [className = 'com.hify.application.RunKnowledgeControlTest', methodName = 'cancellationDuringFirstCorpusPreventsSecondCorpusAndLoopAdmission', methodParameterTypes = 'boolean']
+    => org.opentest4j.AssertionFailedError: 
+Expecting actual:
+  ["corpus-first", "corpus-second"]
+to contain exactly (and in same order):
+  ["corpus-first"]
+but some elements were not expected:
+  ["corpus-second"]
+
+       com.hify.application.RunKnowledgeControlTest.cancellationDuringFirstCorpusPreventsSecondCorpusAndLoopAdmission(RunKnowledgeControlTest.java:53)
+       java.base/java.lang.reflect.Method.invoke(Method.java:568)
+       java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+       java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+       java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+       java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+       java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+       java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+       java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+       java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+       [...]
+  JUnit Jupiter:RunKnowledgeControlTest:expiredDurableRunDoesNotRestartItsBudgetBeforeKnowledgeAdmission()
+    MethodSource [className = 'com.hify.application.RunKnowledgeControlTest', methodName = 'expiredDurableRunDoesNotRestartItsBudgetBeforeKnowledgeAdmission', methodParameterTypes = '']
+    => java.lang.AssertionError: 
+Expecting empty but was: ["corpus-first", "corpus-second"]
+       com.hify.application.RunKnowledgeControlTest.expiredDurableRunDoesNotRestartItsBudgetBeforeKnowledgeAdmission(RunKnowledgeControlTest.java:71)
+       java.base/java.lang.reflect.Method.invoke(Method.java:568)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
