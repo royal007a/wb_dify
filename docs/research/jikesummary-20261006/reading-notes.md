@@ -110,7 +110,7 @@ RunApplicationService已有model.started/completed、tool.call.started/completed
 
 “先效果后成本”不能取消最初的安全/时间/调用预算；减少TopK而丢关键证据不是同一目标下的优化。预算不足可明确未完成，不能把少量证据当作充分或突破引用授权门禁。语义相似不等于同一实体、日期、否定条件或权限；缓存键应绑定版本、过滤条件、模型空间与访问范围，命中仍需验证有效性。查询改写后的缓存仍支付改写成本，精确key缓存也可有效，不能因偏好向量缓存就否定Redis。未运行课程系统或验证性能数字；不采用评论中回避具体业务来“避免露馅”的建议。
 
-项目已有发布语料快照、digest、混合召回、512块/24MiB精确语义范围；不为文章新增ES/Milvus或跨权限答案缓存。更靠前的缺口是knowledgeCandidates在QueryLoop创建父ExecutionControl之前执行，多库串行searchRevision，取消AtomicBoolean未传到检索；SemanticEmbeddings另建45秒控制，只感知线程中断/停机。Workflow的KNOWLEDGE另由WorkflowControl.call包裹，不能混同。已登记CHAT-RETRIEVAL-CONTROL-001并准备服务级反例，尚未运行，不以静态阅读冒充复现或已修复。
+项目已有发布语料快照、digest、混合召回、512块/24MiB精确语义范围；不为文章新增ES/Milvus或跨权限答案缓存。基线缺口是knowledgeCandidates在QueryLoop创建父ExecutionControl之前执行，多库串行searchRevision，取消AtomicBoolean未传到检索；SemanticEmbeddings另建45秒控制，只感知线程中断/停机。Workflow的KNOWLEDGE另由WorkflowControl.call包裹，不能混同。已登记CHAT-RETRIEVAL-CONTROL-001；后续服务级三项红灯、父控制补丁和HTTP/突变窄测记录在retrieval-control/，完整门禁与review按tasks.json及固定证据核对，不以窄测冒充整项验收。
 
 ### C179：AI Agent系统设计面试现场，第20讲，检索召回准确率
 
@@ -150,6 +150,16 @@ chunk_id的多字段直接拼接示意需要明确分隔/长度/类型，否则�
 
 Hify已有KnowledgeCorpusSnapshot/manifestDigest和固定Agent版本；不能照搬“应用永远跟随current alias”，否则旧会话会静默读到新版语料。KnowledgeCompletionVerifier先建UNVERIFIED候选，再核对答案K编号、canonical chunk与digest；只将“来源引用完整”判为VERIFIED，模型语义仍UNVERIFIED，这是应保留的边界。已归档但被发布语料引用的chunk可供历史校验，并非已实现法规废止或动态撤权机制；这些需要另行契约，不能将归档视为安全撤权。现有knowledge.retrieval事件记录引用身份，不是完整的跨源权限、重排与语义质量追踪。当前取消/截止修复不会改变冻结语料或将候选升级为事实；后续来源角色隔离应继续保留这一证据门禁。
 
+### C167：Claude Code企业级老项目改造实战，第14讲，测试现状摸底
+
+Robert，PDF 1–7页全文及五条评论已读，源SHA与inventory一致，渲染核对第2页八条核心链路、第3页测试现状、第5页缺口表。四步是先定义入口→关键操作→成功/失败终态，再核查实际被测路径，执行现有测试保留结果，最后按风险列缺口。测试文件或方法数量不是链路覆盖率，Mock掉被测对象不构成该实现的行为证据；模拟外部依赖则可以验证服务准入和零副作用，不能把所有Mock测试一概判为无效。
+
+本讲的8条链路、5–10个P0、20项清单是教学约束，评论里作者明确承认真实项目须按风险判断。第5页截图实际G01–G14共14条P0，与正文“不超过10条”并不一致，不把示例输出当作规则已执行的证据。截断优先级清单不能丢掉明确的安全不变量，目录层级精简也不能缩减用户目标。90%通过即绿的建议不适合作为Hify发布门禁：一项权限/终态失败就可能阻止交付，跳过、未执行、环境不可用也须单独记，不能用大量简单通过稀释。
+
+“代码缺陷/测试缺陷/环境问题”需要验证，不是看机器忙就自动选环境类。c45c19a本轮门禁已观察到三类不同失败：Harness假命令屏障尚未触达；RunShutdown原60秒超时（部分业务断言也失败）；索引元数据故障用例期望FAILED但回读SUCCEEDED。后两者不能被线程RUNNABLE或大量换页直接解释为产品正确。应保留首次原始记录、在相同固定源码下复现并定位故障发生/提交/读取的先后，再决定改产品、夹具或资源；不直接加大等待、改期望或跳过。
+
+结合当前切片，关键路径是持久Run→多库检索→embedding尝试→QueryLoop→终态/事件；取消和deadline必须在边界上传递，旧重载存在不证明生产仍走它。新RunShutdown夹具原来拦截8参而生产走9参，静态审计已发现并同步，尚待Spring执行。27项隔离绿灯只证明选定类和本机HTTP边界，未验证完整Spring装配、PostgreSQL恢复或浏览器。现有six-scope与expected-maven-suites清单沿用，不再另建一个与tasks.json竞争的“全绿”状态表。
+
 ## 候选与验收边界
 
 | 候选 | 代码依据 | 下一步 | 状态来源 |
@@ -160,7 +170,7 @@ Hify已有KnowledgeCorpusSnapshot/manifestDigest和固定Agent版本；不能照
 | 外部资料不升为策略 | RunApplicationService、LayeredContextMemoryService、StructuredSummaryService | 分离固定规则与正文，覆盖三家适配器、轮次边界、历史摘要与回放，不伪造tool配对 | 已核实源码，待设计与反例 |
 | 回归轨迹和脱敏 | QueryLoop/ToolRuntime现有大量测试 | 结合后续章节找真实缺口，不重复已有门禁 | 尚未形成工程任务 |
 | 计费用量与窗口预算分离 | QueryLoop.RunPolicy、ModelStreamObserver.onUsage及原生适配器 | 先记录尝试身份/未知usage/累计或增量语义，明确估算与报告；恢复去重后再设计金额准入 | 源码缺口，待设计，不宣称已有金额熔断 |
-| 检索与循环共用控制预算 | RunApplicationService.knowledgeCandidates、SemanticEmbeddings | 持久Run时间锚点、明确取消传递、有界子调用；服务级反例先于修复 | tasks.json / CHAT-RETRIEVAL-CONTROL-001；测试已写未运行 |
+| 检索与循环共用控制预算 | RunApplicationService.knowledgeCandidates、SemanticEmbeddings | 持久Run时间锚点、明确取消传递、有界子调用；服务级反例先于修复 | tasks.json / CHAT-RETRIEVAL-CONTROL-001；分层证据见retrieval-control，完整验收未完成 |
 | 召回质量基准口径 | KnowledgeRetrievalService、HistoryRecallEvaluationTest | 使用生产检索入口和相关集合，不以合成top1命中及artifact常量冒充完整语义评测 | 尚未形成工程任务，现有结果仍按原边界解释 |
 
 研究入口未完成，以上不是最终全量总结；仍需阅读其他相关章节并逐项优化、验证和review。
