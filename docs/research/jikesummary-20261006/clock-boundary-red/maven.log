@@ -1,0 +1,139 @@
+Picked up JAVA_TOOL_OPTIONS: -Xmx256m -XX:ReservedCodeCacheSize=96m
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] hify-parent                                                        [pom]
+[INFO] hify-common                                                        [jar]
+[INFO] 
+[INFO] ------------------------< com.hify:hify-parent >------------------------
+[INFO] Building hify-parent 0.1.0-SNAPSHOT                                [1/2]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] ------------------------< com.hify:hify-common >------------------------
+[INFO] Building hify-common 0.1.0-SNAPSHOT                                [2/2]
+[INFO]   from hify-common/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-common ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 28 source files with javac [debug parameters release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-common ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 10 source files with javac [debug parameters release 17] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-common ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -Xmx256m -XX:ReservedCodeCacheSize=96m
+[INFO] Running com.hify.common.ExecutionControlTest
+[ERROR] Tests run: 10, Failures: 5, Errors: 0, Skipped: 0, Time elapsed: 0.431 s <<< FAILURE! -- in com.hify.common.ExecutionControlTest
+[ERROR] com.hify.common.ExecutionControlTest.shorterChildWithNegativeOriginDoesNotChangeParentBudget -- Time elapsed: 0.027 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 0.00000002S
+ but was: 0.0000004S
+	at com.hify.common.ExecutionControlTest.shorterChildWithNegativeOriginDoesNotChangeParentBudget(ExecutionControlTest.java:57)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] com.hify.common.ExecutionControlTest.deadlineAtMaxValueIsNotTheUnlimitedSentinel -- Time elapsed: 0.012 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 0.00000002S
+ but was: 0.0000001S
+	at com.hify.common.ExecutionControlTest.deadlineAtMaxValueIsNotTheUnlimitedSentinel(ExecutionControlTest.java:35)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] com.hify.common.ExecutionControlTest.childAcrossWraparoundCannotExtendParentAndKeepsItsClock -- Time elapsed: 0.013 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 0.00000015S
+ but was: 0.0000004S
+	at com.hify.common.ExecutionControlTest.childAcrossWraparoundCannotExtendParentAndKeepsItsClock(ExecutionControlTest.java:44)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] com.hify.common.ExecutionControlTest.negativeClockOriginStillHasAFiniteDeadline -- Time elapsed: 0.002 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 0.00000002S
+ but was: 0.0000001S
+	at com.hify.common.ExecutionControlTest.negativeClockOriginStillHasAFiniteDeadline(ExecutionControlTest.java:13)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] com.hify.common.ExecutionControlTest.deadlineSurvivesSignedNanosecondWraparound -- Time elapsed: 0.002 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 0.00000002S
+ but was: 0.0000001S
+	at com.hify.common.ExecutionControlTest.deadlineSurvivesSignedNanosecondWraparound(ExecutionControlTest.java:24)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   ExecutionControlTest.childAcrossWraparoundCannotExtendParentAndKeepsItsClock:44 
+expected: 0.00000015S
+ but was: 0.0000004S
+[ERROR]   ExecutionControlTest.deadlineAtMaxValueIsNotTheUnlimitedSentinel:35 
+expected: 0.00000002S
+ but was: 0.0000001S
+[ERROR]   ExecutionControlTest.deadlineSurvivesSignedNanosecondWraparound:24 
+expected: 0.00000002S
+ but was: 0.0000001S
+[ERROR]   ExecutionControlTest.negativeClockOriginStillHasAFiniteDeadline:13 
+expected: 0.00000002S
+ but was: 0.0000001S
+[ERROR]   ExecutionControlTest.shorterChildWithNegativeOriginDoesNotChangeParentBudget:57 
+expected: 0.00000002S
+ but was: 0.0000004S
+[INFO] 
+[ERROR] Tests run: 10, Failures: 5, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for hify-parent 0.1.0-SNAPSHOT:
+[INFO] 
+[INFO] hify-parent ........................................ SUCCESS [  0.003 s]
+[INFO] hify-common ........................................ FAILURE [ 46.408 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  49.124 s
+[INFO] Finished at: 2026-10-07T05:26:03+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.3:test (default-test) on project hify-common: There are test failures.
+[ERROR] 
+[ERROR] See /tmp/hify-clock-boundary-20261007.EgIY7H/red-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :hify-common

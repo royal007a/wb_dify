@@ -73,3 +73,27 @@ Maven exit 1。过期反例走完业务断言但仍违反原45秒限制；正例
 失败（suppressed assertion），不能忽略。日志、报告、主线程快照已保留在
 recovery-expiry-9a6d8b8/；新增PG方法和这组突变未运行。本轮没有再开验证VM，
 不因窄反例的局部断言经过而把任务改为完成。后续继续诊断与研究，不盲目重跑。
+
+## 2026-10-07 05:24 单调时钟算术反例（同一预算切片）
+
+静态发现 ExecutionControl 把 Long.MAX_VALUE 用作无限哨兵，并按绝对 nanoTime
+相加/比较。Java 17 System.nanoTime 契约允许负起点，要求以差值比较以避免溢出；
+官方依据：https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/System.html#nanoTime()
+这不是前述真实关停红灯的已证实原因，当前机器时钟起点也未证明命中该边界。
+
+先仅加入包私有的时钟依赖入口（公开工厂仍固定 System::nanoTime，无配置项、
+无全局替换），在未改算术时新增负起点、跨符号、截止值恰好MAX、父子剩余
+预算的确定性测试并保存红灯。再改为起点/时长及时间差计算，显式区分无限。
+保持取消/停机优先级、已有超时时长和所有生产公开API；验证所有原用例、边界
+正反例及必要突变。该子步骤不替代真实PG和完整六scope。
+
+### 红灯检查点（按用户要求拆分提交并推送）
+
+2026-10-07 05:26:03 CST，Java 17 离线运行 hify-common 的
+ExecutionControlTest：10 项，5 项断言失败，0 error，0 skip，Maven exit 1。
+失败的都是本次新增边界反例；原有 5 项通过。编译成功，不是编译错误导致红灯。
+命令为 `mvn -B -o -pl hify-common -am -Dtest=ExecutionControlTest -Dsurefire.failIfNoSpecifiedTests=false -Dhify.test.reportsDirectory=<fresh>/red-reports test`。
+原始日志保存在 `docs/research/jikesummary-20261006/clock-boundary-red/`，
+其中 maven.log SHA-256 为 `0243dd5ffc1c908484ff7689e317d3b14b204acfac5ddfbe2b2dd6bc00bd3246`。
+此检查点只增加测试时钟入口和失败回归，尚未修改截止时间算术；不是修复完成，
+不合并 main，不部署，不更改任务的未验收状态。

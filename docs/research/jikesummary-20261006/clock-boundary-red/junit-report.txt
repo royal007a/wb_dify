@@ -1,0 +1,54 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.common.ExecutionControlTest
+-------------------------------------------------------------------------------
+Tests run: 10, Failures: 5, Errors: 0, Skipped: 0, Time elapsed: 0.431 s <<< FAILURE! -- in com.hify.common.ExecutionControlTest
+com.hify.common.ExecutionControlTest.shorterChildWithNegativeOriginDoesNotChangeParentBudget -- Time elapsed: 0.027 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 0.00000002S
+ but was: 0.0000004S
+	at com.hify.common.ExecutionControlTest.shorterChildWithNegativeOriginDoesNotChangeParentBudget(ExecutionControlTest.java:57)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.hify.common.ExecutionControlTest.deadlineAtMaxValueIsNotTheUnlimitedSentinel -- Time elapsed: 0.012 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 0.00000002S
+ but was: 0.0000001S
+	at com.hify.common.ExecutionControlTest.deadlineAtMaxValueIsNotTheUnlimitedSentinel(ExecutionControlTest.java:35)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.hify.common.ExecutionControlTest.childAcrossWraparoundCannotExtendParentAndKeepsItsClock -- Time elapsed: 0.013 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 0.00000015S
+ but was: 0.0000004S
+	at com.hify.common.ExecutionControlTest.childAcrossWraparoundCannotExtendParentAndKeepsItsClock(ExecutionControlTest.java:44)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.hify.common.ExecutionControlTest.negativeClockOriginStillHasAFiniteDeadline -- Time elapsed: 0.002 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 0.00000002S
+ but was: 0.0000001S
+	at com.hify.common.ExecutionControlTest.negativeClockOriginStillHasAFiniteDeadline(ExecutionControlTest.java:13)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.hify.common.ExecutionControlTest.deadlineSurvivesSignedNanosecondWraparound -- Time elapsed: 0.002 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 0.00000002S
+ but was: 0.0000001S
+	at com.hify.common.ExecutionControlTest.deadlineSurvivesSignedNanosecondWraparound(ExecutionControlTest.java:24)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
