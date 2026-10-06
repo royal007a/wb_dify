@@ -117,8 +117,8 @@ public class LlmHttpClient {
                         callback.onEvent(id, type, data);
                     } catch (RuntimeException exception) {
                         source.cancel();
-                        callback.onFailure(new LlmApiException(LlmApiException.Type.REQUEST_FAILED,
-                                "Invalid streaming response", exception));
+                        context.run(() -> callback.onFailure(new LlmApiException(LlmApiException.Type.REQUEST_FAILED,
+                                "Invalid streaming response", exception)));
                     }
                 });
             }

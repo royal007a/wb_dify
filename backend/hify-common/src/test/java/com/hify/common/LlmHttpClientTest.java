@@ -69,6 +69,30 @@ class LlmHttpClientTest {
     }
 
     @Test
+    void malformedEventFailureCallbackGetsFreshCapturedScope() throws Exception {
+        server.enqueue(new MockResponse().setHeader("Content-Type", "text/event-stream")
+                .setBody("data: malformed-synthetic\n\n"));
+        var firstFailureContext = new AtomicReference<Map<String, String>>();
+        var done = new CountDownLatch(1);
+        org.slf4j.MDC.put("requestId", "original-stream");
+        client.stream(server.url("/invalid-event").toString(), Map.of(), "{}", new LlmHttpClient.StreamCallback() {
+            @Override public void onEvent(String id, String type, String data) {
+                org.slf4j.MDC.put("requestId", "callback-changed");
+                org.slf4j.MDC.put("syntheticSecret", "must-not-reach-failure-callback");
+                throw new IllegalArgumentException("synthetic parse failure");
+            }
+            @Override public void onClosed() {}
+            @Override public void onFailure(LlmApiException exception) {
+                firstFailureContext.compareAndSet(null, org.slf4j.MDC.getCopyOfContextMap());
+                done.countDown();
+            }
+        });
+        assertThat(done.await(5, TimeUnit.SECONDS)).isTrue();
+        assertThat(firstFailureContext.get()).isEqualTo(Map.of("requestId", "original-stream"));
+        assertThat(org.slf4j.MDC.get("requestId")).isEqualTo("original-stream");
+    }
+
+    @Test
     void streamingFailureCallbackCarriesRequestId() throws Exception {
         server.enqueue(new MockResponse().setResponseCode(503));
         var observed = new AtomicReference<Map<String, String>>();

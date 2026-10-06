@@ -23,3 +23,5 @@ JDK线程池保留ThreadPoolExecutor类型、队列大小、AbortPolicy及destro
 - app线程池配置窄测已通过：AsyncConfigTest 1/1，失败/错误/跳过均为0；日志`/tmp/hify-course-20261006.hhEhwt/run-executor-green.log`，SHA-256 `9c4b5f47a363bb7514b938021e059d8a2d8dee09bd7895e27c70c2620c1328b9`。这是直接实例化生产配置的测试，不是完整Spring/Run端到端验收。
 - 固定实现948a494..b3f55df已交mymacclaude只读review。隔离archive的3项独立突变（提交捕获、恢复、SSE回调）均为断言失败，恢复后逐字比对源文件并27/27通过；见`correlation-mutations.json`。拒绝/取消目前只有回归而非独立突变，不能扩大这条证据口径。
 - 下一步：处理review，协调完整六scope门禁。研究继续覆盖其余相关主题，目标未完成。
+- 自查补强：onEvent消费者改MDC再抛错，会把改坏的上下文传给catch分支onFailure。新增用例先红后绿，修为单独重装快照；common目前28/28，见`callback-scope-followup.json`，旧27项结果保留不回写。
+- 验证环境：本次已启动专用`hify-verify-20261004`，当前无运行容器，默认Docker context仍为`colima`；后续门禁必须显式`DOCKER_CONTEXT=colima-hify-verify-20261004`。尚未启动完整门禁，不要把VM运行误报为验收进行中。

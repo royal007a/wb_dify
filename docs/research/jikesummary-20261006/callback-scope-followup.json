@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "baseline": "169c54d",
+  "scope": "Follow-up regression discovered during local self-review, separate from the three archive mutations",
+  "defect": "The onEvent catch branch invoked onFailure without reinstalling the captured context after the event consumer changed MDC",
+  "red": {
+    "test": "LlmHttpClientTest#malformedEventFailureCallbackGetsFreshCapturedScope",
+    "command": "mvn -o -B -pl hify-common -am -Dtest=LlmHttpClientTest#malformedEventFailureCallbackGetsFreshCapturedScope -Dsurefire.failIfNoSpecifiedTests=false test",
+    "exitCode": 1, "tests": 1, "failures": 1, "errors": 0, "skipped": 0,
+    "expected": "requestId=original-stream, no other entries",
+    "actual": "requestId=callback-changed, syntheticSecret=must-not-reach-failure-callback",
+    "log": "/tmp/hify-course-20261006.hhEhwt/callback-scope-red.log",
+    "logSha256": "321e8aeac71aa12d5af965a6e193199268b62d9d87ba451e743c26660f364a0f"
+  },
+  "green": {
+    "command": "mvn -o -B -pl hify-common -am -Dtest=RequestCorrelationTest,CommonContractsTest,LlmHttpClientTest -Dsurefire.failIfNoSpecifiedTests=false test",
+    "exitCode": 0, "tests": 28, "failures": 0, "errors": 0, "skipped": 0,
+    "log": "/tmp/hify-course-20261006.hhEhwt/callback-scope-green.log",
+    "logSha256": "8d0e017bbe84f4139f99f0ac0e99545bc6aad565797a7888aa3e90784896702c"
+  },
+  "limits": [
+    "Fault requires an event consumer changing MDC before throwing; not reproduced using a real provider",
+    "Only callback diagnostic scope changed; cancellation and error classification are unchanged",
+    "Working-tree execution before follow-up commit; not a cryptographically authenticated build chain",
+    "Narrow checks only; full gate and external review remain outstanding"
+  ]
+}
