@@ -24,6 +24,7 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
                                     FilterChain chain) throws ServletException, IOException {
         String requestId = requestId(request.getHeader(HEADER));
         long started = System.nanoTime();
+        String previousRequestId = MDC.get(RequestLogContext.REQUEST_ID);
         MDC.put("requestId", requestId);
         response.setHeader(HEADER, requestId);
         try {
@@ -32,13 +33,13 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
             log.info("http.request method={} path={} status={} latencyMs={}", request.getMethod(),
                     request.getRequestURI(), response.getStatus(),
                     TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started));
-            MDC.remove("requestId");
+            if (previousRequestId == null) MDC.remove(RequestLogContext.REQUEST_ID);
+            else MDC.put(RequestLogContext.REQUEST_ID, previousRequestId);
         }
     }
 
     private String requestId(String candidate) {
-        if (candidate != null && candidate.matches("[A-Za-z0-9._-]{1,64}")) return candidate;
+        if (RequestLogContext.valid(candidate)) return candidate;
         return UUID.randomUUID().toString();
     }
 }
-

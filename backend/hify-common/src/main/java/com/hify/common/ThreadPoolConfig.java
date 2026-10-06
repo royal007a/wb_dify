@@ -12,16 +12,22 @@ import java.util.concurrent.TimeUnit;
 public class ThreadPoolConfig {
     @Bean(name = "llmExecutor", destroyMethod = "shutdown")
     Executor llmExecutor() {
-        return new ThreadPoolExecutor(10, 50, 60, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(100), new NamedThreadFactory("llm-"),
-                // Running blocking HTTP on the waiting caller disables cancellation/deadline polling.
-                new ThreadPoolExecutor.AbortPolicy());
+        return correlatedPool(10, 50, 100, "llm-");
     }
 
     @Bean(name = "asyncExecutor", destroyMethod = "shutdown")
     Executor asyncExecutor() {
-        return new ThreadPoolExecutor(5, 20, 60, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(200), new NamedThreadFactory("async-"),
-                new ThreadPoolExecutor.AbortPolicy());
+        return correlatedPool(5, 20, 200, "async-");
+    }
+
+    private ThreadPoolExecutor correlatedPool(int core, int max, int capacity, String prefix) {
+        return new ThreadPoolExecutor(core, max, 60, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(capacity), new NamedThreadFactory(prefix),
+                // Running blocking HTTP on the waiting caller disables cancellation/deadline polling.
+                new ThreadPoolExecutor.AbortPolicy()) {
+            @Override public void execute(Runnable task) {
+                super.execute(RequestLogContext.wrap(task));
+            }
+        };
     }
 }

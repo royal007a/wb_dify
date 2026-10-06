@@ -37,8 +37,55 @@ class LlmHttpClientTest {
 
     @AfterEach
     void tearDown() throws Exception {
+        org.slf4j.MDC.clear();
         try { executor.shutdownNow(); }
         finally { server.shutdown(); }
+    }
+
+    @Test
+    void streamingCallbacksCarryCapturedRequestIdWithoutSecrets() throws Exception {
+        server.enqueue(new MockResponse().setHeader("Content-Type", "text/event-stream")
+                .setBody("data: synthetic\n\n"));
+        var observed = new AtomicReference<Map<String, String>>();
+        var closedContext = new AtomicReference<Map<String, String>>();
+        var failure = new AtomicReference<LlmApiException>();
+        var done = new CountDownLatch(1);
+        org.slf4j.MDC.put("requestId", "stream-request");
+        org.slf4j.MDC.put("syntheticSecret", "not-forwarded");
+        client.stream(server.url("/correlated-stream").toString(), Map.of(), "{}", new LlmHttpClient.StreamCallback() {
+            @Override public void onEvent(String id, String type, String data) {
+                observed.set(org.slf4j.MDC.getCopyOfContextMap());
+                org.slf4j.MDC.put("callback-local", "must-not-reach-next-callback");
+            }
+            @Override public void onClosed() { closedContext.set(org.slf4j.MDC.getCopyOfContextMap()); done.countDown(); }
+            @Override public void onFailure(LlmApiException e) { failure.set(e); done.countDown(); }
+        });
+        org.slf4j.MDC.put("requestId", "caller-changed");
+        assertThat(done.await(5, TimeUnit.SECONDS)).isTrue();
+        assertThat(failure.get()).isNull();
+        assertThat(observed.get()).isEqualTo(Map.of("requestId", "stream-request"));
+        assertThat(closedContext.get()).isEqualTo(Map.of("requestId", "stream-request"));
+        assertThat(org.slf4j.MDC.get("requestId")).isEqualTo("caller-changed");
+    }
+
+    @Test
+    void streamingFailureCallbackCarriesRequestId() throws Exception {
+        server.enqueue(new MockResponse().setResponseCode(503));
+        var observed = new AtomicReference<Map<String, String>>();
+        var failure = new AtomicReference<LlmApiException>();
+        var done = new CountDownLatch(1);
+        org.slf4j.MDC.put("requestId", "failed-stream-request");
+        client.stream(server.url("/failed-correlated-stream").toString(), Map.of(), "{}", new LlmHttpClient.StreamCallback() {
+            @Override public void onEvent(String id, String type, String data) {}
+            @Override public void onClosed() { done.countDown(); }
+            @Override public void onFailure(LlmApiException e) {
+                observed.set(org.slf4j.MDC.getCopyOfContextMap()); failure.set(e); done.countDown();
+            }
+        });
+        assertThat(done.await(5, TimeUnit.SECONDS)).isTrue();
+        assertThat(failure.get()).isNotNull();
+        assertThat(failure.get().type()).isEqualTo(LlmApiException.Type.PROVIDER_UNAVAILABLE);
+        assertThat(observed.get()).isEqualTo(Map.of("requestId", "failed-stream-request"));
     }
 
     @Test

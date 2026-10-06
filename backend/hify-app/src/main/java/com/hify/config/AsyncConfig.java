@@ -1,5 +1,6 @@
 package com.hify.config;
 
+import com.hify.common.RequestLogContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -18,6 +19,7 @@ public class AsyncConfig {
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(4);
         executor.setQueueCapacity(100);
+        executor.setTaskDecorator(RequestLogContext::wrap);
         executor.setWaitForTasksToCompleteOnShutdown(false);
         // Admission is closed by ExecutionLifecycle before this late shutdown. Interrupt and
         // join while persistence is still alive, instead of waiting in the graceful stop phase.

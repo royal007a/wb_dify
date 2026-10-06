@@ -102,35 +102,43 @@ public class LlmHttpClient {
         Request.Builder request = new Request.Builder().url(url).post(RequestBody.create(body, JSON));
         headers.forEach(request::addHeader);
         long started = System.nanoTime();
+        RequestLogContext.Snapshot context = RequestLogContext.capture();
         return EventSources.createFactory(streamClient).newEventSource(request.build(), new EventSourceListener() {
             @Override
             public void onOpen(EventSource source, Response response) {
-                log.info("llm.stream.open target={} status={} latencyMs={}", safeTarget(url), response.code(), elapsedMs(started));
+                context.run(() -> log.info("llm.stream.open target={} status={} latencyMs={}",
+                        safeTarget(url), response.code(), elapsedMs(started)));
             }
 
             @Override
             public void onEvent(EventSource source, String id, String type, String data) {
-                try {
-                    callback.onEvent(id, type, data);
-                } catch (RuntimeException exception) {
-                    source.cancel();
-                    callback.onFailure(new LlmApiException(LlmApiException.Type.REQUEST_FAILED,
-                            "Invalid streaming response", exception));
-                }
+                context.run(() -> {
+                    try {
+                        callback.onEvent(id, type, data);
+                    } catch (RuntimeException exception) {
+                        source.cancel();
+                        callback.onFailure(new LlmApiException(LlmApiException.Type.REQUEST_FAILED,
+                                "Invalid streaming response", exception));
+                    }
+                });
             }
 
             @Override
             public void onClosed(EventSource source) {
-                log.info("llm.stream.closed target={} latencyMs={}", safeTarget(url), elapsedMs(started));
-                callback.onClosed();
+                context.run(() -> {
+                    log.info("llm.stream.closed target={} latencyMs={}", safeTarget(url), elapsedMs(started));
+                    callback.onClosed();
+                });
             }
 
             @Override
             public void onFailure(EventSource source, Throwable throwable, Response response) {
-                LlmApiException failure = classify(response == null ? null : response.code(), throwable);
-                log.warn("llm.stream.failed target={} type={} latencyMs={}",
-                        safeTarget(url), failure.type(), elapsedMs(started));
-                callback.onFailure(failure);
+                context.run(() -> {
+                    LlmApiException failure = classify(response == null ? null : response.code(), throwable);
+                    log.warn("llm.stream.failed target={} type={} latencyMs={}",
+                            safeTarget(url), failure.type(), elapsedMs(started));
+                    callback.onFailure(failure);
+                });
             }
         });
     }
