@@ -1,0 +1,9 @@
+sourceHead=c45c19a9837b71e9f44113441f23d7d495f55750
+sha256=2a73f71b1449c22493c0b961af44d3da15b0ed99c941a002e265a096e865b6a8 DocumentIndexingService.java
+sha256=3ccc4c98b3403268ae304eea3c5c5fc6903b2fbf57908e3adbeb53fc6edd309c IndexFailureVisibilityProbe.java
+sha256=76b4b4158a9d6c982fd7c5b4ad8e37fd0d19cc85680ca23dab6abe02dd0f5183 TEST-com.hify.api.KnowledgeShutdownPostgresTest.xml
+Note: /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/docs/research/jikesummary-20261006/indexing-visibility/IndexFailureVisibilityProbe.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+{"scope":"H2 transaction mechanism, not original PostgreSQL root-cause proof","observedBeforeFailureInjected":true,"duringFiveSecondPoll":"SUCCEEDED","afterWorkerTransaction":"FAILED","pollCount":57,"chunksUnchanged":true}
+exit=0
