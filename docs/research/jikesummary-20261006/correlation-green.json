@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "scope": "Targeted common-module checks only; not full harness verification, end-to-end Run acceptance or deployment",
+  "command": "mvn -o -B -pl hify-common -am -Dtest=RequestCorrelationTest,CommonContractsTest,LlmHttpClientTest -Dsurefire.failIfNoSpecifiedTests=false test",
+  "workingDirectory": "backend",
+  "exitCode": 0,
+  "tests": 27,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "logSha256": "16afc013e528682f01985e011b20a71d3efc2df8136b77dfd936b5d389b46885",
+  "localLog": "/tmp/hify-course-20261006.hhEhwt/correlation-green.log",
+  "classes": {
+    "RequestCorrelationTest": 8,
+    "CommonContractsTest": 5,
+    "LlmHttpClientTest": 14
+  },
+  "limits": [
+    "Executed against working-tree common-module source, before implementation commit; manifest alone is not a signed build chain",
+    "SSE uses a local HTTP fixture, not a real model",
+    "App AsyncConfigTest and full six-scope gate are separate and not covered by this result",
+    "Original three red assertions retained; newer regression cases not yet independently mutation-tested"
+  ]
+}
