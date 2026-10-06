@@ -41,7 +41,7 @@ class KnowledgeAdmissionShutdownTest extends KnowledgeFinishIntegrationTest {
         doAnswer(call->{
             if(wrappedIoFailure){doReturn(true).when(lifecycle).isStopping();throw new IllegalStateException("database read interrupted");}
             throw new ExecutionSuspendedException();
-        }).when(source).searchRevision(anyString(),anyString(),anyInt());
+        }).when(source).searchRevision(anyString(),anyString(),anyInt(),any(com.hify.common.ExecutionControl.class));
         String id=startWith(List.of(base()),"退货期限");
         long end=System.nanoTime()+TimeUnit.SECONDS.toNanos(5);
         while(System.nanoTime()<end && events.findByRunIdOrderByIdAsc(id).stream()

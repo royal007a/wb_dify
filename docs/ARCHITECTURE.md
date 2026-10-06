@@ -2,6 +2,14 @@
 
 ## 1. 目标形态
 
+### 聊天检索与父Run控制（CHAT-RETRIEVAL-CONTROL-001，开发中）
+
+普通聊天的同一个Run以持久化createdAt为时间锚点：排队、检索、模型循环以及同Run崩溃恢复期间都消耗run-timeout；这比原来的“进入QueryLoop才计时”更严格，是行为变化。显式用户续接创建的新Run获得自己的时间窗口，checkpoint已有的轮数、工具数不因此重置。墙钟剩余值至多等于配置上限，进入执行后使用单调时钟。
+
+RunApplicationService将同一个父控制传入searchRevision和QueryLoop；KnowledgeRetrievalService继续传至SemanticEmbeddings，embedding取父剩余与45秒子预算的较小值。子调用独自到期是来源依赖失败，不冒充父Run到期；父取消/截止/停机优先于迟到的成功、解析错误或来源错误。取消停止后续知识库及模型准入，停机仍保留可恢复Run，最终持久cancel在原行锁终态提交处优先。
+
+这不是SQL/CPU的抢占式取消，也不保证外部供应商撤销已收费请求。三参检索入口为兼容入口，管理/索引仍使用原有独立调用控制；Workflow仍有自己的WorkflowControl路径，本切片不改变其发布格式或声称已改造全部入口。当前只有轻量服务/控制单测证据，实际HTTP、集成、完整门禁及review未完成，不能作为部署验收。
+
 Hify 采用 Maven 多模块的模块化单体：开发、测试和依赖在模块层隔离，生产只部署一个 Spring Boot 进程。前端独立构建，由 Nginx 托管并反向代理 API/SSE。
 
 ```mermaid

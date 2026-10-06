@@ -3,6 +3,7 @@ package com.hify.knowledge.application;
 import com.hify.common.BizException;
 import com.hify.common.ErrorCode;
 import com.hify.common.TextInput;
+import com.hify.common.ExecutionControl;
 import com.hify.knowledge.api.KnowledgeChunkResponse;
 import com.hify.knowledge.api.KnowledgeCitation;
 import com.hify.knowledge.api.KnowledgeCorpusSnapshot;
@@ -89,11 +90,25 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
 
     @Override
     public List<KnowledgeCitation> searchRevision(String corpusVersionId,String query,int topK) {
+        return searchRevision(corpusVersionId,query,topK,ExecutionControl.none());
+    }
+
+    @Override
+    public List<KnowledgeCitation> searchRevision(String corpusVersionId,String query,int topK,ExecutionControl control) {
+        control.checkActive();
+        try {
         TextInput.requireNoNul(corpusVersionId, query);
         if(query==null||query.isBlank())throw new BizException(ErrorCode.PARAM_ERROR,"检索问题不能为空");
-        var vectors=prepareVectors(query,null,corpusVersionId);
-        return readTransaction(()->{KnowledgeCorpusSnapshot snapshot=requireSnapshot(corpusVersionId);
+        var vectors=prepareVectors(query,null,corpusVersionId,control);
+        control.checkActive();
+        var result=readTransaction(()->{KnowledgeCorpusSnapshot snapshot=requireSnapshot(corpusVersionId);
             return rankVerified(query,topK,snapshot,vectors);});
+        control.checkActive();
+        return result;
+        } catch(RuntimeException failure) {
+            control.checkActive();
+            throw failure;
+        }
     }
 
     @Override
@@ -254,17 +269,27 @@ public class KnowledgeRetrievalService implements KnowledgeRetrievalPort {
     }
     private record SemanticRow(String profile,String vector){}
     private Map<String,float[]> prepareVectors(String query,String baseId,String corpusId){
+        return prepareVectors(query,baseId,corpusId,ExecutionControl.none());
+    }
+    private Map<String,float[]> prepareVectors(String query,String baseId,String corpusId,ExecutionControl control){
+        control.checkActive();
         String scope=corpusId==null?"FROM document_chunks c WHERE c.knowledge_base_id=? AND c.archived_at IS NULL":"FROM document_chunks c JOIN knowledge_corpus_version_chunks vc ON vc.chunk_id=c.id WHERE vc.corpus_version_id=?";
         long[] size=jdbc.queryForObject("SELECT COUNT(*),COALESCE(SUM(OCTET_LENGTH(c.semantic_vector)+OCTET_LENGTH(c.semantic_profile)),0) "+scope+" AND c.semantic_profile IS NOT NULL",
                 (rs,n)->new long[]{rs.getLong(1),rs.getLong(2)},corpusId==null?baseId:corpusId);
         checkSemanticSize(size[0],size[1]);
+        control.checkActive();
         List<String> profiles=corpusId==null
                 ?jdbc.queryForList("SELECT DISTINCT semantic_profile FROM document_chunks WHERE knowledge_base_id=? AND archived_at IS NULL AND semantic_profile IS NOT NULL",String.class,baseId)
                 :jdbc.queryForList("SELECT DISTINCT c.semantic_profile FROM document_chunks c JOIN knowledge_corpus_version_chunks vc ON vc.chunk_id=c.id WHERE vc.corpus_version_id=? AND c.semantic_profile IS NOT NULL",String.class,corpusId);
         if(!profiles.isEmpty()&&org.springframework.transaction.support.TransactionSynchronizationManager.isActualTransactionActive())
             throw new BizException(ErrorCode.CONFLICT,"语义检索须在数据库事务外发起");
         Map<String,float[]> vectors=new HashMap<>();
-        for(String profile:profiles)vectors.put(profile,semantic.embed(profile,List.of(query)).get(0));
+        for(String profile:profiles){
+            control.checkActive();
+            vectors.put(profile,semantic.embed(profile,List.of(query),control).get(0));
+            control.checkActive();
+        }
+        control.checkActive();
         return vectors;
     }
     private void checkSemanticSize(long count,long bytes){

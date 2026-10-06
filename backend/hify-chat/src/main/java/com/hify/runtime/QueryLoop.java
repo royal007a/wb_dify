@@ -67,9 +67,16 @@ public class QueryLoop {
     public Result run(List<RuntimeMessage> initialMessages, ModelClient modelClient,
                       String model, double temperature, CapabilitySnapshot capability,
                       RunPolicy policy, RunObserver observer, RunRuntimeIdentity identity) {
+        return run(initialMessages,modelClient,model,temperature,capability,policy,observer,identity,
+                ExecutionControl.withTimeout(policy.timeout(),policy.cancelled()));
+    }
+
+    public Result run(List<RuntimeMessage> initialMessages, ModelClient modelClient,
+                      String model, double temperature, CapabilitySnapshot capability,
+                      RunPolicy policy, RunObserver observer, RunRuntimeIdentity identity,ExecutionControl control) {
         ExecutionPlan plan = ExecutionPlan.initial(goal(initialMessages));
         return run(initialMessages, modelClient, model, temperature, capability,
-                policy, observer, identity, plan, identity.completionVerifier().initialState(), 0, 0, false);
+                policy, observer, identity, plan, identity.completionVerifier().initialState(), 0, 0, false,control);
     }
 
     public Result resume(ExecutionCheckpoint checkpoint, ModelClient modelClient,
@@ -83,11 +90,18 @@ public class QueryLoop {
     public Result resume(ExecutionCheckpoint checkpoint, ModelClient modelClient,
                          String model, double temperature, CapabilitySnapshot capability,
                          RunPolicy policy, RunObserver observer, RunRuntimeIdentity identity) {
+        return resume(checkpoint,modelClient,model,temperature,capability,policy,observer,identity,
+                ExecutionControl.withTimeout(policy.timeout(),policy.cancelled()));
+    }
+
+    public Result resume(ExecutionCheckpoint checkpoint, ModelClient modelClient,
+                         String model, double temperature, CapabilitySnapshot capability,
+                         RunPolicy policy, RunObserver observer, RunRuntimeIdentity identity,ExecutionControl control) {
         ExecutionPlan plan = checkpoint.plan();
         observer.onCheckpointRestored(checkpoint);
         return run(checkpoint.messages(), modelClient, model, temperature, capability,
                 policy, observer, identity, plan, checkpoint.contextState(),
-                checkpoint.turn(), checkpoint.toolCalls(), true);
+                checkpoint.turn(), checkpoint.toolCalls(), true,control);
     }
 
     private Result run(List<RuntimeMessage> initialMessages, ModelClient modelClient,
@@ -95,10 +109,11 @@ public class QueryLoop {
                        RunPolicy policy, RunObserver observer, RunRuntimeIdentity identity,
                        ExecutionPlan initialPlan,
                        ExecutionContextState initialContext,
-                       int completedTurns, int completedToolCalls, boolean resumed) {
+                       int completedTurns, int completedToolCalls, boolean resumed,ExecutionControl parentControl) {
         List<RuntimeMessage> messages = new ArrayList<>(initialMessages);
         Set<String> seenToolCallIds = existingToolCallIds(initialMessages);
-        ExecutionControl control = ExecutionControl.withTimeout(policy.timeout(), policy.cancelled()).withShutdown(lifecycle::isStopping);
+        ExecutionControl control = parentControl.boundedBy(policy.timeout())
+                .withCancellation(policy.cancelled()).withShutdown(lifecycle::isStopping);
         control.throwIfSuspended();
         int toolCalls = completedToolCalls;
         int recallCalls = existingRecallCalls(initialMessages);

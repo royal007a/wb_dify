@@ -48,7 +48,7 @@ class KnowledgeFinishIntegrationTest extends WorkflowKnowledgeIntegrationTest {
     @Test void partialRetrievalFailureDoesNotSilentlyFallBackToOtherSources() throws Exception {
         String base=base(), unavailable=base();upload(base,"退货期限是七天。");
         var failing=retrieval.freeze(unavailable);
-        doThrow(new IllegalStateException("private upstream secret")).when(source).searchRevision(eq(failing.id()),anyString(),anyInt());
+        doThrow(new IllegalStateException("private upstream secret")).when(source).searchRevision(eq(failing.id()),anyString(),anyInt(),any(com.hify.common.ExecutionControl.class));
         AgentRun run=chatWith(List.of(base,unavailable),"退货期限");
         assertThat(run.getTerminalReason()).isEqualTo("KNOWLEDGE_RETRIEVAL_FAILED");
         assertThat(run.getOutputMessage()).doesNotContain("private upstream secret");
@@ -99,6 +99,7 @@ class KnowledgeFinishIntegrationTest extends WorkflowKnowledgeIntegrationTest {
         AgentRun resumed=await(next);assertThat(resumed.getState()).as(resumed.getOutputMessage()).isEqualTo(RunState.COMPLETED);
         assertThat(resumed.getOutputMessage()).contains("七天");
         verify(source,never()).searchRevision(anyString(),anyString(),anyInt());
+        verify(source,never()).searchRevision(anyString(),anyString(),anyInt(),any(com.hify.common.ExecutionControl.class));
         verify(source).requireCanonicalChunk(eq(context.evidence().get(0).sourceRef().split(":",3)[2]),eq(context.evidence().get(0).valueDigest()));
     }
     private AgentRun chatWith(List<String> bases,String input) throws Exception {

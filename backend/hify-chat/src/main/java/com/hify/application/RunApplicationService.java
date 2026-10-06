@@ -21,6 +21,8 @@ import com.hify.workflow.api.WorkflowRunResponse;
 import com.hify.common.ExecutionControl;
 import com.hify.common.ExecutionLifecycle;
 import com.hify.common.ExecutionSuspendedException;
+import com.hify.common.ExecutionCancelledException;
+import com.hify.common.ExecutionTimedOutException;
 import com.hify.infra.RunCheckpointRepository;
 import com.hify.runtime.ModelClient;
 import com.hify.runtime.ModelClientFactory;
@@ -366,6 +368,7 @@ public class RunApplicationService {
     }
 
     private void execute(String runId) {
+        ExecutionControl control = null;
         try {
             AgentRun run = get(runId);
             if (run.getState().terminal()) return;
@@ -387,6 +390,9 @@ public class RunApplicationService {
                 executeWorkflow(run, agent);
                 return;
             }
+            control = runControl(run);
+            control.checkActive();
+            final ExecutionControl parentControl = control;
             ProviderRuntimeConfig provider = providers.requireEnabled(agent.providerId());
             CapabilitySnapshot capability = capability(agent);
             if (run.getCapabilityRevision() == null || run.getToolSchemaDigest() == null) {
@@ -401,12 +407,13 @@ public class RunApplicationService {
             runtimeMessages.add(RuntimeMessage.system(agent.instructions()));
             var savedCheckpoint=restoreCheckpoint(runId);
             boolean knowledgeBound=agent.knowledgeBindings()!=null&&!agent.knowledgeBindings().isEmpty();
-            List<KnowledgeCitation> knowledgeCandidates=savedCheckpoint.isPresent()?List.of():knowledgeCandidates(runId,run.getInputMessage(),agent);
+            List<KnowledgeCitation> knowledgeCandidates=savedCheckpoint.isPresent()?List.of():knowledgeCandidates(runId,run.getInputMessage(),agent,parentControl);
             String knowledgeContext=knowledgeContext(knowledgeCandidates);
             if(!knowledgeContext.isBlank())runtimeMessages.add(RuntimeMessage.system(knowledgeContext));
             messages.findByConversationIdOrderByCreatedAtAsc(conversation.getId()).forEach(message ->
                     runtimeMessages.add(new RuntimeMessage(message.getRole(), message.getContent(), null, List.of())));
 
+            parentControl.checkActive();
             ModelClient modelClient = modelClients.create(provider);
             String model = agent.modelId() == null || agent.modelId().isBlank()
                     ? provider.defaultModelId() : agent.modelId();
@@ -419,15 +426,28 @@ public class RunApplicationService {
                     capability.toolSchemaDigest(),
                     (attemptId, revision) -> executionLeaseActive(runId, attemptId, revision),
                     historyWriter.forRun(runId),knowledgeBound?new KnowledgeCompletionVerifier(knowledge,knowledgeCandidates):com.hify.runtime.CompletionVerifier.NONE);
+            parentControl.checkActive();
             QueryLoop.Result result = savedCheckpoint
                     .map(checkpoint -> queryLoop.resume(checkpoint, modelClient, model,
-                            agent.temperature(), capability, policy, observer, identity))
+                            agent.temperature(), capability, policy, observer, identity,parentControl))
                     .orElseGet(() -> queryLoop.run(runtimeMessages, modelClient, model,
-                            agent.temperature(), capability, policy, observer, identity));
+                            agent.temperature(), capability, policy, observer, identity,parentControl));
             finish(runId, result);
         } catch (RuntimeException exception) {
+            if(control!=null){
+                try{control.checkActive();}
+                catch(RuntimeException stopped){exception=stopped;}
+            }
             finishFailure(runId, exception);
         }
+    }
+
+    private ExecutionControl runControl(AgentRun run) {
+        Duration remaining=runTimeout.minus(Duration.between(run.getCreatedAt(),Instant.now()));
+        if(remaining.isNegative()||remaining.isZero())throw new ExecutionTimedOutException();
+        AtomicBoolean cancelled=cancellations.computeIfAbsent(run.getId(),ignored->new AtomicBoolean());
+        return ExecutionControl.withTimeout(remaining.compareTo(runTimeout)>0?runTimeout:remaining,
+                ()->cancelled.get()||run.isCancelRequested()).withShutdown(lifecycle::isStopping);
     }
 
     private void executeWorkflow(AgentRun run, AgentRuntimeSnapshot agent) {
@@ -680,6 +700,14 @@ public class RunApplicationService {
     }
 
     private void finishFailure(String runId, RuntimeException exception) {
+        if(exception instanceof ExecutionCancelledException){
+            finishTerminal(runId,RunState.CANCELLED,TerminalReason.CANCELLED.name(),"Run cancelled.",0,0,false);
+            return;
+        }
+        if(exception instanceof ExecutionTimedOutException){
+            finishTerminal(runId,RunState.TIMED_OUT,TerminalReason.TIMEOUT.name(),"Run timed out.",0,0,false);
+            return;
+        }
         if (shutdownInterruption(exception)) {
             finishTerminal(runId, RunState.FAILED, "APPLICATION_SHUTDOWN", null, 0, 0, false);
             return;
@@ -862,7 +890,8 @@ public class RunApplicationService {
         return toolRuntime.snapshot(agent.versionId(),enabledTools(agent),dynamic);
     }
 
-    private List<KnowledgeCitation> knowledgeCandidates(String runId,String query,AgentRuntimeSnapshot agent){
+    private List<KnowledgeCitation> knowledgeCandidates(String runId,String query,AgentRuntimeSnapshot agent,ExecutionControl control){
+        control.checkActive();
         if(agent.knowledgeBindings()==null||agent.knowledgeBindings().isEmpty())return List.of();
         eventBroker.publish(runId,"knowledge.retrieval.started",Map.of(
                 "version",1,"runId",runId,"bindingCount",agent.knowledgeBindings().size()));
@@ -871,15 +900,22 @@ public class RunApplicationService {
         agent.knowledgeBindings().stream()
                 .sorted(java.util.Comparator.comparingInt(com.hify.agent.api.AgentKnowledgeBindingSnapshot::priority))
                 .forEach(binding->{
+                    control.checkActive();
                     try{
-                        citations.addAll(knowledge.searchRevision(binding.corpusVersionId(),query,binding.topK()));
+                        var result=knowledge.searchRevision(binding.corpusVersionId(),query,binding.topK(),control);
+                        control.checkActive();
+                        citations.addAll(result);
                     }catch(RuntimeException failure){
+                        control.checkActive();
+                        if(failure instanceof ExecutionCancelledException||failure instanceof ExecutionTimedOutException
+                                ||failure instanceof ExecutionSuspendedException)throw failure;
                         // Admission must not turn interrupted shutdown work into a permanent source failure.
                         if(shutdownInterruption(failure)||lifecycle.isStopping())throw new ExecutionSuspendedException();
                         failures.add(Map.of("knowledgeBaseId",binding.knowledgeBaseId(),
                                 "corpusVersionId",binding.corpusVersionId(),"reason","knowledge_source_unavailable"));
                     }
                 });
+        control.checkActive();
         if(!failures.isEmpty())eventBroker.publish(runId,"knowledge.retrieval.failed",Map.of(
                 "version",1,"runId",runId,"recoverable",false,"failures",failures));
         List<Map<String,Object>> refs=citations.stream().map(citation->Map.<String,Object>of(

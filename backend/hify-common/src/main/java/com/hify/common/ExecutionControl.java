@@ -34,12 +34,29 @@ public final class ExecutionControl {
         return NONE;
     }
 
+    /** A child can tighten a deadline, never restart or extend its parent's budget. */
+    public ExecutionControl boundedBy(Duration timeout) {
+        long childDeadline = withTimeout(timeout, cancelled).deadlineNanos;
+        return new ExecutionControl(Math.min(deadlineNanos, childDeadline), cancelled, stopping);
+    }
+
+    /** Control exits are not dependency failures; explicit cancellation wins over time. */
+    public void checkActive() {
+        throwIfCancelled();
+        if (isExpired()) throw new ExecutionTimedOutException();
+    }
+
     public boolean isCancelled() {
         return cancelled.getAsBoolean() || (!stopping.getAsBoolean() && Thread.currentThread().isInterrupted());
     }
 
     public ExecutionControl withShutdown(BooleanSupplier stopping) {
         return new ExecutionControl(deadlineNanos, cancelled, () -> this.stopping.getAsBoolean() || stopping.getAsBoolean());
+    }
+
+    public ExecutionControl withCancellation(BooleanSupplier cancelled) {
+        return new ExecutionControl(deadlineNanos,
+                () -> this.cancelled.getAsBoolean() || (cancelled != null && cancelled.getAsBoolean()), stopping);
     }
 
     public boolean isSuspended() { return stopping.getAsBoolean() && !cancelled.getAsBoolean(); }
