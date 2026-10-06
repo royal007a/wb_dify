@@ -17,6 +17,7 @@
     "com.hify.api.KnowledgeMemoryPostgresTest": 21
   },
   "backend-tests": {
+    "com.hify.application.RunKnowledgeControlTest": 5,
     "com.hify.api.ReadinessIntegrationTest": 2,
     "com.hify.common.RequestCorrelationTest": 8,
     "com.hify.config.AsyncConfigTest": 1,
