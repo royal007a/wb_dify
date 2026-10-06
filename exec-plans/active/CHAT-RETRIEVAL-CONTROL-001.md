@@ -164,3 +164,21 @@ common 78 项那次仍为失败；不把此单类重跑覆盖为全模块通过�
 仍以原始 parent 判定取消/到期不采样，以本地到期判定供应商 SLA timeout；不能
 把本地超时也一概归为用户预算耗尽。HTTP 的错误类型和5/60/65、120/125秒上限不改。
 保持现有中断测试与全部断言，先保存新测试红灯后再改产品逻辑。
+
+红灯（6a7b244，产品仍为前版）：4 个新方法，3 assertion failure、1通过、0error/skip，
+05:47:51 CST Maven exit 1。日志 `local-budget-red/maven.log` 的 SHA-256 为
+`bbe41399809d5223b432d9f42005ba689b52cee0699ce38d3cb433a5fc92d6bf`。
+它验证本地时限没有使用被注入的父控制时钟；不是在实际 JVM 上自然等到 nanoTime 回绕。
+
+修复 363ecce 后，05:49:38 CST hify-common 完整10类共83项，全为通过，零fail/error/skip，
+Maven exit 0，fresh XML 逐类加总与终端一致。命令
+`mvn -B -o -pl hify-common -am -Dhify.test.reportsDirectory=<fresh>/reports test`。
+日志及全部文本报告保存在 `local-budget-validation/`，maven.log SHA-256
+`128318ede64712a81865fa81a6f3f6f990e25980aa6d44bb76cf5f5a6345c011`。
+Control 13、CircuitBreaker 15、HTTP 17、ProviderDeadline 6、Shutdown 4 均包含在83内，
+不再重复相加。产品/测试源码在构建期间未改；只在构建期间提交了相同产品代码。
+
+原50ms中断用例本次也通过，但不能由这个绿灯声称已定位/根治先前的偶发失败。
+此前 common 78项失败与后续诊断原文继续保留。本次只覆盖common模块，不覆盖
+真实PG恢复、应用装配、完整backend/runtime/eval/frontend，也不是六scope验收。
+RunEventBroker 的传输时钟仍未修改，不宣称所有 nanoTime 比较已统一。
