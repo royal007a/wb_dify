@@ -4,7 +4,7 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-10-06T07:28:05Z`
 - Current task: `none`
-- Counts: pending 21 · running 0 · blocked 3 · completed 94
+- Counts: pending 22 · running 0 · blocked 3 · completed 94
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -37,6 +37,7 @@
 | `CAPABILITY-VERIFY-001` | P1 | completed | harness, migration, backend, runtime, eval, frontend | reversible_write | 语义、外部Workflow与具名输入发布前完整验收 |
 | `CHAT-DEMO-001` | P1 | completed | backend, frontend, runtime | reversible_write | 修复 Demo 时间问句回显而不调用工具 |
 | `CHAT-DEMO-DEPLOY-001` | P1 | completed | backend, frontend | high_risk | 部署并验证 132 Demo 会话时间修复 |
+| `CHAT-RETRIEVAL-CONTROL-001` | P1 | pending | harness, backend, runtime | reversible_write | 聊天检索与模型循环共享取消和持久Run截止 |
 | `CONSOLE-002` | P1 | completed | frontend, runtime | reversible_write | 交付知识库工作流 MCP 管理台 |
 | `CONTEXT-001` | P1 | completed | backend, runtime, eval | reversible_write | 建立上下文预算归档与压缩评测 |
 | `CONTEXT-INTEGRITY-001` | P1 | completed | harness, backend, runtime, eval, frontend, migration | reversible_write | 上下文压缩保留系统策略与完整当前交互 |

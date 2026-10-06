@@ -4,6 +4,32 @@
   "updatedAt": "2026-10-06T07:28:05Z",
   "tasks": [
     {
+      "id": "CHAT-RETRIEVAL-CONTROL-001",
+      "title": "聊天检索与模型循环共享取消和持久Run截止",
+      "description": "源于jikesummary C180/C129/C131：知识预取不应在父运行预算外继续消耗；先用服务级及真实HTTP受控反例复现，再显式贯穿ExecutionControl。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["harness", "backend", "runtime"],
+      "verifyScopes": ["harness", "migration", "backend", "runtime", "eval", "frontend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "公共取消入口在首库检索中触发后，后续库和模型零调用；迟到成功和异常都不能伪装成正常检索完成，正对照仍按priority检索",
+        "父截止由持久createdAt推导，排队/预取/循环/同Run恢复共用剩余预算，不在QueryLoop或embedding重置；显式新续接Run单独说明",
+        "取消、截止、shutdown及真正来源故障正确分类；保留持久取消优先和shutdown可恢复语义，不修改发布语料/checksum",
+        "真实HTTP受控正文等待证明取消传播及无后续重试；有限子控制不能放大父截止或丢失信号，旧管理/索引入口兼容",
+        "红灯及突变证据保留，完整六scope和固定范围review完成后才宣称交付；不推断生产部署"
+      ],
+      "planPath": "exec-plans/active/CHAT-RETRIEVAL-CONTROL-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-06T16:52:00Z",
+      "updatedAt": "2026-10-06T16:52:00Z"
+    },
+    {
       "id": "OBS-READINESS-001",
       "title": "验证并区分数据库就绪与进程存活",
       "description": "源于jikesummary C133。已有Actuator probes，验证数据库不可用时readiness是否拒绝流量；不新增重复健康框架，不把可降级Redis加入硬依赖，不修改旧health响应。",
