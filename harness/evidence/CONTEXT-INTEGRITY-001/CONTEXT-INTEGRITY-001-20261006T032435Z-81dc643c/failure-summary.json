@@ -1,0 +1,28 @@
+{
+  "head": "8e855b066ba87c7885073b1fc70d212cace85b0a",
+  "result": "failed-and-interrupted",
+  "migration": {
+    "totals": {
+      "tests": 125,
+      "executed": 125,
+      "failures": 0,
+      "errors": 1,
+      "skipped": 0,
+      "flakyAttempts": 0
+    },
+    "summarySha256": "c4c8098e12dc40ea907ad7d8171f1d1c64d298bbaba55595db07213023f8c014",
+    "invocationId": "307c309e-b3c6-4636-9ad0-e945279e53bd"
+  },
+  "harnessPython": {
+    "tests": 78,
+    "result": "passed"
+  },
+  "uncompletedScopes": [
+    "backend",
+    "runtime",
+    "eval",
+    "frontend"
+  ],
+  "reason": "PG computed-result shutdown test exceeded 60s; independent review requires H1 availability repair; remaining verification deliberately interrupted",
+  "remoteMutation": false
+}

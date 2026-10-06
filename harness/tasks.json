@@ -1,19 +1,33 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-05T08:01:29Z",
+  "updatedAt": "2026-10-06T03:39:17Z",
   "tasks": [
     {
       "id": "CONTEXT-INTEGRITY-001",
       "title": "上下文压缩保留系统策略与完整当前交互",
       "description": "落实前六讲研究H1；消除关键词漏选、system角色升级与静默截断，不改长期记忆提取或放宽工具权限。部署独立登记。",
       "priority": "P1",
-      "status": "pending",
-      "scopes": ["harness", "backend", "runtime", "eval", "frontend", "migration"],
-      "verifyScopes": ["harness", "migration", "backend", "runtime", "eval", "frontend"],
+      "status": "blocked",
+      "scopes": [
+        "harness",
+        "backend",
+        "runtime",
+        "eval",
+        "frontend",
+        "migration"
+      ],
+      "verifyScopes": [
+        "harness",
+        "migration",
+        "backend",
+        "runtime",
+        "eval",
+        "frontend"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
-      "approvalRef": "lark:om_x100b6372c9d534b0b177a6da50a9acc",
+      "approvalRef": null,
       "dependsOn": [],
       "acceptance": [
         "所有原system消息逐字按原顺序保留，无关键词也不漏选；不将user/tool/assistant升级为system",
@@ -21,12 +35,22 @@
         "不截断必需上下文；沿用完整预算重测，超限模型零调用；短上下文和归档路径兼容",
         "反例在旧实现失败，新实现通过；六scope全量门禁零失败/错误/skip/flaky，既有红灯不改写；发布另设任务"
       ],
-      "planPath": "exec-plans/active/CONTEXT-INTEGRITY-001.md",
+      "planPath": "exec-plans/blocked/CONTEXT-INTEGRITY-001.md",
       "checkpoint": null,
-      "blockedReason": null,
-      "evidence": [],
+      "blockedReason": "task interrupted",
+      "evidence": [
+        {
+          "runId": "CONTEXT-INTEGRITY-001-20261006T032435Z-81dc643c",
+          "path": "harness/evidence/CONTEXT-INTEGRITY-001/CONTEXT-INTEGRITY-001-20261006T032435Z-81dc643c",
+          "result": "blocked",
+          "exitCode": 130,
+          "baselineCommit": "8e855b066ba87c7885073b1fc70d212cace85b0a",
+          "headCommit": "8e855b066ba87c7885073b1fc70d212cace85b0a",
+          "recordedAt": "2026-10-06T03:39:17Z"
+        }
+      ],
       "createdAt": "2026-10-06T00:00:00Z",
-      "updatedAt": "2026-10-06T00:00:00Z"
+      "updatedAt": "2026-10-06T03:39:17Z"
     },
     {
       "id": "WORKFLOW-STRUCTURED-001",

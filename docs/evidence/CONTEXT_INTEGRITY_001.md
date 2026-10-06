@@ -21,3 +21,14 @@
 - 当前轮过长会被拒绝，不再通过丢掉用户问题/部分工具消息换取模型请求成功。
 - 没有新schema/迁移、依赖、模型调用或WRITE权限。
 - 完整门禁与既有关停/恢复诊断待补；首轮STRUCTURED失败证据不改写。窄测不是部署准入。
+
+## 首轮完整门禁：失败且主动中止后续阶段
+
+被测代码8e855b0，run `CONTEXT-INTEGRITY-001-20261006T032435Z-81dc643c`，命令为 `DOCKER_CONTEXT=colima-hify-verify-20261004 ./harness/run-task.sh CONTEXT-INTEGRITY-001 -- true`。
+
+- harness Python 78项通过。
+- migration-postgres实际125项，0 failures / 1 error / 0 skipped / 0 flaky。错误为 `RunShutdownPostgresTest.computedResultIsCommittedOnShutdownWithoutReplayOnPostgres` 超过60秒。中断时日志栈落在第二个Spring context的close、Lettuce资源销毁；这不是根因已经确定的证明。
+- 在独立review确认长单轮工具累积的可用性缺口后，03:39Z只终止该run的已核实进程树，未停止Colima、Docker或其他项目。backend阶段刚开始，runtime/eval/frontend未完成；本轮记录为blocked/130，无完整passed manifest。
+- 旧失败记录不变；这次不部署。125项摘要为真实本轮新报告，不能用此前9项窄测通过顶替。
+
+独立review：fdd09a1..8e855b0存在单轮多个未达字符阈值的工具结果累积超预算；后续将补按预算逐项归档，原样保留system/user和工具配对。上游RAG及记忆目录本身可能已经是system，本片不承诺修复其来源信任；局部测试名称需要收窄。

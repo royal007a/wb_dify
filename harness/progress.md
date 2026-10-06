@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-05T08:01:29Z`
+- Generated from task state updated at: `2026-10-06T03:39:17Z`
 - Current task: `none`
-- Counts: pending 18 · running 0 · blocked 3 · completed 92
+- Counts: pending 17 · running 0 · blocked 4 · completed 92
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -39,7 +39,7 @@
 | `CHAT-DEMO-DEPLOY-001` | P1 | completed | backend, frontend | high_risk | 部署并验证 132 Demo 会话时间修复 |
 | `CONSOLE-002` | P1 | completed | frontend, runtime | reversible_write | 交付知识库工作流 MCP 管理台 |
 | `CONTEXT-001` | P1 | completed | backend, runtime, eval | reversible_write | 建立上下文预算归档与压缩评测 |
-| `CONTEXT-INTEGRITY-001` | P1 | pending | harness, backend, runtime, eval, frontend, migration | reversible_write | 上下文压缩保留系统策略与完整当前交互 |
+| `CONTEXT-INTEGRITY-001` | P1 | blocked | harness, backend, runtime, eval, frontend, migration | reversible_write | 上下文压缩保留系统策略与完整当前交互 |
 | `DEPLOY-001` | P1 | completed | backend, frontend, migration, runtime, eval | high_risk | 部署摘要与细节召回纵向切片 |
 | `DEPLOY-002` | P1 | completed | backend, frontend, migration, runtime, eval | high_risk | 推送并部署高级能力纵向切片 |
 | `DIFY-AUDIT-001` | P1 | completed | harness | reversible_write | Dify官方逐篇阅读与十小时能力差距审计 |
@@ -123,6 +123,7 @@
 | `WRITE-001` | P2 | pending | backend, migration, runtime | reversible_write | 建立首个 write 工具安全契约 |
 
 ## Blocked
+- `CONTEXT-INTEGRITY-001`: task interrupted
 - `WORKFLOW-STRUCTURED-001`: verification failed
 - `SPEC-KNOWLEDGE-INTEGRITY-003`: 本机Colima数据盘100%、仅余258MiB，PG初始化No space left on device；df7a92b精确计数H2窄测通过，完整backend/migration待释放空间后重跑
 - `SPEC-CHAT-LIFECYCLE-005`: Colima Docker数据盘100%/约256MiB可用，完整backend门禁未运行；f20bd34已通过34项受控浏览器、17项H2与frontend/harness七步，但不能替代frontend/backend/harness完整验收。runner预检返回75，未部署。
