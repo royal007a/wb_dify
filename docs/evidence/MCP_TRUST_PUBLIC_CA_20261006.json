@@ -1,0 +1,17 @@
+{
+  "scope": "Supplementary public CA TLS handshake after configuration; no model or authenticated request",
+  "source": "publisher remote observation, not independently rerun by reviewer",
+  "sourceFile": "harness/PublicTrustProbe.java",
+  "remoteProbeDirectory": "/tmp/hify-public-tls.i6kkP3",
+  "serviceUser": "hifyapp",
+  "java": "/usr/lib/jvm/java-17-openjdk-amd64/bin/java",
+  "trustStore": "/etc/hify-trust/workbench-20261006.jks",
+  "trustStoreType": "JKS",
+  "host": "ark.cn-beijing.volces.com",
+  "handshakeAccepted": true,
+  "endpointIdentification": "HTTPS",
+  "jvmDefaultSslContext": true,
+  "httpRequestSent": false,
+  "peerCertificateSha256": "85aecf2927d320523da4f9a0b81c747551d22f245fca478b3acbfc2d855afaf2",
+  "exitCode": 0
+}

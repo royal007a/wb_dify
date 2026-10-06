@@ -1,16 +1,20 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-06T04:21:20Z",
+  "updatedAt": "2026-10-06T07:28:05Z",
   "tasks": [
     {
       "id": "MCP-TRUST-001",
       "title": "原版132独立Java信任库信任工作台自签证书",
       "description": "用户明确选择方案二；保留公共CA、校验固定证书指纹和主机名，只配置Hify进程并重启，不改Token、工具权限、应用产物或其他服务。",
       "priority": "P1",
-      "status": "pending",
-      "scopes": ["harness"],
-      "verifyScopes": ["harness"],
+      "status": "completed",
+      "scopes": [
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
       "risk": "high_risk",
       "operation": "deployment",
       "approvalRef": "lark:om_x100b637e5c2f24a8c4f563a9c3596cd",
@@ -21,12 +25,24 @@
         "默认信任拒绝自签、新信任完成带HTTPS主机名校验握手且匿名MCP返回401、错误主机名仍拒绝",
         "仅新增Hify专用systemd drop-in，重启成功后核对实际进程选项和health；失败恢复旧配置，保留诊断；不宣称工具发布已通过"
       ],
-      "planPath": "exec-plans/active/MCP-TRUST-001.md",
+      "planPath": "exec-plans/completed/MCP-TRUST-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "MCP-TRUST-001-20261006T072554Z-b9c367e1",
+          "path": "harness/evidence/MCP-TRUST-001/MCP-TRUST-001-20261006T072554Z-b9c367e1",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "f708f1bbab3ccfaa61b240200066b762f1673091",
+          "headCommit": "f708f1bbab3ccfaa61b240200066b762f1673091",
+          "recordedAt": "2026-10-06T07:28:05Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "b95713c4d8a4136053fc9aa143b67c097d8e62b4f88ea399be624bef7ebb1721"
+        }
+      ],
       "createdAt": "2026-10-06T07:21:14Z",
-      "updatedAt": "2026-10-06T07:21:14Z"
+      "updatedAt": "2026-10-06T07:28:05Z"
     },
     {
       "id": "CONTEXT-ROLLOUT-001",

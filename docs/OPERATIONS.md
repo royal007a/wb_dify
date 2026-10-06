@@ -98,6 +98,12 @@ V22 仅扩展 Workflow Run/Node CHECK 约束，保留已有版本/记录。回�
 
 ## 7. 告警
 
+### 原版132独立工作台信任库维护（2026-10-06）
+
+已配置 `/etc/hify-trust/workbench-20261006.jks`，Hify专用drop-in是 `/etc/systemd/system/hify.service.d/40-workbench-trust.conf`。保留原公共CA并加入已批准工作台自签证书，信任作用于整个JVM，不是单地址pin；不得关闭证书或主机名校验。实施和回退步骤见 `evidence/MCP_TRUST_001.md`。
+
+运维事项：每次JDK/java-cacerts升级、系统CA变更或工作台证书轮换，都必须检查是否需要重新合并（当前是一次性副本，不自动同步）。从当时实际运行JDK的新cacerts生成新文件，独立批准工作台证书指纹；比对公共CA集合、无私钥、权限，验证工作台正反主机名和方舟无凭据公网握手，再在无在途工作窗口切换。保留旧库与drop-in恢复点，不能覆盖旧库后才测试。证书到期前由运维安排换证；本次没有新建自动同步任务或定时提醒。
+
 SSE 投影独立于 Run 提交：`HIFY_SSE_MAX_SUBSCRIBERS` 默认 64（允许 1–256），饱和时返回 503，不排队无限增长。每个连接一个发送 worker，历史分页每页 32 条；慢连接不占用 Run 线程或持有数据库事务。`HIFY_HTTP_CONNECTION_TIMEOUT` 默认 10s，Tomcat NIO 将其用于 socket 阻塞写的无进展超时，也用于请求读取，不能设为无限。反向代理的发送超时/连接数应同步限制；持续缓慢读取不等于完全不读，10s 不是整条 SSE 的绝对寿命。客户端按 Last-Event-ID 重连，并回读持久 Run 结果。
 
 MCP 直接 Token 配置：部署时生成独立随机 32-byte Base64 `HIFY_MCP_MASTER_KEY`，放在仅服务用户可读的环境文件中，启动时注入；Compose 也从同名变量读取。不设置时只支持 env/system 引用。不要把主密钥复制进数据库、镜像、日志或 Git。数据库恢复必须同时恢复匹配主密钥；已有密文时禁止重新生成覆盖主密钥。首次配置需重启，后续页面更换 Token 无需重启。细节与回滚限制见 ADR-0020。

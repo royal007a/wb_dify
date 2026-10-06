@@ -7,16 +7,16 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "CONTEXT-INTEGRITY-001-20261006T040856Z-68651cf6",
-    "path": "harness/evidence/CONTEXT-INTEGRITY-001/CONTEXT-INTEGRITY-001-20261006T040856Z-68651cf6",
+    "runId": "MCP-TRUST-001-20261006T072554Z-b9c367e1",
+    "path": "harness/evidence/MCP-TRUST-001/MCP-TRUST-001-20261006T072554Z-b9c367e1",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "e5763977dc5b7d1ec09e0b41d9f53aa483a080e4",
-    "headCommit": "e5763977dc5b7d1ec09e0b41d9f53aa483a080e4",
-    "recordedAt": "2026-10-06T04:21:20Z",
+    "baselineCommit": "f708f1bbab3ccfaa61b240200066b762f1673091",
+    "headCommit": "f708f1bbab3ccfaa61b240200066b762f1673091",
+    "recordedAt": "2026-10-06T07:28:05Z",
     "verificationSchemaVersion": 3,
-    "verificationSha256": "4fdd72874721b1bee80a3f7e4af06ff36c38179198939a9e69f0170c2e5e135f"
+    "verificationSha256": "b95713c4d8a4136053fc9aa143b67c097d8e62b4f88ea399be624bef7ebb1721"
   },
-  "lastCompletedTaskId": "CONTEXT-INTEGRITY-001",
-  "updatedAt": "2026-10-06T04:21:20Z"
+  "lastCompletedTaskId": "MCP-TRUST-001",
+  "updatedAt": "2026-10-06T07:28:05Z"
 }

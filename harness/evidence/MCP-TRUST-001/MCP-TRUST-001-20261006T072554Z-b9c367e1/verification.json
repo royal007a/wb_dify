@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 3,
+  "strictEvidence": true,
+  "invocationId": "0ff23a11-e3e4-4d71-abf7-e13924ce6411",
+  "runId": "MCP-TRUST-001-20261006T072554Z-b9c367e1",
+  "kind": "verification",
+  "scopes": [
+    "harness"
+  ],
+  "base": "working-tree",
+  "headCommit": "f708f1bbab3ccfaa61b240200066b762f1673091",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-TRUST-001/MCP-TRUST-001-20261006T072554Z-b9c367e1/harness-state.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/harness.py",
+        "validate"
+      ],
+      "logSha256": "6b88b9a6057606024a1bf285377c7371051f61b28a1e81d6b68a3fd12bf6cb7b"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-TRUST-001/MCP-TRUST-001-20261006T072554Z-b9c367e1/harness-progress.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/harness.py",
+        "check-progress"
+      ],
+      "logSha256": "53a4a1b7863bea67045d82fe8a1bc53c8c30dd3740b7708ff332a9300796dc18"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-TRUST-001/MCP-TRUST-001-20261006T072554Z-b9c367e1/harness-api-spec.log",
+      "command": [
+        "python3",
+        "/Users/weberzhao/hify/harness/render-api-spec.py",
+        "--check"
+      ],
+      "logSha256": "0456d6551eef206c05217007f775b3b7e8fe918df66de019312f60508977f0f0"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-TRUST-001/MCP-TRUST-001-20261006T072554Z-b9c367e1/harness-python-tests.log",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/Users/weberzhao/hify/harness/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "logSha256": "11ea14af240289aa63b8366e54686e79015e99dc33d3696bbc54828ab7755d17"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/MCP-TRUST-001/MCP-TRUST-001-20261006T072554Z-b9c367e1/harness-shell-syntax.log",
+      "command": [
+        "sh",
+        "-n",
+        "/Users/weberzhao/hify/harness/init.sh",
+        "/Users/weberzhao/hify/harness/verify.sh",
+        "/Users/weberzhao/hify/harness/run-task.sh"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "finishedAt": "2026-10-06T07:28:05Z",
+  "commandResult": "passed",
+  "testCoverage": "not-assessed",
+  "resultMeaning": "Selected commands and observed test counts only; not full product or deployment acceptance. Repeated steps are not independent tests."
+}

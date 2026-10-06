@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "MCP-TRUST-001-20261006T072554Z-b9c367e1",
+  "taskId": "MCP-TRUST-001",
+  "status": "completed",
+  "baselineCommit": "f708f1bbab3ccfaa61b240200066b762f1673091",
+  "approvalRef": "lark:om_x100b637e5c2f24a8c4f563a9c3596cd",
+  "startedAt": "2026-10-06T07:25:54Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "f708f1bbab3ccfaa61b240200066b762f1673091",
+  "finishedAt": "2026-10-06T07:28:05Z"
+}

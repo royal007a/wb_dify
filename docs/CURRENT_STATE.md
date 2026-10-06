@@ -1,5 +1,9 @@
 # Hify 当前实现边界
 
+2026-10-06 15:28 CST：按用户明确选择的方案②，为线上原版Hify配置独立JVM信任库并重启，原146张公共CA保留、仅加入固定指纹工作台自签证书；正确IP握手通过、错误主机名仍拒绝，health和/hify页面200。仅配置变更，jar仍为a510191对应产物，H1/聚合/结构化输出的新产品版本尚未发布；MCP认证发现及工具发布未验收，也未改Token/readOnlyHint。证据见`evidence/MCP_TRUST_001.md`，收尾仅harness scope，不是产品全量复测。
+
+2026-10-06 本地H1完整验收：e576397六scope通过（backend714、migration125、runtime35、eval24均零失败/错误/skip/flaky），证据959799f及措辞修订3c1489a已独立复核。包含聚合/结构化输出当前源码；旧失败记录原样保留，不因此宣称关停偶发根因已完全解决。见`evidence/CONTEXT_INTEGRITY_001.md`。
+
 2026-10-05 16:01:29 CST：WORKFLOW-STRUCTURED-001 代码58f7820已实现，但首轮harness/backend/frontend门禁失败，保持blocked。后端98类704项全部执行，1 failure、2 errors、零skip/flaky，失败在既有关停/重启等待用例，根因尚未确认；Harness78项、typecheck/build通过。本机qwen2.5:0.5b六条固定合成样例6/6通过，仅是独立live证据，不替代完整门禁。静态复核无P0/P1/P2、四条P3保留；没有部署132。见`evidence/WORKFLOW_STRUCTURED_001.md`。
 
 2026-10-05 15:02:01 CST本地补强：WORKFLOW-AGGREGATION-002代码5010e05通过harness/backend/frontend（97类685项，零失败/错误/skip/flaky，Python78项，typecheck/build通过）。旧writer固定金样、独立祖先负例及突变、逐字JSON草稿编辑补强已经交付；受控管理浏览器另行3/3。独立静态复核无P0/P1/P2，四类P3保留在`evidence/WORKFLOW_AGGREGATION_002.md`。没有部署132。

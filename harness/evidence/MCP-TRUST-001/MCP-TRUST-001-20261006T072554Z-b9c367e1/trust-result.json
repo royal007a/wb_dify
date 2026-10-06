@@ -1,0 +1,52 @@
+{
+  "scope": "Hify JVM trust only; no authenticated MCP calls or tool publication",
+  "steps": [
+    {
+      "probe": "default",
+      "handshakeRejected": true,
+      "endpointIdentification": "HTTPS"
+    },
+    {
+      "publicCaRetained": true,
+      "originalCertificates": 146,
+      "newCertificates": 147,
+      "addedSha256": "e1bb50bd7d35af61eb0bd9f921f8fab8ad61c7b521c67034e875b22d0e491ab5",
+      "storeType": "JKS"
+    },
+    {
+      "probe": "trusted",
+      "handshakeAccepted": true,
+      "httpStatus": 401,
+      "endpointIdentification": "HTTPS",
+      "liveCertificateMatches": true
+    },
+    {
+      "probe": "wrong-host",
+      "handshakeRejected": true,
+      "endpointIdentification": "HTTPS"
+    },
+    {
+      "probe": "trusted",
+      "handshakeAccepted": true,
+      "httpStatus": 401,
+      "endpointIdentification": "HTTPS",
+      "liveCertificateMatches": true
+    }
+  ],
+  "beforePid": "3218119",
+  "jarBefore": "5ee59af0c9b13bb6cfe62f700813a117f4492268641cb153486ff121c4b1f230",
+  "keyMetadataBefore": "390186:65:1791034419:600:root",
+  "defaultCaSha256": "386bd64760f18f552cf8a9d9809f51554a26d61e8f8e716e1510f7b0ba2aa5ed",
+  "sourceCertificateSha256": "e1bb50bd7d35af61eb0bd9f921f8fab8ad61c7b521c67034e875b22d0e491ab5",
+  "trustStoreSha256": "3b10a369448659e819d0ea707e35ac19b0d695db4bab9e3fee37d4ad44e4d5f5",
+  "dropInSha256": "78e800ecfac623fc391f9d0f1ed899c9e51d5289a2a73a0095bf95daefaaa559",
+  "result": "passed",
+  "afterPid": "1650016",
+  "actualProcessOptionsMatch": true,
+  "healthHttpStatus": 200,
+  "jarUnchanged": true,
+  "masterKeyMetadataUnchanged": true,
+  "systemCaUnchanged": true,
+  "dropIn": "/etc/systemd/system/hify.service.d/40-workbench-trust.conf",
+  "trustStore": "/etc/hify-trust/workbench-20261006.jks"
+}
