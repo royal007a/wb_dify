@@ -16,6 +16,42 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CircuitBreakerServiceTest {
+    @Test void localDeadlineUsesParentClockAcrossWrapWithoutChargingParentExpiry() {
+        for (long origin : new long[]{-100, Long.MAX_VALUE-10}) {
+            var clock=new java.util.concurrent.atomic.AtomicLong(origin);
+            var control=ExecutionControl.withTimeout(Duration.ofSeconds(100),()->false,clock::get);
+            var isolated=CircuitBreakerRegistry.ofDefaults();
+            var guarded=new CircuitBreakerService(isolated,Runnable::run,Duration.ofSeconds(20),
+                    3,Duration.ZERO,3,Duration.ZERO);
+            var calls=new AtomicInteger();
+            assertThatThrownBy(()->guarded.execute("local-clock",control,()->{
+                calls.incrementAndGet(); clock.addAndGet(Duration.ofSeconds(20).toNanos()); return "late";
+            })).isInstanceOfSatisfying(LlmApiException.class,
+                    failure->assertThat(failure.type()).isEqualTo(LlmApiException.Type.TIMEOUT));
+            assertThat(control.isExpired()).isFalse();
+            assertThat(calls).hasValue(1);
+            assertThat(isolated.circuitBreaker("provider-local-clock").getMetrics().getNumberOfFailedCalls()).isEqualTo(1);
+        }
+    }
+
+    @Test void timelyResultAndParentExpiryRemainDistinctUnderSharedClock() {
+        var clock=new java.util.concurrent.atomic.AtomicLong(Long.MAX_VALUE-10);
+        var control=ExecutionControl.withTimeout(Duration.ofSeconds(100),()->false,clock::get);
+        var isolated=CircuitBreakerRegistry.ofDefaults();
+        var guarded=new CircuitBreakerService(isolated,Runnable::run,Duration.ofSeconds(20),
+                3,Duration.ZERO,3,Duration.ZERO);
+        assertThat(guarded.execute("timely-clock",control,()->{
+            clock.addAndGet(Duration.ofSeconds(19).toNanos()); return "on time";
+        })).isEqualTo("on time");
+        assertThat(isolated.circuitBreaker("provider-timely-clock").getMetrics().getNumberOfSuccessfulCalls()).isEqualTo(1);
+        assertThatThrownBy(()->guarded.execute("parent-clock",control,()->{
+            clock.addAndGet(Duration.ofSeconds(81).toNanos()); return "late";
+        })).isInstanceOfSatisfying(LlmApiException.class,
+                failure->assertThat(failure.type()).isEqualTo(LlmApiException.Type.TIMEOUT));
+        assertThat(control.isExpired()).isTrue();
+        assertThat(isolated.circuitBreaker("provider-parent-clock").getMetrics().getNumberOfFailedCalls()).isZero();
+    }
+
     private final CircuitBreakerRegistry registry = CircuitBreakerRegistry.of(
             CircuitBreakerConfig.custom().minimumNumberOfCalls(2).slidingWindowSize(2)
                     .failureRateThreshold(50).waitDurationInOpenState(Duration.ofSeconds(30)).build());

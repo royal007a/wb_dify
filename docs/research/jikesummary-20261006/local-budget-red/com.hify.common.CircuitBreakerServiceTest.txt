@@ -1,0 +1,13 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.common.CircuitBreakerServiceTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.445 s <<< FAILURE! -- in com.hify.common.CircuitBreakerServiceTest
+com.hify.common.CircuitBreakerServiceTest.localDeadlineUsesParentClockAcrossWrapWithoutChargingParentExpiry -- Time elapsed: 0.362 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at com.hify.common.CircuitBreakerServiceTest.localDeadlineUsesParentClockAcrossWrapWithoutChargingParentExpiry(CircuitBreakerServiceTest.java:27)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

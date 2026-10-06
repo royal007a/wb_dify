@@ -20,6 +20,41 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class LlmHttpClientTest {
+    @Test void completedHttpReplyStillRespectsLocalBudgetOnParentClock() {
+        var clock=new java.util.concurrent.atomic.AtomicLong(Long.MAX_VALUE-10);
+        var parent=ExecutionControl.withTimeout(Duration.ofSeconds(300),()->false,clock::get);
+        var http=new LlmHttpClient(task->{task.run();clock.addAndGet(Duration.ofSeconds(65).toNanos());});
+        server.enqueue(new MockResponse().setBody("late"));
+        assertThatThrownBy(()->http.post(server.url("/clock-late").toString(),Map.of(),"{}",parent))
+                .isInstanceOfSatisfying(LlmApiException.class,
+                        failure->assertThat(failure.type()).isEqualTo(LlmApiException.Type.TIMEOUT));
+        assertThat(server.getRequestCount()).isEqualTo(1);
+        assertThat(parent.isExpired()).isFalse();
+        var timely=new LlmHttpClient(task->{task.run();clock.addAndGet(Duration.ofSeconds(64).toNanos());});
+        server.enqueue(new MockResponse().setBody("on time"));
+        assertThat(timely.post(server.url("/clock-timely").toString(),Map.of(),"{}",parent)).isEqualTo("on time");
+    }
+
+    @Test void streamStopsFurtherDeltasAtItsOwnDeadlineWhileParentRemainsActive() {
+        var clock=new java.util.concurrent.atomic.AtomicLong(-100);
+        var parent=ExecutionControl.withTimeout(Duration.ofSeconds(300),()->false,clock::get);
+        var deltas=new AtomicInteger();
+        server.enqueue(new MockResponse().setHeader("Content-Type","text/event-stream")
+                .setBody("data: first\n\ndata: forbidden-late\n\n"));
+        assertThatThrownBy(()->client.streamAndAwait(server.url("/clock-stream").toString(),Map.of(),"{}",parent,
+                new LlmHttpClient.StreamCallback(){
+                    @Override public void onEvent(String id,String type,String data){
+                        deltas.incrementAndGet();clock.addAndGet(Duration.ofSeconds(125).toNanos());
+                    }
+                    @Override public void onClosed(){}
+                    @Override public void onFailure(LlmApiException failure){}
+                })).isInstanceOfSatisfying(LlmApiException.class,
+                        failure->assertThat(failure.type()).isEqualTo(LlmApiException.Type.TIMEOUT));
+        assertThat(deltas).hasValue(1);
+        assertThat(parent.isExpired()).isFalse();
+        assertThat(server.getRequestCount()).isEqualTo(1);
+    }
+
     private MockWebServer server;
     private java.util.concurrent.ExecutorService executor;
     private LlmHttpClient client;

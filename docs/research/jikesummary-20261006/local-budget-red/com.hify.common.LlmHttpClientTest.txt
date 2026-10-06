@@ -1,0 +1,22 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.common.LlmHttpClientTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 4.520 s <<< FAILURE! -- in com.hify.common.LlmHttpClientTest
+com.hify.common.LlmHttpClientTest.streamStopsFurtherDeltasAtItsOwnDeadlineWhileParentRemainsActive -- Time elapsed: 3.169 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at com.hify.common.LlmHttpClientTest.streamStopsFurtherDeltasAtItsOwnDeadlineWhileParentRemainsActive(LlmHttpClientTest.java:44)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.hify.common.LlmHttpClientTest.completedHttpReplyStillRespectsLocalBudgetOnParentClock -- Time elapsed: 1.350 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at com.hify.common.LlmHttpClientTest.completedHttpReplyStillRespectsLocalBudgetOnParentClock(LlmHttpClientTest.java:28)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

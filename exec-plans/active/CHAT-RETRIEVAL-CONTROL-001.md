@@ -151,3 +151,16 @@ caller-timeout=146.250583ms（相对测试观察起点，非精确生产 SLA 测
 `e179e29569922c4f8d3992be9abb825750151b39fe05cd977572077afc16c8fb`。
 命令 `mvn -B -o -pl hify-common -am -Dtest=CircuitBreakerServiceTest -Dsurefire.failIfNoSpecifiedTests=false -Dhify.test.reportsDirectory=<fresh>/reports test`。
 common 78 项那次仍为失败；不把此单类重跑覆盖为全模块通过。
+
+### 05:47 HTTP/熔断单次预算使用同一时钟
+
+继续同一个预算任务，不修改 SSE broker 的传输生命周期。先添加 4 个方法：
+熔断器本地20秒到期/父100秒仍有效、及时19秒对照及父100秒到期不记供应商失败；
+真实本机 HTTP 完成后模拟65秒与64秒；真实本机 SSE 在首个 delta 后模拟125秒，
+后续 delta 禁止交付。注入时间只通过已有包私有 ExecutionControl 工厂，不新增
+生产配置；测试证明本地预算应使用父控制的时间域，不是假称在真实世界等了65秒。
+
+拟用 parent.boundedBy(localTimeout) 替代两类里的绝对 nanoTime deadline。熔断统计
+仍以原始 parent 判定取消/到期不采样，以本地到期判定供应商 SLA timeout；不能
+把本地超时也一概归为用户预算耗尽。HTTP 的错误类型和5/60/65、120/125秒上限不改。
+保持现有中断测试与全部断言，先保存新测试红灯后再改产品逻辑。

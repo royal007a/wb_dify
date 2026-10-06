@@ -1,0 +1,111 @@
+Picked up JAVA_TOOL_OPTIONS: -Xmx384m -XX:ReservedCodeCacheSize=96m
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] hify-parent                                                        [pom]
+[INFO] hify-common                                                        [jar]
+[INFO] 
+[INFO] ------------------------< com.hify:hify-parent >------------------------
+[INFO] Building hify-parent 0.1.0-SNAPSHOT                                [1/2]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] ------------------------< com.hify:hify-common >------------------------
+[INFO] Building hify-common 0.1.0-SNAPSHOT                                [2/2]
+[INFO]   from hify-common/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-common ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-common ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 10 source files with javac [debug parameters release 17] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-common ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -Xmx384m -XX:ReservedCodeCacheSize=96m
+[INFO] Running com.hify.common.CircuitBreakerServiceTest
+[ERROR] Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.445 s <<< FAILURE! -- in com.hify.common.CircuitBreakerServiceTest
+[ERROR] com.hify.common.CircuitBreakerServiceTest.localDeadlineUsesParentClockAcrossWrapWithoutChargingParentExpiry -- Time elapsed: 0.362 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at com.hify.common.CircuitBreakerServiceTest.localDeadlineUsesParentClockAcrossWrapWithoutChargingParentExpiry(CircuitBreakerServiceTest.java:27)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[INFO] Running com.hify.common.LlmHttpClientTest
+05:47:46.752 [OkHttp http://localhost:62497/...] INFO com.hify.common.LlmHttpClient -- llm.stream.open target=http://localhost:62497/clock-stream status=200 latencyMs=318
+05:47:46.777 [OkHttp http://localhost:62497/...] INFO com.hify.common.LlmHttpClient -- llm.stream.closed target=http://localhost:62497/clock-stream latencyMs=343
+05:47:48.127 [main] INFO com.hify.common.LlmHttpClient -- llm.http target=http://localhost:62505/clock-late status=200 latencyMs=1323
+[ERROR] Tests run: 2, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 4.520 s <<< FAILURE! -- in com.hify.common.LlmHttpClientTest
+[ERROR] com.hify.common.LlmHttpClientTest.streamStopsFurtherDeltasAtItsOwnDeadlineWhileParentRemainsActive -- Time elapsed: 3.169 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at com.hify.common.LlmHttpClientTest.streamStopsFurtherDeltasAtItsOwnDeadlineWhileParentRemainsActive(LlmHttpClientTest.java:44)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] com.hify.common.LlmHttpClientTest.completedHttpReplyStillRespectsLocalBudgetOnParentClock -- Time elapsed: 1.350 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at com.hify.common.LlmHttpClientTest.completedHttpReplyStillRespectsLocalBudgetOnParentClock(LlmHttpClientTest.java:28)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   CircuitBreakerServiceTest.localDeadlineUsesParentClockAcrossWrapWithoutChargingParentExpiry:27 
+Expecting code to raise a throwable.
+[ERROR]   LlmHttpClientTest.completedHttpReplyStillRespectsLocalBudgetOnParentClock:28 
+Expecting code to raise a throwable.
+[ERROR]   LlmHttpClientTest.streamStopsFurtherDeltasAtItsOwnDeadlineWhileParentRemainsActive:44 
+Expecting code to raise a throwable.
+[INFO] 
+[ERROR] Tests run: 4, Failures: 3, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for hify-parent 0.1.0-SNAPSHOT:
+[INFO] 
+[INFO] hify-parent ........................................ SUCCESS [  0.015 s]
+[INFO] hify-common ........................................ FAILURE [ 31.593 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  33.173 s
+[INFO] Finished at: 2026-10-07T05:47:51+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.3:test (default-test) on project hify-common: There are test failures.
+[ERROR] 
+[ERROR] See /tmp/hify-local-budget-red-20261007.kO8VOu/reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :hify-common
