@@ -48,6 +48,9 @@ class RunKnowledgeControlTest {
                 f.service.convergeInterruptedRuns();
                 assertThat(entered.await(60, TimeUnit.SECONDS)).as("first corpus admitted").isTrue();
                 f.service.cancel("run"); // Public entry sets both durable and in-flight cancellation.
+                assertThat(f.controls).hasSize(1);
+                assertThat(f.controls.get(0)).isNotNull();
+                assertThat(f.controls.get(0).isCancelled()).as("retrieval observes public cancellation").isTrue();
                 release.countDown();
                 f.finished.get(60, TimeUnit.SECONDS);
                 assertThat(f.retrieved).containsExactly("corpus-first");
@@ -83,6 +86,9 @@ class RunKnowledgeControlTest {
             assertThat(f.retrieved).containsExactly("corpus-first", "corpus-second");
             verify(f.clients).create(f.provider);
             assertThat(mockingDetails(f.loop).getInvocations()).hasSize(1);
+            assertThat(f.controls).hasSize(2).doesNotContainNull();
+            Object loopControl=mockingDetails(f.loop).getInvocations().iterator().next().getArgument(8);
+            assertThat(f.controls.get(0)).isSameAs(f.controls.get(1)).isSameAs(loopControl);
             assertThat(f.run.getState()).isEqualTo(RunState.COMPLETED);
             verify(f.events).publish(eq("run"), eq("knowledge.retrieval.completed"), argThat(payload ->
                     Integer.valueOf(2).equals(payload.get("citationCount"))));
@@ -113,6 +119,7 @@ class RunKnowledgeControlTest {
         final ExecutorService worker = Executors.newSingleThreadExecutor();
         final CompletableFuture<Void> finished = new CompletableFuture<>();
         final List<String> retrieved = new CopyOnWriteArrayList<>();
+        final List<com.hify.common.ExecutionControl> controls = new CopyOnWriteArrayList<>();
         final ProviderRuntimeConfig provider = new ProviderRuntimeConfig(
                 "provider", "fixture", ProviderType.MOCK, null, null, "mock", true);
         Function<String, List<KnowledgeCitation>> retrieval = corpus -> List.of(citation(corpus));
@@ -122,6 +129,7 @@ class RunKnowledgeControlTest {
             if (call.getMethod().getName().equals("searchRevision")) {
                 String corpus = call.getArgument(0);
                 retrieved.add(corpus);
+                controls.add(call.getArguments().length==4?call.getArgument(3):null);
                 return retrieval.apply(corpus);
             }
             return org.mockito.Answers.RETURNS_DEFAULTS.answer(call);

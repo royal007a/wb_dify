@@ -30,19 +30,24 @@ class KnowledgeRetrievalControlTest {
     @SuppressWarnings("unchecked")
     @Test void cancellationAfterFirstProfilePreventsSecondEmbeddingAndRankingTransaction() {
         var jdbc=mock(JdbcTemplate.class);
-        var semantic=mock(SemanticEmbeddings.class);
+        var cancelled=new AtomicBoolean();
+        var observed=new java.util.concurrent.atomic.AtomicReference<ExecutionControl>();
+        var semantic=mock(SemanticEmbeddings.class,call->{
+            if(call.getMethod().getName().equals("embed")){
+                observed.set(call.getArguments().length==3?call.getArgument(2):null);
+                cancelled.set(true);return List.of(new float[]{1,0});
+            }
+            return org.mockito.Answers.RETURNS_DEFAULTS.answer(call);
+        });
         var retrieval=new KnowledgeRetrievalService(jdbc,mock(KnowledgeApplicationService.class),.5);
         ReflectionTestUtils.setField(retrieval,"semantic",semantic);
-        var cancelled=new AtomicBoolean();
         var control=ExecutionControl.withTimeout(Duration.ofMinutes(1),cancelled::get);
         when(jdbc.queryForObject(anyString(),any(RowMapper.class),eq("version")))
                 .thenReturn(new long[]{2,100});
         when(jdbc.queryForList(anyString(),eq(String.class),eq("version"))).thenReturn(List.of("a","b"));
-        when(semantic.embed(eq("a"),eq(List.of("q")),same(control))).thenAnswer(call->{
-            cancelled.set(true);return List.of(new float[]{1,0});
-        });
         assertThatThrownBy(()->retrieval.searchRevision("version","q",3,control))
                 .isInstanceOf(ExecutionCancelledException.class);
+        assertThat(observed.get()).isNotNull().isSameAs(control);
         verify(semantic).embed(eq("a"),eq(List.of("q")),same(control));
         verifyNoMoreInteractions(semantic);
         // The transaction manager is intentionally absent; reaching ranking would fail differently.
