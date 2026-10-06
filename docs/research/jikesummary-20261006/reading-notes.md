@@ -42,7 +42,7 @@
 
 不能直接照搬的安全论断：正则或祈使句密度不是完备检测器；正常操作手册也可能有大量祈使句。来源分90不意味着内部服务返回的用户可控文本可以进入指令区。`<data>`标签不构成执行隔离，也不能凭包装把来源升级为可信；第4-5页“只减不增”的流程中出现50→65与55→60，不能把这组示意数当成已证明的单调策略。写入审查不能替代读取时的访问范围、内容版本和策略检查。“半年没有发现攻击”也不是没有攻击的证据。
 
-原版代码对应：`RunApplicationService.execute`将检索原文与固定提示拼接后作为system；`LayeredContextMemoryService.project`将模型摘要和历史预览放进system。当前文本虽写了“不可信/仅导航”，但协议角色仍然是高优先级。`DeterministicCheckpointCompactor`按既有system保留，因此H1只修了压缩器自身提权，不覆盖这两条上游路径。这是源码事实，不是已经用真实模型复现的攻击。
+原版代码对应：`RunApplicationService.execute`将检索原文与固定提示拼接后作为system；`LayeredContextMemoryService.project`将供模型读取的结构化摘要和历史预览放进system。进一步核对`StructuredSummaryService.createCheckpoint`：当前摘要由规则生成，不是一次LLM调用，关键词筛选出的constraints也可能来自工具正文。当前文本虽写了“不可信/仅导航”，但协议角色仍然是高优先级。`DeterministicCheckpointCompactor`按既有system保留，因此H1只修了压缩器自身提权，不覆盖这两条上游路径。这是源码事实，不是已经用真实模型复现的攻击。
 
 候选修复应将固定使用规则与来源正文分离，正文用非策略消息承载，并保留来源、引用及预算约束。不能简单把每条数据都变成user而不检查近期轮次裁剪：那会改变`recentTurnCutoff`和压缩边界；不能伪造tool_result而没有对应tool_call。三家适配器、历史回放、summary投影及超限行为都要验证。仍保留确定性工具授权，不把“模型没有遵从注入”当作安全验收。
 
@@ -69,7 +69,8 @@ Kafka/独立Gateway不是本项目模块化单体的必要前置；PostgreSQL持
 | 候选 | 代码依据 | 下一步 | 状态来源 |
 |---|---|---|---|
 | 异步日志关联 | RequestLoggingFilter、ThreadPoolConfig、AsyncConfig | 提交时快照、白名单传播、恢复作用域；先红后绿 | tasks.json / OBS-CORRELATION-001 |
-| 分离存活与就绪 | HealthController只有固定字符串 | 读部署探针、缓存降级契约，另行设计，不改旧API语义 | 尚未形成工程任务 |
+| 分离存活与就绪 | HealthController固定字符串；application.yml已启用Actuator probes并关闭Redis健康项；systemd安装脚本用旧health，compose用actuator/health | 不重复实现探针框架，先实测就绪分组是否包含数据库故障，再对齐部署消费方；旧API不改语义 | 尚未形成工程任务 |
+| 外部资料不升为策略 | RunApplicationService、LayeredContextMemoryService、StructuredSummaryService | 分离固定规则与正文，覆盖三家适配器、轮次边界、历史摘要与回放，不伪造tool配对 | 已核实源码，待设计与反例 |
 | 回归轨迹和脱敏 | QueryLoop/ToolRuntime现有大量测试 | 结合后续章节找真实缺口，不重复已有门禁 | 尚未形成工程任务 |
 
 研究入口未完成，以上不是最终全量总结；仍需阅读其他相关章节并逐项优化、验证和review。
