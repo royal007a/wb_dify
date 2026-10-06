@@ -630,7 +630,7 @@
       "sha256": "9681a5d280aabe24a6a0506d681f86b739f9b1430d8fc1b27cff08070d61410d",
       "pages": 17,
       "bytes": 7484713,
-      "readingStatus": "catalogued-not-read"
+      "readingStatus": "read-and-mapped-in-reading-notes"
     },
     {
       "id": "C076",
@@ -1070,7 +1070,7 @@
       "sha256": "1bb8549482aa0d12d2d34488905394e4a3c7ae6c69a4561272cfd6cb7a2e502d",
       "pages": 8,
       "bytes": 2328614,
-      "readingStatus": "catalogued-not-read"
+      "readingStatus": "read-and-mapped-in-reading-notes"
     },
     {
       "id": "C131",
@@ -1094,7 +1094,7 @@
       "sha256": "df57c0e3efb01c5c6b6808dc811f2546dc676d4277b9d1bf398d0755896250fa",
       "pages": 12,
       "bytes": 2096099,
-      "readingStatus": "catalogued-not-read"
+      "readingStatus": "read-and-mapped-in-reading-notes"
     },
     {
       "id": "C134",
@@ -1134,7 +1134,7 @@
       "sha256": "683420dd419c566e31ff2806bb3c464ffad65b72a88d4cfc17ea60c68052a994",
       "pages": 6,
       "bytes": 4348035,
-      "readingStatus": "catalogued-not-read"
+      "readingStatus": "read-and-mapped-in-reading-notes"
     },
     {
       "id": "C139",
@@ -1142,7 +1142,7 @@
       "sha256": "bea17def60e76543fc71a89990251aef539171d44485ee71f307f70b1c244e18",
       "pages": 6,
       "bytes": 1102306,
-      "readingStatus": "catalogued-not-read"
+      "readingStatus": "read-and-mapped-in-reading-notes"
     },
     {
       "id": "C140",
@@ -1374,7 +1374,7 @@
       "sha256": "dbeb5c9c5f0d2383d328fca523ec20e21806d4001049d36c75c331fecaaa65e5",
       "pages": 9,
       "bytes": 1866211,
-      "readingStatus": "catalogued-not-read"
+      "readingStatus": "read-and-mapped-in-reading-notes"
     },
     {
       "id": "C169",
@@ -1382,7 +1382,7 @@
       "sha256": "06bd0db66b941718dea590d92e93534b31eca24e93136dbbbe6ef707c736a652",
       "pages": 8,
       "bytes": 2863970,
-      "readingStatus": "catalogued-not-read"
+      "readingStatus": "read-and-mapped-in-reading-notes"
     },
     {
       "id": "C170",
