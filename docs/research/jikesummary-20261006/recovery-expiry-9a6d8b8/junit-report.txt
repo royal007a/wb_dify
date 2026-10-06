@@ -1,0 +1,22 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.api.RunShutdownIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 567.5 s <<< FAILURE! -- in com.hify.api.RunShutdownIntegrationTest
+com.hify.api.RunShutdownIntegrationTest.expiredInterruptedModelDoesNotRestartItsBudgetAfterActualApplicationRestart -- Time elapsed: 305.8 s <<< ERROR!
+java.util.concurrent.TimeoutException: expiredInterruptedModelDoesNotRestartItsBudgetAfterActualApplicationRestart() timed out after 45 seconds
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.hify.api.RunShutdownIntegrationTest.interruptedModelIsRecoverableAfterActualApplicationRestart -- Time elapsed: 259.3 s <<< ERROR!
+java.util.concurrent.TimeoutException: interruptedModelIsRecoverableAfterActualApplicationRestart() timed out after 45 seconds
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	Suppressed: org.opentest4j.AssertionFailedError: 
+Expecting value to be true but was false
+		at com.hify.api.RunShutdownIntegrationTest.awaitTerminal(RunShutdownIntegrationTest.java:327)
+		at com.hify.api.RunShutdownIntegrationTest.verifyModelShutdownRecovery(RunShutdownIntegrationTest.java:256)
+		at com.hify.api.RunShutdownIntegrationTest.verifyModelShutdownRecovery(RunShutdownIntegrationTest.java:204)
+		at com.hify.api.RunShutdownIntegrationTest.interruptedModelIsRecoverableAfterActualApplicationRestart(RunShutdownIntegrationTest.java:198)
+		at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+		... 2 more
+

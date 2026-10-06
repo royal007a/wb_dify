@@ -67,3 +67,9 @@ WorkflowKnowledgeReviewPostgresTest#indexingMetadataFailurePersistsFailureWithou
 要求 COMPLETED、回答和恢复事件，并补模型恰好一次。45/60 秒类/方法上限
 及原来的 10/5 秒 latch 等待不变。清单同步增至 H2 7 / PG 3。
 未运行前只算新测试代码；完整门禁依然未通过。
+
+05:15 结果更新：上述 H2 两方法已运行，2 tests / 0 failures / 2 errors / 0 skipped，
+Maven exit 1。过期反例走完业务断言但仍违反原45秒限制；正例另有10秒终态等待
+失败（suppressed assertion），不能忽略。日志、报告、主线程快照已保留在
+recovery-expiry-9a6d8b8/；新增PG方法和这组突变未运行。本轮没有再开验证VM，
+不因窄反例的局部断言经过而把任务改为完成。后续继续诊断与研究，不盲目重跑。
