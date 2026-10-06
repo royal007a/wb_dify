@@ -1,0 +1,31 @@
+worktreeHead=3c4daf2c46cbf7b7f5e2e664e4f36a19c67dc6db
+dependencyWorktreeHead=c45c19a9837b71e9f44113441f23d7d495f55750
+isolatedOutput=/tmp/hify-course-20261006.hhEhwt/service-probe-vj5l_lot
+sourceSha256=1b0cebe537f391269b85a9605559b74af89580cb2e998856dcf50b8805224039 RunApplicationService.java
+sourceSha256=701729af09a1aa5eef1151f8d33f7b7b6cd5385cce7a5d53d80cf0d3c88eb193 QueryLoop.java
+sourceSha256=3ab5756d3e7baa3d993219538d73805d8ed8c976c4a212c33568f60c3c190199 ExecutionControl.java
+sourceSha256=9ad469dd6af24895d13141c715c51f43caa50df4ab7a302ca788cc30bcb63454 ExecutionTimedOutException.java
+sourceSha256=1d440c769e5f9defaa34e973b90cb6e6a947cb73062f4ba0b6b99fcd33a08a59 KnowledgeRetrievalPort.java
+sourceSha256=ed1d758e2bf7eb925f9c01c968590cedd56b2262bb010be7836ac53a0793b726 SemanticEmbeddings.java
+sourceSha256=00e898e6861d5dc4172af5c93a0dc9eb6232bdcff8e692f5d18c44470d7ee2bf KnowledgeRetrievalService.java
+sourceSha256=de9718a8755fa3e356fe735667444133f25186a04518b355e2d5b8b49f155a01 RunKnowledgeControlTest.java
+sourceSha256=d1b00e59ac0037b983eb822a2483ae24e0991ca10b6ebc47f694ce56a3ee660f QueryLoopParentControlTest.java
+sourceSha256=de43717cef4fa9b910b53db1b0265bb99f2b5afbf6532c0922e05f1169e5341b ExecutionControlTest.java
+sourceSha256=167b620c1973ec919ea1626bc6df3dea2599a993a17bde1e6ff6118751aba31d SemanticEmbeddingControlTest.java
+sourceSha256=0d8763f28d82bb1807edf744c99652ce6e9263e5e34324848b50f490d4408832 KnowledgeRetrievalControlTest.java
+sourceSha256=2d0b309ac416446ec4b5e96e77330711e8a3709336937c1675fb1b22acb8703e LightweightTest.java
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+
+Test run finished after 17888 ms
+[         7 containers found      ]
+[         0 containers skipped    ]
+[         7 containers started    ]
+[         0 containers aborted    ]
+[         7 containers successful ]
+[         0 containers failed     ]
+[        22 tests found           ]
+[         0 tests skipped         ]
+[        22 tests started         ]
+[         0 tests aborted         ]
+[        22 tests successful      ]
+[         0 tests failed          ]
