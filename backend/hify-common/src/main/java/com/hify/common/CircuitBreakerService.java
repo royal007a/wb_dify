@@ -64,7 +64,7 @@ public class CircuitBreakerService {
     }
 
     public <T> T execute(String providerName, ExecutionControl control, Supplier<T> operation) {
-        long localDeadline = System.nanoTime() + overallTimeout.toNanos();
+        ExecutionControl localDeadline = control.boundedBy(overallTimeout);
         checkActive(control, localDeadline);
         CallProbe probe = new CallProbe(circuitBreakers.circuitBreaker(normalize(providerName)));
         FutureTask<T> future = new FutureTask<>(() -> executeProtected(providerName, control, localDeadline, probe, () -> {
@@ -102,20 +102,20 @@ public class CircuitBreakerService {
             // Settle before interrupting: HTTP cancellation may otherwise hide an upstream SLA
             // timeout. A driver that ignores interruption must not keep a HALF_OPEN permit.
             if (control.isSuspended() || control.isCancelled() || control.isExpired()) probe.ignore();
-            else if (System.nanoTime() >= localDeadline) probe.modelTimeout();
+            else if (localDeadline.isExpired()) probe.modelTimeout();
             if (!future.isDone()) future.cancel(true);
         }
     }
 
-    private static void checkActive(ExecutionControl control, long localDeadline) {
+    private static void checkActive(ExecutionControl control, ExecutionControl localDeadline) {
         control.throwIfCancelled();
-        if (control.isExpired() || System.nanoTime() >= localDeadline) {
+        if (localDeadline.isExpired()) {
             throw new LlmApiException(LlmApiException.Type.TIMEOUT,
                     "LLM provider attempts exceeded remaining run deadline");
         }
     }
 
-    private <T> T executeProtected(String providerName, ExecutionControl control, long localDeadline,
+    private <T> T executeProtected(String providerName, ExecutionControl control, ExecutionControl localDeadline,
                                    CallProbe probe, Supplier<T> operation) {
         String name = normalize(providerName);
         RetryConfig activeTimeoutRetry = RetryConfig.from(timeoutRetry).retryOnException(failure ->
@@ -206,8 +206,8 @@ public class CircuitBreakerService {
         return false;
     }
 
-    private static boolean eligible(ExecutionControl control, long deadline) {
-        return !control.isSuspended() && !control.isCancelled() && !control.isExpired() && System.nanoTime() < deadline;
+    private static boolean eligible(ExecutionControl control, ExecutionControl deadline) {
+        return !control.isSuspended() && !control.isCancelled() && !deadline.isExpired();
     }
 
     private static boolean retryTimeoutOrUnavailable(Throwable failure) {

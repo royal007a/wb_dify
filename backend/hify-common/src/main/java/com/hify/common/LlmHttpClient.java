@@ -63,7 +63,7 @@ public class LlmHttpClient {
     }
 
     public String post(String url, Map<String, String> headers, String body, ExecutionControl control) {
-        long localDeadline = System.nanoTime() + OVERALL_TIMEOUT.toNanos();
+        ExecutionControl localDeadline = control.boundedBy(OVERALL_TIMEOUT);
         checkActive(control, localDeadline);
         FutureTask<String> future = new FutureTask<>(() -> {
             // Eligibility may have changed while waiting in the executor queue.
@@ -145,7 +145,7 @@ public class LlmHttpClient {
 
     public void streamAndAwait(String url, Map<String, String> headers, String body,
                                ExecutionControl control, StreamCallback callback) {
-        long localDeadline = System.nanoTime() + Duration.ofSeconds(125).toNanos();
+        ExecutionControl localDeadline = control.boundedBy(Duration.ofSeconds(125));
         checkActive(control, localDeadline);
         CountDownLatch completed = new CountDownLatch(1);
         AtomicReference<LlmApiException> failure = new AtomicReference<>();
@@ -180,9 +180,9 @@ public class LlmHttpClient {
         }
     }
 
-    private static void checkActive(ExecutionControl control, long localDeadline) {
+    private static void checkActive(ExecutionControl control, ExecutionControl localDeadline) {
         control.throwIfCancelled();
-        if (control.isExpired() || System.nanoTime() >= localDeadline) {
+        if (localDeadline.isExpired()) {
             throw new LlmApiException(LlmApiException.Type.TIMEOUT, "LLM request exceeded remaining run deadline");
         }
     }
