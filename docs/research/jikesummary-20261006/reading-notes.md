@@ -64,13 +64,33 @@ Kafka/独立Gateway不是本项目模块化单体的必要前置；PostgreSQL持
 
 本项目已有`ContextManager`、`PreparedContext`及history.search/detail，H1已实现保留现有system/当前轮和压力归档，不能重复立项。需补的是角色/来源边界以及关键材料被裁剪时的可解释结果：预算优先级和消息权限是两条轴，重要的检索原文也不应被升级为system；system太长仍应明确拒绝，不静默截断。
 
+### C125：企业级全链路开发实战，第18讲，复杂前端交互
+
+Robert，阅读PDF 1–9页（含评论），第3页布局图已渲染核对。课程把复杂页面拆成结构、行为、细节三层：管理表单明确布局/数据/交互/接口；连续交互用时间线说明发送、等待、增量、结束、失败和恢复。验收不能止于curl，要覆盖浏览器多轮、切换会话、刷新后的持久记录及用户滚动意图。
+
+不能照搬具体实现：课程的接口是POST SSE，所以建议fetch；本项目先POST创建Run，再通过GET EventSource订阅，协议不同，不能据此认定EventSource错误或替换已有恢复逻辑。50ms“太快”改为30ms反而更快；Markdown解析库本身也不是HTML安全过滤器，本次尚未核实项目相关渲染路径，不把课程建议写成已存在的XSS漏洞。完整时间线还应覆盖取消、迟到响应、切换对象和失败后重试，不能只写正常动画。
+
+源码映射：ChatView和WorkflowRunDialog已有generation校验，应保留，不重复建设。WorkflowCanvas的save在await后再次读取可变props.workflow.id，publish又在save之后读取同一props；父WorkflowList的design/canvasSaved没有迟到读取保护，保存回读会重置草稿。现阶段是静态发现的竞态候选，尚无浏览器反例，不能宣称已复现。下一步用受控请求顺序验证保存期间换对象、继续编辑、A慢B快；绑定操作目标/草稿快照并隔离过期结果，避免“避免覆盖”变成静默丢掉用户编辑。
+
+### C129：生产级Agent排雷实战，第15讲，成本账本
+
+李号双，阅读PDF 1–7页，渲染核对第2页四层表与并发执行示例。可借鉴的是按Run、Step、模型尝试归因，区分单位任务消耗与总账；在调用前后检查预算，恢复后不能清零，子任务汇总须避免重复；优化要同时评估质量、重试次数和消耗，不以更便宜模型的单次价格等同总成本更低。
+
+课程说法需加边界：传统软件也可能有重试放大和非线性负载；并发gather前后查账不能保证绝不超支，已发出的请求已经可能产生费用，需要预留/并发准入与结束结算。反复fold同一累积子账本会重复计费，示例未展示去重和增量游标。usage缺失不能记为零，供应商累计usage不能每个delta重复相加。金额需要价格版本、币种、缓存/推理token口径与“估算/供应商报告”来源，不是随手加一个float。轮次、时间和授权本身也是独立约束，不因有金额上限而降级为可忽略。
+
+动态预算不能让模型凭自报里程碑自我授权；自动换模型、工具或提前交付也不能绕过Agent固定版本、工具授权和证据门禁。课程50轮/600秒/50万token/5美元、80%降级以及模型档位比例都是示例，不是本项目默认值或实时报价。稳定前缀有助于缓存，但具体缓存条件由供应商决定，不能保证加一个时间戳必然摧毁所有缓存；将RAG移到尾部也要维护消息角色和当前用户任务语义。
+
+本项目源码：QueryLoop.RunPolicy包含轮次、工具、窗口估算、召回和时间限制；maxEstimatedTokens用来构造单次ContextBudget，不是跨尝试累计的计费用量上限。三家原生模型适配器会调用ModelStreamObserver.onUsage，但QueryLoop.generateStream传入的是只处理delta的lambda，onUsage仍走默认空实现，因此不能把适配器有usage字段宣称成Run已经记账。当前没有实际子Agent worker，不为账本示例先建分布式子任务。候选应先设计尝试身份、供应商usage语义、未知值及恢复去重，再接预算；本轮未实现金额控制，不能报为已有能力。
+
 ## 候选与验收边界
 
 | 候选 | 代码依据 | 下一步 | 状态来源 |
 |---|---|---|---|
 | 异步日志关联 | RequestLoggingFilter、ThreadPoolConfig、AsyncConfig | 提交时快照、白名单传播、恢复作用域；先红后绿 | tasks.json / OBS-CORRELATION-001 |
-| 分离存活与就绪 | HealthController固定字符串；application.yml已启用Actuator probes并关闭Redis健康项；systemd安装脚本用旧health，compose用actuator/health | 不重复实现探针框架，先实测就绪分组是否包含数据库故障，再对齐部署消费方；旧API不改语义 | 尚未形成工程任务 |
+| 分离存活与就绪 | HealthController固定字符串；application.yml已启用Actuator probes并关闭Redis健康项；systemd安装脚本用旧health，compose用actuator/health | 已复现数据库故障时readiness仍200；仅调整既有分组并验证，部署消费方另行处理 | tasks.json / OBS-READINESS-001 |
+| 编辑器异步目标与草稿隔离 | WorkflowCanvas、WorkflowList；ChatView已有换代保护 | 先用浏览器受控请求复现，再防迟到回读覆盖和跨对象保存/发布 | 静态候选，尚未验证 |
 | 外部资料不升为策略 | RunApplicationService、LayeredContextMemoryService、StructuredSummaryService | 分离固定规则与正文，覆盖三家适配器、轮次边界、历史摘要与回放，不伪造tool配对 | 已核实源码，待设计与反例 |
 | 回归轨迹和脱敏 | QueryLoop/ToolRuntime现有大量测试 | 结合后续章节找真实缺口，不重复已有门禁 | 尚未形成工程任务 |
+| 计费用量与窗口预算分离 | QueryLoop.RunPolicy、ModelStreamObserver.onUsage及原生适配器 | 先记录尝试身份/未知usage/累计或增量语义，明确估算与报告；恢复去重后再设计金额准入 | 源码缺口，待设计，不宣称已有金额熔断 |
 
 研究入口未完成，以上不是最终全量总结；仍需阅读其他相关章节并逐项优化、验证和review。
