@@ -21,4 +21,5 @@ JDK线程池保留ThreadPoolExecutor类型、队列大小、AbortPolicy及destro
 - 复现提交948a494：3项纯断言红灯，日志在`/tmp/hify-course-20261006.hhEhwt/correlation-red.log`，脱敏摘要已提交。
 - 当前实现：白名单Snapshot + 三个生产线程池 + 4种OkHttp回调作用域。common窄测27/27通过，摘要`docs/research/jikesummary-20261006/correlation-green.json`。
 - app线程池配置窄测已通过：AsyncConfigTest 1/1，失败/错误/跳过均为0；日志`/tmp/hify-course-20261006.hhEhwt/run-executor-green.log`，SHA-256 `9c4b5f47a363bb7514b938021e059d8a2d8dee09bd7895e27c70c2620c1328b9`。这是直接实例化生产配置的测试，不是完整Spring/Run端到端验收。
-- 下一步：核对app窄测、补独立突变（提交捕获/清理/流回调/拒绝与取消），固定实现范围交review；再协调完整六scope门禁。研究继续覆盖其余相关主题，目标未完成。
+- 固定实现948a494..b3f55df已交mymacclaude只读review。隔离archive的3项独立突变（提交捕获、恢复、SSE回调）均为断言失败，恢复后逐字比对源文件并27/27通过；见`correlation-mutations.json`。拒绝/取消目前只有回归而非独立突变，不能扩大这条证据口径。
+- 下一步：处理review，协调完整六scope门禁。研究继续覆盖其余相关主题，目标未完成。

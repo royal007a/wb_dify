@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "baseline": "b3f55df7861f8c125c3d38809fb5f5f1c4ec2b9e",
+  "scope": "Independent narrow mutations in a git archive copy; no product worktree modifications or external service calls",
+  "scratchDirectory": "/tmp/hify-correlation-mutation.1eo96x",
+  "commandTemplate": "mvn -o -B -f backend/hify-common/pom.xml -Dtest=<test> test",
+  "mutations": [
+    {
+      "id": "M1",
+      "change": "RequestLogContext.wrap captures inside Runnable execution instead of at submission",
+      "test": "RequestCorrelationTest#snapshotIsCapturedAtSubmissionAndDoesNotCopySecrets",
+      "exitCode": 1,
+      "tests": 1, "failures": 1, "errors": 0, "skipped": 0,
+      "redType": "AssertionError",
+      "expected": "requestId=captured",
+      "actual": "requestId=worker-previous",
+      "log": "m1-submission.log",
+      "logSha256": "5b7b3038af47ca9d23e88a63a6d46893c27b4e14021bac606fffe20395f2c2f6"
+    },
+    {
+      "id": "M2",
+      "change": "Remove both MDC restoration branches in Snapshot.run finally",
+      "test": "RequestCorrelationTest#exceptionalNestedExecutionRestoresFullPreviousContext",
+      "exitCode": 1,
+      "tests": 1, "failures": 1, "errors": 0, "skipped": 0,
+      "redType": "AssertionFailedError",
+      "expected": "requestId=outer, workerKey=retained",
+      "actual": "requestId=inner, leaked=must-disappear",
+      "log": "m2-restoration.log",
+      "logSha256": "922716e7a2f069328aeed7081a8c1f2541ddf08e6a6740bd9fc7f02fa4a38bb7"
+    },
+    {
+      "id": "M3",
+      "change": "Clear MDC immediately before invoking the onEvent consumer",
+      "test": "LlmHttpClientTest#streamingCallbacksCarryCapturedRequestIdWithoutSecrets",
+      "exitCode": 1,
+      "tests": 1, "failures": 1, "errors": 0, "skipped": 0,
+      "redType": "AssertionFailedError",
+      "expected": "requestId=stream-request",
+      "actual": null,
+      "log": "m3-stream.log",
+      "logSha256": "23a19978f24ae681aa7129bcc92faa5bc303820f21757ab36145e5fc48f3f2a2"
+    }
+  ],
+  "restored": {
+    "sourceCheck": "All Java source bytes under archived hify-common/src compared equal to git show b3f55df:<path>",
+    "test": "RequestCorrelationTest,CommonContractsTest,LlmHttpClientTest",
+    "exitCode": 0,
+    "tests": 27, "failures": 0, "errors": 0, "skipped": 0,
+    "log": "restored-green.log",
+    "logSha256": "c8437e91f0f7fde2c45035d62785023f1f5cc28b69a1b7e6e57aa0a50e2746f3"
+  },
+  "limits": [
+    "Raw Maven logs retained only in the local scratch directory; this committed summary cannot reconstruct them",
+    "Three explicit fault injections, not exhaustive mutation coverage",
+    "Rejection, cancellation and app executor paths have regression checks but no independent mutation here",
+    "Full six-scope verification and reviewer approval are separate; no deployment"
+  ]
+}
