@@ -114,3 +114,21 @@ ExecutionControlTest：10 项，5 项断言失败，0 error，0 skip，Maven exi
 尚未修改的独立绝对时钟比较：CircuitBreakerService 的本次调用 SLA、LlmHttpClient
 的 HTTP/stream SLA、RunEventBroker 的 SSE 生命周期。它们不是本次 ExecutionControl
 修复的覆盖范围，需要各自的确定性反例后再改；不能称全链路时钟风险已消除。
+
+验证原文在 `docs/research/jikesummary-20261006/clock-boundary-validation/`：
+
+- targeted-maven.log：10/10，SHA-256 `6a1a99d9f23ee4950b5d530e22bf0fbfe852a7c898eded3791d74369a6093e01`；
+  targeted-junit.txt：`539db9b07a099eff6e22fb9486d5a832cb86691abd552e0e7648b3a51c97b6fd`。
+  当时修复代码与 dd3a83f 的生产类相同，但还没加后面 3 条保护测试。
+- common-run/maven.log：2026-10-07 05:36:33 CST，78 项、1 failure、0 error/skip，
+  SHA-256 `94ea4457557c99a976197a7300d8816ea46ecead9e421267f1d81653db0521a4`。
+  从同次 10 份 fresh XML 汇总核对；提交其全部文本报告，XML 留在隔离运行目录。
+  命令为 `mvn -B -o -pl hify-common -am -Dhify.test.reportsDirectory=<fresh>/reports test`，
+  源码对应 dd3a83f，构建后没有修改产品或测试源码。
+- 新增后的 ExecutionControlTest 13/13。失败是原有
+  `CircuitBreakerServiceTest.stopsAttemptChainAtOverallDeadlineAndInterruptsTheWorker:149`，
+  1 秒内未观察到 interrupted latch；原 50ms 总超时及断言均未修改。
+  测试没有先确认 operation 已启动，队列先过期是待验证的解释，不是本日志证明的根因。
+  本次不修改该断言、不把一次重跑通过当作排除功能问题，也不归咎于资源环境。
+
+上述结果只说明新算术反例由红转绿，不能支撑 hify-common 全绿或六 scope 验收。
