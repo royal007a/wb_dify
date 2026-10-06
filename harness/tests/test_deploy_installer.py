@@ -11,6 +11,8 @@ import time
 import unittest
 import zipfile
 
+from fixture_diagnostics import run_with_fixture_diagnostics
+
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -142,7 +144,7 @@ class DeployInstallerTest(unittest.TestCase):
                     read_fd, write_fd = os.pipe()
                     os.close(read_fd)  # A real pipe with no reader: EPIPE, not EBADF.
                     try:
-                        result = subprocess.run([shell, str(script), str(release)], env=env,
+                        result = run_with_fixture_diagnostics([shell, str(script), str(release)], fixture_root=root, env=env,
                                                 stdout=subprocess.PIPE, stderr=write_fd, timeout=10)
                     finally:
                         os.close(write_fd)

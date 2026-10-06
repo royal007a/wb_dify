@@ -198,6 +198,8 @@ class RunShutdownIntegrationTest {
         verifyModelShutdownRecovery(database());
     }
     static void verifyModelShutdownRecovery(String url) throws Exception {
+        long diagnosticStarted=System.nanoTime();
+        shutdownPhase(diagnosticStarted,"model-begin");
         var entered = new CountDownLatch(1);
         var interrupted = new CountDownLatch(1);
         ModelClient blocked = request -> {
@@ -209,26 +211,35 @@ class RunShutdownIntegrationTest {
             }
         };
         String run;
+        shutdownPhase(diagnosticStarted,"model-first-context-starting");
         try (var first = start(url, blocked)) {
+            shutdownPhase(diagnosticStarted,"model-first-context-started");
             var service = first.getBean(RunApplicationService.class);
             run = service.create(conversation(first), "shutdown-model", "hello").run().getId();
             assertThat(entered.await(10, TimeUnit.SECONDS)).isTrue();
+            shutdownPhase(diagnosticStarted,"model-entered-before-close");
             // Unmodified production destruction: no listener invokes pool.shutdown().
         }
+        shutdownPhase(diagnosticStarted,"model-first-context-close-returned");
         assertThat(interrupted.await(5, TimeUnit.SECONDS)).isTrue();
         JdbcTemplate db = database(url);
         assertThat(db.queryForObject("select state from agent_runs where id=?", String.class, run)).isEqualTo("RUNNING");
         assertThat(db.queryForObject("select cancel_requested_at from agent_runs where id=?", Object.class, run)).isNull();
         assertThat(db.queryForList("select event_type from run_events where run_id=?", String.class, run))
                 .contains("run.interrupted").doesNotContain("run.cancelled", "run.failed", "run.completed");
+        shutdownPhase(diagnosticStarted,"model-persistence-assertions-passed");
+        shutdownPhase(diagnosticStarted,"model-second-context-starting");
         try (var second = start(url, request -> new RuntimeMessage("assistant", "recovered", null, List.of()))) {
+            shutdownPhase(diagnosticStarted,"model-second-context-started");
             var service = second.getBean(RunApplicationService.class);
             awaitTerminal(service, run);
             assertThat(service.get(run).getState()).isEqualTo(RunState.COMPLETED);
             assertThat(service.get(run).getOutputMessage()).isEqualTo("recovered");
             assertThat(db.queryForObject("select count(*) from chat_messages where role='assistant'", Integer.class)).isEqualTo(1);
             assertThat(db.queryForList("select event_type from run_events where run_id=?", String.class, run)).contains("checkpoint.restored");
+            shutdownPhase(diagnosticStarted,"model-recovery-assertions-passed");
         }
+        shutdownPhase(diagnosticStarted,"model-second-context-close-returned");
     }
 
     private static ConfigurableApplicationContext start(String url, ModelClient client) {

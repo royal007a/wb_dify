@@ -91,6 +91,10 @@ class WorkflowKnowledgeReviewTest extends WorkflowKnowledgeIntegrationTest {
         String base=base(),doc=upload(base,"metadata-positive-fixture 七天退货");
         var before=db.queryForList("select id,content,embedding_text from document_chunks where document_id=? order by ordinal",doc);
         assertThat(before).isNotEmpty();
+        // Build the fault fixture before dispatch: cold Mockito bytecode generation is
+        // not part of the asynchronous indexing behavior covered by the five-second wait.
+        java.sql.DatabaseMetaData metadata=mock(java.sql.DatabaseMetaData.class);
+        when(metadata.getDatabaseProductName()).thenThrow(new java.sql.SQLException("private-metadata-fixture"));
         AtomicBoolean observed=new AtomicBoolean();
         doAnswer(invocation->{
             ConnectionCallback<?> callback=invocation.getArgument(0);
@@ -98,8 +102,6 @@ class WorkflowKnowledgeReviewTest extends WorkflowKnowledgeIntegrationTest {
             try {
                 assertThat(DataSourceUtils.isConnectionTransactional(bound,db.getDataSource())).isTrue();
                 observed.set(true);
-                java.sql.DatabaseMetaData metadata=mock(java.sql.DatabaseMetaData.class);
-                when(metadata.getDatabaseProductName()).thenThrow(new java.sql.SQLException("private-metadata-fixture"));
                 Connection fault=(Connection)java.lang.reflect.Proxy.newProxyInstance(Connection.class.getClassLoader(),new Class<?>[]{Connection.class},(proxy,method,args)->{
                     if(method.getName().equals("getMetaData"))return metadata;
                     try{return method.invoke(bound,args);}catch(java.lang.reflect.InvocationTargetException failure){throw failure.getCause();}

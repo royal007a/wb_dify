@@ -1,0 +1,16 @@
+test_preserves_same_timeout_and_original_ten_second_limit (test_fixture_diagnostics.FixtureDiagnosticTest.test_preserves_same_timeout_and_original_ten_second_limit) ... FAIL
+
+======================================================================
+FAIL: test_preserves_same_timeout_and_original_ten_second_limit (test_fixture_diagnostics.FixtureDiagnosticTest.test_preserves_same_timeout_and_original_ten_second_limit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/tests/test_fixture_diagnostics.py", line 24, in test_preserves_same_timeout_and_original_ten_second_limit
+    self.assertTrue(getattr(error, '__notes__', []), 'timeout needs fixture diagnostics')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: [] is not true : timeout needs fixture diagnostics
+
+----------------------------------------------------------------------
+Ran 1 test in 0.009s
+
+FAILED (failures=1)
+EXPECTED_MUTATION_ASSERTION_RED: 1 failure, 0 errors; product file unchanged

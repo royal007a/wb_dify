@@ -1,0 +1,12 @@
+test_diagnostic_failure_cannot_replace_original_timeout (test_fixture_diagnostics.FixtureDiagnosticTest.test_diagnostic_failure_cannot_replace_original_timeout) ... ok
+test_does_not_log_arguments_unknown_names_or_untrusted_service_text (test_fixture_diagnostics.FixtureDiagnosticTest.test_does_not_log_arguments_unknown_names_or_untrusted_service_text) ... ok
+test_missing_files_and_partial_tail_are_bounded (test_fixture_diagnostics.FixtureDiagnosticTest.test_missing_files_and_partial_tail_are_bounded) ... ok
+test_non_timeout_errors_are_not_reclassified (test_fixture_diagnostics.FixtureDiagnosticTest.test_non_timeout_errors_are_not_reclassified) ... ok
+test_preserves_same_timeout_and_original_ten_second_limit (test_fixture_diagnostics.FixtureDiagnosticTest.test_preserves_same_timeout_and_original_ten_second_limit) ... ok
+test_success_and_nonzero_result_objects_remain_unchanged (test_fixture_diagnostics.FixtureDiagnosticTest.test_success_and_nonzero_result_objects_remain_unchanged) ... ok
+test_broken_stderr_pipe_preserves_cleanup_and_original_exit (test_deploy_installer.DeployInstallerTest.test_broken_stderr_pipe_preserves_cleanup_and_original_exit) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 14.128s
+
+OK
