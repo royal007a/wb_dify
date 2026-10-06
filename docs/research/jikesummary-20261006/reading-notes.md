@@ -182,6 +182,20 @@ ReviewReceipt的artifact_digest、critic/policy版本、证据快照与时间在
 
 Hify已有固定Agent/Workflow checksum、KnowledgeCompletionVerifier的canonical digest核验，以及六scope的源码树/测试摘要绑定。知识校验只证明来源完整，语义Claim仍UNVERIFIED；“无工具调用”并非跳过Verifier直接成功。本次分支的27项窄测、主树c45c19a未结束的完整门禁、mymacclaude尚未出结论的review属于三个不同范围，不能互相借用通过状态。当前索引终态差异已经足以阻止放行，不必等找出全部根因才承认失败；根因仍需独立定位，不为使报告完整而编造。
 
+### C060：AI Agent系统设计面试现场，第07讲，失败点与根因回溯
+
+邓明，PDF 1–13页全文及两条评论已读，源SHA核对一致；渲染核对第1页四位置图、第8页渐进/TCC对照、第9–10页跳跃回溯与检索图。失败点是异常被观察到的位置，根因点是错误事实/假设引入处，回滚点是可恢复状态，Replan起点是重新规划的位置；四者可以重合但不能默认为同一处。动作、步骤、阶段、全局和跨轮纠错的影响范围不同；保存“当时看到的输入与证据快照”才能区分工具失败与上游结论过期。
+
+Verified/Available/Suspicious/Invalid/Dirty只是建议状态，不要求照搬全部枚举。可信性需要具体判据，工具返回不自动等于业务事实正确，依赖变化后代码Checkpoint也可能失效。课程说复用率容易算的前提是已知道哪些中间结果仍可信，真实语义任务里这个集合本身可能需要标注；不能用所有产出条数当分母。80%、85%是作者经验/面试示例，不是行业标准、Hify目标或实测收益。“显得高级就说由模型处理”的建议不采纳，实际实现和证据必须一致。
+
+代码负责依赖遍历、预算、失效传播和恢复准入，模型可提供业务根因与候选方案，但建议必须经过验证。已失败路径需要记录失败条件，只有新证据表明条件变化才重试；提示词提醒不替代执行层计数与取消控制。向量检索出的历史案例只是候选，不是哈希键的精确等价匹配，也不能因为错误码相同就自动回滚到同一点。TCC预检不保证Confirm时外部状态未变，checkpoint恢复更不等于撤销支付、消息或其他副作用。
+
+Hify的`DeterministicReplanPolicy`确实分别记录attempt、step、checkpoint和replanFrom，`QueryLoopTest`已有不同坐标和瞬时失败RETRY的断言；`ExecutionPlan.replan`生成新ID/版本并保留父ID和触发attempt。实现范围仍只是确定性局部修复与已启用的只读替代，并非通用语义根因定位、阶段回滚或候选搜索DAG。`EvidenceItem`有UNVERIFIED/VERIFIED/STALE/CONTRADICTED/INVALID，枚举存在不证明已实现跨轮依赖污染自动传播；不能因为课程说该做就在报告里算作已有能力。
+
+新发现一个静态小缺口：TOOL_UNAVAILABLE存在安全替代、但plan版本已超过maxReplans时，action是ASK_HUMAN，reason仍写replace_unavailable_tool_with_read_only_alternative，而非预算耗尽。权限不会因此放开，但审计理由可能误导；先登记为待反例验证的候选，不在当前检索控制任务中夹带改动。后续验收应覆盖有替代且有预算、有替代但耗尽、无替代三组，检查动作和具体reason，而不是只断言进入人工分支。
+
+本轮索引红灯也按四位置拆开：失败观察点是FAILED断言，元数据故障注入和事务提交是否已发生是另一个问题。隔离生产类+H2事务探针证实“进入检查但尚未注入/提交时仍读到旧SUCCEEDED”这一可能机制；它不证明原PostgreSQL失败的根因。下一步在原路径加独立时间点观察，不先修改预期或增加等待使之变绿。记录见`indexing-visibility/README.md`。
+
 ## 候选与验收边界
 
 | 候选 | 代码依据 | 下一步 | 状态来源 |
@@ -194,5 +208,6 @@ Hify已有固定Agent/Workflow checksum、KnowledgeCompletionVerifier的canonica
 | 计费用量与窗口预算分离 | QueryLoop.RunPolicy、ModelStreamObserver.onUsage及原生适配器 | 先记录尝试身份/未知usage/累计或增量语义，明确估算与报告；恢复去重后再设计金额准入 | 源码缺口，待设计，不宣称已有金额熔断 |
 | 检索与循环共用控制预算 | RunApplicationService.knowledgeCandidates、SemanticEmbeddings | 持久Run时间锚点、明确取消传递、有界子调用；服务级反例先于修复 | tasks.json / CHAT-RETRIEVAL-CONTROL-001；分层证据见retrieval-control，完整验收未完成 |
 | 召回质量基准口径 | KnowledgeRetrievalService、HistoryRecallEvaluationTest | 使用生产检索入口和相关集合，不以合成top1命中及artifact常量冒充完整语义评测 | 尚未形成工程任务，现有结果仍按原边界解释 |
+| Replan决策原因与预算一致 | DeterministicReplanPolicy的TOOL_UNAVAILABLE分支 | 有替代/无替代与预算耗尽正反例，校验action和具体reason | C060静态候选，未修改或运行反例 |
 
 研究入口未完成，以上不是最终全量总结；仍需阅读其他相关章节并逐项优化、验证和review。
