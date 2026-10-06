@@ -170,6 +170,18 @@ Robert，PDF 1–7页全文及五条评论已读，源SHA与inventory一致，�
 
 Hify已有Mock模型浏览器chat-time.spec.ts，显式验证“本地规则模拟”；当前新增的HTTP测试是真实client/breaker但上游为夹具，两种都不冒充真实模型。服务级取消测试、QueryLoop父控制测试、HTTP尝试计数分别证明准入、循环控制、传输边界；Spring/Postgres关停恢复还未在新补丁上验证。已同步expected-maven-suites的类与数量，但清单登记不是运行证据。后续真实模型验收应单独报告provider/model、输入范围、尝试观察来源和token未知项，不把任务期望输出混进成功断言。
 
+### C173：Agent设计模式之美，第27讲，生成评审
+
+黄佳，PDF 1–15页（参考资料与两条评论）全文已读，源SHA核对一致；渲染核对第2页角色/模式图和第7页风险证据、独立性两张表。生成者和修订器只产出候选，评审者提交可复核观察，确定性策略决定该版本状态。reviewed_artifact与revision_draft分开，新稿是UNREVIEWED；是否复审由有预算的外层安排，不允许“原稿被看过”给新稿盖章。版本号增长不等于结果更接近目标。
+
+意见被证据闸排除也要留痕；重新分桶可以防上游故意把有据阻断问题放进丢弃桶。tuple冻结集合结构不等于所有嵌套对象都不可变，仍需核对Issue/Artifact的实际实现。正文要求check与evidence同时存在，但展示的grounded片段只检查evidence.strip()，片段不能证明check字段被强制校验；未拉取该课程仓库，不把它扩写成上游已确认缺陷。低分有非空依据仍可能证据错、过期或不相关，确定性决策只能保证规则被执行，不能保证评审内容真实。
+
+无据意见被忽略后ACCEPTED只表示不能凭该意见自动退稿，并不证明所有要求满足。Hify的required Claim必须有匹配VERIFIED Evidence和无blocking Gap，不能照搬成“没发现可行动问题就完成”。COUNT与总额相同仍可能逐条错误相互抵消，需要按业务主键逐项验证。不同模型增加认知独立性，拿到实际数据库/原文/回执才增加事实独立性；换模型不能补上事实缺失。关于历史研究、Copilot功能只记为课程转述，未做时效性或源码核实，不作为本项目能力依据。
+
+ReviewReceipt的artifact_digest、critic/policy版本、证据快照与时间在文中明确是生产蓝图，不是教学repo已实现类。artifact兼容属性返回最新稿而decision仍属于旧稿，调用方若混用会再次造成版本错配；发布入口应核对同一工件身份。也不能只靠revision数字：同号不同内容、相同源码重建成不同二进制、证据快照失效都需显式边界。
+
+Hify已有固定Agent/Workflow checksum、KnowledgeCompletionVerifier的canonical digest核验，以及六scope的源码树/测试摘要绑定。知识校验只证明来源完整，语义Claim仍UNVERIFIED；“无工具调用”并非跳过Verifier直接成功。本次分支的27项窄测、主树c45c19a未结束的完整门禁、mymacclaude尚未出结论的review属于三个不同范围，不能互相借用通过状态。当前索引终态差异已经足以阻止放行，不必等找出全部根因才承认失败；根因仍需独立定位，不为使报告完整而编造。
+
 ## 候选与验收边界
 
 | 候选 | 代码依据 | 下一步 | 状态来源 |
