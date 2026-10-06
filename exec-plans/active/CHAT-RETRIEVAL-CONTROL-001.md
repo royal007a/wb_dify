@@ -97,3 +97,20 @@ ExecutionControlTest：10 项，5 项断言失败，0 error，0 skip，Maven exi
 其中 maven.log SHA-256 为 `0243dd5ffc1c908484ff7689e317d3b14b204acfac5ddfbe2b2dd6bc00bd3246`。
 此检查点只增加测试时钟入口和失败回归，尚未修改截止时间算术；不是修复完成，
 不合并 main，不部署，不更改任务的未验收状态。
+
+### 算术修复与验证边界
+
+改为 `startedNanos/timeoutNanos`，只有内部 -1 表示无限，Long.MAX_VALUE 的有限
+时长不再被哨兵吞掉。经过时间使用 `now - startedNanos`，跨符号时仍按差值判断；
+子控制读取一次当前时刻，以父级剩余时长和请求时长的较小值创建。已到期父级
+产生零剩余时长子级，不能复活；附加取消/停机信号不重置起点。负经过时间属于
+时钟倒退或超出 JDK 小于 2^63 纳秒的区间，按到期处理；不宣称支持任意长时间轴。
+
+2026-10-07 05:33:55 CST，同样 10 条测试已从 5 个 assertion failure 变为全绿
+（0 fail/error/skip）。另补 3 条保护：最大有限 Duration 及转换溢出、复制控制时
+不重置起点及倒退时钟、无限父级派生有限子级。hify-common 全模块测试另行运行，
+其结果不得以这次 10 条窄测替代。
+
+尚未修改的独立绝对时钟比较：CircuitBreakerService 的本次调用 SLA、LlmHttpClient
+的 HTTP/stream SLA、RunEventBroker 的 SSE 生命周期。它们不是本次 ExecutionControl
+修复的覆盖范围，需要各自的确定性反例后再改；不能称全链路时钟风险已消除。

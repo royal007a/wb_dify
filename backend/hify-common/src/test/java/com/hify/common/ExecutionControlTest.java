@@ -7,6 +7,39 @@ import java.util.concurrent.atomic.AtomicLong;
 import static org.assertj.core.api.Assertions.*;
 
 class ExecutionControlTest {
+    @Test void maximumRepresentableDurationRemainsFiniteAndOverflowIsRejected() {
+        var clock=new AtomicLong(-7);
+        var control=ExecutionControl.withTimeout(Duration.ofNanos(Long.MAX_VALUE),()->false,clock::get);
+        assertThat(control.remaining(Duration.ofNanos(Long.MAX_VALUE))).isEqualTo(Duration.ofNanos(Long.MAX_VALUE));
+        clock.addAndGet(Long.MAX_VALUE-1);
+        assertThat(control.remaining(Duration.ofNanos(100))).isEqualTo(Duration.ofNanos(1));
+        clock.incrementAndGet();
+        assertThatThrownBy(control::checkActive).isInstanceOf(ExecutionTimedOutException.class);
+        assertThatThrownBy(()->ExecutionControl.withTimeout(Duration.ofSeconds(Long.MAX_VALUE),()->false,clock::get))
+                .isInstanceOf(ArithmeticException.class);
+        assertThatThrownBy(()->ExecutionControl.none().boundedBy(Duration.ofSeconds(Long.MAX_VALUE)))
+                .isInstanceOf(ArithmeticException.class);
+    }
+    @Test void controlClonesKeepElapsedTimeAndBackwardClockFailsClosed() {
+        var clock=new AtomicLong(100);
+        var control=ExecutionControl.withTimeout(Duration.ofNanos(20),()->false,clock::get);
+        clock.addAndGet(15);
+        var copy=control.withShutdown(()->false).withCancellation(()->false);
+        assertThat(copy.remaining(Duration.ofNanos(100))).isEqualTo(Duration.ofNanos(5));
+        clock.addAndGet(5);
+        assertThatThrownBy(copy::checkActive).isInstanceOf(ExecutionTimedOutException.class);
+        clock.set(99);
+        assertThatThrownBy(control::checkActive).isInstanceOf(ExecutionTimedOutException.class);
+    }
+    @Test void unlimitedControlCanCreateFiniteChildWithoutChangingItself() {
+        var unlimited=ExecutionControl.none();
+        var cap=Duration.ofDays(1);
+        assertThat(unlimited.isExpired()).isFalse();
+        assertThat(unlimited.remaining(cap)).isEqualTo(cap);
+        var child=unlimited.boundedBy(Duration.ofHours(1));
+        assertThat(child.remaining(cap)).isPositive().isLessThanOrEqualTo(Duration.ofHours(1));
+        assertThat(unlimited.remaining(cap)).isEqualTo(cap);
+    }
     @Test void negativeClockOriginStillHasAFiniteDeadline() {
         var clock=new AtomicLong(-100);
         var control=ExecutionControl.withTimeout(Duration.ofNanos(20),()->false,clock::get);
