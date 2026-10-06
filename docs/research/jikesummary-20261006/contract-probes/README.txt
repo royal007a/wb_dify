@@ -46,3 +46,13 @@ ace00a1c7f2da2ceb94b910dc6fc87e38993ea2294f6ea10c599ff2911c2b321
 
 类哈希只识别本次输入，不证明完整可复现构建，更不替代服务级故障/恢复验证。
 两项探针不是新工具并行实现、事实校验服务或失败经验库的验收。
+
+三、C066-ready-budget-probe.py（04:46补充）
+C066已读全文与图示，新增映射见reading-notes，review待结论。
+隔离转写展示的while/ready循环：预算0执行0项，预算1遇到三项ready执行3项。
+不执行作者仓库，所有handler均用列表记录模拟，没有Hify或外部副作用。
+python3 docs/research/jikesummary-20261006/contract-probes/C066-ready-budget-probe.py
+执行exit 0，JSON为实际输出；两观察不是生产预算安全验收。
+源码SHA256 a074019e7f3d01ed0583b13a3985c687a83906887b6846cf96e9a283b8ce9e12
+JSON SHA256 a434f800d1dcd6a445b3faa53385c9ee1c6f043d35245509e18be2cfb0ae4903
+私有完整草稿SHA256 f969e270111f961a2ab6782f0b5d360f38cffb8b12820ccc0bae37b315c0d31c

@@ -1,0 +1,19 @@
+{
+  "scope": "C066 displayed ready-batch loop only; not Hify or author repository",
+  "observations": [
+    {
+      "max_steps": 0,
+      "executed": 0,
+      "calls": []
+    },
+    {
+      "max_steps": 1,
+      "executed": 3,
+      "calls": [
+        "a",
+        "b",
+        "c"
+      ]
+    }
+  ]
+}
