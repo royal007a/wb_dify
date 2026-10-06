@@ -4,6 +4,31 @@
   "updatedAt": "2026-10-06T07:28:05Z",
   "tasks": [
     {
+      "id": "OBS-CORRELATION-001",
+      "title": "保留请求关联ID跨异步边界并恢复MDC作用域",
+      "description": "源于jikesummary C133第2页和C168/C169测试方法；请求过滤器已有requestId，run/llm/async线程边界尚未传播。使用白名单上下文快照，保持原队列、拒绝和停机语义。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["harness", "backend", "runtime"],
+      "verifyScopes": ["harness", "migration", "backend", "runtime", "eval", "frontend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "生产配置线程池可复现关联ID丢失；修复后提交时捕获而非执行时读取，多个请求复用线程不串号",
+        "只传播合法requestId，不传播任意MDC秘密；正常/异常/内联执行均恢复原线程MDC，过滤器也恢复外层值",
+        "runExecutor、llmExecutor、asyncExecutor均接入；原有容量、AbortPolicy、取消Future与关停语义不变",
+        "保留先红后绿证据及窄测，完整显式门禁与固定范围review完成前不宣称交付或部署"
+      ],
+      "planPath": "exec-plans/active/OBS-CORRELATION-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-06T15:15:00Z",
+      "updatedAt": "2026-10-06T15:15:00Z"
+    },
+    {
       "id": "COURSE-OPTIMIZATION-001",
       "title": "jikesummary 相关章节精读与可验证优化映射",
       "description": "8小时目标的研究入口：固定本地PDF来源、去重与阅读范围，区分课程示例和本项目事实，逐项形成具名优化任务并交叉review。不得以研究完成替代实现目标。",

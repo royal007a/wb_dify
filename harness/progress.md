@@ -4,7 +4,7 @@
 - State source: `harness/tasks.json`
 - Generated from task state updated at: `2026-10-06T07:28:05Z`
 - Current task: `none`
-- Counts: pending 19 · running 0 · blocked 3 · completed 94
+- Counts: pending 20 · running 0 · blocked 3 · completed 94
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -52,6 +52,7 @@
 | `MCP-TOKEN-001` | P1 | completed | backend, frontend, migration | reversible_write | MCP 直接 Token 输入与加密凭据版本 |
 | `MCP-TOKEN-DEPLOY-001` | P1 | completed | backend, frontend, migration | high_risk | 部署 132 MCP 加密 Token 输入并验证 |
 | `MCP-TRUST-001` | P1 | completed | harness | high_risk | 原版132独立Java信任库信任工作台自签证书 |
+| `OBS-CORRELATION-001` | P1 | pending | harness, backend, runtime | reversible_write | 保留请求关联ID跨异步边界并恢复MDC作用域 |
 | `PROVIDER-001` | P1 | completed | backend, runtime | reversible_write | 补原生流式故障注入矩阵 |
 | `RECALL-002` | P1 | completed | backend, migration, runtime, eval | reversible_write | 建立召回评测门禁并按证据演进检索 |
 | `SECURITY-001` | P1 | completed | backend, runtime | reversible_write | 强化 Provider 出站网络边界 |

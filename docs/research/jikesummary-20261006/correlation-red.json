@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "scope": "Pre-fix targeted reproduction; not a completed harness run or full product verification",
+  "productSourceBaseline": "d2b39c20849c1efb54e05d526d14eee8cbb1ca80",
+  "command": "mvn -o -B -pl hify-common -am -Dtest=RequestCorrelationTest -Dsurefire.failIfNoSpecifiedTests=false test",
+  "workingDirectory": "backend",
+  "exitCode": 1,
+  "tests": 3,
+  "failures": 3,
+  "errors": 0,
+  "skipped": 0,
+  "logSha256": "36b7c464cd126361a5197e2135d406cf011597fc8f9603665ea5cdbcc3312fe7",
+  "localLog": "/tmp/hify-course-20261006.hhEhwt/correlation-red.log",
+  "cases": [
+    {"name": "configuredLlmPoolCarriesRequestId", "expected": "request-A", "actual": null},
+    {"name": "configuredAsyncPoolCarriesRequestId", "expected": "request-B", "actual": null},
+    {"name": "requestFilterRestoresEnclosingScope", "expected": "request-outer", "actual": null}
+  ],
+  "limits": ["Synthetic request IDs only", "No database, real model or production calls", "Raw log stays local; hash is not replay evidence"]
+}

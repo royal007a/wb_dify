@@ -17,6 +17,7 @@
     "com.hify.api.KnowledgeMemoryPostgresTest": 21
   },
   "backend-tests": {
+    "com.hify.common.RequestCorrelationTest": 3,
       "com.hify.workflow.application.WorkflowInputsTest": 6,
       "com.hify.api.WorkflowInputsIntegrationTest": 7,
       "com.hify.api.WorkflowInputsPostgresTest": 7,
