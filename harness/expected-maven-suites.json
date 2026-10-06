@@ -57,7 +57,7 @@
     "com.hify.memory.HistoryRecallEvaluationTest": 1,
     "com.hify.runtime.QueryLoopTest": 21,
     "com.hify.runtime.context.ContextManagementEvaluationTest": 1,
-    "com.hify.runtime.context.ContextManagerTest": 11,
+    "com.hify.runtime.context.ContextManagerTest": 13,
     "com.hify.runtime.plan.PlanStateMachineTest": 3,
     "com.hify.runtime.state.ExecutionContextStateTest": 3,
     "com.hify.intent.LayeredIntentRouterTest": 8,

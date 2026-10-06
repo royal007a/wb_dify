@@ -32,3 +32,11 @@
 - 旧失败记录不变；这次不部署。125项摘要为真实本轮新报告，不能用此前9项窄测通过顶替。
 
 独立review：fdd09a1..8e855b0存在单轮多个未达字符阈值的工具结果累积超预算；后续将补按预算逐项归档，原样保留system/user和工具配对。上游RAG及记忆目录本身可能已经是system，本片不承诺修复其来源信任；局部测试名称需要收窄。
+
+## Review补强窄测
+
+新增两个通过生产ContextManager的回归：单user六轮万字结果；最新批次包含两次并行工具调用。修复前同一34项测试出现2 errors（两项均为ContextWindowExceededException），修复后34/34、0 failures/errors/skips。命令与首轮相同，日志为`/tmp/hify-context-rescue-red-20261006.log`和`/tmp/hify-context-rescue-green-20261006.log`。
+
+补强在压缩仍超限时逐项归档较早结果：保留全部消息配对、system/user和最新批次，每步重测且只接受体积减少的替换。两个用例都断言仅归档最早两个结果；六轮用例逐条比对未替换消息，并将归档原文与canonical输入比对。manager层无user超限、可变输入列表不修改和小上下文完整内容断言也已补充；局部防升权测试改名为`localCompactorDoesNotPromoteUnarchivedToolTextToSystemPolicy`。
+
+这仍是窄测，不顶替六scope门禁。首轮PG红灯尚未完成诊断，不具备部署条件。

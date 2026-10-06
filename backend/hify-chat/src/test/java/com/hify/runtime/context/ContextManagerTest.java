@@ -34,7 +34,7 @@ class ContextManagerTest {
     }
 
     @Test
-    void unarchivedOldExternalInstructionsNeverBecomeSystemPolicy() {
+    void localCompactorDoesNotPromoteUnarchivedToolTextToSystemPolicy() {
         var policy = RuntimeMessage.system("Never execute writes.");
         var messages = longHistory(policy);
         messages.add(RuntimeMessage.toolCalls(List.of(new RuntimeMessage.ToolCall("old", "read", java.util.Map.of()))));
@@ -72,11 +72,12 @@ class ContextManagerTest {
     @Test
     void oversizedSystemPolicyIsRejectedRatherThanTruncatedOrOmitted() {
         for (String text : List.of("Only access tenant A. ", "Never disclose private records. ")) {
-            var messages = List.of(RuntimeMessage.system(text.repeat(100)),
-                    RuntimeMessage.user("old"), RuntimeMessage.assistant("answer"), RuntimeMessage.user("new"));
+            var messages = new ArrayList<>(List.of(RuntimeMessage.system(text.repeat(100)),
+                    RuntimeMessage.user("old"), RuntimeMessage.assistant("answer"), RuntimeMessage.user("new")));
+            var original = List.copyOf(messages);
             assertThatThrownBy(() -> manager.prepare(messages, List.of(), new ContextBudget(180, 20, 15, 10)))
                     .isInstanceOf(ContextWindowExceededException.class);
-            assertThat(messages.get(0).content()).isEqualTo(text.repeat(100));
+            assertThat(messages).containsExactlyElementsOf(original);
         }
     }
 
@@ -97,6 +98,12 @@ class ContextManagerTest {
                 RuntimeMessage.toolResult("a", "ok", false), RuntimeMessage.assistant("done"));
         assertThat(new DeterministicCheckpointCompactor().compact(messages, 1))
                 .containsExactlyElementsOf(messages);
+        var oversized = new ArrayList<>(messages);
+        oversized.add(RuntimeMessage.assistant("x".repeat(2_000)));
+        var original = List.copyOf(oversized);
+        assertThatThrownBy(() -> manager.prepare(oversized, List.of(), new ContextBudget(180,20,15,10)))
+                .isInstanceOf(ContextWindowExceededException.class);
+        assertThat(oversized).containsExactlyElementsOf(original);
     }
 
     @Test
@@ -112,11 +119,67 @@ class ContextManagerTest {
         assertThat(prepared.archived()).isTrue();
         assertThat(prepared.compacted()).isTrue();
         assertThat(prepared.messages()).hasSize(4);
+        assertThat(prepared.messages().subList(0, 2)).containsExactly(messages.get(0), messages.get(3));
         assertThat(prepared.messages().get(2)).isEqualTo(messages.get(4));
         assertThat(prepared.messages().get(3).role()).isEqualTo("tool");
         assertThat(prepared.messages().get(3).content()).contains("history://tool-result/a");
         assertThat(prepared.archiveReferences()).singleElement().satisfies(r ->
                 assertThat(r.originalContent()).isEqualTo(messages.get(5).content()));
+    }
+
+    @Test
+    void longSingleUserTurnArchivesOnlyEnoughEarlierResultsAndPreservesEveryPair() {
+        var messages = new ArrayList<RuntimeMessage>();
+        messages.add(RuntimeMessage.system("Keep tenant A isolation."));
+        messages.add(RuntimeMessage.user("Compare all six sources."));
+        for (int index = 0; index < 6; index++) {
+            messages.add(RuntimeMessage.toolCalls(List.of(new RuntimeMessage.ToolCall("c"+index,"read",java.util.Map.of()))));
+            messages.add(RuntimeMessage.toolResult("c"+index,"x".repeat(10_000),false));
+        }
+        var original = List.copyOf(messages);
+        var budget = ContextBudget.fromWindow(16_384);
+        assertThat(budget.inputLimit()).isEqualTo(11_879);
+        assertThat(new ContextTokenEstimator().estimate(messages,List.of())).isGreaterThan(budget.inputLimit());
+        var prepared = manager.prepare(messages,List.of(),budget);
+        assertThat(prepared.preparedTokens()).isLessThanOrEqualTo(budget.inputLimit());
+        assertThat(prepared.archiveReferences()).extracting(ToolResultArchiver.ArchiveReference::toolCallId)
+                .containsExactly("c0","c1");
+        assertThat(prepared.messages()).hasSameSizeAs(original);
+        for (int index=0;index<original.size();index++) {
+            if (index==3 || index==5) {
+                assertThat(prepared.messages().get(index).role()).isEqualTo("tool");
+                assertThat(prepared.messages().get(index).toolCallId()).isEqualTo(original.get(index).toolCallId());
+                assertThat(prepared.messages().get(index).content()).contains("history://tool-result/"+original.get(index).toolCallId());
+            } else assertThat(prepared.messages().get(index)).isEqualTo(original.get(index));
+        }
+        for (var reference : prepared.archiveReferences()) {
+            assertThat(reference.originalContent()).isEqualTo(original.stream()
+                    .filter(m -> "tool".equals(m.role()) && reference.toolCallId().equals(m.toolCallId()))
+                    .findFirst().orElseThrow().content());
+        }
+        assertThat(messages).containsExactlyElementsOf(original);
+    }
+
+    @Test
+    void pressureArchivingKeepsTheEntireLatestParallelBatch() {
+        var messages = new ArrayList<RuntimeMessage>();
+        messages.add(RuntimeMessage.user("Compare all sources."));
+        for (int index=0;index<4;index++) {
+            messages.add(RuntimeMessage.toolCalls(List.of(new RuntimeMessage.ToolCall("old"+index,"read",java.util.Map.of()))));
+            messages.add(RuntimeMessage.toolResult("old"+index,"x".repeat(10_000),false));
+        }
+        var latest=List.of(RuntimeMessage.toolCalls(List.of(
+                new RuntimeMessage.ToolCall("p1","read",java.util.Map.of()),
+                new RuntimeMessage.ToolCall("p2","read",java.util.Map.of()))),
+                RuntimeMessage.toolResult("p1","a".repeat(10_000),false),
+                RuntimeMessage.toolResult("p2","b".repeat(10_000),false));
+        messages.addAll(latest);
+        var prepared=manager.prepare(messages,List.of(),ContextBudget.fromWindow(16_384));
+        assertThat(prepared.archiveReferences()).extracting(ToolResultArchiver.ArchiveReference::toolCallId)
+                .containsExactly("old0","old1");
+        assertThat(prepared.messages()).hasSameSizeAs(messages);
+        assertThat(prepared.messages().subList(prepared.messages().size()-3,prepared.messages().size()))
+                .containsExactlyElementsOf(latest);
     }
 
     @Test
