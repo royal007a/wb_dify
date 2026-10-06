@@ -1,0 +1,135 @@
+{
+  "kind": "interrupted-partial-observation-not-verification",
+  "head": "11e7be5980afac5eb409e4a4711c16fbadc965af",
+  "status": "interrupted-with-failures",
+  "processExitCode": 143,
+  "termination": {
+    "signal": "SIGTERM",
+    "processGroup": 88896,
+    "observedAt": "2026-10-07T04:12:21.371928+08:00",
+    "reason": "Already failing gate plus measured host swap pressure; intentional stop"
+  },
+  "completedMigrationReportsOnly": {
+    "totals": {
+      "tests": 63,
+      "executed": 63,
+      "failures": 1,
+      "errors": 2,
+      "skipped": 0,
+      "flakyAttempts": 0
+    },
+    "classes": [
+      {
+        "class": "com.hify.api.HistoryRecoveryMigrationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 1,
+        "flakyAttempts": 0,
+        "expectedMinimum": 1,
+        "xmlSha256": "a753a2f8bc7dd685dfe3de310ca66b29247c06fcbdf143b9442c41ead193c41c"
+      },
+      {
+        "class": "com.hify.api.KnowledgeFinishPostgresTest",
+        "tests": 18,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 18,
+        "flakyAttempts": 0,
+        "expectedMinimum": 18,
+        "xmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+      },
+      {
+        "class": "com.hify.api.KnowledgeShutdownPostgresTest",
+        "tests": 22,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 22,
+        "flakyAttempts": 0,
+        "expectedMinimum": 22,
+        "xmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+      },
+      {
+        "class": "com.hify.api.RunShutdownPostgresTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 2,
+        "skipped": 0,
+        "executed": 2,
+        "flakyAttempts": 0,
+        "expectedMinimum": 2,
+        "xmlSha256": "a866266ba17d6534ae48c95719fbb639a0182b7dab11549ecd9bab58d93dcb87"
+      },
+      {
+        "class": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+        "tests": 19,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 19,
+        "flakyAttempts": 0,
+        "expectedMinimum": 19,
+        "xmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+      },
+      {
+        "class": "com.hify.api.WorkflowTerminalPostgresTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 1,
+        "flakyAttempts": 0,
+        "expectedMinimum": 1,
+        "xmlSha256": "71cbf11b3f4b8839eaf0d031beacf01edc8ba52a966736188dc7328ad9a73b4f"
+      }
+    ],
+    "underfilledSuites": [],
+    "countMeaning": "Reported testcase/skip records; disabled containers can hide additional intended methods."
+  },
+  "missingMigrationSuites": [
+    "com.hify.api.AgentToolBindingMigrationTest",
+    "com.hify.api.HistoryRecoveryPostgresTest",
+    "com.hify.api.KnowledgeMemoryPostgresTest",
+    "com.hify.api.McpCredentialPostgresTest",
+    "com.hify.api.PostgresConcurrencyIntegrationTest",
+    "com.hify.api.SemanticKnowledgePostgresTest",
+    "com.hify.api.WorkflowKnowledgePostgresTest",
+    "com.hify.api.WorkflowSettlementPostgresTest",
+    "com.hify.api.WorkflowTerminalMigrationTest"
+  ],
+  "unstartedScopes": [
+    "backend",
+    "runtime",
+    "eval",
+    "frontend"
+  ],
+  "sourceTrees": {
+    "backend": "591ea735d02274f3982d282ce3bde74d1bd3b2e2",
+    "frontend": "931a8823bf0513777fc88f0d3447daef94e0e71d",
+    "deploy": "d3b11e660e479c745177f9696e30e5b134802f89"
+  },
+  "retainedSha256": {
+    "com.hify.api.HistoryRecoveryMigrationTest.txt": "430a28527796380bb71ad9373609e10cab947e6da4fadcc9e65d88858313bf01",
+    "com.hify.api.KnowledgeFinishPostgresTest.txt": "bf616d572808eeb6b36571b4c0e5594220ff5edd313ba89fbe452021257f1a95",
+    "com.hify.api.KnowledgeShutdownPostgresTest.txt": "a8824e93e2a0e9293016436a42f37df5171e34435718bed17cc7b153c2a4f422",
+    "com.hify.api.RunShutdownPostgresTest.txt": "d7012ed6a5a0fccd6b16dbef37fca26bc0df3989a7745e6f84f35b016cc592e2",
+    "com.hify.api.WorkflowKnowledgeReviewPostgresTest.txt": "37c1b3cfc0d2da0090acdbf4fc6f2318f80c332cae6c51bc0c17cbfe0d1646aa",
+    "com.hify.api.WorkflowTerminalPostgresTest.txt": "7455b19789ba9eae095e416b59f1d374d9af96ef484b515e38eb8a391285a217",
+    "gate-resource-iostat-0414.log": "e02f678253d0450c5cedabd6e42e272ebc9924a11ba91f47aa8ac24cf1717e89",
+    "gate-resource-vmstat-0414.log": "970f1cfbbbdab3e9b6cbb7b756a0c7e387690fb5d8af12cb30cdfc285e320623",
+    "harness-python-tests.log": "f794ce2cf923746708cf73b13eefb9e31d1a5c83369689f0bf39dcda621de580",
+    "migration-postgres.log": "5a9d8898f7f1816ad53da230cb6840c2dd812a4e50ab3f2aceba8f5aadf8ed58",
+    "reported-cases.json": "d9950825fe1053be8c3ac024dc5940e430ba36280530c845ac87b37d964ddd8a",
+    "steps.tsv": "76f86e48259a2cdc75d7174ccb0c165e7eeda8e44f639dc162b305a6949600d4"
+  },
+  "limits": [
+    "Not a completed six-scope gate; no verification.json was produced",
+    "Counts include only completed XML suites, not an in-flight test",
+    "Original XML stays in private invocation directory; system properties not republished",
+    "Resource samples show pressure, not exclusive attribution to a particular process",
+    "Later narrow replay cannot replace these failed observations"
+  ]
+}

@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.api.KnowledgeShutdownPostgresTest
+-------------------------------------------------------------------------------
+Tests run: 22, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 702.7 s -- in com.hify.api.KnowledgeShutdownPostgresTest

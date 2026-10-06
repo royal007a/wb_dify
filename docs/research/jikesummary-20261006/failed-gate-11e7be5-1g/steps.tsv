@@ -1,0 +1,6 @@
+harness-state	0	harness/evidence/manual/course-20261007-11e7be5-1g/harness-state.log	["python3", "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/harness.py", "validate"]
+harness-progress	0	harness/evidence/manual/course-20261007-11e7be5-1g/harness-progress.log	["python3", "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/harness.py", "check-progress"]
+harness-api-spec	0	harness/evidence/manual/course-20261007-11e7be5-1g/harness-api-spec.log	["python3", "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/render-api-spec.py", "--check"]
+harness-python-tests	1	harness/evidence/manual/course-20261007-11e7be5-1g/harness-python-tests.log	["python3", "-m", "unittest", "discover", "-s", "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/tests", "-p", "test_*.py"]
+harness-shell-syntax	0	harness/evidence/manual/course-20261007-11e7be5-1g/harness-shell-syntax.log	["sh", "-n", "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/init.sh", "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/verify.sh", "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/run-task.sh"]
+migration-docker	0	harness/evidence/manual/course-20261007-11e7be5-1g/migration-docker.log

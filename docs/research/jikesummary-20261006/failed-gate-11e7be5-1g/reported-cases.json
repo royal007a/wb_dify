@@ -1,0 +1,464 @@
+[
+  {
+    "suite": "com.hify.api.HistoryRecoveryMigrationTest",
+    "name": "legacyCanonicalHistoryIsNotRewritten",
+    "seconds": "34.129",
+    "outcomes": [],
+    "sourceXmlSha256": "a753a2f8bc7dd685dfe3de310ca66b29247c06fcbdf143b9442c41ead193c41c"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "emptyCorpusCanBeFrozenWithPortableTimestampBindings",
+    "seconds": "10.454",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "clientCannotChooseSnapshotAndLegacyKnowledgeVersionRequiresRepublish",
+    "seconds": "4.223",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "archivedUnpublishedChunkIsNotAnHistoricalCitation",
+    "seconds": "1.271",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "publishedWorkflowAndOldConversationKeepArchivedCorpusAndReadableCitations",
+    "seconds": "33.516",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[1]",
+    "seconds": "21.865",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[2]",
+    "seconds": "1.17",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[3]",
+    "seconds": "1.749",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[4]",
+    "seconds": "2.259",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "failedPublicationRollsBackAllNewCorporaAndVersionRows",
+    "seconds": "1.635",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "frozenCorpusRejectsChangedCanonicalContentEvenWhenStoredDigestIsUnchanged",
+    "seconds": "2.03",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain",
+    "seconds": "24.59",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "workflowEmptyKnowledgeDoesNotReachEnd",
+    "seconds": "0.517",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "missingOrInventedFinalReferencesRequireClarification",
+    "seconds": "7.457",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "unboundOrdinaryChatDoesNotRequireKnowledgeCitations",
+    "seconds": "3.375",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "emptyBoundCorpusNeverCallsModelOrStoresAssistant",
+    "seconds": "4.628",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "validReferenceChecksSourcesNotSemanticTruth",
+    "seconds": "3.802",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "unrelatedVectorTopKDoesNotBecomeEvidence",
+    "seconds": "2.164",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeFinishPostgresTest",
+    "name": "partialRetrievalFailureDoesNotSilentlyFallBackToOtherSources",
+    "seconds": "1.644",
+    "outcomes": [],
+    "sourceXmlSha256": "98ff35ce793865ef591ab0c4a53b38ce5a3b921161dcb7932ab1afb5fe66cdf3"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "emptyCorpusCanBeFrozenWithPortableTimestampBindings",
+    "seconds": "24.986",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "clientCannotChooseSnapshotAndLegacyKnowledgeVersionRequiresRepublish",
+    "seconds": "15.328",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "archivedUnpublishedChunkIsNotAnHistoricalCitation",
+    "seconds": "6.435",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "publishedWorkflowAndOldConversationKeepArchivedCorpusAndReadableCitations",
+    "seconds": "14.067",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[1]",
+    "seconds": "0.962",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[2]",
+    "seconds": "0.513",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[3]",
+    "seconds": "0.431",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[4]",
+    "seconds": "0.909",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "failedPublicationRollsBackAllNewCorporaAndVersionRows",
+    "seconds": "0.511",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "frozenCorpusRejectsChangedCanonicalContentEvenWhenStoredDigestIsUnchanged",
+    "seconds": "1.061",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain",
+    "seconds": "4.885",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "workflowEmptyKnowledgeDoesNotReachEnd",
+    "seconds": "0.587",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "missingOrInventedFinalReferencesRequireClarification",
+    "seconds": "6.324",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "unboundOrdinaryChatDoesNotRequireKnowledgeCitations",
+    "seconds": "15.774",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "emptyBoundCorpusNeverCallsModelOrStoresAssistant",
+    "seconds": "2.423",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "validReferenceChecksSourcesNotSemanticTruth",
+    "seconds": "3.539",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "unrelatedVectorTopKDoesNotBecomeEvidence",
+    "seconds": "1.795",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "partialRetrievalFailureDoesNotSilentlyFallBackToOtherSources",
+    "seconds": "2.977",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "canonicalReadShutdownRetainsRecoverableRun(boolean)[1]",
+    "seconds": "4.587",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "canonicalReadShutdownRetainsRecoverableRun(boolean)[2]",
+    "seconds": "4.518",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "retrievalShutdownSignalIsNotPermanentSourceFailure(boolean)[1]",
+    "seconds": "2.671",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.KnowledgeShutdownPostgresTest",
+    "name": "retrievalShutdownSignalIsNotPermanentSourceFailure(boolean)[2]",
+    "seconds": "1.366",
+    "outcomes": [],
+    "sourceXmlSha256": "c49a9f46d40766c62f8bb443ec476452213285c849ac822845a5ce32aff81cc8"
+  },
+  {
+    "suite": "com.hify.api.RunShutdownPostgresTest",
+    "name": "realContextShutdownAndRestartOnPostgres",
+    "seconds": "495.431",
+    "outcomes": [
+      {
+        "kind": "error",
+        "type": "java.util.concurrent.TimeoutException",
+        "message": "realContextShutdownAndRestartOnPostgres() timed out after 60 seconds",
+        "text": "java.util.concurrent.TimeoutException: realContextShutdownAndRestartOnPostgres() timed out after 60 seconds\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1511)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1511)\n\tSuppressed: org.opentest4j.AssertionFailedError: \nexpected: COMPLETED\n but was: TIMED_OUT\n\t\tat com.hify.api.RunShutdownIntegrationTest.verifyModelShutdownRecovery(RunShutdownIntegrationTest.java:227)\n\t\tat com.hify.api.RunShutdownPostgresTest.realContextShutdownAndRestartOnPostgres(RunShutdownPostgresTest.java:16)\n\t\tat java.base/java.lang.reflect.Method.invoke(Method.java:568)\n\t\t... 2 more\n"
+      }
+    ],
+    "sourceXmlSha256": "a866266ba17d6534ae48c95719fbb639a0182b7dab11549ecd9bab58d93dcb87"
+  },
+  {
+    "suite": "com.hify.api.RunShutdownPostgresTest",
+    "name": "computedResultIsCommittedOnShutdownWithoutReplayOnPostgres",
+    "seconds": "392.873",
+    "outcomes": [
+      {
+        "kind": "error",
+        "type": "java.util.concurrent.TimeoutException",
+        "message": "computedResultIsCommittedOnShutdownWithoutReplayOnPostgres() timed out after 60 seconds",
+        "text": "java.util.concurrent.TimeoutException: computedResultIsCommittedOnShutdownWithoutReplayOnPostgres() timed out after 60 seconds\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1511)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1511)\n\tSuppressed: org.opentest4j.AssertionFailedError: \nExpecting value to be true but was false\n\t\tat com.hify.api.RunShutdownIntegrationTest.verifyComputedResultShutdown(RunShutdownIntegrationTest.java:64)\n\t\tat com.hify.api.RunShutdownIntegrationTest.verifyComputedResultShutdown(RunShutdownIntegrationTest.java:46)\n\t\tat com.hify.api.RunShutdownPostgresTest.computedResultIsCommittedOnShutdownWithoutReplayOnPostgres(RunShutdownPostgresTest.java:22)\n\t\tat java.base/java.lang.reflect.Method.invoke(Method.java:568)\n\t\t... 2 more\n"
+      }
+    ],
+    "sourceXmlSha256": "a866266ba17d6534ae48c95719fbb639a0182b7dab11549ecd9bab58d93dcb87"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "emptyCorpusCanBeFrozenWithPortableTimestampBindings",
+    "seconds": "45.054",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "clientCannotChooseSnapshotAndLegacyKnowledgeVersionRequiresRepublish",
+    "seconds": "6.26",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "archivedUnpublishedChunkIsNotAnHistoricalCitation",
+    "seconds": "4.921",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "publishedWorkflowAndOldConversationKeepArchivedCorpusAndReadableCitations",
+    "seconds": "34.587",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[1]",
+    "seconds": "15.088",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[2]",
+    "seconds": "9.684",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[3]",
+    "seconds": "1.2",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[4]",
+    "seconds": "4.941",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "failedPublicationRollsBackAllNewCorporaAndVersionRows",
+    "seconds": "3.583",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "frozenCorpusRejectsChangedCanonicalContentEvenWhenStoredDigestIsUnchanged",
+    "seconds": "4.892",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "legacyGraphCannotPublishAgentEvenWithARealClientChosenCorpus(boolean)[1]",
+    "seconds": "12.255",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "legacyGraphCannotPublishAgentEvenWithARealClientChosenCorpus(boolean)[2]",
+    "seconds": "8.194",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "storedDslChecksumIsCheckedBeforeBindingOrExecution",
+    "seconds": "7.482",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "agentAndWorkflowPublishAcquireBasesInTheSameOrder",
+    "seconds": "9.622",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "agentPinnedChecksumRejectsAChangedButInternallyValidWorkflow",
+    "seconds": "14.751",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "indexingMetadataFailurePersistsFailureWithoutDeletingExistingChunks",
+    "seconds": "163.834",
+    "outcomes": [
+      {
+        "kind": "failure",
+        "type": "org.opentest4j.AssertionFailedError",
+        "message": "\nexpected: \"FAILED\"\n but was: \"SUCCEEDED\"",
+        "text": "org.opentest4j.AssertionFailedError: \n\nexpected: \"FAILED\"\n but was: \"SUCCEEDED\"\n\tat com.hify.api.WorkflowKnowledgeReviewTest.indexingMetadataFailurePersistsFailureWithoutDeletingExistingChunks(WorkflowKnowledgeReviewTest.java:114)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:568)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1511)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1511)\n"
+      }
+    ],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "indexingSuccessIncludesTheActualVectorStorage",
+    "seconds": "24.301",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "dialectLookupReusesTheTransactionConnection",
+    "seconds": "1.933",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+    "name": "verificationAndRankingUseOneRepeatableReadSnapshot",
+    "seconds": "4.563",
+    "outcomes": [],
+    "sourceXmlSha256": "2b862dd14922789e67ae26a49511d88b1e7496fe3ae8d122f17025ac51094113"
+  },
+  {
+    "suite": "com.hify.api.WorkflowTerminalPostgresTest",
+    "name": "postgresUpgradePreservesHistoryAndConstrainsStates",
+    "seconds": "47.304",
+    "outcomes": [],
+    "sourceXmlSha256": "71cbf11b3f4b8839eaf0d031beacf01edc8ba52a966736188dc7328ad9a73b4f"
+  }
+]
