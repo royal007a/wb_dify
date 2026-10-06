@@ -4,6 +4,31 @@
   "updatedAt": "2026-10-06T04:21:20Z",
   "tasks": [
     {
+      "id": "MCP-TRUST-001",
+      "title": "原版132独立Java信任库信任工作台自签证书",
+      "description": "用户明确选择方案二；保留公共CA、校验固定证书指纹和主机名，只配置Hify进程并重启，不改Token、工具权限、应用产物或其他服务。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["harness"],
+      "verifyScopes": ["harness"],
+      "risk": "high_risk",
+      "operation": "deployment",
+      "approvalRef": "lark:om_x100b637e5c2f24a8c4f563a9c3596cd",
+      "dependsOn": [],
+      "acceptance": [
+        "核对磁盘、三表静默、原进程无冲突Java选项；基线应用/主密钥不变",
+        "新信任库保留原公共CA逐证书SHA集合，仅增加固定指纹工作台证书，无私钥；hifyapp可读",
+        "默认信任拒绝自签、新信任完成带HTTPS主机名校验握手且匿名MCP返回401、错误主机名仍拒绝",
+        "仅新增Hify专用systemd drop-in，重启成功后核对实际进程选项和health；失败恢复旧配置，保留诊断；不宣称工具发布已通过"
+      ],
+      "planPath": "exec-plans/active/MCP-TRUST-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-06T07:21:14Z",
+      "updatedAt": "2026-10-06T07:21:14Z"
+    },
+    {
       "id": "CONTEXT-ROLLOUT-001",
       "title": "已验收上下文完整性与工作流能力受控部署132",
       "description": "绑定CONTEXT-INTEGRITY-001六scope门禁，同树重新构建原版Hify；包含尚未上线的聚合/结构化输出。只动原版Hify，不夹带MCP配置，不清共享缓存。",
