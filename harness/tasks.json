@@ -4,6 +4,31 @@
   "updatedAt": "2026-10-06T07:28:05Z",
   "tasks": [
     {
+      "id": "COURSE-OPTIMIZATION-001",
+      "title": "jikesummary 相关章节精读与可验证优化映射",
+      "description": "8小时目标的研究入口：固定本地PDF来源、去重与阅读范围，区分课程示例和本项目事实，逐项形成具名优化任务并交叉review。不得以研究完成替代实现目标。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["harness"],
+      "verifyScopes": ["harness"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "183份输入建立路径、SHA、页数和去重清单，标注精读/浏览/暂不相关，不以提取成功冒充阅读",
+        "相关章节按机制、反例、项目路径、风险和验收方式梳理，并指出不适用或有争议的课程示例",
+        "每项落地优化有独立任务、失败复现和验收范围；既有H1不重复实现，不把未部署称线上可用",
+        "固定研究版本交mymacclaude只读review；研究任务完成不关闭8小时整体优化目标"
+      ],
+      "planPath": "exec-plans/active/COURSE-OPTIMIZATION-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-06T15:08:06Z",
+      "updatedAt": "2026-10-06T15:08:06Z"
+    },
+    {
       "id": "MCP-TRUST-001",
       "title": "原版132独立Java信任库信任工作台自签证书",
       "description": "用户明确选择方案二；保留公共CA、校验固定证书指纹和主机名，只配置Hify进程并重启，不改Token、工具权限、应用产物或其他服务。",
