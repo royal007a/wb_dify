@@ -21,6 +21,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 class QueryLoopTest {
     private final QueryLoop loop = new QueryLoop(new ToolRuntime());
 
+    @Test
+    void requiredPolicyOverflowStopsBeforeModelAndShortPolicyHasPositiveControl() {
+        AtomicInteger calls = new AtomicInteger();
+        ModelClient model = request -> {
+            calls.incrementAndGet();
+            assertThat(request.messages().get(0).content()).isEqualTo("Only read approved records.");
+            return RuntimeMessage.assistant("done");
+        };
+        var policy = new QueryLoop.RunPolicy(3, 0, 180, Duration.ofSeconds(5), () -> false);
+        var input = List.of(RuntimeMessage.system("Only read approved records. ".repeat(100)),
+                RuntimeMessage.user("old"), RuntimeMessage.assistant("old answer"), RuntimeMessage.user("hi"));
+        var rejected = loop.run(input, model, "mock", 0, Set.of(), policy, QueryLoop.RunObserver.NOOP);
+        assertThat(rejected.reason()).isEqualTo(TerminalReason.TOKEN_BUDGET_EXCEEDED);
+        assertThat(calls).hasValue(0);
+        var accepted = loop.run(List.of(RuntimeMessage.system("Only read approved records."), RuntimeMessage.user("hi")),
+                model, "mock", 0, Set.of(), policy, QueryLoop.RunObserver.NOOP);
+        assertThat(accepted.reason()).isEqualTo(TerminalReason.COMPLETED);
+        assertThat(calls).hasValue(1);
+    }
+
     @Test void returnedFinalAnswerCanFinishDuringShutdownButNewToolsCannotStart() {
         var lifecycle=org.mockito.Mockito.mock(com.hify.common.ExecutionLifecycle.class);
         var loop=new QueryLoop(new ToolRuntime(),new com.hify.runtime.context.ContextManager(),lifecycle);

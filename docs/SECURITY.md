@@ -35,6 +35,7 @@
 - 防 DNS rebinding；代理实际连接 IP 必须与通过校验的解析结果一致。
 - MCP tool schema 作为版本快照；刷新后不静默改变已发布 Agent 的能力。
 - 第三方返回内容按不可信数据处理，不能覆盖 system policy 或授权策略。
+- CONTEXT-INTEGRITY-001：兜底压缩不按关键词提升角色，全部已有system逐字保留；当前user轮工具call/result整体保留（大结果仍先归档）。装不下时拒绝，不静默截断策略。此规则不认证上游system内容、不保证消除提示注入；工具授权检查始终独立。
 
 ## 5. 文件与 RAG
 

@@ -137,7 +137,7 @@ sequenceDiagram
 
 Run 接纳时固定 `capabilityRevision/toolSchemaDigest`，模型工具定义与实际执行共享同一能力视图。每个 Attempt 在 schema/权限检查后、调用工具前再次校验 runId、attemptId、能力 revision 和持久化取消状态。模型响应与 tool result 按 operationId 写入 canonical history；只有完成语义快照、mutation、回读校验、revision 和 `history.committed` 投影后，QueryLoop 才继续。相同 operationId 内容不同会失败，不用后写覆盖前写。
 
-每次模型请求前由 ContextManager 计算 `window - output - reserve - safety` 输入预算，消息和工具 schema 一并计量。超限时先把大 Tool Result 投影成 canonical history 引用，重新测量；仍超限才做保留关键约束与最新交互闭包的 checkpoint compaction，再次测量。归档和压缩不改 canonical history，仍超限时明确失败。
+每次模型请求前由 ContextManager 计算 `window - output - reserve - safety` 输入预算，消息和工具 schema 一并估算（当前字符估算不是供应商精确token）。超限时先把大 Tool Result 投影成 canonical history 引用，重新测量；仍超限才做确定性压缩：逐字保留全部已有system消息及最近user起的完整交互，省略更早的非system轮；无user边界时保留全部，不猜测工具闭包。不得依赖must/必须等关键词挑选策略，不将其他角色内容合成system摘要，不截断保留消息。归档和压缩不改canonical history；完整保留部分仍超限时在模型调用前明确失败，而不是先丢规则以满足预算。当前轮过大可能更早拒绝，这是正确性取舍；旧用户偏好不因此自动成为持久约束，输入已有system的来源治理仍由上游承担。
 
 长期上下文采用“canonical history → Detail Catalog → ContextSummary”的单向派生关系。每条 system/user/assistant/tool 消息都有统一 DetailRef，引用精确 revision/message index 并带内容 digest；模型可读摘要只组织目标、事实、约束、决策和 gap，关键 Claim 必须绑定 sourceRefs。摘要与搜索索引只负责导航，不能成为 VERIFIED evidence；最终完成所需证据必须通过 DetailRef 回读 canonical 原文并校验 digest。边界与失效/冲突规则见 ADR-0012。
 
