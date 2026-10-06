@@ -4,6 +4,31 @@
   "updatedAt": "2026-10-05T08:01:29Z",
   "tasks": [
     {
+      "id": "CONTEXT-INTEGRITY-001",
+      "title": "上下文压缩保留系统策略与完整当前交互",
+      "description": "落实前六讲研究H1；消除关键词漏选、system角色升级与静默截断，不改长期记忆提取或放宽工具权限。部署独立登记。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["harness", "backend", "runtime", "eval", "frontend", "migration"],
+      "verifyScopes": ["harness", "migration", "backend", "runtime", "eval", "frontend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": "lark:om_x100b6372c9d534b0b177a6da50a9acc",
+      "dependsOn": [],
+      "acceptance": [
+        "所有原system消息逐字按原顺序保留，无关键词也不漏选；不将user/tool/assistant升级为system",
+        "保留最近用户消息起完整交互及多工具调用结果；无用户边界时不猜测裁剪；原始历史不变",
+        "不截断必需上下文；沿用完整预算重测，超限模型零调用；短上下文和归档路径兼容",
+        "反例在旧实现失败，新实现通过；六scope全量门禁零失败/错误/skip/flaky，既有红灯不改写；发布另设任务"
+      ],
+      "planPath": "exec-plans/active/CONTEXT-INTEGRITY-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-06T00:00:00Z",
+      "updatedAt": "2026-10-06T00:00:00Z"
+    },
+    {
       "id": "WORKFLOW-STRUCTURED-001",
       "title": "LLM有界结构化输出与字段消费闭环",
       "description": "参考Dify参数提取和Claude结构化输出契约，实现显式有限JSON Schema子集；不改变旧LLM、全局JSON reader或增加模型自动修复重试。",
