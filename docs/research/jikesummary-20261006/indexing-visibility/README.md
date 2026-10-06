@@ -40,3 +40,11 @@ python3 docs/research/jikesummary-20261006/indexing-visibility/run-probe.py \
 ## 下一项有区分力的验证
 
 完整门禁结束后，固定同一源码，在原 PostgreSQL 用例里独立观察：进入 callback、真正抛出元数据异常、事务 afterCompletion、读取状态。只有证实原失败发生在事务提交前，才能将其归类为该时序问题。若提交完成后仍为 SUCCEEDED，继续查真实持久化路径。任何修复仍保留 FAILED、错误脱敏、旧分块完整三个断言；不以这次 H2 成功替代原 PG 验收。
+
+## 后续准备（非执行结果）
+
+`postgres-observation.patch` 只给固定 c45c19a 的原测试增加单调时间/阶段观察点，未修改产品。保留原五秒轮询、异常类型/内容和全部断言；末次状态查询只执行一次，先记录其值再断言。新增事务 afterCommit/afterCompletion 回调不执行 SQL。日志会影响调度，因此即使后续通过也不能排除原竞态。
+
+补丁应用于独立 scratch 副本，已用 JDK 17 和原报告 classpath 编译通过；此时没有执行 Spring 或 PostgreSQL。编译后的测试源码 SHA `a3bfcc497a4dd1e984918bd117ed52c8c3a7f6d8655c94d65fbc894f334c6b4d`。主工作树和产品源码未修改。
+
+首轮完整门禁后来因实际红灯和资源压力主动中止，见 `../failed-gate-c45c19a/README.md`；此前“仍在运行”的表述是本探针完成时的阶段记录。后续首先运行原版未插桩方法作为对照，不将编译准备计为 PG 验收通过。

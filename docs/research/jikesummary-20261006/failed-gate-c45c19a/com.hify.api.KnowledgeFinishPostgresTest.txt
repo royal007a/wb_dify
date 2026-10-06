@@ -1,0 +1,13 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.api.KnowledgeFinishPostgresTest
+-------------------------------------------------------------------------------
+Tests run: 18, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 1077 s <<< FAILURE! -- in com.hify.api.KnowledgeFinishPostgresTest
+com.hify.api.KnowledgeFinishPostgresTest.missingOrInventedFinalReferencesRequireClarification -- Time elapsed: 21.59 s <<< FAILURE!
+java.lang.AssertionError: run timeout
+	at com.hify.api.KnowledgeFinishIntegrationTest.await(KnowledgeFinishIntegrationTest.java:117)
+	at com.hify.api.KnowledgeFinishIntegrationTest.chatWith(KnowledgeFinishIntegrationTest.java:105)
+	at com.hify.api.KnowledgeFinishIntegrationTest.missingOrInventedFinalReferencesRequireClarification(KnowledgeFinishIntegrationTest.java:62)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

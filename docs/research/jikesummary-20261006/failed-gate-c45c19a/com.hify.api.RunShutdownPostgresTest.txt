@@ -1,0 +1,21 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.api.RunShutdownPostgresTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 2055 s <<< FAILURE! -- in com.hify.api.RunShutdownPostgresTest
+com.hify.api.RunShutdownPostgresTest.realContextShutdownAndRestartOnPostgres -- Time elapsed: 972.7 s <<< ERROR!
+java.util.concurrent.TimeoutException: realContextShutdownAndRestartOnPostgres() timed out after 60 seconds
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	Suppressed: org.opentest4j.AssertionFailedError: 
+Expecting value to be true but was false
+		at com.hify.api.RunShutdownIntegrationTest.awaitTerminal(RunShutdownIntegrationTest.java:280)
+		at com.hify.api.RunShutdownIntegrationTest.verifyModelShutdownRecovery(RunShutdownIntegrationTest.java:226)
+		at com.hify.api.RunShutdownPostgresTest.realContextShutdownAndRestartOnPostgres(RunShutdownPostgresTest.java:16)
+		at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+		... 2 more
+
+com.hify.api.RunShutdownPostgresTest.computedResultIsCommittedOnShutdownWithoutReplayOnPostgres -- Time elapsed: 1053 s <<< ERROR!
+java.util.concurrent.TimeoutException: computedResultIsCommittedOnShutdownWithoutReplayOnPostgres() timed out after 60 seconds
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

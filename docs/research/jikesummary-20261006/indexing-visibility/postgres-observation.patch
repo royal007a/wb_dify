@@ -1,0 +1,57 @@
+--- a/backend/hify-app/src/test/java/com/hify/api/WorkflowKnowledgeReviewTest.java
++++ b/backend/hify-app/src/test/java/com/hify/api/WorkflowKnowledgeReviewTest.java
+@@ -88,18 +88,35 @@
+     }
+ 
+     @Test void indexingMetadataFailurePersistsFailureWithoutDeletingExistingChunks() throws Exception {
++        long diagnosticStart=System.nanoTime();
++        AtomicLong diagnosticSequence=new AtomicLong();
++        java.util.function.Consumer<String> diagnostic=stage->System.err.println(
++                "INDEX_DIAGNOSTIC sequence="+diagnosticSequence.incrementAndGet()
++                +" elapsedMs="+TimeUnit.NANOSECONDS.toMillis(System.nanoTime()-diagnosticStart)
++                +" thread="+Thread.currentThread().getName()+" stage="+stage);
++        diagnostic.accept("method-start");
+         String base=base(),doc=upload(base,"metadata-positive-fixture 七天退货");
+         var before=db.queryForList("select id,content,embedding_text from document_chunks where document_id=? order by ordinal",doc);
+         assertThat(before).isNotEmpty();
+         AtomicBoolean observed=new AtomicBoolean();
++        diagnostic.accept("positive-fixture-ready");
+         doAnswer(invocation->{
+             ConnectionCallback<?> callback=invocation.getArgument(0);
+             Connection bound=DataSourceUtils.getConnection(db.getDataSource());
+             try {
+                 assertThat(DataSourceUtils.isConnectionTransactional(bound,db.getDataSource())).isTrue();
+                 observed.set(true);
++                diagnostic.accept("metadata-callback-entered");
++                org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(
++                    new org.springframework.transaction.support.TransactionSynchronization(){
++                        @Override public void afterCommit(){diagnostic.accept("transaction-afterCommit");}
++                        @Override public void afterCompletion(int status){diagnostic.accept("transaction-afterCompletion-status-"+status);}
++                    });
+                 java.sql.DatabaseMetaData metadata=mock(java.sql.DatabaseMetaData.class);
+-                when(metadata.getDatabaseProductName()).thenThrow(new java.sql.SQLException("private-metadata-fixture"));
++                when(metadata.getDatabaseProductName()).thenAnswer(ignored->{
++                    diagnostic.accept("metadata-exception-thrown");
++                    throw new java.sql.SQLException("private-metadata-fixture");
++                });
+                 Connection fault=(Connection)java.lang.reflect.Proxy.newProxyInstance(Connection.class.getClassLoader(),new Class<?>[]{Connection.class},(proxy,method,args)->{
+                     if(method.getName().equals("getMetaData"))return metadata;
+                     try{return method.invoke(bound,args);}catch(java.lang.reflect.InvocationTargetException failure){throw failure.getCause();}
+@@ -107,11 +124,16 @@
+                 return callback.doInConnection(fault);
+             } finally {DataSourceUtils.releaseConnection(bound,db.getDataSource());}
+         }).when(jdbcSpy).execute(any(ConnectionCallback.class));
++        diagnostic.accept("before-async-dispatch");
+         indexer.onIndexRequested(new com.hify.knowledge.application.KnowledgeIndexRequested(doc));
++        diagnostic.accept("after-async-dispatch");
+         long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(5);
+         while(System.nanoTime()<deadline && !"FAILED".equals(db.queryForObject("select state from document_index_tasks where document_id=?",String.class,doc)))Thread.sleep(10);
++        diagnostic.accept("poll-ended-observed-"+observed.get());
+         assertThat(observed).isTrue();
+-        assertThat(db.queryForObject("select state from document_index_tasks where document_id=?",String.class,doc)).isEqualTo("FAILED");
++        String diagnosticState=db.queryForObject("select state from document_index_tasks where document_id=?",String.class,doc);
++        diagnostic.accept("task-state-"+diagnosticState);
++        assertThat(diagnosticState).isEqualTo("FAILED");
+         assertThat(db.queryForObject("select indexing_state from knowledge_documents where id=?",String.class,doc)).isEqualTo("FAILED");
+         assertThat(db.queryForObject("select error_message from knowledge_documents where id=?",String.class,doc)).doesNotContain("private-metadata-fixture");
+         assertThat(db.queryForList("select id,content,embedding_text from document_chunks where document_id=? order by ordinal",doc)).isEqualTo(before);

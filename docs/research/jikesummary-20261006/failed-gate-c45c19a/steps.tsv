@@ -1,0 +1,6 @@
+harness-state	0	harness/evidence/manual/course-20261007-c45c19a/harness-state.log	["python3", "/Users/weberzhao/hify/harness/harness.py", "validate"]
+harness-progress	0	harness/evidence/manual/course-20261007-c45c19a/harness-progress.log	["python3", "/Users/weberzhao/hify/harness/harness.py", "check-progress"]
+harness-api-spec	0	harness/evidence/manual/course-20261007-c45c19a/harness-api-spec.log	["python3", "/Users/weberzhao/hify/harness/render-api-spec.py", "--check"]
+harness-python-tests	1	harness/evidence/manual/course-20261007-c45c19a/harness-python-tests.log	["python3", "-m", "unittest", "discover", "-s", "/Users/weberzhao/hify/harness/tests", "-p", "test_*.py"]
+harness-shell-syntax	0	harness/evidence/manual/course-20261007-c45c19a/harness-shell-syntax.log	["sh", "-n", "/Users/weberzhao/hify/harness/init.sh", "/Users/weberzhao/hify/harness/verify.sh", "/Users/weberzhao/hify/harness/run-task.sh"]
+migration-docker	0	harness/evidence/manual/course-20261007-c45c19a/migration-docker.log

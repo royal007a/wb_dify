@@ -1,0 +1,27 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.api.PostgresConcurrencyIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 1625 s <<< FAILURE! -- in com.hify.api.PostgresConcurrencyIntegrationTest
+com.hify.api.PostgresConcurrencyIntegrationTest.rollbackNeverEmitsAndCommittedTerminalClosesTheLiveStream -- Time elapsed: 20.99 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting actual:
+  "event:heartbeat
+data:{"at":"2026-10-06T18:15:23.018421Z"}
+
+"
+to contain:
+  "event:run.cancelled" 
+	at com.hify.api.PostgresConcurrencyIntegrationTest.rollbackNeverEmitsAndCommittedTerminalClosesTheLiveStream(PostgresConcurrencyIntegrationTest.java:120)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.hify.api.PostgresConcurrencyIntegrationTest.chatSlicePinsPublishedVersionAndReplaysTerminalSseOnPostgres -- Time elapsed: 19.76 s <<< FAILURE!
+java.lang.AssertionError: Run did not reach a terminal state
+	at com.hify.api.PostgresConcurrencyIntegrationTest.awaitTerminal(PostgresConcurrencyIntegrationTest.java:354)
+	at com.hify.api.PostgresConcurrencyIntegrationTest.chatSlicePinsPublishedVersionAndReplaysTerminalSseOnPostgres(PostgresConcurrencyIntegrationTest.java:183)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

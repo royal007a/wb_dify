@@ -1,0 +1,23 @@
+.................F..........................................Maven evidence: failed
+.Maven evidence: passed
+Maven evidence: failed
+..Maven evidence: failed
+...............
+======================================================================
+FAIL: test_signal_after_success_does_not_stop_or_revert_healthy_release (test_deploy_installer.DeployInstallerTest.test_signal_after_success_does_not_stop_or_revert_healthy_release) (shell='sh', sig=<Signals.SIGTERM: 15>)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/weberzhao/hify/harness/tests/test_deploy_installer.py", line 187, in test_signal_after_success_does_not_stop_or_revert_healthy_release
+    self.wait_for_barrier(root, process)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/weberzhao/hify/harness/tests/test_deploy_installer.py", line 93, in wait_for_barrier
+    self.assertTrue((root / 'waiting').exists(),
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    f'Fixture barrier not reached; exit={process.poll()}, calls={calls}')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : Fixture barrier not reached; exit=None, calls=[['id', ['-u']], ['stat', ['-c', '%a', '/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/tmpqewpye_j/etc/hify/mcp-credentials.env']], ['stat', ['-c', '%i:%s:%Y:%a:%U', '/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/tmpqewpye_j/etc/hify/mcp-credentials.env']], ['df', ['-Pk', '/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/tmpqewpye_j/opt/hify']], ['runuser', ['-u', 'postgres', '--', 'psql', '-d', 'hify', '-Atqc', "SELECT count(*) FROM agent_runs WHERE state='RUNNING'"]], ['runuser', ['-u', 'postgres', '--', 'psql', '-d', 'hify', '-Atqc', "SELECT count(*) FROM workflow_runs WHERE status='RUNNING'"]], ['runuser', ['-u', 'postgres', '--', 'psql', '-d', 'hify', '-Atqc', "SELECT count(*) FROM document_index_tasks WHERE state IN ('PENDING','RUNNING')"]], ['sha256sum', ['-c', 'release.sha256']], ['runuser', ['-u', 'postgres', '--', 'psql', '-d', 'hify', '-Atqc', "SELECT COALESCE(string_agg(version,',' ORDER BY version::integer),'') || '|' || COALESCE(bool_and(success),false)::text FROM flyway_schema_history"]], ['systemctl', ['stop', 'hify']], ['systemctl', ['is-active', 'hify']], ['runuser', ['-u', 'postgres', '--', 'psql', '-d', 'hify', '-Atqc', "SELECT count(*) FROM agent_runs WHERE state='RUNNING'"]], ['runuser', ['-u', 'postgres', '--', 'psql', '-d', 'hify', '-Atqc', "SELECT count(*) FROM workflow_runs WHERE status='RUNNING'"]], ['runuser', ['-u', 'postgres', '--', 'psql', '-d', 'hify', '-Atqc', "SELECT count(*) FROM document_index_tasks WHERE state IN ('PENDING','RUNNING')"]], ['runuser', ['-u', 'postgres', '--', 'pg_dump', '--format=custom', 'hify']], ['pg_restore', ['--list', '/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/tmpqewpye_j/opt/hify/releases/spec-verify-test/database-before.dump']], ['systemctl', ['start', 'hify']]]
+
+----------------------------------------------------------------------
+Ran 78 tests in 309.863s
+
+FAILED (failures=1)

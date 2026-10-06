@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "kind": "diagnostic-interruption-not-verification",
+  "result": "failed-and-intentionally-interrupted",
+  "sourceHead": "c45c19a9837b71e9f44113441f23d7d495f55750",
+  "sourceTrees": {
+    "backend": "688e3a653101f471c5239c18838a9d65df69dcdf",
+    "frontend": "931a8823bf0513777fc88f0d3447daef94e0e71d",
+    "deploy": "d3b11e660e479c745177f9696e30e5b134802f89"
+  },
+  "sourceWorktreeClean": true,
+  "signalAt": "2026-10-06T18:33:47.302813Z",
+  "signal": "SIGTERM",
+  "processGroup": 1883,
+  "validatedPids": [
+    1883,
+    1900,
+    15942,
+    16053,
+    17666,
+    17670
+  ],
+  "observedSessionExit": 143,
+  "allValidatedProcessesAbsentAfterSignal": true,
+  "reason": "Already failed assertions and test timeouts; stop own costly run to diagnose, not observation-timeout inference",
+  "requestedScopes": [
+    "harness",
+    "migration",
+    "backend",
+    "runtime",
+    "eval",
+    "frontend"
+  ],
+  "notStartedScopes": [
+    "backend",
+    "runtime",
+    "eval",
+    "frontend"
+  ],
+  "migration": {
+    "expectedClassCount": 15,
+    "completedClassCount": 9,
+    "completedClasses": [
+      {
+        "name": "com.hify.api.AgentToolBindingMigrationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": "16.213",
+        "xmlSha256": "1259bddf8e151a33b592bd46d78af1c596fb9fb4a29a2ca655111640d44321e1"
+      },
+      {
+        "name": "com.hify.api.HistoryRecoveryMigrationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": "18.193",
+        "xmlSha256": "dcc7363ba779784adf65493ba2b339d1627f39231e68e53f99a23c296211b7d0"
+      },
+      {
+        "name": "com.hify.api.KnowledgeFinishPostgresTest",
+        "tests": 18,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": "1076.559",
+        "xmlSha256": "a5e75dd76afc6b251eae0e467f4ee28febe916000508aa83730fe15909058273"
+      },
+      {
+        "name": "com.hify.api.KnowledgeShutdownPostgresTest",
+        "tests": 22,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": "622.871",
+        "xmlSha256": "76b4b4158a9d6c982fd7c5b4ad8e37fd0d19cc85680ca23dab6abe02dd0f5183"
+      },
+      {
+        "name": "com.hify.api.McpCredentialPostgresTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": "836.617",
+        "xmlSha256": "fdcf15015f1bcd9fb5c24b6b8b8bb764e7c7b94e94f7f3d3c3f8d18b7fa55bda"
+      },
+      {
+        "name": "com.hify.api.PostgresConcurrencyIntegrationTest",
+        "tests": 7,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": "1625.124",
+        "xmlSha256": "6e04a7acff97c979e3428e2fbb673ea7318f79dceedb3e23b0e475ae762075d9"
+      },
+      {
+        "name": "com.hify.api.RunShutdownPostgresTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 2,
+        "skipped": 0,
+        "seconds": "2054.515",
+        "xmlSha256": "ddb8d3339d7375edeacdad02c50c32361fb690eb6c4fa899506ea57b77d52f8a"
+      },
+      {
+        "name": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+        "tests": 19,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": "1472.964",
+        "xmlSha256": "2bd358bde05b67ef5401f7b3748dfc36296457d519f1d56cc97455370234f9b0"
+      },
+      {
+        "name": "com.hify.api.WorkflowTerminalPostgresTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": "40.068",
+        "xmlSha256": "f915d42967c186cc8fe41bd09a80915a686fb671601b80485e09eae33cf56781"
+      }
+    ],
+    "withoutCompletedXml": [
+      "com.hify.api.SemanticKnowledgePostgresTest",
+      "com.hify.api.WorkflowKnowledgePostgresTest",
+      "com.hify.api.HistoryRecoveryPostgresTest",
+      "com.hify.api.WorkflowSettlementPostgresTest",
+      "com.hify.api.WorkflowTerminalMigrationTest",
+      "com.hify.api.KnowledgeMemoryPostgresTest"
+    ],
+    "completedTotals": {
+      "tests": 79,
+      "failures": 4,
+      "errors": 2,
+      "skipped": 0
+    }
+  },
+  "preservedFileSha256": {
+    "com.hify.api.AgentToolBindingMigrationTest.txt": "a6eb75770919f65ba9a09bbb6d0a7dd35cb2da6ebe4f831c5c335b75223a95d8",
+    "com.hify.api.HistoryRecoveryMigrationTest.txt": "43f94c9bc01155d11bf12b8c8372755b6e12349179baf1503e2aa2f9bad6f9b4",
+    "com.hify.api.KnowledgeFinishPostgresTest.txt": "29f6e6c051090ba556a4cf31cd1c50334084fe98de6f51377c66310b03594fe1",
+    "com.hify.api.KnowledgeShutdownPostgresTest.txt": "2fe1bce9d509aa5b5df153e7530379644d170e311ed489a8ec9a4d373659971e",
+    "com.hify.api.McpCredentialPostgresTest.txt": "7d4d6fd0869c5d1e22cef2e126c14e619b5c974adc1194c2aa75a2a17a7e7bca",
+    "com.hify.api.PostgresConcurrencyIntegrationTest.txt": "9c174605f5223a661ae8a69e45c7ecd321b4a82126c2cb6f8289b53b8e3246b4",
+    "com.hify.api.RunShutdownPostgresTest.txt": "87a383ec3c995e8ed74e3184d35a575cd8c73e70f3e1fbbb099ca9cd4c66a2af",
+    "com.hify.api.WorkflowKnowledgeReviewPostgresTest.txt": "ffa6c2f2003858685d79b9d64c3ae6d5781732869470b83bf297a1e7b55f3589",
+    "com.hify.api.WorkflowTerminalPostgresTest.txt": "b2fee24191f20203680b70b7080653df6403cb14741fcd06f2dd18cc7884e978",
+    "harness-python-tests.log": "1a810daca6de7f9d034d257de5544dfd39321c14e574ce9ac31ec5d02138cdd5",
+    "steps.tsv": "6ea3858b476fe12c866adcff0cb2d11ba2e7102430bfe130dc322ba13b516918"
+  },
+  "localOriginalDirectory": "/Users/weberzhao/hify/harness/evidence/manual/course-20261007-c45c19a",
+  "migrationLogSha256": "83d61dc0a01913977d096be4136efc9efaaeae7ca5bb5c5ddf3dd3a78c6b8653",
+  "verificationJsonProduced": false,
+  "limits": [
+    "Partial run: totals only describe completed XML reports",
+    "No root-cause attribution for original failures",
+    "No full Maven terminal summary; killed while WorkflowKnowledgePostgresTest was initializing",
+    "Original XML and full migration log retained locally; copied text reports byte-compared",
+    "No production service or other project container stop command was issued"
+  ]
+}
