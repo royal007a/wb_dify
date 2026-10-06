@@ -1,0 +1,5 @@
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+    free   active   specul inactive throttle    wired  prgable   faults     copy    0fill reactive   purged file-backed anonymous cmprssed cmprssor  dcomprs   comprs  pageins  pageout  swapins swapouts
+    4074   108507     6244   101495        0   464498        0   64419M 2152062K   14222M   23254M 2536665K       79604    136642  3030173   329006   31558M   32390M  836852K  7708268  475661K  496534K 
+    3701    95252     5240    89292        0   464678        0   240820     1725    33991   101483     5742       70859    118925  3042594   355703   152129   172183     2045      417     9246     2676 
+    3735   115003     9828   103964        0   478087        8   229601     4573    38530    63218     1119       79749    149046  2998123   303382   132947   103071     7906      116    12802    24292 

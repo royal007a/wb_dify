@@ -1,0 +1,53 @@
+..........EE.................................................Maven evidence: failed
+.Maven evidence: passed
+Maven evidence: failed
+..Maven evidence: failed
+...............
+======================================================================
+ERROR: test_broken_stderr_pipe_preserves_cleanup_and_original_exit (test_deploy_installer.DeployInstallerTest.test_broken_stderr_pipe_preserves_cleanup_and_original_exit) (shell='dash', stage='late')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/tests/test_deploy_installer.py", line 145, in test_broken_stderr_pipe_preserves_cleanup_and_original_exit
+    result = subprocess.run([shell, str(script), str(release)], env=env,
+                            stdout=subprocess.PIPE, stderr=write_fd, timeout=10)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 557, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 1221, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 2154, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 1268, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['dash', '/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/tmpghv1o40e/install.sh', '/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/tmpghv1o40e/opt/hify/releases/spec-verify-test']' timed out after 10 seconds
+
+======================================================================
+ERROR: test_broken_stderr_pipe_preserves_cleanup_and_original_exit (test_deploy_installer.DeployInstallerTest.test_broken_stderr_pipe_preserves_cleanup_and_original_exit) (shell='dash', stage='health')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/tests/test_deploy_installer.py", line 145, in test_broken_stderr_pipe_preserves_cleanup_and_original_exit
+    result = subprocess.run([shell, str(script), str(release)], env=env,
+                            stdout=subprocess.PIPE, stderr=write_fd, timeout=10)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 557, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 1221, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 2154, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 1268, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['dash', '/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/tmp4y2udeyr/install.sh', '/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/tmp4y2udeyr/opt/hify/releases/spec-verify-test']' timed out after 10 seconds
+
+----------------------------------------------------------------------
+Ran 78 tests in 302.268s
+
+FAILED (errors=2)
