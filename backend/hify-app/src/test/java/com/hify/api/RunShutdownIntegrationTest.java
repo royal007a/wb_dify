@@ -250,10 +250,11 @@ class RunShutdownIntegrationTest {
                         var loop=spy(new com.hify.runtime.QueryLoop(context.getBean(com.hify.runtime.ToolRuntime.class),
                                 context.getBean(com.hify.runtime.context.ContextManager.class),context.getBean(com.hify.common.ExecutionLifecycle.class)));
                         doAnswer(invocation->{
+                            assertThat(invocation.<com.hify.common.ExecutionControl>getArgument(8)).isNotNull();
                             Object result=invocation.callRealMethod();computed.countDown();
                             assertThat(release.await(10,TimeUnit.SECONDS)).isTrue();return result;
                         }).when(loop).run(org.mockito.ArgumentMatchers.anyList(),any(),any(),org.mockito.ArgumentMatchers.anyDouble(),
-                                any(com.hify.runtime.CapabilitySnapshot.class),any(),any(),any());
+                                any(com.hify.runtime.CapabilitySnapshot.class),any(),any(),any(),any(com.hify.common.ExecutionControl.class));
                         return loop;
                     },definition->definition.setPrimary(true));
                 })

@@ -35,3 +35,7 @@ mutations目录保留七份逐行patch和七份原始日志；manifest.json记�
 round2/run-service-probe.py是此次27项runner快照，../LightweightTest.java是JUnit入口；旧22项runner和首次红灯日志保留不覆盖。脚本含当时本机路径，需要相同依赖布局，并非便携构建工具。正常运行默认选六个类/count27；突变运行用`--replacement <隔离副本.java> --select <manifest中的selector> --count <found>`。应在独立副本应用对应patch，不在共享工作树上修改生产类。
 
 Spring集成spy改动、关停恢复、数据库终态和完整六scope仍待新切片完整验证。M4证明控制传入与分类，HTTP类没有逐条参与七项突变；不能宣称所有HTTP检查点均做独立突变。当前普通聊天父预算从持久createdAt计时，队列和崩溃恢复消耗时间；显式新Run续接获得新预算，旧工具/轮数计数保留。SQL/CPU取消仍为协作式，不保证所有操作立即中止，也不能撤销已发出请求或费用。
+
+## 后续发现的关停夹具签名
+
+静态核对发现RunShutdownIntegrationTest的computed-result屏障仍拦截旧8参QueryLoop入口，生产RunApplicationService现在调用9参父控制入口。已同步spy签名并明确检查参数8非空；10秒、5秒等待及原持久化/恢复断言未放宽。独立javac先因遗漏hify-app/target/classes无法找到HifyApplication失败；补全只读依赖路径后编译退出0。这只是编译检查，未运行该Spring关停测试，不属于上述27项绿灯。主树c45c19a尚未包含新入口，其本轮60秒超时红灯不由这个签名差异导致，须另行诊断。
