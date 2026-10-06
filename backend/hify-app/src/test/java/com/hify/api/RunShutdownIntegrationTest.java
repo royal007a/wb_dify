@@ -197,7 +197,16 @@ class RunShutdownIntegrationTest {
     @Test void interruptedModelIsRecoverableAfterActualApplicationRestart() throws Exception {
         verifyModelShutdownRecovery(database());
     }
+    @Test void expiredInterruptedModelDoesNotRestartItsBudgetAfterActualApplicationRestart() throws Exception {
+        verifyExpiredModelShutdownRecovery(database());
+    }
     static void verifyModelShutdownRecovery(String url) throws Exception {
+        verifyModelShutdownRecovery(url,false);
+    }
+    static void verifyExpiredModelShutdownRecovery(String url) throws Exception {
+        verifyModelShutdownRecovery(url,true);
+    }
+    private static void verifyModelShutdownRecovery(String url,boolean expireBeforeRestart) throws Exception {
         long diagnosticStarted=System.nanoTime();
         shutdownPhase(diagnosticStarted,"model-begin");
         var entered = new CountDownLatch(1);
@@ -227,16 +236,42 @@ class RunShutdownIntegrationTest {
         assertThat(db.queryForObject("select cancel_requested_at from agent_runs where id=?", Object.class, run)).isNull();
         assertThat(db.queryForList("select event_type from run_events where run_id=?", String.class, run))
                 .contains("run.interrupted").doesNotContain("run.cancelled", "run.failed", "run.completed");
+        var checkpointsBefore=db.queryForList("select * from run_checkpoints where run_id=? order by sequence_no",run);
+        assertThat(checkpointsBefore).as("real interrupted execution has a durable checkpoint").isNotEmpty();
+        if(expireBeforeRestart) {
+            // Backdate only this stopped fixture Run. No sleep, production clock override,
+            // timeout increase, or edit to the checkpoint that startup will encounter.
+            assertThat(db.update("update agent_runs set created_at=? where id=? and state='RUNNING'",
+                    java.sql.Timestamp.from(Instant.now().minusSeconds(300)),run)).isEqualTo(1);
+        }
+        var recoveredCalls=new java.util.concurrent.atomic.AtomicInteger();
         shutdownPhase(diagnosticStarted,"model-persistence-assertions-passed");
         shutdownPhase(diagnosticStarted,"model-second-context-starting");
-        try (var second = start(url, request -> new RuntimeMessage("assistant", "recovered", null, List.of()))) {
+        try (var second = start(url, request -> {
+            recoveredCalls.incrementAndGet();
+            return new RuntimeMessage("assistant", "recovered", null, List.of());
+        })) {
             shutdownPhase(diagnosticStarted,"model-second-context-started");
             var service = second.getBean(RunApplicationService.class);
             awaitTerminal(service, run);
+            if(expireBeforeRestart) {
+                assertThat(service.get(run).getState()).isEqualTo(RunState.TIMED_OUT);
+                assertThat(service.get(run).getTerminalReason()).isEqualTo("TIMEOUT");
+                assertThat(recoveredCalls).as("expired recovery must not invoke the model").hasValue(0);
+                assertThat(db.queryForObject("select count(*) from chat_messages where role='assistant'",Integer.class)).isZero();
+                assertThat(db.queryForObject("select count(*) from run_events where run_id=? and event_type='run.failed'",Integer.class,run))
+                        .as("one durable timeout terminal event").isEqualTo(1);
+                assertThat(db.queryForList("select event_type from run_events where run_id=?",String.class,run))
+                        .doesNotContain("checkpoint.restored","run.completed","message.delta");
+                assertThat(db.queryForList("select * from run_checkpoints where run_id=? order by sequence_no",run))
+                        .as("refused recovery does not rewrite its saved checkpoint").isEqualTo(checkpointsBefore);
+            } else {
             assertThat(service.get(run).getState()).isEqualTo(RunState.COMPLETED);
             assertThat(service.get(run).getOutputMessage()).isEqualTo("recovered");
             assertThat(db.queryForObject("select count(*) from chat_messages where role='assistant'", Integer.class)).isEqualTo(1);
             assertThat(db.queryForList("select event_type from run_events where run_id=?", String.class, run)).contains("checkpoint.restored");
+            assertThat(recoveredCalls).as("timely recovery actually invokes the model once").hasValue(1);
+            }
             shutdownPhase(diagnosticStarted,"model-recovery-assertions-passed");
         }
         shutdownPhase(diagnosticStarted,"model-second-context-close-returned");

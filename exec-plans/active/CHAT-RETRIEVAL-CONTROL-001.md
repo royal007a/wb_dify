@@ -55,3 +55,15 @@ WorkflowKnowledgeReviewPostgresTest#indexingMetadataFailurePersistsFailureWithou
 证据见 docs/research/jikesummary-20261006/indexing-postgres-7764/README.txt。
 耗时近9分钟，其中Spring启动约298秒；不能凭这一窄绿灯关闭完整关停恢复红灯。
 下一步仍需预算内恢复与已到期恢复分开验证，并保留原COMPLETED和60秒条件。
+
+## 2026-10-07 05:00 恢复反例补强（待运行）
+
+为 H2 / PostgreSQL 各新增真实 context.close → 同库重启的已到期反例。
+首实例真实进入阻塞模型并由生产停机中断；断言 RUNNING、无用户取消、
+已有 run.interrupted 和持久 checkpoint。只在已关闭的隔离夹具数据库中，
+把这一行 created_at 回拨 300 秒，再重启第二实例；必须 TIMEOUT / TIMED_OUT、
+模型零调用、无 assistant / delta / checkpoint.restored，原 checkpoint 不变。
+这不是生产时钟覆写，也不是把旧成功测试改成允许任意终态；原正例继续
+要求 COMPLETED、回答和恢复事件，并补模型恰好一次。45/60 秒类/方法上限
+及原来的 10/5 秒 latch 等待不变。清单同步增至 H2 7 / PG 3。
+未运行前只算新测试代码；完整门禁依然未通过。

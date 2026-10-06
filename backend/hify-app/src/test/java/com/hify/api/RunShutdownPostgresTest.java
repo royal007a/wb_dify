@@ -21,4 +21,9 @@ class RunShutdownPostgresTest {
             var statement=connection.createStatement()) {statement.execute("CREATE DATABASE shutdown_completed");}
         RunShutdownIntegrationTest.verifyComputedResultShutdown(POSTGRES.getJdbcUrl().replace("/shutdown_test","/shutdown_completed"));
     }
+    @Test @Timeout(60) void expiredInterruptedRunCannotRestartItsBudgetOnPostgres() throws Exception {
+        try(var connection=java.sql.DriverManager.getConnection(POSTGRES.getJdbcUrl(),"hify","hify");
+            var statement=connection.createStatement()) {statement.execute("CREATE DATABASE shutdown_expired");}
+        RunShutdownIntegrationTest.verifyExpiredModelShutdownRecovery(POSTGRES.getJdbcUrl().replace("/shutdown_test","/shutdown_expired"));
+    }
 }
