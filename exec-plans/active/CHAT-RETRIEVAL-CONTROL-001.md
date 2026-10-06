@@ -44,3 +44,14 @@
   预算内恢复与真正过期恢复，不能把旧成功用例改成接受任意终态。
 
 完整六 scope 及独立 review 仍是完成条件；task 保持 pending，不部署。
+
+## 2026-10-07 04:46 窄复验续记（完整验收仍未完成）
+
+7764bf2 的 Java 测试源码已 test-compile 通过，原始日志见
+fixture-diagnostics-20261007/java-compile.txt（不执行测试）。
+在相同 Java 源码、HEAD 9d22af5 上，以新私有 reports 目录单独运行
+WorkflowKnowledgeReviewPostgresTest#indexingMetadataFailurePersistsFailureWithoutDeletingExistingChunks，
+真实PG 1/1、零fail/error/skip，5秒等待和持久化断言未放宽。
+证据见 docs/research/jikesummary-20261006/indexing-postgres-7764/README.txt。
+耗时近9分钟，其中Spring启动约298秒；不能凭这一窄绿灯关闭完整关停恢复红灯。
+下一步仍需预算内恢复与已到期恢复分开验证，并保留原COMPLETED和60秒条件。
