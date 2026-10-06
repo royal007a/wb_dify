@@ -1,0 +1,41 @@
+{
+  "scope": "course excerpt replay, not Hify or upstream repo acceptance",
+  "observations": [
+    {
+      "case": "valid",
+      "acceptedByDemo": true
+    },
+    {
+      "case": "wrong_total",
+      "acceptedByDemo": false
+    },
+    {
+      "case": "fractional_total",
+      "acceptedByDemo": true
+    },
+    {
+      "case": "fractional_delta",
+      "acceptedByDemo": true
+    },
+    {
+      "case": "boolean_delta",
+      "acceptedByDemo": true
+    },
+    {
+      "case": "numeric_strings",
+      "acceptedByDemo": true
+    },
+    {
+      "case": "duplicate_total",
+      "acceptedByDemo": true
+    },
+    {
+      "case": "array_root",
+      "escapedException": "AttributeError"
+    },
+    {
+      "case": "keys_are_substrings",
+      "acceptedByKeysGate": true
+    }
+  ]
+}

@@ -286,7 +286,7 @@
       "sha256": "ec22e43c9df24bcff8b96f2c87bbca983ceb6a39b021c744481a97decbb59f74",
       "pages": 10,
       "bytes": 4791380,
-      "readingStatus": "catalogued-not-read"
+      "readingStatus": "read-and-mapped-in-reading-notes"
     },
     {
       "id": "C033",
@@ -438,7 +438,7 @@
       "sha256": "5be00242f01e89b9447a8f26b9c43242b8689b4093f7d5a48ccd17fc696f966f",
       "pages": 13,
       "bytes": 4558299,
-      "readingStatus": "catalogued-not-read"
+      "readingStatus": "read-and-mapped-in-reading-notes"
     },
     {
       "id": "C052",
@@ -566,7 +566,7 @@
       "sha256": "c50d2d4a88bf8f489f43074d3970b060c04d317e59e6ce5beebfc4e8ac73b74c",
       "pages": 12,
       "bytes": 2847546,
-      "readingStatus": "catalogued-not-read"
+      "readingStatus": "read-and-mapped-in-reading-notes"
     },
     {
       "id": "C068",
@@ -798,7 +798,7 @@
       "sha256": "8aac939120858f8d852f0cad7b8aefbe89bed5214671ba81a6e517bf1a92a1b8",
       "pages": 18,
       "bytes": 7049860,
-      "readingStatus": "catalogued-not-read"
+      "readingStatus": "read-and-mapped-in-reading-notes"
     },
     {
       "id": "C097",

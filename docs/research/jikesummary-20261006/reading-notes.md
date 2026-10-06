@@ -2,6 +2,12 @@
 
 基线 d2b39c2；183个本地PDF、177种不同文件内容，六组字节相同的跨目录副本。源文件路径、SHA、页数见source-inventory.json。清单的catalogued-not-read仅表示完成编目；实际阅读范围以本文逐章记录为准。课程全文不提交。以下为原创归纳，不是逐字转载。
 
+时间口径：各节中的“正在验证/尚未运行”保留阅读当时的状态，不是实时任务看板。
+2026-10-07 04:30 整理时，c45c19a 和 11e7be5 两轮完整门禁均已中止并保留红灯，
+当前修正尚未完整验收；见 failed-gate-11e7be5-1g 与唯一任务源 harness/tasks.json。
+本次新增 C032/C051/C067/C096 的阅读与代码映射；独立 review 尚待结论，
+“read-and-mapped”不表示 reviewer 批准、产品已实施或课程全部读完。
+
 ## 第一批：排错和验证方法
 
 ### C133：企业级全链路开发实战，第29讲，可观测性与排错
@@ -210,6 +216,169 @@ Hify普通Chat的createInTransaction先持久Run/用户消息，靠唯一约束�
 
 当前工程取舍：不新增Redis分布式锁或真实子Agent worker；先继续验证已有父控制、终态和关停契约。门禁实测到的线程饥饿、上下文启动慢只是资源争用观察，不证明数据库死锁，更不证明所有失败都是环境原因。后续受控重跑应记录JVM堆上限、Spring context缓存策略和同机测试窗口，保留旧失败日志，不在运行中的进程上偷偷改变这些参数。
 
+## 交互契约、失败经验与受控并行
+
+以下四节来自冻结源码 11e7be5 时的隔离阅读稿；后续到 7764bf2 没有改 src/main。
+正文、评论和图示范围逐节说明，探针见 contract-probes/。它们不是新增产品功能。
+
+### C096：Agent设计模式之美，第15讲，失败日记
+
+黄佳，PDF 1–18页全文（含参考资料与五条评论）已读；渲染核对第9–10页数据模型、
+第12页选择逻辑、第14页治理图。来源 SHA 见 inventory。错误日志记录本次症状，
+失败日记把有复发价值的事故转成下次动作前可召回的短经验。六层分别负责纳入边界、
+分类、原始证据包、根因/修复、触发条件、审查与留存。经验卡可以短，但必须能返回
+原任务、状态、工具观测和门禁报告；瞬时抖动不应无条件变成永久规则。
+
+失败事实与可复用教训不同。draft/needs_review/approved/archived 是课程建议的
+经验准入状态，不是 Run 终态；批准需要绑定内容摘要、主体、适用条件和撤销语义。
+没有证据就保留 unknown/needs_review，不能为了填全卡片编造根因。图中来源、人审、
+权限与会话隔离是治理目标，内存 Python 列表不是这些机制的完整实现。
+
+第12页召回示例按任务族 +3、工具 +3、机械键交集加分，分数大于零即可入选，
+是 OR 排名，不是三个条件必须同时满足。categories 未参与过滤，图中的 min_severity
+也未进入 RecallTrigger 片段；没有 tenant/scope 隔离参数。top_k 未校验，负数遵循
+Python 切片语义，不会安全地拒绝非法请求。这些是所示片段的静态判断，未运行作者
+完整仓库；不能把“结构化召回”直接当作权限实现。
+
+recalled_count 仅表示被选进返回列表，不证明进入模型上下文、改变行为或阻止副作用。
+重复失败率、漏召回率和误提醒率需要固定任务族、可比工作量和独立标注；任务量下降
+时，失败次数下降本身不能证明效果。人工批准的经验也不能升级系统授权。课程引用的
+研究、攻击与平台背景仅作课程转述，本轮没有独立验证其现状或收益。
+
+Hify 的 QueryLoop 已有 failureType、StepAttempt、ReplanDecision、ContinuationDecision
+与受预算约束的恢复记录，它们属于当前 Run，不是跨任务已审查经验库。
+HistoryRecallService.search 限于当前会话，detail 回查同会话 canonical 内容；
+MemoryDeliveryPolicy 限制知识门禁下的原始记忆交付。ContextSummaryStatus 的 CURRENT
+表示摘要状态，不等于人审批准。LayeredContextMemoryService 将摘要/预览放进 system
+的风险仍在，不能把经验正文继续提升为策略。
+
+取舍：高频确定性问题下沉到代码准入、权限和回归测试；依赖情境的经验才考虑技能，
+尚不确定的保留证据继续定位。本次父控制贯穿应修在 ExecutionControl、公开 port 和
+HTTP 边界，不是给模型一句“不要超时”。已有失败 run、SHA 和任务源继续沿用，
+不另造完成状态。后续若做经验库，验收至少覆盖：未审查/撤销不召回、同号改内容使
+旧批准失效、主体环境不混入、证据缺失降级、经验不能放宽执行权限。尚未实现此候选。
+
+### C032：生产级Agent排雷实战，第09讲，Agent间信息契约
+
+李号双，PDF 1–10页、附录和一条评论全部已读；渲染核对第5、7、8页。交接边界
+独立于协作拓扑：垂直委派、接力、共享会话、黑板和任务池都不应默认复制完整历史。
+模型填写任务描述，确定性代码绑定权限、约束和数据引用；回传采用字段白名单、
+类型/内容检查与审计。消息标识、链路标识、方向、类型、发送方和接收方有助于定位，
+却不自动构成认证、授权或事实证明。重要结果应显式交付，不依赖读取隐藏推理。
+
+契约只证明形状。task_description、output 等合法字符串仍可能携带注入、长历史或
+敏感信息；constraints/available_tools 写在提示里，不会限制实际执行器。数据句柄
+回读时仍需验证 ACL、大小和当前状态。message_id 去重不是恰好一次：同 ID 不同载荷、
+并发领取、重启后结果与重试身份均需定义。trace_id 不证明根因，from_agent 字段也
+必须由可信主体签发或验证；分布式边界不能只靠发送者自愿走本地包装函数。
+
+教学片段有契约不一致：Port.process 返回字符串 delivered，spawn 却读取
+delivery.crossing.payload；ContractStation 读取 crossing.meta，而展示的 Crossing
+没有该字段。必填键存在和类型检查还不等于根值对象、可选字段、深度和字节上限
+全部被验证。本轮没有拉取附录或评论所述平台，不把片段问题外推为其最新实现缺陷。
+拒绝后重试还会消耗预算，原任务也可能已有副作用；拒绝审计同样需要有界和脱敏。
+
+Hify 的 ChildAgentTaskService/ChildAgentTask 是持久任务协议，不是真实 worker。
+create/start/deliver/claim/consume 维护交付状态，claim 校验父 Run，consume 要求父
+Run COMPLETED，Repository 有行锁，实体有乐观版本；恢复对缺失执行器的 RUNNING
+记录 LOST 和后续决策。outputDigest 是调用方传入的非空字段，deliver 没有读取
+outputRef 后重算，因此不能称为产物真实性已核验。现有服务集成测试也不证明网络
+身份、跨节点租约或真实 worker 已经执行。
+
+更直接的项目缺口是检索原文、摘要和目录预览进入 system，RuntimeMessage 尚无
+独立来源/信任字段。H1 保留既有 system 并不能识别其上游来源。三家适配器不同：
+OpenAI-compatible 传 role，Anthropic 汇总到顶层 system，Gemini 汇总到
+systemInstruction。不能伪造没有 tool-call 的 tool_result；也不能直接全改 user，
+因为 compactor 以最近 user 切分当前轮，历史 checkpoint 恢复也受影响。
+
+候选应统一设计可信策略、用户请求与外部参考的内部来源模型，再映射供应商协议。
+改动范围包含消息类型、投影/压缩、历史兼容、三个适配器和引用，不夹带为一行 role
+替换。验收：恶意标签不进入系统字段，用户顺序与规则不变，真实工具仍成对，旧
+checkpoint 可读，三家请求体有断言，超限仍拒绝，去掉隔离使反例变红。这证明消息
+边界，不证明模型完全抗注入；真实 worker 仍属于 AGENTS.md 明确的非目标。
+
+### C067：Agent设计模式之美，第24讲，提示链与段间契约
+
+黄佳，PDF 1–12页、参考资料和两条评论全部已读；渲染核对第7–8页表格与代码。
+多个模型调用只形成流水线，不自动成为可验收链。每段交付具名工件，下游只消费
+通过门禁的工件；语法、结构、业务语义、事实与来源四层应分开。schema_version
+表达格式兼容，ledger_version/batch_id 绑定业务快照，source_refs 用于独立回读，
+都必须实际检查，不能只是模型自填字段。
+
+薪酬例子用 SQLite 台账挡住错误总额，不能由此证明每个员工账号、逐笔金额、批次
+或版本正确；两个员工金额交换但总额相同仍是反例。GateDecision 的 rule_id、
+reason_code、retryable 和证据比布尔值更适合恢复。格式错、台账过期、账号冲突
+应有不同处理；示例 max_retries=2 是最多三次尝试，仍需整链预算。只有成功工件才
+进入 prior 的顺序值得保留，不能靠“修复重试”重置截止或越过副作用审批。
+
+七步各95%相乘约70%只在独立性假设下成立。链拆得更长还会增加成本；确定性转换
+优先用代码。首次通过率、重试放大、逃逸率要区分逻辑步骤、实际尝试和人工样本。
+拒绝率高不自动代表质量高，也不应保存全部推理和敏感原文来追求可观测。
+
+隔离探针转写第7–8页表达式，只用内存 SQLite 合成总额3100000，不调用 Hify、模型
+或付款。九个观察见 contract-probes/C067-gate-probe.json：正确与错误总额正反成立，
+小数 total/delta 被 int 截断后放行，false 和数值字符串可通过，重复 total 后值覆盖
+前值，数组根值抛未捕获 AttributeError，keys_gate 仅查原文子串，非JSON也可通过。
+这是教学片段反例，不是作者完整仓库验收，更不是产品安全绿灯。
+
+Hify 的 WorkflowStructuredOutput 已拒绝重复键、尾随值、字段/类型不符，限制
+字符串、数值与数组；decode 完整成功后，setAll 先查冲突再原子绑定。WorkflowEngine
+检查父控制，失败不进入 END。outputSchema 是有界结构契约，不是通用业务验证器。
+KnowledgeCompletionVerifier 核验 K编号、canonical chunk 身份与摘要，来源完整
+claim 可 VERIFIED，模型语义仍是非 required 的 UNVERIFIED inference；FinishGate
+检查声明的成功条件，不是为全部自然语言结论提供真值证明。本节未重跑这些 Java 测试。
+
+后续只读核对发现 WorkflowCanvas.vue 已写“所有外部输出均为未验证内容”和
+“格式正确不等于事实已核验”，撤回草稿中可能重复实现画布提醒的候选。它是源码
+文字核对，不是浏览器验收，也不证明所有详情页的 claim 展示正确。业务门禁应等
+具体不变量获准后再设计，规则与发布版本绑定，不开放任意 eval/SQL，不把教学工资
+台账复制为平台功能。验收候选是污染工件不发布、下游零调用、保留原失败，另覆盖
+事实版本变更、语义错、取消竞态和合法对照；当前检索控制不宣称解决了事实核验。
+
+### C051：从0开始构建Agent Harness，第08讲，单轮并行工具
+
+Tony Bai，PDF 1–13页和十条评论全部已读；渲染核对第2页fork/join、第3页锁和
+第10页总结。模型一次提出多项 tool call，不等于宿主已并行。示例为每项启动
+goroutine，以 WaitGroup 汇合，预分配结果切片按索引保序后写历史；避免共享 append
+不代表工具、客户端和外部资源都线程安全。图中第三项是 Bash，不是只读安全证明。
+
+正文提出全批只读才并行、混合读写退回串行，作者评论说明这一策略未放进展示实现。
+并发限制仍是思考题；读者的信号量建议不是已交付功能。固定并发K不等于QPS限流，
+读也可能收费、受限流或依赖一致快照。“同一响应必然互不依赖”是演示假设，不是
+模型保证；理想耗时 max(t_i) 加开销需要足够资源、无依赖和瓶颈，不能直接外推
+普遍性能收益。三个文件演示没有串行采样、P95或资源曲线，本轮未拉取作者仓库。
+
+每路径锁只约束遵守锁协议的参与者，不构成读-决策-写事务；Bash正则建议不作为
+安全边界。WaitGroup/传ctx不能保证忽略取消的工具停止。示例使用带ToolCallID的
+RoleUser，其Provider映射未核实；Hify继续原生工具配对。保序结果还不是持久事件、
+幂等和崩溃恢复契约，越权或全局预算错不能一律让模型自纠错。
+
+Hify QueryLoop:239 起逐项串行执行，已经支持单响应多个调用；逐次检查重复ID、
+工具/recall预算、父控制与replay，重试同样计toolCalls。ToolRuntime执行前校验
+租约、能力版本、启用、risk和参数，真正执行前再查租约；当前非read拒绝，不能借
+课程增加写工具。ToolDefinition只有name/description/inputSchema/risk，没有可信
+parallelSafe/resourceKey。RunApplicationService的activeAttempts是每Run单值，
+start覆盖，complete按(run,attempt)删除，租约要求身份相等并检查DB/取消/能力。
+这是串行保护，不是现有并发bug。
+
+离线ParallelLeaseProbe用生产ToolExecutionLease/ExecutionControl，转写单活跃map，
+不模拟DB。四项观察：A开始有效；A未结束时B开始使A失效；A完成不误删B；B完成后
+B失效。因此只把for改成线程池会破坏租约。QueryLoop:348–354逐项提交canonical，
+ToolReplay v1要求精确prefix并携带plan/context/counters，共享并发写会改变恢复。
+RunEventBroker.publish本已有事务及Run行锁，不能仅看max+1就报序号竞态。
+
+取舍先测量工具IO、排队、重试与提交占比，再决定是否值得并行。若做，需要可信
+parallelSafe与能力快照绑定，未知默认串行；批次前审身份和原子预留预算，每Run及
+全局/上游共同限额，排队计入父截止。worker只产出有界callId/index/attempt数据，
+单coordinator写plan/context/历史，不能仅将map改Set。定义部分失败、在途取消与
+执行后未提交崩溃的durable状态，兼容旧ToolReplay v1，不假装撤销已经发生的读取费用。
+
+验收候选：latch证明独立工具同时进入；逆序完成仍原序提交/恢复；未知/禁用/非read
+不能绕权限；预算1面对两申请仅启动获准项；重复ID/排队取消零调用；完成/取消/关停
+租约不串台且许可释放；故障注入覆盖执行后与部分提交；累计输出有界；跨Run限额和
+固定负载性能/失败率/成本对照；逐项移除保护产生独立红灯。四项探针不等于这些验收。
+当前先收尾检索截止与关停验证，不趁等待把并行混入主循环。
+
 ## 候选与验收边界
 
 | 候选 | 代码依据 | 下一步 | 状态来源 |
@@ -223,5 +392,8 @@ Hify普通Chat的createInTransaction先持久Run/用户消息，靠唯一约束�
 | 检索与循环共用控制预算 | RunApplicationService.knowledgeCandidates、SemanticEmbeddings | 持久Run时间锚点、明确取消传递、有界子调用；服务级反例先于修复 | tasks.json / CHAT-RETRIEVAL-CONTROL-001；分层证据见retrieval-control，完整验收未完成 |
 | 召回质量基准口径 | KnowledgeRetrievalService、HistoryRecallEvaluationTest | 使用生产检索入口和相关集合，不以合成top1命中及artifact常量冒充完整语义评测 | 尚未形成工程任务，现有结果仍按原边界解释 |
 | Replan决策原因与预算一致 | DeterministicReplanPolicy的TOOL_UNAVAILABLE分支 | 有替代/无替代与预算耗尽正反例，校验action和具体reason | C060静态候选，未修改或运行反例 |
+| 有审查边界的失败经验 | QueryLoop恢复记录、HistoryRecallService、ContextSummaryStatus | 先保留事实与unknown根因；确定性缺陷下沉回归，经验不得修改权限 | C096设计候选，不把CURRENT当批准 |
+| 分层工件门禁 | WorkflowStructuredOutput、KnowledgeCompletionVerifier、WorkflowCanvas | 现有结构/来源门禁保留；业务真值须独立规则与数据源，画布提示不重复实现 | C067片段探针，不是产品验收 |
+| 受控只读并行 | 单活跃attempt租约、ToolReplay v1、QueryLoop串行计数 | 先测量；再设计可信并行许可、预算预留、保序提交与部分崩溃恢复 | C051四项离线探针，尚未实现并行 |
 
 研究入口未完成，以上不是最终全量总结；仍需阅读其他相关章节并逐项优化、验证和review。
