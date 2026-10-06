@@ -131,25 +131,48 @@ class CircuitBreakerServiceTest {
     void stopsAttemptChainAtOverallDeadlineAndInterruptsTheWorker() throws Exception {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         CountDownLatch interrupted = new CountDownLatch(1);
+        AtomicInteger entered = new AtomicInteger();
+        long observedStart = System.nanoTime();
         CircuitBreakerService deadlineService = new CircuitBreakerService(
                 registry, executor, Duration.ofMillis(50),
                 3, Duration.ZERO, 3, Duration.ZERO);
         try {
             assertThatThrownBy(() -> deadlineService.execute("slow-provider", () -> {
+                entered.incrementAndGet();
+                System.err.println("deadline-test phase=operation-entered elapsedNanos=" + (System.nanoTime()-observedStart));
                 try {
                     Thread.sleep(5_000);
                     return "too late";
                 } catch (InterruptedException exception) {
+                    System.err.println("deadline-test phase=operation-interrupted elapsedNanos=" + (System.nanoTime()-observedStart));
                     interrupted.countDown();
                     Thread.currentThread().interrupt();
                     throw new LlmApiException(LlmApiException.Type.REQUEST_FAILED, "interrupted", exception);
                 }
             })).isInstanceOfSatisfying(LlmApiException.class,
                     failure -> assertThat(failure.type()).isEqualTo(LlmApiException.Type.TIMEOUT));
-            assertThat(interrupted.await(1, TimeUnit.SECONDS)).isTrue();
+            System.err.println("deadline-test phase=caller-timeout entered=" + entered.get()
+                    + " elapsedNanos=" + (System.nanoTime()-observedStart));
+            assertThat(interrupted.await(1, TimeUnit.SECONDS)).as("worker entered %s times", entered.get()).isTrue();
         } finally {
             executor.shutdownNow();
         }
+    }
+
+    @Test void overallDeadlineWhileQueuedDoesNotStartOrSampleAnOperation() {
+        var queued=new java.util.concurrent.atomic.AtomicReference<Runnable>();
+        var calls=new AtomicInteger();
+        var deadlineService=new CircuitBreakerService(registry, queued::set, Duration.ofMillis(50),
+                3, Duration.ZERO, 3, Duration.ZERO);
+        assertThatThrownBy(()->deadlineService.execute("expired-in-queue", calls::incrementAndGet))
+                .isInstanceOfSatisfying(LlmApiException.class,
+                        failure->assertThat(failure.type()).isEqualTo(LlmApiException.Type.TIMEOUT));
+        assertThat(queued.get()).isNotNull();
+        queued.get().run();
+        assertThat(calls).hasValue(0);
+        var metrics=registry.circuitBreaker("provider-expired-in-queue").getMetrics();
+        assertThat(metrics.getNumberOfFailedCalls()).isZero();
+        assertThat(metrics.getNumberOfSuccessfulCalls()).isZero();
     }
 
     @Test

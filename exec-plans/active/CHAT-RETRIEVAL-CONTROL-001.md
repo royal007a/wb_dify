@@ -132,3 +132,22 @@ ExecutionControlTest：10 项，5 项断言失败，0 error，0 skip，Maven exi
   本次不修改该断言、不把一次重跑通过当作排除功能问题，也不归咎于资源环境。
 
 上述结果只说明新算术反例由红转绿，不能支撑 hify-common 全绿或六 scope 验收。
+
+### 05:40 中断红灯的分阶段定位
+
+保留原有 50ms deadline、5 秒模拟阻塞与 1 秒中断等待，在原测试中仅增加
+operation-entered / operation-interrupted / caller-timeout 三个阶段、进入计数和经过
+纳秒的诊断。新建独立“排队直至到期”反例：Executor 只捕获 Runnable 不调度，
+调用返回 TIMEOUT 后再运行已取消的 Runnable，要求 operation 零调用，熔断成功/
+失败计数均为零。该用例区分“没启动就到期”与“启动后必须中断”，不能替代
+原来的运行中断言。本轮先跑带诊断的固定测试类，不以重跑变绿抹掉前一次失败。
+
+05:42:01 CST，该类 13/13、零 fail/error/skip，Maven exit 0。本次日志记录
+operation-entered=0.920041ms、operation-interrupted=145.384666ms、
+caller-timeout=146.250583ms（相对测试观察起点，非精确生产 SLA 测量）。
+这证明本次确有运行中的中断，以及另一个用例的排队拒绝行为；不能追溯证明
+上次没有 entered 诊断的红灯是排队造成。没有改 CircuitBreakerService 产品逻辑。
+原文 `worker-deadline-diagnostic/maven.log` SHA-256 为
+`e179e29569922c4f8d3992be9abb825750151b39fe05cd977572077afc16c8fb`。
+命令 `mvn -B -o -pl hify-common -am -Dtest=CircuitBreakerServiceTest -Dsurefire.failIfNoSpecifiedTests=false -Dhify.test.reportsDirectory=<fresh>/reports test`。
+common 78 项那次仍为失败；不把此单类重跑覆盖为全模块通过。
