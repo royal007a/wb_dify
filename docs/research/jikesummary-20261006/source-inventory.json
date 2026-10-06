@@ -1270,7 +1270,7 @@
       "sha256": "030a15b3258e99e88bb7fea9e70921ab74ee760bcee1ac01f9c1cd1914cce4e5",
       "pages": 14,
       "bytes": 3291862,
-      "readingStatus": "catalogued-not-read"
+      "readingStatus": "read-and-mapped-in-reading-notes"
     },
     {
       "id": "C156",
@@ -1398,7 +1398,7 @@
       "sha256": "055dd94b6ba9d021a6c5283e730f2b447288fd9df5a8505cb0ea5eae8c1e8d9c",
       "pages": 18,
       "bytes": 1896231,
-      "readingStatus": "catalogued-not-read"
+      "readingStatus": "read-and-mapped-in-reading-notes"
     },
     {
       "id": "C172",
