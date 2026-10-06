@@ -40,3 +40,11 @@
 补强在压缩仍超限时逐项归档较早结果：保留全部消息配对、system/user和最新批次，每步重测且只接受体积减少的替换。两个用例都断言仅归档最早两个结果；六轮用例逐条比对未替换消息，并将归档原文与canonical输入比对。manager层无user超限、可变输入列表不修改和小上下文完整内容断言也已补充；局部防升权测试改名为`localCompactorDoesNotPromoteUnarchivedToolTextToSystemPolicy`。
 
 这仍是窄测，不顶替六scope门禁。首轮PG红灯尚未完成诊断，不具备部署条件。
+
+## 错峰后的关停窄测（不是完整门禁）
+
+2026-10-06 12:08:33北京时间，在759baf7、相同60秒限制和原断言下，`RunShutdownPostgresTest`两项全部执行，0 failures/errors/skips，Maven退出0。独立Colima profile恢复，未改默认profile或Dify，未操作132。命令仍为`mvn -B -o -Dapi.version=1.44 -pl hify-app -am -Dtest=RunShutdownPostgresTest -Dsurefire.failIfNoSpecifiedTests=false test`，沿用验证profile的DOCKER_HOST、Testcontainers覆盖和本机非代理JVM设置。
+
+computed-result场景首次启动2.723s、关停开始2.902s、关停返回3.014s、持久化断言3.085s、第二次启动4.943s、恢复断言4.971s、关闭返回5.048s。对照前次相同场景99.376s，说明这次没有复现慢启动；只凭错峰转绿不能确定前次超时的唯一根因，也不删除前次两项超时记录。
+
+本机日志`/tmp/hify-context-shutdown-window-20261006.log`，SHA256 `58233c8b6ed5788c0d9758a9600cf5ef1678292146bda1a6b60ece13d2612bd5`。接下来重新执行完整六scope门禁；未通过前仍不得部署。
