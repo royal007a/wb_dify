@@ -46,6 +46,8 @@ class RunShutdownIntegrationTest {
         verifyComputedResultShutdown(url,false);
     }
     private static void verifyComputedResultShutdown(String url,boolean clarify) throws Exception {
+        long diagnosticStarted=System.nanoTime();
+        shutdownPhase(diagnosticStarted,"begin");
         var computed=new CountDownLatch(1); var release=new CountDownLatch(1);
         var calls=new java.util.concurrent.atomic.AtomicInteger();
         String run; int completedCalls;
@@ -56,15 +58,18 @@ class RunShutdownIntegrationTest {
             return clarify?RuntimeMessage.toolCalls(List.of(new RuntimeMessage.ToolCall("missing-"+call,"calculator",java.util.Map.of())))
                     :RuntimeMessage.assistant("already computed");
         },null,computed,release)) {
+            shutdownPhase(diagnosticStarted,"first-context-started");
             var service=first.getBean(RunApplicationService.class);
             run=service.create(conversation(first),"completed-before-close","hello").run().getId();
             assertThat(computed.await(10,TimeUnit.SECONDS)).isTrue();
+            shutdownPhase(diagnosticStarted,"computed-result-ready");
             completedCalls=calls.get();
             String id=run;
             // Only hold destruction until the worker returns; do not replace executor shutdown.
             var pool=first.getBean("runExecutor",org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor.class);
             first.addApplicationListener(event->{
                 if(event instanceof org.springframework.context.event.ContextClosedEvent) {
+                    shutdownPhase(diagnosticStarted,"first-context-closing");
                     assertThat(first.getBean(com.hify.common.ExecutionLifecycle.class).isStopping()).isTrue();
                     release.countDown();
                     long end=System.nanoTime()+TimeUnit.SECONDS.toNanos(5);
@@ -74,18 +79,26 @@ class RunShutdownIntegrationTest {
                     assertThat(pool.getActiveCount()).as("computed result returned before persistence destruction: %s",id).isZero();
                 }
             });
-        } finally {release.countDown();}
+        } finally {release.countDown();shutdownPhase(diagnosticStarted,"first-context-close-returned");}
         JdbcTemplate db=database(url);
         assertThat(db.queryForObject("select state from agent_runs where id=?",String.class,run)).isEqualTo(expected.name());
         assertThat(db.queryForList("select event_type from run_events where run_id=?",String.class,run))
                 .contains(terminalEvent).doesNotContain("run.interrupted");
         if(!clarify)assertThat(db.queryForList("select event_type from run_events where run_id=?",String.class,run)).contains("message.delta");
+        shutdownPhase(diagnosticStarted,"persistence-assertions-passed");
         try(var second=start(url,request->{calls.incrementAndGet();return RuntimeMessage.assistant("duplicate");})) {
+            shutdownPhase(diagnosticStarted,"second-context-started");
             assertThat(second.getBean(RunApplicationService.class).get(run).getState()).isEqualTo(expected);
             assertThat(calls).hasValue(completedCalls);
             assertThat(db.queryForObject("select count(*) from chat_messages where role='assistant'",Integer.class)).isEqualTo(clarify?0:1);
             assertThat(db.queryForObject("select count(*) from run_events where run_id=? and event_type=?",Integer.class,run,terminalEvent)).isEqualTo(1);
-        }
+            shutdownPhase(diagnosticStarted,"recovery-assertions-passed");
+        } finally {shutdownPhase(diagnosticStarted,"second-context-close-returned");}
+    }
+
+    private static void shutdownPhase(long started,String phase) {
+        System.err.printf(java.util.Locale.ROOT,"[shutdown-diagnostic] seconds=%.3f phase=%s interrupted=%s%n",
+                (System.nanoTime()-started)/1_000_000_000d,phase,Thread.currentThread().isInterrupted());
     }
 
     @Test void startupInterruptsOldWorkflowRowsButNeverNewlyAcceptedExecutions() throws Exception {
