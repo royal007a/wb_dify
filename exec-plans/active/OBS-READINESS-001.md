@@ -14,3 +14,9 @@
 ## 交付边界
 
 先红后绿、固定提交review、完整六scope。产品配置与文档一起交付；不在本任务悄悄更换生产探针或重启线上服务。部署脚本切换探针需要另行验证故障后处理路径，不能把readiness红灯直接当作重启进程的理由。
+
+## 失败复现检查点（未修复）
+
+2026-10-06 23:58:58 +08:00 完成窄测：`mvn -o -B -pl hify-app -am -Dtest=ReadinessIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test`。2 项测试，1 failure、0 errors、0 skipped，退出码 1。数据库连接故障后总 health 已返回 503，但 readiness 仍返回 200；失败位置是第 52 行预期 readiness 为 503 的断言。另一个可选依赖隔离测试通过。
+
+这是刻意保留的失败复现，不是已修复或门禁通过。生产配置尚未改动，故障后的后续恢复断言在本轮因提前失败而未执行。原始日志保留于本机临时目录，未提交仓库；SHA-256 为 `bc948477c599c06a894512b1e845312df092a82673752e5733baf9d04f92068e`。完整门禁、修复和复核仍待完成。
