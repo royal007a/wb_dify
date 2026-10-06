@@ -4,6 +4,31 @@
   "updatedAt": "2026-10-06T07:28:05Z",
   "tasks": [
     {
+      "id": "OBS-READINESS-001",
+      "title": "验证并区分数据库就绪与进程存活",
+      "description": "源于jikesummary C133。已有Actuator probes，验证数据库不可用时readiness是否拒绝流量；不新增重复健康框架，不把可降级Redis加入硬依赖，不修改旧health响应。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["harness", "backend"],
+      "verifyScopes": ["harness", "migration", "backend", "runtime", "eval", "frontend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": [],
+      "acceptance": [
+        "真实Spring装配下数据库正常时readiness/liveness/旧health通过；连接失败时readiness为503而liveness/旧health仍通过，恢复后readiness恢复",
+        "检查数据库就绪使用已有db指标，不泄露连接地址、异常和凭据，不依赖Redis或付费Provider健康",
+        "保存先红后绿结果，兼容原health响应，部署脚本如何消费不同探针须明确记录，不宣称生产已切换",
+        "固定实现范围交review并通过完整显式门禁；不为通过验收删除原有断言"
+      ],
+      "planPath": "exec-plans/active/OBS-READINESS-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-06T15:50:00Z",
+      "updatedAt": "2026-10-06T15:50:00Z"
+    },
+    {
       "id": "OBS-CORRELATION-001",
       "title": "保留请求关联ID跨异步边界并恢复MDC作用域",
       "description": "源于jikesummary C133第2页和C168/C169测试方法；请求过滤器已有requestId，run/llm/async线程边界尚未传播。使用白名单上下文快照，保持原队列、拒绝和停机语义。",
