@@ -18,7 +18,7 @@
   },
   "backend-tests": {
     "com.hify.api.RetrievalEmbeddingHttpTest": 5,
-    "com.hify.common.ExecutionControlTest": 5,
+    "com.hify.common.ExecutionControlTest": 10,
     "com.hify.runtime.QueryLoopParentControlTest": 3,
     "com.hify.knowledge.application.SemanticEmbeddingControlTest": 7,
     "com.hify.knowledge.application.KnowledgeRetrievalControlTest": 2,
