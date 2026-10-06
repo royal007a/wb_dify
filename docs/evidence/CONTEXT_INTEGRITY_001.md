@@ -60,7 +60,7 @@ computed-result场景首次启动2.723s、关停开始2.902s、关停返回3.014
 | runtime | 35/35 | 全0 |
 | eval | 24/24 | 全0 |
 
-跨scope有重复用例，不合计为独立测试数量。Harness Python78项通过，前端typecheck/build通过；未重新运行浏览器或真实模型。本轮真实PG包括关停用例，旧失败不删除，也不把错峰转绿解释为已唯一确定根因。
+跨scope有重复用例，不合计为独立测试数量。提交的verification记录Harness Python步骤exit=0，但没有结构化用例数；“78项”来自发布方本机本轮harness-python-tests.log的运行摘要，原日志未提交，因此不是archive离线复核已验证的执行数量，也不从源码def数量推算。前端typecheck/build通过；未重新运行浏览器或真实模型。本轮真实PG包括关停用例，旧失败不删除，也不把错峰转绿解释为已唯一确定根因。
 
 从本次新鲜XML导出脱敏method-evidence并生成行为映射：57 pass、0 fail、0 not-run，68条路由、38功能组仅表示具名子场景映射，不宣称所有功能组合通过。命令为`python3 harness/behavior_report.py --evidence-dir harness/evidence/CONTEXT-INTEGRITY-001/CONTEXT-INTEGRITY-001-20261006T040856Z-68651cf6 --export-methods harness/evidence/CONTEXT-INTEGRITY-001/CONTEXT-INTEGRITY-001-20261006T040856Z-68651cf6/method-evidence.json`。离线复算将最后一个参数换为`--method-evidence`读取同文件。
 

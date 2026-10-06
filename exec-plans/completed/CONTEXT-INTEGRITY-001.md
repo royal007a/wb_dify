@@ -35,7 +35,7 @@
 - computed-result场景相对时间：首次启动完成51.937s；结果就绪55.717s；开始关停55.750s；关停返回56.649s；持久化断言通过56.891s；第二次启动完成99.229s；恢复断言通过99.337s；第二次关停返回99.376s。主要观测耗时位于两次启动，不是约0.9秒的首次关停；但整个用例仍为超时红灯，不据此宣布根因已解决。
 - 诊断只添加阶段名、单调时钟耗时和中断标记，不记录数据、凭据或连接URL。未放宽超时、删断言、改变生产行为。
 - 2026-10-06北京时间11:49:36，确认本验证profile没有运行容器后停止 `hify-verify-20261004`（保留磁盘和配置）；不操作default和dify。本机回归窗口交给CC，其回归结束再恢复本项目验证，期间只读交叉review。不把当前负载归因到未经核实的某个profile。
-- Claude对`adc6385`的独立探针关闭长单轮P1；其余P3（反复估算复杂度、最新批次合计超限仍拒绝、补充断言）保留。代码复核不替代完整门禁，本任务仍未通过且未部署。
+- Claude对`adc6385`的独立探针关闭长单轮P1；其余P3（反复估算复杂度、最新批次合计超限仍拒绝、补充断言）保留。该条记录对应完整重跑前的诊断阶段：当时尚未通过、未部署。后续完整门禁结果见文末；代码复核本身不替代完整门禁。
 
 ## 非目标
 
@@ -43,4 +43,4 @@
 
 ## 完整门禁结果
 
-新run `CONTEXT-INTEGRITY-001-20261006T040856Z-68651cf6` 在2026-10-06T04:21:20Z由harness标记completed，被测e576397，六scope passed。backend714、migration125、runtime35、eval24全部执行，各自0失败/错误/skip/flaky，不跨scope相加。Harness78项通过、前端typecheck/build通过；行为映射57子场景pass，不代表68条路由全组合验收。原始红灯保留；完整结果见docs/evidence/CONTEXT_INTEGRITY_001.md。本任务完成不等于远端发布，部署仍须独立任务。
+新run `CONTEXT-INTEGRITY-001-20261006T040856Z-68651cf6` 在2026-10-06T04:21:20Z由harness标记completed，被测e576397，六scope passed。backend714、migration125、runtime35、eval24全部执行，各自0失败/错误/skip/flaky，不跨scope相加。Harness Python步骤exit=0，提交证据未结构化记录用例数；本机日志观察到的78项不作为archive独立复核的数量结论。前端typecheck/build通过；行为映射57子场景pass，不代表68条路由全组合验收。原始红灯保留；完整结果见docs/evidence/CONTEXT_INTEGRITY_001.md。本任务完成不等于远端发布，部署仍须独立任务。
