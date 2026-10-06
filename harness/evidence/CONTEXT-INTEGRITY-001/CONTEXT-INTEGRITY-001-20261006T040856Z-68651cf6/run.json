@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "CONTEXT-INTEGRITY-001-20261006T040856Z-68651cf6",
+  "taskId": "CONTEXT-INTEGRITY-001",
+  "status": "completed",
+  "baselineCommit": "e5763977dc5b7d1ec09e0b41d9f53aa483a080e4",
+  "approvalRef": null,
+  "startedAt": "2026-10-06T04:08:56Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "e5763977dc5b7d1ec09e0b41d9f53aa483a080e4",
+  "finishedAt": "2026-10-06T04:21:20Z"
+}

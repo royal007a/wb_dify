@@ -1,0 +1,8 @@
+{
+  "testedHead": "e5763977dc5b7d1ec09e0b41d9f53aa483a080e4",
+  "backendTree": "64c1777cc669c8df85a1de5f5422177a222bfbb0",
+  "frontendTree": "931a8823bf0513777fc88f0d3447daef94e0e71d",
+  "deployTree": "d3b11e660e479c745177f9696e30e5b134802f89",
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "meaning": "git tree identities and empty tracked diff at evidence finalization; not a deployed-binary identity"
+}

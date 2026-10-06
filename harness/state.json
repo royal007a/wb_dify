@@ -7,14 +7,16 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "CONTEXT-INTEGRITY-001-20261006T032435Z-81dc643c",
-    "path": "harness/evidence/CONTEXT-INTEGRITY-001/CONTEXT-INTEGRITY-001-20261006T032435Z-81dc643c",
-    "result": "blocked",
-    "exitCode": 130,
-    "baselineCommit": "8e855b066ba87c7885073b1fc70d212cace85b0a",
-    "headCommit": "8e855b066ba87c7885073b1fc70d212cace85b0a",
-    "recordedAt": "2026-10-06T03:39:17Z"
+    "runId": "CONTEXT-INTEGRITY-001-20261006T040856Z-68651cf6",
+    "path": "harness/evidence/CONTEXT-INTEGRITY-001/CONTEXT-INTEGRITY-001-20261006T040856Z-68651cf6",
+    "result": "completed",
+    "exitCode": 0,
+    "baselineCommit": "e5763977dc5b7d1ec09e0b41d9f53aa483a080e4",
+    "headCommit": "e5763977dc5b7d1ec09e0b41d9f53aa483a080e4",
+    "recordedAt": "2026-10-06T04:21:20Z",
+    "verificationSchemaVersion": 3,
+    "verificationSha256": "4fdd72874721b1bee80a3f7e4af06ff36c38179198939a9e69f0170c2e5e135f"
   },
-  "lastCompletedTaskId": "WORKFLOW-AGGREGATION-002",
-  "updatedAt": "2026-10-06T03:39:17Z"
+  "lastCompletedTaskId": "CONTEXT-INTEGRITY-001",
+  "updatedAt": "2026-10-06T04:21:20Z"
 }

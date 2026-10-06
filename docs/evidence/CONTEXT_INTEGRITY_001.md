@@ -48,3 +48,20 @@
 computed-result场景首次启动2.723s、关停开始2.902s、关停返回3.014s、持久化断言3.085s、第二次启动4.943s、恢复断言4.971s、关闭返回5.048s。对照前次相同场景99.376s，说明这次没有复现慢启动；只凭错峰转绿不能确定前次超时的唯一根因，也不删除前次两项超时记录。
 
 本机日志`/tmp/hify-context-shutdown-window-20261006.log`，SHA256 `58233c8b6ed5788c0d9758a9600cf5ef1678292146bda1a6b60ece13d2612bd5`。接下来重新执行完整六scope门禁；未通过前仍不得部署。
+
+## 最终完整门禁（未部署）
+
+新run：`CONTEXT-INTEGRITY-001-20261006T040856Z-68651cf6`，被测`e5763977dc5b7d1ec09e0b41d9f53aa483a080e4`；invocation `233e5e37-85d3-4f11-bf61-da14be7a6c1a`。2026-10-06T04:21:20Z，harness将任务标记completed；schema3 verification SHA256为`4fdd72874721b1bee80a3f7e4af06ff36c38179198939a9e69f0170c2e5e135f`，六scope全部passed。
+
+| scope | 本次执行 | failures/errors/skips/flaky |
+|---|---:|---|
+| backend | 714/714 | 全0 |
+| migration-postgres | 125/125 | 全0 |
+| runtime | 35/35 | 全0 |
+| eval | 24/24 | 全0 |
+
+跨scope有重复用例，不合计为独立测试数量。Harness Python78项通过，前端typecheck/build通过；未重新运行浏览器或真实模型。本轮真实PG包括关停用例，旧失败不删除，也不把错峰转绿解释为已唯一确定根因。
+
+从本次新鲜XML导出脱敏method-evidence并生成行为映射：57 pass、0 fail、0 not-run，68条路由、38功能组仅表示具名子场景映射，不宣称所有功能组合通过。命令为`python3 harness/behavior_report.py --evidence-dir harness/evidence/CONTEXT-INTEGRITY-001/CONTEXT-INTEGRITY-001-20261006T040856Z-68651cf6 --export-methods harness/evidence/CONTEXT-INTEGRITY-001/CONTEXT-INTEGRITY-001-20261006T040856Z-68651cf6/method-evidence.json`。离线复算将最后一个参数换为`--method-evidence`读取同文件。
+
+源码树身份与空diff见同run的source-identity.json。原始日志/XML按仓库规则不提交；可移植文件是当次执行的脱敏投影，不是签名或独立重跑。Claude对adc6385的独立探针关闭长单轮P1，剩余P3（复杂度、最新批次合计超限仍拒绝、补充断言）保留。部署仍单独执行，此门禁不代表132已更新，也不代表MCP接入问题已修复。

@@ -40,3 +40,7 @@
 ## 非目标
 
 不同时实现报告H2-H5，不增写MCP、成本账本或动态工具路由；不操作CC/Dify/工作台，不改历史发布/证据。
+
+## 完整门禁结果
+
+新run `CONTEXT-INTEGRITY-001-20261006T040856Z-68651cf6` 在2026-10-06T04:21:20Z由harness标记completed，被测e576397，六scope passed。backend714、migration125、runtime35、eval24全部执行，各自0失败/错误/skip/flaky，不跨scope相加。Harness78项通过、前端typecheck/build通过；行为映射57子场景pass，不代表68条路由全组合验收。原始红灯保留；完整结果见docs/evidence/CONTEXT_INTEGRITY_001.md。本任务完成不等于远端发布，部署仍须独立任务。
