@@ -4,6 +4,39 @@
   "updatedAt": "2026-10-06T04:21:20Z",
   "tasks": [
     {
+      "id": "CONTEXT-ROLLOUT-001",
+      "title": "已验收上下文完整性与工作流能力受控部署132",
+      "description": "绑定CONTEXT-INTEGRITY-001六scope门禁，同树重新构建原版Hify；包含尚未上线的聚合/结构化输出。只动原版Hify，不夹带MCP配置，不清共享缓存。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": [
+        "harness",
+        "frontend"
+      ],
+      "verifyScopes": [
+        "harness",
+        "frontend"
+      ],
+      "risk": "high_risk",
+      "operation": "deployment",
+      "approvalRef": "lark:om_x100b6372c9d534b0b177a6da50a9acc",
+      "dependsOn": [
+        "CONTEXT-INTEGRITY-001"
+      ],
+      "acceptance": [
+        "绑定已验收e576397源码树与verification SHA，记录重新构建的产物身份，不宣称同一测试二进制",
+        "Python/磁盘预算/V24/三表静默/旧inputs预检通过；唯一发布目录、停写备份、systemd unit成功与健康/SHA核对",
+        "部署态Mock对话和持久Run/会话版本/streamUrl/每轮答案通过，prefix/direct上传边界通过，仅操作自己的合成数据",
+        "提交去敏远端观察和失败边界；收尾harness/frontend通过，后端准入仍引用六scope，未验证的真实模型/新节点线上质量如实保留"
+      ],
+      "planPath": "exec-plans/active/CONTEXT-ROLLOUT-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-06T07:30:00Z",
+      "updatedAt": "2026-10-06T07:30:00Z"
+    },
+    {
       "id": "CONTEXT-INTEGRITY-001",
       "title": "上下文压缩保留系统策略与完整当前交互",
       "description": "落实前六讲研究H1；消除关键词漏选、system角色升级与静默截断，不改长期记忆提取或放宽工具权限。部署独立登记。",
