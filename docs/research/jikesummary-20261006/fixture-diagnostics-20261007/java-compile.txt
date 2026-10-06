@@ -1,0 +1,17 @@
+Java 测试源码编译复验：通过，但未执行测试
+
+源码 HEAD：7764bf2088058a52d9dab483381761ce8c876f0b
+执行目录：开发 worktree/backend
+命令：
+JAVA_HOME=<jdk-17.0.19> MAVEN_OPTS='-Xmx256m -XX:ReservedCodeCacheSize=96m' \
+  mvn -B -o -pl hify-app -am -DskipTests test-compile
+
+2026-10-07 04:28:59 +08:00 结束，exit 0，总耗时 01:04 min。
+11 个 reactor 模块 SUCCESS；hify-app 重编译 61 个测试源文件。
+WorkflowKnowledgeReviewTest 仍有 unchecked/unsafe operations 编译提示。
+本命令不执行单元、HTTP、PostgreSQL、关停或浏览器测试，不产生新的验证通过状态。
+执行期间只有阅读笔记和 source-inventory 的文档整理，没有改 Java 源码。
+
+原始日志：java-test-compile.log
+SHA256 fb81e5c4263483d04d0168e3604db1a36a57e8f1fd31965025f4655296130493
+原失败门禁不被此记录替代，PostgreSQL 原场景和完整六 scope 仍待验证。
