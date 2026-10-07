@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "e7d43b17882dbf164915d73b271411c439a995da",
+  "productionClassSha256": "b7b34d715ce6ba9e84561435fd191641e13223523ace8e8a2bbfffb1af5737c0",
+  "javaVersion": "17.0.19",
+  "probeExitCode": 0,
+  "matrixCases": 10,
+  "meaning": "Characterization matched existing defects; not a product acceptance pass",
+  "notTested": ["database roundtrip", "real embedding", "production corruption", "actual model token counts"],
+  "artifacts": {
+    "ChunkBoundaryMatrix.java": "65023ff79bf95ae7047a0b6a84a4c78707e017bfaf016f564a93632e27831e9b",
+    "ChunkProbe.java": "e4058ef93b04a9b5591a63d49b5ca99c23eb1dc811a527d2684fddb905fcd589",
+    "probe.log": "667f81c8169db2921c1d30aa0d34f99941212d0ce6b82078fbc51d20894889c1",
+    "run-probes.sh": "2d3bdb8d011a50f43e7f67daae7ca47c1b43a26249fec026c0730f394c3a7c86"
+  }
+}

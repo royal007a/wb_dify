@@ -1,0 +1,18 @@
+source=e7d43b17882dbf164915d73b271411c439a995da:backend/hify-knowledge/src/main/java/com/hify/knowledge/application/RecursiveTextChunker.java
+sha256=b7b34d715ce6ba9e84561435fd191641e13223523ace8e8a2bbfffb1af5737c0
+ascii.tokenCounts=[64, 80]
+ascii.exceedsConfiguredEstimate=true
+unicode.inputWellFormed=true
+unicode.outputWellFormed=[false, true]
+case	counts	exceeds-estimate	malformed-utf16	deterministic
+empty	[]	false	false	true
+ascii-exact	[64]	false	false	true
+ascii-plus-one	[64, 17]	false	false	true
+ascii-two-chunks-zero-overlap	[64, 64]	false	false	true
+ascii-two-chunks-overlap	[64, 80]	true	false	true
+ascii-near-max-overlap	[64, 127]	true	false	true
+chinese-overlap	[64, 80]	true	false	true
+emoji-split-zero-overlap	[64, 64]	false	true	true
+emoji-split-overlap	[64, 80]	true	true	true
+emoji-carry-only	[64, 80]	true	true	true
+observations-matched=10; this is NOT a product acceptance pass
