@@ -95,9 +95,22 @@ class RequestCorrelationTest {
         var release = new CountDownLatch(1);
         var started = new CountDownLatch(1);
         try {
+            var firstWorker = new java.util.concurrent.atomic.AtomicReference<Thread>();
             MDC.put("requestId", "first");
-            assertThat(pool.submit(() -> { MDC.put("leaked", "secret"); return MDC.get("requestId"); })
+            assertThat(pool.submit(() -> {
+                firstWorker.set(Thread.currentThread());
+                MDC.put("leaked", "secret");
+                return MDC.get("requestId");
+            })
                     .get(5, TimeUnit.SECONDS)).isEqualTo("first");
+            MDC.put("requestId", "second");
+            var secondContext = pool.submit(() -> {
+                assertThat(Thread.currentThread()).as("same worker handles both request IDs")
+                        .isSameAs(firstWorker.get());
+                return MDC.getCopyOfContextMap();
+            }).get(5, TimeUnit.SECONDS);
+            assertThat(secondContext).as("second request replaces first ID without worker secrets")
+                    .containsExactlyEntriesOf(Map.of("requestId", "second"));
             MDC.clear();
             assertThat(pool.submit(MDC::getCopyOfContextMap).get(5, TimeUnit.SECONDS)).isNullOrEmpty();
             pool.execute(() -> {

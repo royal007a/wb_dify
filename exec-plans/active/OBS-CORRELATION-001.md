@@ -35,5 +35,8 @@ JDK线程池保留ThreadPoolExecutor类型、队列大小、AbortPolicy及destro
 仍须在隔离副本删除 setTaskDecorator、确认该用例红在 requestId 断言，再恢复
 同一份源码复跑绿；不能把编译错误或空指针算成命中。尚未运行这项突变。
 
-当前不覆盖两个不同非空 ID 连续复用同一 worker 的专项场景；取消和
-AbortPolicy 专项只在 llm 池测过。CC 持有测试窗口时不启动重测试。
+复核时缺少两个不同非空 ID 连续复用同一 worker 的专项场景。现已在既有
+reusedWorker 用例中补第二个非空 ID，并断言 Thread 对象相同、第二次完整
+MDC 只有第二个 requestId；原无 ID、取消 body 零调用断言保留。当前仅写好，
+尚未执行，不能引用旧 8/8 作为新断言通过；未做这组新断言的专属突变。
+取消和 AbortPolicy 专项仍只在 llm 池测过。CC 持有测试窗口时不启动重测试。
