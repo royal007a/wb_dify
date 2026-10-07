@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.workflow.application.WorkflowControlTest
+-------------------------------------------------------------------------------
+Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.683 s -- in com.hify.workflow.application.WorkflowControlTest

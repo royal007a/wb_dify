@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.api.KnowledgeMemoryPostgresTest
+-------------------------------------------------------------------------------
+Tests run: 21, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 27.01 s -- in com.hify.api.KnowledgeMemoryPostgresTest

@@ -1,16 +1,27 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-06T07:28:05Z",
+  "updatedAt": "2026-10-07T06:20:01Z",
   "tasks": [
     {
       "id": "CHAT-RETRIEVAL-CONTROL-001",
       "title": "聊天检索与模型循环共享取消和持久Run截止",
       "description": "源于jikesummary C180/C129/C131：知识预取不应在父运行预算外继续消耗；先用服务级及真实HTTP受控反例复现，再显式贯穿ExecutionControl。",
       "priority": "P1",
-      "status": "pending",
-      "scopes": ["harness", "backend", "runtime"],
-      "verifyScopes": ["harness", "migration", "backend", "runtime", "eval", "frontend"],
+      "status": "blocked",
+      "scopes": [
+        "harness",
+        "backend",
+        "runtime"
+      ],
+      "verifyScopes": [
+        "harness",
+        "migration",
+        "backend",
+        "runtime",
+        "eval",
+        "frontend"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
@@ -22,12 +33,22 @@
         "真实HTTP受控正文等待证明取消传播及无后续重试；有限子控制不能放大父截止或丢失信号，旧管理/索引入口兼容",
         "红灯及突变证据保留，完整六scope和固定范围review完成后才宣称交付；不推断生产部署"
       ],
-      "planPath": "exec-plans/active/CHAT-RETRIEVAL-CONTROL-001.md",
+      "planPath": "exec-plans/blocked/CHAT-RETRIEVAL-CONTROL-001.md",
       "checkpoint": null,
-      "blockedReason": null,
-      "evidence": [],
+      "blockedReason": "verification failed",
+      "evidence": [
+        {
+          "runId": "CHAT-RETRIEVAL-CONTROL-001-20261007T052619Z-88abd54f",
+          "path": "harness/evidence/CHAT-RETRIEVAL-CONTROL-001/CHAT-RETRIEVAL-CONTROL-001-20261007T052619Z-88abd54f",
+          "result": "blocked",
+          "exitCode": 1,
+          "baselineCommit": "e7d43b17882dbf164915d73b271411c439a995da",
+          "headCommit": "e7d43b17882dbf164915d73b271411c439a995da",
+          "recordedAt": "2026-10-07T06:20:01Z"
+        }
+      ],
       "createdAt": "2026-10-06T16:52:00Z",
-      "updatedAt": "2026-10-06T16:52:00Z"
+      "updatedAt": "2026-10-07T06:20:01Z"
     },
     {
       "id": "OBS-READINESS-001",
@@ -35,8 +56,18 @@
       "description": "源于jikesummary C133。已有Actuator probes，验证数据库不可用时readiness是否拒绝流量；不新增重复健康框架，不把可降级Redis加入硬依赖，不修改旧health响应。",
       "priority": "P1",
       "status": "pending",
-      "scopes": ["harness", "backend"],
-      "verifyScopes": ["harness", "migration", "backend", "runtime", "eval", "frontend"],
+      "scopes": [
+        "harness",
+        "backend"
+      ],
+      "verifyScopes": [
+        "harness",
+        "migration",
+        "backend",
+        "runtime",
+        "eval",
+        "frontend"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
@@ -60,8 +91,19 @@
       "description": "源于jikesummary C133第2页和C168/C169测试方法；请求过滤器已有requestId，run/llm/async线程边界尚未传播。使用白名单上下文快照，保持原队列、拒绝和停机语义。",
       "priority": "P1",
       "status": "pending",
-      "scopes": ["harness", "backend", "runtime"],
-      "verifyScopes": ["harness", "migration", "backend", "runtime", "eval", "frontend"],
+      "scopes": [
+        "harness",
+        "backend",
+        "runtime"
+      ],
+      "verifyScopes": [
+        "harness",
+        "migration",
+        "backend",
+        "runtime",
+        "eval",
+        "frontend"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,
@@ -85,8 +127,12 @@
       "description": "8小时目标的研究入口：固定本地PDF来源、去重与阅读范围，区分课程示例和本项目事实，逐项形成具名优化任务并交叉review。不得以研究完成替代实现目标。",
       "priority": "P1",
       "status": "pending",
-      "scopes": ["harness"],
-      "verifyScopes": ["harness"],
+      "scopes": [
+        "harness"
+      ],
+      "verifyScopes": [
+        "harness"
+      ],
       "risk": "reversible_write",
       "operation": "workspace_write",
       "approvalRef": null,

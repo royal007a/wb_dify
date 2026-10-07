@@ -1,0 +1,15 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.api.MavenStructureTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.326 s <<< FAILURE! -- in com.hify.api.MavenStructureTest
+com.hify.api.MavenStructureTest.businessModulePackageSkeletonsAreConsistent -- Time elapsed: 0.204 s <<< FAILURE!
+java.lang.AssertionError: 
+[provider must contain controller] 
+Expecting path:
+  /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/main/java/com/hify/provider/controller
+to exist (symbolic links were followed).
+	at com.hify.api.MavenStructureTest.businessModulePackageSkeletonsAreConsistent(MavenStructureTest.java:60)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

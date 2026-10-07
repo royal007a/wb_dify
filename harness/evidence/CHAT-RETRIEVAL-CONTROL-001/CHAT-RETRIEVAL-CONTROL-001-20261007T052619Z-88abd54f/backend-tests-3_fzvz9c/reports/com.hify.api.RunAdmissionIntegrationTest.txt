@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.api.RunAdmissionIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.034 s -- in com.hify.api.RunAdmissionIntegrationTest

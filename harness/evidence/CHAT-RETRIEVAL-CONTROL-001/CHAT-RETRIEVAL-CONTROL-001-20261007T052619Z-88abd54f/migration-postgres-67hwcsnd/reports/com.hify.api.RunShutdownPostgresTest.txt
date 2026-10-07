@@ -1,0 +1,9 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.api.RunShutdownPostgresTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 117.0 s <<< FAILURE! -- in com.hify.api.RunShutdownPostgresTest
+com.hify.api.RunShutdownPostgresTest.expiredInterruptedRunCannotRestartItsBudgetOnPostgres -- Time elapsed: 88.97 s <<< ERROR!
+java.util.concurrent.TimeoutException: expiredInterruptedRunCannotRestartItsBudgetOnPostgres() timed out after 60 seconds
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "step": "migration-postgres",
+  "invocationId": "dbbaed46-bcf8-49ac-b7ac-f75b02ae9513",
+  "inventorySha256": "ee058b8499c11155f8cbfcfc06593225598c1d2a9a1405de7ff8130500df079e",
+  "expectedSuites": {
+    "com.hify.api.SemanticKnowledgePostgresTest": 7,
+    "com.hify.api.KnowledgeShutdownPostgresTest": 22,
+    "com.hify.api.HistoryRecoveryMigrationTest": 1,
+    "com.hify.api.WorkflowKnowledgeReviewPostgresTest": 19,
+    "com.hify.api.WorkflowTerminalPostgresTest": 1,
+    "com.hify.api.RunShutdownPostgresTest": 3,
+    "com.hify.api.KnowledgeFinishPostgresTest": 18,
+    "com.hify.api.PostgresConcurrencyIntegrationTest": 7,
+    "com.hify.api.AgentToolBindingMigrationTest": 1,
+    "com.hify.api.McpCredentialPostgresTest": 8,
+    "com.hify.api.WorkflowKnowledgePostgresTest": 10,
+    "com.hify.api.HistoryRecoveryPostgresTest": 3,
+    "com.hify.api.WorkflowSettlementPostgresTest": 4,
+    "com.hify.api.WorkflowTerminalMigrationTest": 1,
+    "com.hify.api.KnowledgeMemoryPostgresTest": 21
+  },
+  "reportDirectory": "migration-postgres-67hwcsnd/reports",
+  "result": "failed",
+  "tests": {
+    "totals": {
+      "tests": 126,
+      "executed": 126,
+      "failures": 0,
+      "errors": 1,
+      "skipped": 0,
+      "flakyAttempts": 0
+    },
+    "classes": [
+      {
+        "class": "com.hify.api.AgentToolBindingMigrationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 1,
+        "flakyAttempts": 0,
+        "expectedMinimum": 1,
+        "xmlSha256": "f49fb9ec32bcdd7cdf2dea0fdaf8939593cef2ad5e7530a272051029cb9db6d7"
+      },
+      {
+        "class": "com.hify.api.HistoryRecoveryMigrationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 1,
+        "flakyAttempts": 0,
+        "expectedMinimum": 1,
+        "xmlSha256": "5fe774d179d42d54f85c4cade8b1e53b8dd796b6ded6eac5bc3fbaf3482d5570"
+      },
+      {
+        "class": "com.hify.api.HistoryRecoveryPostgresTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 3,
+        "flakyAttempts": 0,
+        "expectedMinimum": 3,
+        "xmlSha256": "71cc5dc2e2f5b3fbbeb8077d2799af40b61cbec27d2a62025b322a5a38c05115"
+      },
+      {
+        "class": "com.hify.api.KnowledgeFinishPostgresTest",
+        "tests": 18,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 18,
+        "flakyAttempts": 0,
+        "expectedMinimum": 18,
+        "xmlSha256": "c5d17699767f16d21a5b6c191a1a6e8d650986e876fb8a4c696ea35d8f14ccd1"
+      },
+      {
+        "class": "com.hify.api.KnowledgeMemoryPostgresTest",
+        "tests": 21,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 21,
+        "flakyAttempts": 0,
+        "expectedMinimum": 21,
+        "xmlSha256": "869818eb22398aa633c62920043315a0a39a33292568c4ab108677df61fb0824"
+      },
+      {
+        "class": "com.hify.api.KnowledgeShutdownPostgresTest",
+        "tests": 22,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 22,
+        "flakyAttempts": 0,
+        "expectedMinimum": 22,
+        "xmlSha256": "69f0d55b3ba1951c073a642a51e4a1a37ba6cd9dc956e6a8e316786b4ad17b04"
+      },
+      {
+        "class": "com.hify.api.McpCredentialPostgresTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 8,
+        "flakyAttempts": 0,
+        "expectedMinimum": 8,
+        "xmlSha256": "eb1e9cfc629df5ff17a51d383b1a8715505a06dd0df8e3751a4caaeba2ec01d4"
+      },
+      {
+        "class": "com.hify.api.PostgresConcurrencyIntegrationTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 7,
+        "flakyAttempts": 0,
+        "expectedMinimum": 7,
+        "xmlSha256": "b34ab5e9b5616ebc1a83ca34a5cb84b2f3ad4540f1bef62539911b30b53b529c"
+      },
+      {
+        "class": "com.hify.api.RunShutdownPostgresTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 1,
+        "skipped": 0,
+        "executed": 3,
+        "flakyAttempts": 0,
+        "expectedMinimum": 3,
+        "xmlSha256": "934ec1322ef794fb4cb5c6381fde6144ec1a15d4f0c10036a06f161efa949e70"
+      },
+      {
+        "class": "com.hify.api.SemanticKnowledgePostgresTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 7,
+        "flakyAttempts": 0,
+        "expectedMinimum": 7,
+        "xmlSha256": "cec9e44983a4791b0df29e2b37a3edc08ebb0a128ef785a3efda6439af08c6fa"
+      },
+      {
+        "class": "com.hify.api.WorkflowKnowledgePostgresTest",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 10,
+        "flakyAttempts": 0,
+        "expectedMinimum": 10,
+        "xmlSha256": "1351526da88fe1bcd87211753a043392aeec07fd0d7579d22ee4821466245350"
+      },
+      {
+        "class": "com.hify.api.WorkflowKnowledgeReviewPostgresTest",
+        "tests": 19,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 19,
+        "flakyAttempts": 0,
+        "expectedMinimum": 19,
+        "xmlSha256": "4450fd720c9f846545cb1d7f681ecf96e55b09c51dc3eda0b506b26a5e778a08"
+      },
+      {
+        "class": "com.hify.api.WorkflowSettlementPostgresTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 4,
+        "flakyAttempts": 0,
+        "expectedMinimum": 4,
+        "xmlSha256": "9f297ad3cd46c49043f66866b01250550745bd77c4d57ece22ede70b280b0974"
+      },
+      {
+        "class": "com.hify.api.WorkflowTerminalMigrationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 1,
+        "flakyAttempts": 0,
+        "expectedMinimum": 1,
+        "xmlSha256": "d7ad925a6fe5a470f598318c27812b6edc33f5cfca2cf52f332ed87ee2ff1773"
+      },
+      {
+        "class": "com.hify.api.WorkflowTerminalPostgresTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 1,
+        "flakyAttempts": 0,
+        "expectedMinimum": 1,
+        "xmlSha256": "a88e298f4c815418402b42970655a857a5c7a1fa3c3a98f6f5a501294f656f0b"
+      }
+    ],
+    "underfilledSuites": [],
+    "countMeaning": "Reported testcase/skip records; disabled containers can hide additional intended methods."
+  },
+  "command": [
+    "mvn",
+    "-B",
+    "-Dapi.version=1.44",
+    "-pl",
+    "hify-app",
+    "-am",
+    "-Dtest=com.hify.api.AgentToolBindingMigrationTest,com.hify.api.HistoryRecoveryMigrationTest,com.hify.api.HistoryRecoveryPostgresTest,com.hify.api.KnowledgeFinishPostgresTest,com.hify.api.KnowledgeMemoryPostgresTest,com.hify.api.KnowledgeShutdownPostgresTest,com.hify.api.McpCredentialPostgresTest,com.hify.api.PostgresConcurrencyIntegrationTest,com.hify.api.RunShutdownPostgresTest,com.hify.api.SemanticKnowledgePostgresTest,com.hify.api.WorkflowKnowledgePostgresTest,com.hify.api.WorkflowKnowledgeReviewPostgresTest,com.hify.api.WorkflowSettlementPostgresTest,com.hify.api.WorkflowTerminalMigrationTest,com.hify.api.WorkflowTerminalPostgresTest",
+    "-Dsurefire.failIfNoSpecifiedTests=false",
+    "-Dhify.test.reportsDirectory=/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/evidence/CHAT-RETRIEVAL-CONTROL-001/CHAT-RETRIEVAL-CONTROL-001-20261007T052619Z-88abd54f/migration-postgres-67hwcsnd/reports",
+    "test"
+  ],
+  "commandExitCode": 1
+}

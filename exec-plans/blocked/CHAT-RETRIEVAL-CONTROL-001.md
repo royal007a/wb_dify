@@ -207,3 +207,14 @@ Maven exit 0，45秒类级时限及10/5秒断言未改。原始日志和摘要�
 重启测试设计、elapsed时钟与子预算、四范围计数可以接受；未运行Maven/浏览器/服务。
 阅读文档仅核对未改src/main，未逐章对PDF，不计为内容审查通过。SSE broker独立
 时钟仍是范围外P3。新H2复验与C177笔记另交固定范围，不能借旧review覆盖。
+
+### 14:20 六scope完整运行红灯
+
+固定e7d43b1，run 88abd54f自然结束exit1，全部scope执行完毕。harness84通过；
+migration126项1error；backend770项1failure+1error；runtime35、eval24与前端
+typecheck/build通过，零skip/flaky，预期类齐全。见
+`docs/research/jikesummary-20261006/full-gate-e7d43b1.md`及原始run目录。
+失败分别是旧空目录结构契约、PG/H2过期恢复首次上下文启动越过方法超时。
+原时限/断言不变；独立窄绿灯与同轮backend PG3/3不覆盖这些红灯。
+结构契约替代方案已独立review，补丁只在scratch准备，还未应用到此源码。
+14:20:38停掉自己的验证VM并交还重测试窗口。任务未验收，不部署。
