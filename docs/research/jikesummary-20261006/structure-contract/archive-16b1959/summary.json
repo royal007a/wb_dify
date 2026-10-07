@@ -1,0 +1,57 @@
+{
+  "sourceCommit": "16b1959fa119065b5d0298c2ff7c80e3425dfd28",
+  "archiveSha256": "9936860af1603b6934acf93cf2cb505bed0bd5f3e9b12a8b11b2051ceb83805e",
+  "scratchRetained": "/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/hify-structure-archive-5g4y13d6",
+  "scope": "Standalone JDK/JUnit structure tests only; no Maven, services or full gate",
+  "results": [
+    {
+      "case": "clean-archive",
+      "exitCode": 0,
+      "expectedMethod": null,
+      "expectationMet": true,
+      "sha256": "a13d40111672a26f27bb38561f3b40de952837676633ca0d100fb56ddf036531"
+    },
+    {
+      "case": "M1-root",
+      "exitCode": 1,
+      "expectedMethod": "newlyIntroducedRootFails",
+      "expectationMet": true,
+      "sha256": "6048006d104e71f0950a5883044e852579f561852f874195569fbe6898b1d3ef"
+    },
+    {
+      "case": "M2-split",
+      "exitCode": 1,
+      "expectedMethod": "newSplitSubpackageFailsEvenInsideAllowedRoots",
+      "expectationMet": true,
+      "sha256": "46a193b29831c2d1005d1328eb8ff70711ac46f04349b4a7992b18a4fa65ca4e"
+    },
+    {
+      "case": "M3-common-dependency",
+      "exitCode": 1,
+      "expectedMethod": "commonCannotAcquireBusinessDependency",
+      "expectationMet": true,
+      "sha256": "fb0b9aa10de37df6bce6bbad86494b11e88c9f8e806f00dc6819db0c22c3e71a"
+    },
+    {
+      "case": "M4-reverse-dependency",
+      "exitCode": 1,
+      "expectedMethod": "providerCannotDependOnChat",
+      "expectationMet": true,
+      "sha256": "c857a446e79752363a02966b70e2b7ee2319642a13d1279f9b94c06864497a38"
+    },
+    {
+      "case": "M5-port",
+      "exitCode": 1,
+      "expectedMethod": "missingPortIsRejected",
+      "expectationMet": true,
+      "sha256": "caf26db129cb94197cbcbc983884c61200faac0a6082ba8ba3b7377c9ace4271"
+    },
+    {
+      "case": "M6-marker",
+      "exitCode": 1,
+      "expectedMethod": "missingMarkerCannotBeReplacedByAnEmptyDirectory",
+      "expectationMet": true,
+      "sha256": "7a10f56c8f611d8c9f61bc600954b791a41f067e54d15bad0405ebfd63ef1232"
+    }
+  ]
+}

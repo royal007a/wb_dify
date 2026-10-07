@@ -43,3 +43,24 @@ target或服务。后续干净archive复验和突变证据另记，不用第一�
 
 完整门禁尚未通过：H2/PG启动越过45/60秒的两条error仍需定位，本补丁没有修改
 它们，不合并main、不部署。
+
+## 固定16b1959的干净archive及突变
+
+`archive-16b1959/summary.json`固定完整源码SHA，记录原始archive和每份日志SHA。
+先通过git archive解包，未依赖本机未跟踪空目录或源文件；两个实际测试类22/22
+通过。其后每次仅修改隔离副本中的一处检查，完整编译后由同一JUnit launcher执行：
+
+| 突变 | 精确失败用例/数量 | 红灯类型 |
+| --- | --- | --- |
+| M1 不校验包根 | newlyIntroducedRootFails，1项 | 断言失败 |
+| M2 不校验拆分包owner | newSplitSubpackageFailsEvenInsideAllowedRoots，1项 | 断言失败 |
+| M3 common允许业务依赖 | commonCannotAcquireBusinessDependency，1项 | 断言失败 |
+| M4 provider/tool允许chat | providerCannotDependOnChat、toolCannotDependOnChat，2项 | 断言失败 |
+| M5 去掉port声明检查 | 缺失、类型、文件位置、注释伪造，4项 | 断言失败 |
+| M6 去掉marker声明检查 | 缺失、声明名、非public、非final，4项 | 断言失败 |
+
+6个突变全部发现22项测试，均执行到预期断言失败，而不是编译失败/NPE。
+每次恢复原helper后再做下一项；开发工作树从未写入这些突变。
+`mutate-offline.py --commit 16b1959 --output <尚不存在的证据目录>`可复现；需要
+前述两个环境变量、Python>=3.12。它保留archive副本和编译目录，不触碰服务。
+本次只证明结构契约替代及其防护有有效反例，不能关闭两条关停恢复超时红灯。

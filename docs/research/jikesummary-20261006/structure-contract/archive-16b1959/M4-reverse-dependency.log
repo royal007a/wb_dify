@@ -1,0 +1,36 @@
+Compiled test output: /var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T//hify-structure-contract.qnOGoo
+
+Test run finished after 2049 ms
+[         3 containers found      ]
+[         0 containers skipped    ]
+[         3 containers started    ]
+[         0 containers aborted    ]
+[         3 containers successful ]
+[         0 containers failed     ]
+[        22 tests found           ]
+[         0 tests skipped         ]
+[        22 tests started         ]
+[         0 tests aborted         ]
+[        20 tests successful      ]
+[         2 tests failed          ]
+
+
+Failures (2):
+  JUnit Jupiter:ModuleStructureContractTest:providerCannotDependOnChat()
+    MethodSource [className = 'com.hify.api.ModuleStructureContractTest', methodName = 'providerCannotDependOnChat', methodParameterTypes = '']
+    => java.lang.AssertionError: 
+Expecting code to raise a throwable.
+       com.hify.api.ModuleStructureContractTest.providerCannotDependOnChat(ModuleStructureContractTest.java:108)
+       java.base/java.lang.reflect.Method.invoke(Method.java:568)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:ModuleStructureContractTest:toolCannotDependOnChat()
+    MethodSource [className = 'com.hify.api.ModuleStructureContractTest', methodName = 'toolCannotDependOnChat', methodParameterTypes = '']
+    => java.lang.AssertionError: 
+Expecting code to raise a throwable.
+       com.hify.api.ModuleStructureContractTest.toolCannotDependOnChat(ModuleStructureContractTest.java:113)
+       java.base/java.lang.reflect.Method.invoke(Method.java:568)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+Exception in thread "main" java.lang.AssertionError: Structure contract requires exactly 22 successful tests, no skips/abort/failure
+	at StructureTestLauncher.main(StructureTestLauncher.java:21)
