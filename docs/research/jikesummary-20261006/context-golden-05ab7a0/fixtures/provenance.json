@@ -1,0 +1,35 @@
+{
+  "sourceCommit": "05ab7a06f485a5d800009dedbbe566508bd9e775",
+  "productionInputsCompared": 356,
+  "dependencySourceInputsMatch": true,
+  "productionSources": {
+    "backend/hify-common/src/main/java/com/hify/common/JacksonConfig.java": "7a3aa654b68c4591a62507ae72f519bff7d620b172d9c373b50eb9fa09c0a947",
+    "backend/hify-provider/src/main/java/com/hify/runtime/RuntimeMessage.java": "a8ea352b0ceba5237fa19a695c33879d22b81d14b235fc0f402e84d67248a1a6",
+    "backend/hify-knowledge/src/main/java/com/hify/knowledge/api/KnowledgeCitation.java": "741569c60953c189ac62f49399d00b9c0d92c782dd2925d04b2d7b740758971e",
+    "backend/hify-chat/src/main/java/com/hify/application/CommittedHistoryWriter.java": "c26ef9712a6144c8825cce43ac64c51640c681a601ad2ee6264dcaf884dbd00c",
+    "backend/hify-chat/src/main/java/com/hify/application/RunApplicationService.java": "1b0cebe537f391269b85a9605559b74af89580cb2e998856dcf50b8805224039",
+    "backend/hify-chat/src/main/java/com/hify/memory/CanonicalDetailReader.java": "736de4b6387d4ac3ab045883a13ce47e1fc7423cee442db9f4245484f89b024e"
+  },
+  "probeSha256": "2525191c0dcefbb685b97ad1ee7c570614e45fcd483db5aa931cb5a0ffa2cc9e",
+  "artifacts": {
+    "checkpoint-before-model.json": "6c3534cc29c9859c446e13f0606be8ee0c88c0105f38e90f08cb4bc1610f97cb",
+    "checkpoint-messages.json": "e7e636a49071c818c74c2a06f08dabf5c6d175c564faf0a43a518ef6749000ca",
+    "committed-model-response.json": "3318184c08b66a6548e925a51449a7a9e31b7312111e66212a237fe4e7a9a261",
+    "detail-message-0.json": "eb5b42f122f1284362c85f15afb12015ea4f2a4c4909ef0fc6ace75e46dc9e0f",
+    "detail-message-1.json": "6e89a44ac82a183fa63af63ddbb9e05ca74f117442d2f7b62aa53d4afcd3aab9",
+    "detail-message-2.json": "ec486e96faf25b8b5fb9de2651cb175505f20da7ecb2f379dcd1aadb91a9f0cc",
+    "detail-message-3.json": "240458ab34dc1fd3eee6387a54d498a95348ce7c752ceb90168985affe928cb1",
+    "detail-message-4.json": "ee50cde7bfd8c60ef0b9bd1a699af6e6ecefe1c51a9065d96db8358e1c846a19",
+    "detail-message-5.json": "fcefabebf74e6649d9dffc9e3f478cd7bb22530a432b0d553dc8315219c6cdd6",
+    "detail-message-6.json": "17944e199c6e170860b47aa6f3b51db173f635d4715aa4ff0bd638609fcc1c48",
+    "history-messages.json": "e7e636a49071c818c74c2a06f08dabf5c6d175c564faf0a43a518ef6749000ca"
+  },
+  "limitations": [
+    "Synthetic fixtures, not a production database capture",
+    "Only serialization methods invoked; no replay or admission test",
+    "Classpath dependencies reused; source comparison is not binary build attestation",
+    "Spring mapper builder plus baseline customizer; no Spring Boot application started"
+  ],
+  "compileExitCode": 0,
+  "generateExitCode": 0
+}

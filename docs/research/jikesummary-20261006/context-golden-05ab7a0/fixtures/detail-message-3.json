@@ -1,0 +1,1 @@
+{"role":"assistant","content":null,"toolCallId":null,"toolCalls":[{"id":"call-a","name":"fixture_read","arguments":{"text":"引号\"与换行\n和 emoji 😀","enabled":false,"count":0}},{"id":"call-b","name":"fixture_read","arguments":{"text":"second"}}]}

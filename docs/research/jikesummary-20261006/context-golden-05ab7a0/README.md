@@ -1,7 +1,8 @@
-# Canonical 金样生成器准备（尚未生成金样）
+# Canonical 旧 writer 金样（已生成，尚未接入产品回归）
 
-2026-10-07。为 context-authority 的历史兼容验收准备；**当前只有生成器，未运行 Java，
-没有金样文件，也不算兼容测试通过**。测试窗口仍由 hify-cc 使用时只做静态核对。
+2026-10-07。为 context-authority 的历史兼容验收准备。生成器在 1a82530 提交时仅做
+静态核对；测试窗口明确交还后，在 08c467e 上独立生成两次，均 compile/generate exit 0，
+11 个 JSON 及 provenance 逐字节相同。**这只是旧 writer 的合成金样，不算恢复兼容测试通过。**
 本目录位于研究材料下，不参与 Maven 测试，不能代替未来产品回归夹具。
 
 ## 固定来源和覆盖
@@ -21,13 +22,20 @@
 classpath 来自已有编译目录，先逐一比较该目录所有 src/main 文件与固定源码；这只能
 证明来源文本相同，**不是复用的 class/jar 确由该源码构建的证明**。
 
-计划生成 11 个 JSON 文件：完整历史/消息 checkpoint 两份、模型调用前的前缀一份、
+已生成 11 个 JSON 文件：完整历史/消息 checkpoint 两份、模型调用前的前缀一份、
 已提交含工具调用的模型响应前缀一份、七条消息各自的 detail JSON。所有输入为合成资料，
 覆盖中文、emoji、转义、false/0、旧 RAG system、双工具调用及成功/失败结果。
 这里的 checkpoint 指 messages_json 字段，不是完整 checkpoint/plan/contextState。
 detail JSON 也不等于实际生成并通过 det_ 授权回读；这些须在后续测试中分别验证。
 
-## 窗口交还后的执行方式
+## 本次执行与重现
+
+输出位于 `fixtures/`，固定 SHA 清单为 `fixtures/provenance.json`。两次执行日志分别为
+`generate-first.log`、`generate-second.log`；`diff -qr first second` 返回 0 且无差异。
+两次均先比较 356 份生产输入与 05ab7a0，再重新编译六个被调用的旧生产类型。
+本次私有目录为 `/tmp/hify-canonical-baseline.5f4sRa/`；输出原字节复制入仓库，
+没有经过新 reader 重写。JDK 17.0.19，两次均没有启动应用、数据库、VM 或真实模型。
+这 11 份文件尚不在 Maven resources 中；当前没有产品测试自动消费它们。
 
 先确认隔离编译目录及 Surefire XML 仍存在。示例路径是上次窄测的本机临时目录，
 并非可移植依赖包；不存在时必须重新准备，不得只手填生成成功。
