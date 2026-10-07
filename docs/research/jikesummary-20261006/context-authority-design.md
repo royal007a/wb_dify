@@ -91,8 +91,10 @@ ExecutionSuspendedException，最后才分类数据不一致与存储故障。�
 真正需要补的是 QueryLoop 返回 Result 后的 finish 路径：当前不再检查控制，且来源判定
 与最终提交之间仍可发生关停。RunApplicationService 对两类来源异常及返回 reason
 都汇入同一个终态提交边界；在事务内锁住 Run 后、写入来源失败之前重查生命周期与
-持久取消。该边界不调用会重判到期的通用 checkActive：已经算出的来源失败不能仅因
-迟到的超时改名为 TIMED_OUT。CONTEXT_AUTHORITY_MISMATCH 与 CONTEXT_SOURCE_UNAVAILABLE
+持久取消。仅提交边界本身不重新判断到期，不调用通用 checkActive；到达该边界的来源
+失败不会在这里仅因迟到超时改名。异常路径仍保留 execute catch 的 checkActive：若在
+异常抛出与 catch 之间到期，仍可转换为 TIMED_OUT，不承诺全链路 reason 不变。
+CONTEXT_AUTHORITY_MISMATCH 与 CONTEXT_SOURCE_UNAVAILABLE
 两类都适用关停兜底，MISMATCH 在恢复后重新核实；不把已经算好的正常成功统一改为暂停。
 未终结且关停中的工作沿既有 APPLICATION_SHUTDOWN 路径写 run.interrupted，保留
 RUNNING 供恢复；持久取消仍优先。门禁先算出拒绝但尚未提交的窗口不能视为已永久失败。
@@ -187,10 +189,15 @@ volatile stopping。这里依赖的是本应用生命周期信号，不把所有
    多事件相同/不同/零匹配、state 冲突、旧 chunk 清理、新 Run 崩溃恢复逐项覆盖。
 7. 单列关停交错，使用生产的实时 lifecycle control，不伪造暂停信号延迟：读取期间
    stopping 置位时，断言后续模型/工具零新调用；这些早期检查不要求各自通过持久状态
-   的独立突变证明。另在来源门禁返回之后、finishTerminal 锁行之前用受控接缝置位
-   stopping，分别覆盖 MISMATCH 和 UNAVAILABLE：要求写可恢复 interruption、保留
+   的独立突变证明。另将接缝固定在 finishTerminal 事务内，findByIdForUpdate 的
+   thenAnswer 返回之前置位 stopping（参照 RunWorkflowControlTest 的锁行接缝）；
+   Result 与异常两条路径都须已经经过其前置处理，不能在 execute catch 之前置位。
+   分别覆盖 MISMATCH 和 UNAVAILABLE：要求写可恢复 interruption、保留
    RUNNING，撤掉终态提交边界检查必须红在持久状态/reason 断言。加非关停来源失败、
    已持久取消、仅提交前迟到超时三组对照，分别保持原来源失败、CANCELLED、原来源失败。
+   迟到超时对照也在 catch 之后的上述锁行接缝注入，不绕过原异常路径的控制检查。
+   保留 RunWorkflowControlTest.computedWorkflowOutcomeIsNotDiscardedWhenShutdownStartsBeforeReturn
+   的 SUCCEEDED/FAILED/TIMED_OUT 对照，不能把既有已算出的普通结果一律改成暂停。
    检查通过后才置位的交错允许 FAILED 提交，不宣称消除了整个提交窗口的竞态。
 8. 覆盖 failed+completed 与 citationCount=0 的 completed 排除、无 started/重复 completed、崩溃后新 started，
    以及同作用域成功复用/来源绑定改变拒绝复用/新作用域强制重读。新 Run 的候选不能
