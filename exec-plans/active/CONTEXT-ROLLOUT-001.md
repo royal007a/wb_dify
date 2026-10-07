@@ -2,6 +2,13 @@
 
 授权：lark:om_x100b6372c9d534b0b177a6da50a9acc。仅原版 Hify，目标 /opt/hify 和既有 /hify/ 入口；不改 CC、Dify、工作台或共享 Docker 缓存。任务状态以 tasks.json 为准。
 
+2026-10-07 切换风险补充授权：用户消息 `lark:om_x100b63505002e8a0c367a18a505de0e`
+原文为“a+ b”。已直接读取会话历史，核对同话题前文 `om_x100b635055806134b3bd189df71c88b`
+的 B 项明确列出 nginx reload、换 jar 后失败可能停服并需人工恢复；按该 B 项同意部署执行，
+不是仅依据其他机器人的转述。A 项由 CC 处理，本任务不清理本机 default 或远端共享资源。
+本次准入沿用 bc4ab0e 的六范围通过及独立复核，发布前仍重新检查源码树与实际 preflight；
+本条记录授权，不代表部署已经发生或通过。
+
 ## 发布前提
 
 - 保留 CONTEXT-INTEGRITY-001 准入（由 run-task/harness 的 dependsOn 检查），controller 直接检查当前 OBS-CORRELATION-001 六 scope 完整门禁 passed，测试零 failures/errors/skips/flaky；固定 head 的 backend/frontend/deploy 源码与打包源码一致，无未跟踪源码。不得拿旧 H1 gate 发布后续变更。
