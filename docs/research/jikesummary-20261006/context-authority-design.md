@@ -1,5 +1,84 @@
 # 下一候选：外部资料与策略权限分离（设计草案，未实现）
 
+> 2026-10-07 二轮修订：以下「修订契约」替代后面的旧方案；旧方案保留为审查轨迹，
+> 不再作为实现依据。特别撤回 canonical 新角色、新 DetailRefKind 以及恢复入口直接拒绝。
+> 此版仍待 review，未注册实施任务、未改产品、未运行新测试。
+
+## 修订契约：只改变模型视图，不改变 canonical 协议
+
+### 1. 权限来源如何进入 prepare
+
+- 新增仅存在于内存的来源描述（暂名 ContextAuthority），绑定 runId、固定 AgentVersion
+  及 canonical 前缀身份，保存可信策略位置、资料位置和待核实状态。它不是模型可填写字段，
+  不写入 RuntimeMessage、checkpoint 或历史 JSON，不增加 DetailRefKind 枚举。
+- RunApplicationService.execute 在组装消息时建立该描述；经 RunRuntimeIdentity 显式传给
+  QueryLoop，再作为 ContextManager.prepare 的输入。生产入口不能使用“信任所有 system”
+  的缺省值；既有 local 测试入口要显式声明合成策略位置，不能给生产提供回退旁路。
+- prepare 内部的投影值区分 POLICY / CONTEXT_DATA / 普通对话，只有最终模型视图把资料
+  表示为内部 context_data；该视图不回写 canonical。分层摘要/目录必须在生成时携带来源，
+  固定导航规则另用服务端常量，不能从摘要或正文提取策略。
+- 原 canonical 仍是四字段、既有角色；旧引用、摘要、revision、replay prefix 不变。
+  新 Run 的 RAG canonical 仍按旧兼容形态存 system，安全性来自每次调用的视图门禁，
+  而不是存储标签。回退旧 jar 不会因新角色/枚举报错，但会恢复旧的资料提权缺陷，
+  因此回退属于安全能力降级，不能宣称回退仍保有新防护。
+
+### 2. 旧来源的核实与恢复时点
+
+- 只接受旧生产前缀两种形态：首条 system 与固定版本 instructions 逐字一致；
+  或在其后恰有一个旧知识 system。不能仅凭 KNOWLEDGE_CONTEXT 等正文头部授信。
+- 知识资料用持久化 knowledge.retrieval.completed 的有序引用（chunkId、documentId、
+  documentVersion、digest）和固定发布语料重建旧正文，核对每块身份/摘要及整段逐字一致。
+  显式续接沿持久化 resumeRunId 找实际来源 Run 的事件，并检查版本归属；链缺失、循环、
+  引用无法回读、正文不一致或其他 system 排列都标为来源未核实，不猜测授信。
+  旧知识串里的固定英文规则不从原文“升级”为策略，新视图只用服务端固定规则。
+- 恢复入口只构造已核实/未核实的描述，**不抛来源异常阻止 canonical replay**。
+  QueryLoop 先用原字节前缀读取 model:N。没有已提交响应、确实要调用模型时，
+  在 prepare / generateStream 之前执行来源门禁；未知来源以明确兼容失败终止，模型零调用。
+- 有已提交响应时仍复用它，不重调模型、不删除/改写已提交历史。复用不等于允许继续执行：
+  未执行的 tool call 在工具调度前还必须通过同一来源门禁；来源未核实则工具零调用，
+  保留已提交响应并记兼容失败。纯 final 响应同样不绕过交付门禁，不因已提交就自动发布。
+  这区分“保存并复用已提交事实”与“授权新副作用/交付成功”，不把前者冒充后者。
+- 已核实的来源可继续工具/终态流程，后续真正的新模型调用使用降权视图。
+  门禁失败沿既有失败状态携带稳定原因，不伪造成功、取消或 timeout；具体错误枚举在
+  实施任务内精确登记。现有取消/到期优先级保留。
+
+### 3. 协议与投影不变式
+
+- OpenAI（含 OPENAI_COMPATIBLE 共用客户端）、Anthropic、Gemini 的同步/流式入口
+  都使用显式角色白名单。内部 context_data 映射到普通 user 内容；其他未知角色在 HTTP
+  前拒绝。Gemini 默认“非 assistant 当 user”不能当映射通过，也不能用删除该映射作等价突变。
+- 可信策略只有来源描述中的位置及服务端固定常量；资料不进入 system/systemInstruction。
+  应用内轮次、goal 只认真正 user，资料仍计 token，估算时包括新视图角色长度。
+  协议层资料也是 user 内容，模型无法仅靠角色区别真实提问与资料；这是残余注入风险，
+  不是授权机制，不宣称“模型不会被资料伪造用户”。
+- 投影不能因为原“开头连续 system”循环而漏掉 index≥1 的资料；不得插入到 assistant
+  tool_calls 与配对结果之间，不得放到最后真实 user/工具结果之后改变 Mock 的目标。
+  current turn / policy 顺序、工具配对与容量拒绝仍按 H1 保留。
+- 知识 Run 的 rawMemoryVisible=false：CanonicalMemoryIndexer 必须不写原始记忆索引，
+  分层记忆投影维持 NOOP。这条应有反例，不新增永远走不到又破坏回退的 CONTEXT_DATA 枚举。
+
+### 4. 更新后的验收与范围
+
+1. 先用 05ab7a0 的旧 writer 产物提交 RuntimeMessage / checkpoint / canonical 历史的
+   原文金样和固定 SHA（当前还没有这些金样）。新 reader/writer、det_ 回读、model:N
+   prefix replay 必须逐字兼容；不能用新实现即时计算再回填 expected。
+2. Chat 公共入口覆盖三家 generateStream；同步 generate 从各 adapter 的生产入口验证。
+   生产同步还存在意图分类、Workflow LLM 和健康检查，不是“生产没有同步”。这些路径没有
+   context_data；WorkflowExternalNodes 把变量插入 systemPrompt 的同类问题列为范围外
+   已知风险，不能声称本切片已治理所有模型入口。
+3. 旧无资料/旧知识/显式续接分别做正例；版本/引用/正文不一致做反例。重点单列
+   model:N 已提交但 checkpoint 落后、含待执行工具的场景：历史响应可回读且不重调模型，
+   未核实来源时新工具零调用、无成功交付；合法来源正常继续。
+4. summary/catalog、近期轮次、goal、单轮工具压力、无 user、多个显式可信策略、
+   知识 Run 不索引、资料不丢失及工具配对逐项测试，全部断言 canonical 未改变。
+5. 突变分别移除 RAG/summary 降权、把资料计入真实 user、绕过未知来源门禁、绕过配对
+   和容量保护；三家 fixture 直接断言完整请求体。adapter 故障注入为明确错映射到 system
+   或允许未知角色，不用 Gemini 默认分支吸收的等价突变。先证明反例因目标断言变红。
+
+仍只是设计：不发布新角色、不批量改历史、不部署；独立评审通过后再登记原子任务。
+
+## 以下为 164abe4 旧方案与清点记录（已被上述修订替代）
+
 源码核对基线 `5ff8996`，与六范围受测 05ab7a0 的产品树相同。课程依据是已经精读的
 C139、C075、C088、C090，具体原文和纠偏见 reading-notes.md；本文件是本项目方案，
 不是课程已经给出的实现。当前只读调查和设计，没有新增测试运行，没有改产品。
