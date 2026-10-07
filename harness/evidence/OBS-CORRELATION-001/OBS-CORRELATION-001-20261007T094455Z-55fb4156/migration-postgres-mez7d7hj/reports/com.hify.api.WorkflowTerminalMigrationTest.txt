@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.api.WorkflowTerminalMigrationTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 63.67 s -- in com.hify.api.WorkflowTerminalMigrationTest

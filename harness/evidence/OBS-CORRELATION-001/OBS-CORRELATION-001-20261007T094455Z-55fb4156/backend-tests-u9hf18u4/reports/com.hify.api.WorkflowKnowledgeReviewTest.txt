@@ -1,0 +1,15 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.api.WorkflowKnowledgeReviewTest
+-------------------------------------------------------------------------------
+Tests run: 19, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 205.4 s <<< FAILURE! -- in com.hify.api.WorkflowKnowledgeReviewTest
+com.hify.api.WorkflowKnowledgeReviewTest.indexingMetadataFailurePersistsFailureWithoutDeletingExistingChunks -- Time elapsed: 80.76 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting AtomicBoolean(true) to have value:
+  true
+but did not.
+	at com.hify.api.WorkflowKnowledgeReviewTest.indexingMetadataFailurePersistsFailureWithoutDeletingExistingChunks(WorkflowKnowledgeReviewTest.java:115)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

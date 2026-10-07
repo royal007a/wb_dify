@@ -1,0 +1,13 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.api.KnowledgeAdmissionShutdownTest
+-------------------------------------------------------------------------------
+Tests run: 22, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 1086 s <<< FAILURE! -- in com.hify.api.KnowledgeAdmissionShutdownTest
+com.hify.api.KnowledgeAdmissionShutdownTest.resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain -- Time elapsed: 34.08 s <<< FAILURE!
+java.lang.AssertionError: run timeout
+	at com.hify.api.KnowledgeFinishIntegrationTest.await(KnowledgeFinishIntegrationTest.java:118)
+	at com.hify.api.KnowledgeFinishIntegrationTest.chatWith(KnowledgeFinishIntegrationTest.java:106)
+	at com.hify.api.KnowledgeFinishIntegrationTest.resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain(KnowledgeFinishIntegrationTest.java:89)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

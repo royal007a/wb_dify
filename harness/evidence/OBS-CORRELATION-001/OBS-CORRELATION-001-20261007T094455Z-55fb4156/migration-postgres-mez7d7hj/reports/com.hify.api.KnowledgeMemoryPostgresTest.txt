@@ -1,0 +1,13 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.api.KnowledgeMemoryPostgresTest
+-------------------------------------------------------------------------------
+Tests run: 21, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 422.3 s <<< FAILURE! -- in com.hify.api.KnowledgeMemoryPostgresTest
+com.hify.api.KnowledgeMemoryPostgresTest.resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain -- Time elapsed: 40.55 s <<< FAILURE!
+java.lang.AssertionError: run timeout
+	at com.hify.api.KnowledgeFinishIntegrationTest.await(KnowledgeFinishIntegrationTest.java:118)
+	at com.hify.api.KnowledgeFinishIntegrationTest.chatWith(KnowledgeFinishIntegrationTest.java:106)
+	at com.hify.api.KnowledgeFinishIntegrationTest.resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain(KnowledgeFinishIntegrationTest.java:89)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
