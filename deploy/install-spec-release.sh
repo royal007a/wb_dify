@@ -20,7 +20,8 @@ test "$(stat -c %a "$key")" = 600
 test -f /etc/systemd/system/hify.service.d/20-mcp-credentials.conf
 key_identity=$(stat -c '%i:%s:%Y:%a:%U' "$key")
 test ! -e "$release/previous.jar"
-test "$(df -Pk /opt/hify | awk 'NR==2 {print $4}')" -ge 800000
+# Keep at least 2 GiB before staging; controller also reserves peak copies + DB.
+test "$(df -Pk /opt/hify | awk 'NR==2 {print $4}')" -ge 2097152
 # Fail before staging, backups or stopping Hify if any host configuration is invalid.
 nginx -t
 assert_no_running() {

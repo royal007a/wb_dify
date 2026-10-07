@@ -4,7 +4,7 @@
 
 ## 发布前提
 
-- 保留 CONTEXT-INTEGRITY-001 准入，新增要求当前 OBS-CORRELATION-001 六 scope 完整门禁 passed，测试零 failures/errors/skips/flaky；固定 head 的 backend/frontend/deploy 源码与打包源码一致，无未跟踪源码。不得拿旧 H1 gate 发布后续变更。
+- 保留 CONTEXT-INTEGRITY-001 准入（由 run-task/harness 的 dependsOn 检查），controller 直接检查当前 OBS-CORRELATION-001 六 scope 完整门禁 passed，测试零 failures/errors/skips/flaky；固定 head 的 backend/frontend/deploy 源码与打包源码一致，无未跟踪源码。不得拿旧 H1 gate 发布后续变更。
 - 本次会携带同一源码树上此前尚未部署的 Workflow 聚合、结构化输出。不是只替换 compactor 的单类热补丁。旧 STRUCTURED 的失败记录保留；新完整门禁不得冒称消除了旧关停偶发失败的根因。
 - Claude 对 H1 固定范围的独立 review 已收到结论，阻塞问题已处理。
 - 与 CC 错峰，切换前通知。安装器只改自己的 nginx snippet，但会 nginx -t 和 reload nginx；不承诺零停机。
@@ -41,9 +41,20 @@ script/stylesheet 引用，不再把 AgentVersion 当作构建版本。这不证
 远端观察在每步 finally 保存，即使后续密钥元数据或身份断言失败也保留。
 
 安装后失败仍可能停止新 Hify，不自动恢复数据库或旧应用；此行为未改变，切换通知须明确提示。
-新脚本、两项安装器 fixture 反例和浏览器构建核对尚待运行与独立 review；未因此扩大已有绿灯范围。
+上述历史阶段当时尚待演练；f71d587 的离线安装/冒烟 fixture 后续 20/20、准入/进程探针 4/4。
+这不是部署态浏览器验证或六范围门禁；每轮补强后的证据另记，不扩大旧结果。
 
 离线准入反例另覆盖 python -O 下的未完成 gate、失败/旧 schema/缺 scope/哈希不符 gate，
 以及从生产脚本抽出的 /proc 探针（无 jar 描述符、正确描述符、错误 cmdline）。这些使用合成目录，
 不连接远端，不代表实际进程探针已验证。历史 smoke 文件保留原样，调用时使用 python3 -E，
-使 PYTHONOPTIMIZE 环境变量不能关闭其中的断言。上述新增反例尚待错峰窗口交还后执行。
+使 PYTHONOPTIMIZE 环境变量不能关闭其中的断言。
+
+## 发布脚本二轮 review 修订
+
+- 同一份只读身份脚本在 preflight 和 final 复用；先要求正 PID，读取启动 tick，核对 cmdline、打开的 jar FD 和磁盘 jar SHA。正式切换后要求 PID 改变且启动 tick 增加。不输出完整 cmdline 或环境变量。
+- controller 按 staging + old copies + database size + 2 GiB 计算空间预算；installer 入场底线同步提高至 2 GiB。旧 release/备份不会自动清理，空间不足必须停下，不能降低阈值凑过。
+- testedHead 必须是 40 位小写十六进制；finally 写观察副本时以 replacement 解码非 UTF-8 字节，原始日志字节不变，不能覆盖原异常。
+- 远端核对本次前端清单中的每个文件 SHA，含未访问的懒加载资源；浏览器仍只证明实际加载的路由资源，不宣称已访问所有页面。保留旧 assets 的既有安装机制不变。
+- 对 132 旧进程的一次只读探针已执行成功；这是发布方观察，不是独立审计，不代表新版本已部署。实际切换前仍要重跑全部 preflight。
+- Git 跟踪树校验不检查被忽略的 Vite .env*；构建参数明确覆盖 base/API，但不能将其泛化成完全可复现构建。
+- 正式切换前需明确告知并确认 nginx reload 和失败停服边界。获得确认并通过当前源码的六范围门禁之前，不执行安装。

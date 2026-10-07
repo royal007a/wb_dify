@@ -3,6 +3,8 @@
 import hashlib
 import json
 import os
+import re
+import shlex
 from pathlib import Path
 import subprocess
 import tempfile
@@ -25,14 +27,51 @@ verification = json.loads((gate / 'verification.json').read_text())
 require(verification['result'] == 'passed' and verification['schemaVersion'] == 3, 'Gate must pass schema 3')
 require(set(verification['scopes']) == {'harness','migration','backend','runtime','eval','frontend'}, 'All six scopes required')
 require(hashlib.sha256((gate / 'verification.json').read_bytes()).hexdigest() == record['verificationSha256'], 'Gate SHA mismatch')
-subprocess.run(['python3', '-E', 'harness/harness.py', 'validate'], cwd=ROOT, check=True)
 tested_head = verification['headCommit']
+require(isinstance(tested_head, str) and re.fullmatch(r'[0-9a-f]{40}', tested_head), 'Invalid gate head format')
 require(tested_head == record['headCommit'], 'Gate head mismatch')
+subprocess.run(['python3', '-E', 'harness/harness.py', 'validate'], cwd=ROOT, check=True)
 subprocess.run(['git','diff','--quiet',tested_head,'--','backend','frontend','deploy'],cwd=ROOT,check=True)
 require(not subprocess.check_output(['git','ls-files','--others','--exclude-standard','--','backend','frontend','deploy'],cwd=ROOT), 'Untracked release source')
 release = '/opt/hify/releases/spec-verify-20261007-context-' + tested_head[:8]
 unit = 'hify-upgrade-20261007-context-' + tested_head[:8]
 ssh = ['ssh','-o','BatchMode=yes','-o','ConnectTimeout=10','root@118.196.123.132','/bin/sh']
+
+# Reused verbatim before any remote write and after cutover. Unsupported service
+# layouts fail safely while the old service is still untouched.
+running_identity = r'''pid=$(systemctl show hify -p MainPID --value)
+test "$pid" -gt 0
+python3 - "$pid" <<'PY'
+import hashlib, os, sys
+pid=sys.argv[1]
+target='/opt/hify/backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar'
+def start_ticks():
+    return int(open('/proc/'+pid+'/stat').read().rsplit(')', 1)[1].split()[19])
+started=start_ticks()
+args=open('/proc/'+pid+'/cmdline','rb').read().split(b'\0')
+if target.encode() not in args:
+    raise SystemExit('Running JVM command does not use expected jar')
+digests=set()
+for name in os.listdir('/proc/'+pid+'/fd'):
+    fd='/proc/'+pid+'/fd/'+name
+    try:
+        if os.readlink(fd)==target:
+            with open(fd,'rb') as f:
+                digests.add(hashlib.file_digest(f,'sha256').hexdigest())
+    except FileNotFoundError:
+        continue
+if len(digests)!=1:
+    raise SystemExit('Cannot identify exactly one running jar SHA through open descriptors')
+with open(target,'rb') as f:
+    if hashlib.file_digest(f,'sha256').hexdigest() not in digests:
+        raise SystemExit('Running jar differs from installed jar')
+if start_ticks()!=started:
+    raise SystemExit('Process changed during identity probe')
+print('runningPid='+pid)
+print('runningStartTicks='+str(started))
+print('runningJarSha256='+next(iter(digests)))
+PY
+'''
 
 def command(args, name, *, text=None, cwd=ROOT, env=None, timeout=1200):
     try:
@@ -42,7 +81,7 @@ def command(args, name, *, text=None, cwd=ROOT, env=None, timeout=1200):
     finally:
         if name in ('remote-preflight', 'remote-install', 'remote-final'):
             try:
-                observations = {stage:(evidence/(stage+'.log')).read_text()
+                observations = {stage:(evidence/(stage+'.log')).read_text(errors='replace')
                                 for stage in ('remote-preflight','remote-install','remote-final')
                                 if (evidence/(stage+'.log')).is_file()}
                 (evidence/'remote-observations.json').write_text(json.dumps({
@@ -85,14 +124,14 @@ test "$(systemctl show {unit} -p LoadState --value)" = not-found
 python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3,11) else 1)'
 nginx -t
 systemctl is-active --quiet hify
-systemctl show hify -p MainPID --value | sed 's/^/previousPid=/'
+{running_identity}
 test "$(runuser -u postgres -- psql -d hify -Atqc "SELECT max(version::integer)=24 AND bool_and(success) FROM flyway_schema_history")" = t
 test "$(runuser -u postgres -- psql -d hify -Atqc "SELECT (SELECT count(*) FROM agent_runs WHERE state='RUNNING')+(SELECT count(*) FROM workflow_runs WHERE status='RUNNING')+(SELECT count(*) FROM document_index_tasks WHERE state IN ('PENDING','RUNNING'))")" = 0
 test "$(runuser -u postgres -- psql -d hify -Atqc "SELECT count(*) FROM workflow_versions w WHERE EXISTS (SELECT 1 FROM jsonb_array_elements(w.dsl_json::jsonb->'nodes') n WHERE upper(n->>'type')='START' AND (n->'config') ? 'inputs') AND NOT (COALESCE(w.dsl_json::jsonb->'publication','{{}}'::jsonb) ? 'inputSchemaFormat')")" = 0
 old_kib=$(du -sk /opt/hify/frontend/dist /opt/hify/backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar | awk '{{s+=$1}} END {{print s}}')
 db_bytes=$(runuser -u postgres -- psql -d hify -Atqc "SELECT pg_database_size('hify')")
 free_kib=$(df -Pk /opt/hify | awk 'NR==2 {{print $4}}')
-required_kib=$(( {staging_kib} + old_kib + (db_bytes+1023)/1024 + 800000 ))
+required_kib=$(( {staging_kib} + old_kib + (db_bytes+1023)/1024 + 2097152 ))
 printf 'freeKiB=%s requiredKiB=%s stagingKiB=%s oldKiB=%s dbBytes=%s\n' "$free_kib" "$required_kib" {staging_kib} "$old_kib" "$db_bytes"
 test "$free_kib" -ge "$required_kib"
 stat -c 'keyMetadata=%i:%s:%Y:%a:%U' /etc/hify/mcp-credentials.env
@@ -122,6 +161,8 @@ targets={
     'deploy/nginx-path.conf':'/etc/nginx/snippets/hify-path.conf'}
 artifact_checks='\n'.join(f'test "$(sha256sum {target} | cut -d " " -f1)" = {artifacts[source]}'
                           for source,target in targets.items())
+frontend_checks='\n'.join(f'test "$(sha256sum {shlex.quote("/opt/hify/frontend/dist/"+name)} | cut -d " " -f1)" = {digest}'
+                           for name,digest in sorted(frontend_files.items()))
 command(ssh,'remote-install',text=f'''set -eu
 cd {release}
 {hashchecks}
@@ -145,6 +186,7 @@ systemctl show {unit} -p Result -p ExecMainStatus -p InactiveEnterTimestamp
 systemctl is-active --quiet hify
 curl -fs --max-time 10 http://127.0.0.1:28080/api/v1/health
 {artifact_checks}
+{frontend_checks}
 test "$(runuser -u postgres -- psql -d hify -Atqc "SELECT max(version::integer)=24 AND count(*)=24 AND bool_and(success) FROM flyway_schema_history")" = t
 test -s database-before.dump
 test "$(stat -c %a database-before.dump)" = 600
@@ -174,31 +216,7 @@ except (subprocess.CalledProcessError,subprocess.TimeoutExpired) as error:
     failures.append({'check':'browser-live','errorType':type(error).__name__})
 (evidence/'post-install-checks.json').write_text(json.dumps({'failedChecks':failures,
     'automaticRollback':False,'modelRetry':False},indent=2)+'\n')
-command(ssh,'remote-final',text=r'''set -eu
-systemctl is-active hify
-pid=$(systemctl show hify -p MainPID --value)
-test "$pid" -gt 0
-printf 'runningPid=%s\n' "$pid"
-python3 - "$pid" <<'PY'
-import hashlib, json, os, sys
-pid=sys.argv[1]
-target='/opt/hify/backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar'
-args=open('/proc/'+pid+'/cmdline','rb').read().split(b'\0')
-if target.encode() not in args:
-    raise SystemExit('Running JVM command does not use expected jar')
-digests=set()
-for name in os.listdir('/proc/'+pid+'/fd'):
-    fd='/proc/'+pid+'/fd/'+name
-    try:
-        if os.readlink(fd)==target:
-            with open(fd,'rb') as f:
-                digests.add(hashlib.file_digest(f,'sha256').hexdigest())
-    except FileNotFoundError:
-        continue
-if len(digests)!=1:
-    raise SystemExit('Cannot identify exactly one running jar SHA through open descriptors')
-print('runningJarSha256='+next(iter(digests)))
-PY
+command(ssh,'remote-final',text='set -eu\nsystemctl is-active hify\n'+running_identity+frontend_checks+r'''
 df -Pk /opt/hify
 runuser -u postgres -- psql -d hify -Atqc "SELECT json_build_object('runningRuns',(SELECT count(*) FROM agent_runs WHERE state='RUNNING'),'runningWorkflows',(SELECT count(*) FROM workflow_runs WHERE status='RUNNING'),'activeIndexTasks',(SELECT count(*) FROM document_index_tasks WHERE state IN ('PENDING','RUNNING')),'schemaVersion',(SELECT max(version::int) FROM flyway_schema_history),'allMigrationsSucceeded',(SELECT bool_and(success) FROM flyway_schema_history));"
 stat -c 'keyMetadata=%i:%s:%Y:%a:%U' /etc/hify/mcp-credentials.env
@@ -217,9 +235,12 @@ observations = {name: (evidence/(name+'.log')).read_text()
     'observations':observations},indent=2)+'\n')
 require(len(metadata('remote-preflight')) == 1, 'Missing key metadata')
 require(metadata('remote-preflight') == metadata('remote-install') == metadata('remote-final'), 'key metadata changed')
-before_pids=[line for line in observations['remote-preflight'].splitlines() if line.startswith('previousPid=')]
+before_pids=[line for line in observations['remote-preflight'].splitlines() if line.startswith('runningPid=')]
 after_pids=[line for line in remote_final.splitlines() if line.startswith('runningPid=')]
 require(len(before_pids)==len(after_pids)==1 and before_pids[0].split('=')[1]!=after_pids[0].split('=')[1], 'Running PID was not replaced')
+before_starts=[int(line.split('=')[1]) for line in observations['remote-preflight'].splitlines() if line.startswith('runningStartTicks=')]
+after_starts=[int(line.split('=')[1]) for line in remote_final.splitlines() if line.startswith('runningStartTicks=')]
+require(len(before_starts)==len(after_starts)==1 and after_starts[0]>before_starts[0], 'Running start time was not advanced')
 require('runningJarSha256='+artifacts['backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar'] in remote_final.splitlines(), 'Running JVM jar SHA mismatch')
 for source,target in targets.items():
     require(artifacts[source]+'  '+target in remote_final, 'installed artifact SHA differs')

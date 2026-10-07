@@ -147,6 +147,18 @@ class DeployInstallerTest(unittest.TestCase):
                 self.assertFalse((release/'previous.jar').exists())
                 self.assertNotIn(['systemctl', ['stop', 'hify']], self.calls(root))
 
+    def test_two_gib_floor_rejects_before_staging_or_stop(self):
+        for shell in self.shells():
+            with self.subTest(shell=shell), tempfile.TemporaryDirectory() as temp:
+                root, app, release, script, env = self.fixture(temp)
+                env['DEPLOY_FIXTURE_FREE_KIB'] = str(2097152-1)
+                result = subprocess.run([shell, str(script), str(release)], env=env, capture_output=True)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertEqual((root/'service').read_text(), 'active')
+                self.assertFalse((release/'incoming').exists())
+                self.assertFalse((release/'previous.jar').exists())
+                self.assertNotIn(['systemctl', ['stop', 'hify']], self.calls(root))
+
     def test_incomplete_backup_is_removed_before_old_service_restart(self):
         for shell in self.shells():
             for failure in ('DUMP', 'RESTORE'):

@@ -18,7 +18,8 @@ if name == 'id':
 elif name == 'stat':
     print('600' if args[1] == '%a' else '1:20:3:600:root')
 elif name == 'df':
-    print('Filesystem 1024-blocks Used Available Capacity Mounted on\nfake 4000000 1000000 3000000 25% /')
+    free = os.environ.get('DEPLOY_FIXTURE_FREE_KIB', '3000000')
+    print('Filesystem 1024-blocks Used Available Capacity Mounted on\nfake 4000000 1000000 '+free+' 25% /')
 elif name == 'systemctl':
     if args == ['stop', 'hify']:
         state.write_text('inactive')
