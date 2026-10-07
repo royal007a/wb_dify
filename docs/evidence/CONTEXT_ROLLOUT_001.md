@@ -1,12 +1,16 @@
 # CONTEXT-ROLLOUT-001：原版 132 发布记录
 
 2026-10-07 21:21:33 CST，发布 runner 自然退出 0。入口：
-https://118.196.123.132/hify/ 。这是发布方的运行观察；独立证据复核待进行。
+https://118.196.123.132/hify/ 。这是发布方的运行观察；f67a791..6c55707 已由
+mymacclaude 独立只读复算通过，无 P1/P2，没有独立重跑远端部署。
 
 ## 授权与固定范围
 
 - 用户授权 `lark:om_x100b63505002e8a0c367a18a505de0e`（“a+ b”），对应前文
   `om_x100b635055806134b3bd189df71c88b` 的 B：允许 nginx reload，知悉换 jar 后失败可能停服、需要人工恢复。
+  B 项这里是含义转述，不是逐字引文。原任务授权是
+  `lark:om_x100b6372c9d534b0b177a6da50a9acc`；本次 runner 使用前述补充风险授权，
+  tasks.json 的 approvalRef 随之更新，不删除原授权历史。
 - 发布 HEAD `f67a79171323b6a131a777bb7f8b42fbe98751cb`；产品源码绑定
   `bc4ab0e4afe39939f9bfe5c6bb9a3797d6ebbb50`，不是将全部研究候选部署。
 - 原六范围 gate `OBS-CORRELATION-001-20261007T114929Z-298dada4`，verification SHA256
@@ -17,7 +21,10 @@ https://118.196.123.132/hify/ 。这是发布方的运行观察；独立证据�
 
 原始记录目录：
 `harness/evidence/CONTEXT-ROLLOUT-001/CONTEXT-ROLLOUT-001-20261007T130420Z-d2e458aa/`。
-命令见 run.json；开始 13:04:20Z，结束 13:21:33Z。仅原版 `/opt/hify` 及其 nginx snippet；
+命令为 f67a791 的 `harness/context-rollout.py` 经 runner 执行：
+`MAVEN_OPTS='-Xmx768m' ./harness/run-task.sh --approval-ref lark:om_x100b63505002e8a0c367a18a505de0e CONTEXT-ROLLOUT-001 -- python3 -E harness/context-rollout.py`。
+run.json 记录身份/时间/结果，没有 command 字段。开始 13:04:20Z，结束 13:21:33Z。
+仅原版 `/opt/hify` 及其 nginx snippet；
 执行 nginx -t/reload，没有修改 hify-cc、工作台、Dify，没有清理共享缓存。
 
 ## 发布观察
@@ -38,6 +45,8 @@ https://118.196.123.132/hify/ 。这是发布方的运行观察；独立证据�
 index.html：`c273202c61beed5c8dd8de639f660f51feb8b61e5fab6a80d06212d1aa7f6238`。
 前端共 3 个本次产物均与远端逐文件 SHA 一致；浏览器实际加载的 2 个 JS/CSS 响应也核对过。
 完整清单在 local-artifacts.json 和 browser-live.json。
+安装器备份顺序为 pg_dump 写 database-before.dump.partial → pg_restore --list 校验
+→ mv 为 database-before.dump；这不等于备份已成功恢复过。
 
 ## 验证与限制
 
@@ -47,6 +56,8 @@ index.html：`c273202c61beed5c8dd8de639f660f51feb8b61e5fab6a80d06212d1aa7f6238`�
 - 自建 Agent/KB/document 归档；测试会话/Run 因无删除接口保留，ID 在 JSON 内。没有删除用户数据。
 - 本次从合格源码重新构建，不是六范围运行时的同一 jar。前端发布构建使用 `/hify/` 与 `/hify/api`；
   runner 收尾另以默认 base 构建并覆盖本机 dist，**后者没有上传**，不可拿当前本机 dist 当发布清单。
+  后端执行 mvn package，没有 clean；Git 源码检查不覆盖忽略的 target，不能排除增量构建残留，
+  不能将源码树相同升级为可复现或干净构建证明。
 - 收尾 verification schema 3、仅 harness/frontend 两范围，通过；Python 原日志 93 项 OK，7 个步骤 exit 0。
   SHA256：`2cdf63294843fd91d5c0b47a33bb7750b529bbd35ace4d08a9be5b101ea6d279`。
   这不是重新执行后端六范围。日志中的 Maven evidence: failed 是 Harness 反向夹具输出。

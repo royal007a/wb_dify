@@ -2,7 +2,8 @@
 
 完成记录（2026-10-07 21:21:33 CST）：run `CONTEXT-ROLLOUT-001-20261007T130420Z-d2e458aa`
 退出 0，机器状态由 runner 收口。见 `docs/evidence/CONTEXT_ROLLOUT_001.md`。
-以下发布前描述按历史保留；独立证据复核待进行，不将收尾两范围当成后端重跑。
+以下发布前描述按历史保留；f67a791..6c55707 已独立只读复算通过，无 P1/P2，
+不是独立重跑部署，不将收尾两范围当成后端重跑。
 
 授权：lark:om_x100b6372c9d534b0b177a6da50a9acc。仅原版 Hify，目标 /opt/hify 和既有 /hify/ 入口；不改 CC、Dify、工作台或共享 Docker 缓存。任务状态以 tasks.json 为准。
 
