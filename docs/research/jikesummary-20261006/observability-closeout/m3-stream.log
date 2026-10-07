@@ -1,0 +1,69 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.hify:hify-common >------------------------
+[INFO] Building hify-common 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-correlation-mutation.1eo96x/backend/hify-common/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-correlation-mutation.1eo96x/backend/hify-common/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-common ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 27 source files with javac [debug parameters release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-correlation-mutation.1eo96x/backend/hify-common/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-common ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 9 source files with javac [debug parameters release 17] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-common ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.hify.common.LlmHttpClientTest
+23:36:29.714 [OkHttp http://localhost:64978/...] INFO com.hify.common.LlmHttpClient -- llm.stream.open target=http://localhost:64978/correlated-stream status=200 latencyMs=556
+23:36:29.796 [OkHttp http://localhost:64978/...] INFO com.hify.common.LlmHttpClient -- llm.stream.closed target=http://localhost:64978/correlated-stream latencyMs=714
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 8.330 s <<< FAILURE! -- in com.hify.common.LlmHttpClientTest
+[ERROR] com.hify.common.LlmHttpClientTest.streamingCallbacksCarryCapturedRequestIdWithoutSecrets -- Time elapsed: 8.264 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: {"requestId"="stream-request"}
+ but was: null
+	at com.hify.common.LlmHttpClientTest.streamingCallbacksCarryCapturedRequestIdWithoutSecrets(LlmHttpClientTest.java:66)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   LlmHttpClientTest.streamingCallbacksCarryCapturedRequestIdWithoutSecrets:66 
+expected: {"requestId"="stream-request"}
+ but was: null
+[INFO] 
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  55.535 s
+[INFO] Finished at: 2026-10-06T23:36:33+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.3:test (default-test) on project hify-common: There are test failures.
+[ERROR] 
+[ERROR] See /private/tmp/hify-correlation-mutation.1eo96x/backend/hify-common/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
