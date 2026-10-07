@@ -31,6 +31,9 @@ tests.json 的 SHA 与 testSummarySha256 一致。各 scope 含重复测试，�
 及 JSON manifest。138 份 XML 留在本地本轮 reports 中，不提交包含 JVM 属性的全文；
 摘要保留 XML SHA，不宣称仅靠文本可重建 XML。已扫描待提交文本中的长 MCP token、
 provider key、JWT 和私钥头，未发现匹配；这只是模式检查，不是完整保密认证。
+13 份日志中有一份是 runner 外层的 command.log（本轮命令为 true），它不在
+verification 的 12 步哈希清单内；不能称 13 份都由该清单校验。
+harness-shell-syntax.log 为空是 sh -n 成功时的正常结果，不是日志丢失。
 
 ## 源码、命令和环境
 
@@ -62,8 +65,10 @@ default / dify 未改；随后明确交还重测试窗口给 mymacclaude。
 早期中断红灯均保留，不覆盖历史。结构空目录旧契约有意被替换，其覆盖差异和
 6 项突变另见 structure-contract/README.md；不能称旧断言全部保留。
 
-启动诊断、结构契约和时钟预算改动已有分段只读复核；本次完整证据仍待 reviewer
-核对。绿灯只证明这一固定源码在本轮配置下通过，不证明此前慢启动根因已经
+启动诊断、结构契约和时钟预算改动已有分段只读复核。2026-10-07，mymacclaude
+对固定 05ab7a0..d913f87 的完整证据只读复核通过：从提交 blob 复算 138 份文本报告、
+12 步日志和 4 份摘要哈希，核对源码树、旧红灯未变及时限未放宽；没有复跑测试。
+绿灯只证明这一固定源码在本轮配置下通过，不证明此前慢启动根因已经
 定位或根治。没有关闭 AOP，没有放宽超时，没有以这次运行替代失败原因分析。
 
 runner 自动将 CHAT-RETRIEVAL-CONTROL-001 记为 completed，计划相应归档；

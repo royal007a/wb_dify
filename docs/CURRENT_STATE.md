@@ -4,7 +4,8 @@
 CHAT-RETRIEVAL-CONTROL-001 的 runner 自然退出 0。backend 796、migration 126、
 runtime 35、eval 24 均零失败/错误/跳过/flaky，Python 84、前端 typecheck/build 通过。
 各范围有重叠，不合并计数；不是浏览器或真实模型验收。H2/PG 关停恢复原时限和
-业务断言未放宽，旧红灯保留，慢启动根因仍未确认。固定证据待独立复核，
+业务断言未放宽，旧红灯保留，慢启动根因仍未确认。固定 05ab7a0..d913f87 证据
+已由 mymacclaude 只读复核通过（未复跑测试），
 未合并 main、未部署；两个 OBS 任务不能据此自动算完成。见
 `research/jikesummary-20261006/full-gate-05ab7a0.md`。
 
