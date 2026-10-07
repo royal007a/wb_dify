@@ -25,3 +25,15 @@ JDK线程池保留ThreadPoolExecutor类型、队列大小、AbortPolicy及destro
 - 下一步：处理review，协调完整六scope门禁。研究继续覆盖其余相关主题，目标未完成。
 - 自查补强：onEvent消费者改MDC再抛错，会把改坏的上下文传给catch分支onFailure。新增用例先红后绿，修为单独重装快照；common目前28/28，见`callback-scope-followup.json`，旧27项结果保留不回写。
 - 验证环境：本次已启动专用`hify-verify-20261004`，当前无运行容器，默认Docker context仍为`colima`；后续门禁必须显式`DOCKER_CONTEXT=colima-hify-verify-20261004`。尚未启动完整门禁，不要把VM运行误报为验收进行中。
+
+## 2026-10-07 独立复核后的缺项
+
+以上是各历史阶段记录。05ab7a0 的完整六范围已经通过，专用 VM 已停止；
+但本切片还不能收口：原三项断言红灯只覆盖 llm 池、async 池和过滤器，
+不含 runExecutor。AsyncConfigTest 的旧绿日志已原样补交到
+`docs/research/jikesummary-20261006/observability-closeout/run-executor-green.log`，
+仍须在隔离副本删除 setTaskDecorator、确认该用例红在 requestId 断言，再恢复
+同一份源码复跑绿；不能把编译错误或空指针算成命中。尚未运行这项突变。
+
+当前不覆盖两个不同非空 ID 连续复用同一 worker 的专项场景；取消和
+AbortPolicy 专项只在 llm 池测过。CC 持有测试窗口时不启动重测试。

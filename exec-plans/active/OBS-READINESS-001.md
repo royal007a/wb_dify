@@ -24,3 +24,13 @@
 ## 后续窄测检查点
 
 2026-10-07 00:11:39 +08:00：仅将生产readiness分组设为`readinessState,db`，同一组未修改的测试2/2通过，故障后的liveness、旧接口兼容及恢复断言均执行。新增运维说明区分各探针和现有部署消费方式。证据见`docs/research/jikesummary-20261006/readiness-checks.json`；前节保留的是历史红灯，不是当前窄测结果。完整门禁及外部review仍未完成。
+
+## 2026-10-07 独立复核结果
+
+上节是当时检查点，不再表示当前缺少测试或 review。05ab7a0 六范围通过，
+同源码的 ReadinessIntegrationTest 为 2/2；原红绿日志已按旧摘要哈希补交。
+mymacclaude 只读核对接受本切片，不曾复跑；详见
+`docs/research/jikesummary-20261006/observability-closeout/README.md`。
+仍限定为 H2 上注入 SQLException，不是真实 PG 网络故障，未切换生产探针。
+任务状态保持 tasks.json 的 pending，等待按 Harness 规则完成正式状态迁移；
+不把 CHAT 的 verification 改名冒充本任务新跑，不修改旧红灯。
