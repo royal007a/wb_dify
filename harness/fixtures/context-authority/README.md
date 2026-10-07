@@ -1,8 +1,11 @@
 # 来源权限：旧 writer 金样采集准备
 
-尚未运行、尚未生成金样。本目录不是产品实现，也不是新来源门禁已经通过的证据。
+2026-10-07 首次采集已完成，1 项用例通过，19 份原始文件已冻结；详见
+`docs/research/jikesummary-20261006/context-authority-goldens-05ab7a0/README.md`。
+本目录不是产品实现，也不是新来源门禁已经通过的证据。
 只将 `LegacyContextGoldenCaptureTest.java` 注入 05ab7a0 的干净 backend archive，
-不放进当前 `src/test` 自动发现范围。等共享测试窗口交还后，由独立采集命令运行。
+不放进当前 `src/test` 自动发现范围。只能在协调的测试窗口执行
+`python3 harness/fixtures/context-authority/capture.py`；每次建新 scratch、不覆盖旧输出。
 
 采集要求：
 
@@ -25,5 +28,5 @@ H2 的生成键/投影时间不作为协议金样；checkpoint 持久的三份 J
 ExecutionCheckpoint 序列化当成数据库格式。工具 recovery state 是合成场景，不证明完整
 QueryLoop 曾执行，也不证明引用的 chunk 实际存在；来源证明与恢复门禁另走集成用例。
 
-待验证：采集器编译/运行、知识索引拒绝、旧 writer 基线正确性、实际 JSON/SHA 封存、
-新实现对固定金样的 reader/replay/detail 兼容。没有这些结果前，不得在总账写“金样通过”。
+已采集只证明旧 writer 自身和原字节来源；待验证新实现对固定金样的 reader/replay/detail
+兼容、完整来源门禁及其余验收。不得把旧基线的 1 项通过冒充新防护验收。

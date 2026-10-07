@@ -1,0 +1,57 @@
+{
+  "baseline": "05ab7a06f485a5d800009dedbbe566508bd9e775",
+  "startedAt": "2026-10-07T13:39:37.521105+00:00",
+  "result": "passed",
+  "collectorSha256": "2b0a8353a47c7e0057925ec2a09fc4556ce90733a54b5aa8c4122a2e493e60c4",
+  "driverSha256": "01f2c6afc51e085d9d61dcee554d99f50864bb1a7f4926a378ae747b74bddb21",
+  "scope": "Synthetic old-writer H2 capture, not product acceptance",
+  "archiveSha256": "794bd5c2d9446391b4ad6621e56faece0850a40920b06b9c6866a03a687b69c8",
+  "command": [
+    "mvn",
+    "-B",
+    "-pl",
+    "hify-app",
+    "-am",
+    "-Dtest=LegacyContextGoldenCaptureTest",
+    "-Dsurefire.failIfNoSpecifiedTests=false",
+    "-Dhify.test.reportsDirectory=/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/hify-authority-golden-bgfniuo9/reports",
+    "-Dhify.golden.output=/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/hify-authority-golden-bgfniuo9/goldens",
+    "test"
+  ],
+  "cwd": "/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/hify-authority-golden-bgfniuo9/tree/backend",
+  "exitCode": 0,
+  "baselineFilesUnchanged": true,
+  "suites": [
+    {
+      "name": "com.hify.api.LegacyContextGoldenCaptureTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "190501df752f47e8b0be20b2a42d607d2eaf152f68ac7c01b5eaec62a288dcff"
+    }
+  ],
+  "goldenSha256": {
+    "knowledge/bindings.json": "441816c3f8cc6e722955fc07761f30ce5b09205973d11591b5dd43cb37439b20",
+    "knowledge/checkpoint-context.json": "6b29ff3bc0158f7040aa802be78f5a6fcbc68d2103acc1c2936b38cc9a85a1f9",
+    "knowledge/checkpoint-messages.json": "fd669e8764245e89b8528454d433a55632e646c7b279af107239845736145c2d",
+    "knowledge/checkpoint-plan.json": "95ddfea310f94998b40e6f8c2b4f44c401f9b3fe04a3d3753b058554dd2f2a1e",
+    "knowledge/citation-input.json": "08a0ce612bcd32d86beb9a9aa1c73395f88976c27149df17e09d01fbeee7f05c",
+    "knowledge/model-1.json": "63f4e0b34302a72714ccf322beee3f37ebc644a3a666387dbce2d59c7c8d4b0c",
+    "knowledge/tool-1-recovery.json": "08e7f4f4c4a847f27b3cbeb1d8aead3f63ddc5828fc006e94d8f1f2750e86637",
+    "knowledge/tool-1.json": "dcfef251540bf6faaff5d106e00f3d5dc96d2fd60bf60126107713f93fe20b01",
+    "plain/bindings.json": "9e490e759b008b7f6268eb7d92feeeb477b75b7b4314a5f8f18e5de94e97b345",
+    "plain/checkpoint-context.json": "47abcb2e542f347ae54a1f26f0977c2da5e32f857c28bc376dbac93a27438ad8",
+    "plain/checkpoint-messages.json": "5eb221c0d0e95c5368f1d43ecbde3f9db1acbf286ab18282a0ccc311defc6558",
+    "plain/checkpoint-plan.json": "c28bdd0b292183d1ba756ea17de29fae123799746013541930f3fb38333f704f",
+    "plain/message-0.json": "755347c8545d25248001367f29219d1cdec3de82bddbdffcd57f614ea91acaf9",
+    "plain/message-1.json": "9ffe372127554f14ed431433db4a1a0e617275579574775585e3d0eebf0474ea",
+    "plain/message-2.json": "37397f63aa8717af9e531c2306ac30218a360dbbd3e346c410c8f27e0c2eb69d",
+    "plain/message-3.json": "8a6775179f182b0c8c96510efbb76ac5f20f464c97d6881f38eb4d542475f23a",
+    "plain/model-1.json": "b3f114ba759a6ff0ff210b172fa6726114b73ed72aeafedfcef7d2b1c0c80cdf",
+    "plain/tool-1-recovery.json": "cef01d7dcc1459152d1adb78e91ed05adb48d2bf38e1a0a791fe0f3a88c28849",
+    "plain/tool-1.json": "b509d8975ec4df4e933e9c8e71b867b88951bf2d114f15d76e3b4c67ad5704ac"
+  },
+  "finishedAt": "2026-10-07T13:40:07.780124+00:00",
+  "logSha256": "c24950869cc501467435a2cf995e0cf506be5b2084dfc28fef4aa431bf6e5c75"
+}

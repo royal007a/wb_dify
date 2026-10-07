@@ -3,7 +3,8 @@
 > 2026-10-07 五轮修订：以下「修订契约」替代后面的旧方案；旧方案保留为审查轨迹，
 > 不再作为实现依据。特别撤回 canonical 新角色、新 DetailRefKind 以及恢复入口直接拒绝。
 > 859b428 修订已独立只读评审通过，5030714 明确其 P3 边界；已登记
-> CONTEXT-AUTHORITY-001，尚未改产品、未运行新测试。旧方案仍仅为审查轨迹。
+> CONTEXT-AUTHORITY-001，尚未改产品；旧 writer 金样已独立采集 1 项通过，
+> 不是新防护测试。旧方案仍仅为审查轨迹。
 
 ## 修订契约：只改变模型视图，不改变 canonical 协议
 
@@ -170,7 +171,7 @@ volatile stopping。这里依赖的是本应用生命周期信号，不把所有
 ### 4. 更新后的验收与范围
 
 1. 先用 05ab7a0 的旧 writer 产物提交 RuntimeMessage / checkpoint / canonical 历史的
-   原文金样和固定 SHA（当前还没有这些金样）。新 reader/writer、det_ 回读、model:N
+   原文金样和固定 SHA（已采集见 context-authority-goldens-05ab7a0/README.md）。新 reader/writer、det_ 回读、model:N
    prefix replay 必须逐字兼容；不能用新实现即时计算再回填 expected。
 2. Chat 公共入口覆盖三家 generateStream；同步 generate 从各 adapter 的生产入口验证。
    生产同步还存在意图分类、Workflow LLM 和健康检查，不是“生产没有同步”。这些路径没有
