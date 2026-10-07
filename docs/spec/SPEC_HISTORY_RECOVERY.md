@@ -16,7 +16,7 @@
 - 已经发起但未提交 canonical 结果的 READ 工具可在恢复后再次执行；本片不保证此窗口外部副作用恰好一次。当前运行时仍拒绝非 READ，未扩大权限。
 - 模型只流出了部分 delta、或 tool-bearing 响应在提交前关闭时，没有完整 canonical 响应可复用，仍可能再次调用和重复部分 delta。本片只消除已提交响应的重生成。
 - 既有用户取消、能力快照和新工具执行资格检查保留。摘要校验是数据完整性校验，不是对抗拥有数据库写权限攻击者的签名。
-- checkpoint 之前的未提交重试不在持久预算记录内；聊天总期限跨重启重置的旧问题仍属 SPEC-RUN-BUDGET-001。复核另外指出轮末 replan UUID、重复决策投影、replanDecisions/recallLatency 累计和失败统计边界，登记为 SPEC-HISTORY-RECOVERY-003 待专项验证。不得宣传跨重启所有预算与审计投影已精确结算。
+- checkpoint 之前的未提交重试不在持久预算记录内。2026-10-07 修订：CHAT-RETRIEVAL-CONTROL-001 已让同一 Chat Run 按 createdAt 扣减总期限，并以 H2/PG 恢复反例及 05ab7a0 六范围验证；SPEC-RUN-BUDGET-001 仍保留原清单的独立验收工作，不再把“重启重置完整时限”列为当前源码行为。轮末 replan UUID、重复决策投影、replanDecisions/recallLatency 累计和失败统计边界仍属 SPEC-HISTORY-RECOVERY-003。不得宣传跨重启所有预算与审计投影已精确结算。
 - 回滚可回退代码但保留 V23 列；旧程序产生的工具记录没有新恢复状态。不删除 canonical 历史，不回滚已发生外部操作。
 
 验证：HistoryRecoveryIntegrationTest/HistoryRecoveryPostgresTest 用每次不同响应的模型和真实 context.close/restart；HistoryReplayTest 覆盖数据损坏、前缀/结构、元数据冲突、旧工具拒绝、导航证据与本地 replan。键顺序回归是确定性构造与本 JVM 相反的双键 input 序列并重算合法摘要，经过真实 QueryLoop 恢复，未声称该用例实际重启了 JVM。HistoryRecoveryMigrationTest 验证 V22→V23 旧历史不变。

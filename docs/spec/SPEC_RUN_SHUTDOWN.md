@@ -19,6 +19,6 @@
 
 `run.interrupted` 为非终态：`{version:1,runId,reason:APPLICATION_SHUTDOWN,recoverable:true}`。它只用于明确被关闭中断的未完成执行，不能仅凭 stopping 标志吞掉已计算终态。用户取消在持久行锁下仍优先。可恢复是调度资格，不等于保证成功；checkpoint、模型响应和工具权限仍可能使恢复失败。
 
-预算已知差异：Workflow 从 createdAt 扣减；聊天每次 QueryLoop.run/resume 当前重新创建完整 runTimeout，重启可能延长总预算。关闭与期限同时被观察到时控制层仍以挂起优先。本片不宣称有跨重启统一预算，需单独修复/验收。
+预算修订（2026-10-07，本地受测源码 05ab7a0）：Chat 与 Workflow 都按持久 Run.createdAt 扣减 runTimeout；Chat 的检索和 QueryLoop.run/resume 接收同一个父控制，子控制只能收紧。同一 Run 重启不重新赠送完整时限；H2/PG 的预算内恢复和已到期恢复反例见 CHAT-RETRIEVAL-CONTROL-001 完整六范围证据。显式调用 resume API 会创建新 AgentRun，不能与恢复同一 Run 混称。关闭与期限同时被观察到时控制层仍以挂起优先，持久取消和最终交付另有检查；不宣称所有竞争顺序均已穷举。SPEC-RUN-BUDGET-001 的原清单尚待逐项独立收口，见其计划，不能把 pending 解读为上述旧重置缺陷仍存在。恢复起点使用墙钟差、后续使用单调剩余时长；执行检查是协作式，不保证硬墙钟返回上限，也未部署本轮源码。
 
 边界：单实例内 owner 不是分布式租约；依赖下次启动，尚无定时重扫；关闭最多等待5秒，不保证阻塞驱动及时退出；DB不可用/强制退出可缺中断事件；恢复不保证外部副作用恰好一次。Workflow 与父 Run 的最终取消竞争不在本片验收范围。WorkflowRecovery 整体 UPDATE 失败和最初 Run 列表读取失败均可能阻止启动；按行隔离只覆盖读到列表后的父 Run 调度。子任务 LOST 扫描与父 Run 恢复的监听顺序尚未规定（待验证）；不可将父 Run 先恢复当成已有安全保证。

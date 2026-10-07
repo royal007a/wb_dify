@@ -99,7 +99,7 @@ G切片独立复核：无P0/P1；P2-1指出受保护命名空间漏掉项目实�
 | SPEC-KNOWLEDGE-INTEGRITY-003 | 1388db6修复索引另借连接/元数据失败降H2及Agent固定workflow checksum未比对；77项窄测通过、独立静态复核认可。df7a92b补强合法Chat精确写入计数；首轮完整backend因本机PG容器磁盘满失败，完整验收仍开放，见SPEC_KNOWLEDGE_INTEGRITY证据 |
 | SPEC-MEMORY-FILTER-001 | PG前100候选先截断后按来源过滤，普通Run证据会被挤掉；缺同会话普通ref可见的正向端到端对照 |
 | SPEC-HISTORY-RECOVERY-003 | recallLatency/replanDecisions恢复归零；触发replan的末工具没有后续恢复记录时重建UUID；观察事件重放会重复 |
-| SPEC-RUN-BUDGET-001 | Chat重启重新分配完整runTimeout；Workflow按createdAt扣减，两条路径不一致 |
+| SPEC-RUN-BUDGET-001 | 历史反例是 Chat 重启重新分配完整 runTimeout；2026-10-07 本地源码已由 CHAT-RETRIEVAL-CONTROL-001 改为按 createdAt 扣减，并有 05ab7a0 的 H2/PG 恢复正反例和六范围证据。原任务仍 pending，原清单的竞争顺序/计时边界需逐项独立核对；详见任务计划，不表示旧缺陷仍在当前源码中，亦未部署。 |
 | SPEC-RECOVERY-ADMISSION-001 | 拒绝后get/finishTerminal数据库报错可留RUNNING；启动恢复超过104容量直接FAILED；WorkflowRecovery整体UPDATE失败会阻止启动，逐行catch不涵盖它；tasks.json分别列出故障注入验收 |
 | SPEC-CHILD-RECOVERY-001 | ChildAgentTask恢复与Run恢复监听器缺确定顺序；新认领任务可能被convergeLost误标，尚需交错测试 |
 | SPEC-WORKFLOW-RECOVERY-001 | requireVersion/DSL校验/建run失败、成功后response读取失败仍可MODEL_ERROR且缺workflow投影；END SUCCEEDED与父CANCELLED不一致；已成功workflow落库后崩溃可能重跑、旧结果无投影 |

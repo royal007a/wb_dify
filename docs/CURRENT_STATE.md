@@ -108,7 +108,7 @@ runtime 35、eval 24 均零失败/错误/跳过/flaky，Python 84、前端 typec
 - 总验收补录：管理分页400/夹值尚未统一（SPEC-API-PAGINATION-001）；在途GET人工重连、取消查询按钮、跨会话提示已由f20bd34实现，34项受控浏览器及17项H2通过。SPEC-CHAT-LIFECYCLE-005旧满盘blocked运行保留；当前代码已由SPEC-RELEASE-VERIFY-001完整backend及受控浏览器覆盖并随DEPLOY-007上线，不伪造旧记录。见SPEC_CHAT_INFLIGHT_RECOVERY和本轮完整证据。明确拒绝resume循环已随RUN-INPUT-001修复。send阻塞后再次提交断言、报告partial传播与脱敏可复算输入已由SPEC-VERIFY-002补齐，原始XML仍不提交；输入不是签名。
 
 - 知识：部分来源失败仍先发completed；wrapped suspension/数据库故障可能转Gap，见SPEC-KNOWLEDGE-FINISH-004。索引isPostgres另借连接/失败当H2和Agent固定Workflow checksum未比对已由1388db6修复，77项窄测通过，独立静态复核认可；df7a92b补强合法Agent执行的精确写入计数。SPEC-KNOWLEDGE-INTEGRITY-003旧满盘blocked记录保留，当前代码由SPEC-RELEASE-VERIFY-001的602项backend及118项migration零skip完整验证覆盖，已随DEPLOY-007部署，不把线上抽测说成全故障验证。
-- 恢复：Chat每次重启重置完整runTimeout（SPEC-RUN-BUDGET-001）；recallLatency/replanDecisions重置、轮末replan生成新UUID及重复观察事件（SPEC-HISTORY-RECOVERY-003）。
+- 恢复：同一 Chat Run 重启按持久 createdAt 扣减 runTimeout，检索与 QueryLoop 共用剩余父预算；已到期恢复零模型调用已由 CHAT-RETRIEVAL-CONTROL-001 的 H2/PG 反例及 05ab7a0 六范围验证。显式 resume 创建新 Run，与原 Run 重启不同。SPEC-RUN-BUDGET-001 仍 pending，是其原验收清单尚未逐项独立收口，不代表“重启重置完整时限”仍是当前源码行为；关系与剩余竞争/计时边界见该任务计划。recallLatency/replanDecisions重置、轮末replan生成新UUID及重复观察事件仍归 SPEC-HISTORY-RECOVERY-003。
 - 调度/关闭：拒绝后终态写库失败可留RUNNING、恢复超过104容量可判FAILED、WorkflowRecovery整体UPDATE失败阻止启动，统一归SPEC-RECOVERY-ADMISSION-001，已有三项对应验收。子任务监听器顺序另归SPEC-CHILD-RECOVERY-001。
 - Workflow：执行前异常/成功后读取失败仍可落MODEL_ERROR；END节点SUCCEEDED可与父CANCELLED不同；成功事实落盘后崩溃可重新执行（SPEC-WORKFLOW-RECOVERY-001）。started早于校验而无failed投影归SPEC-WORKFLOW-GRAPH-003。
 - 表达式：全角空格、旧反斜杠解码、旧裸help!/A&B/半角括号版本兼容尚有问题（SPEC-WORKFLOW-GRAPH-003）。
