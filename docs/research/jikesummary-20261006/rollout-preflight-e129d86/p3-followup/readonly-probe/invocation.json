@@ -1,0 +1,15 @@
+{
+  "head": "bc4ab0e",
+  "scriptSha256": "855cf71b52c398acfcfe15e4f7c9b3ee030cee247dd73441df79b065e27736a2",
+  "command": [
+    "ssh",
+    "-o",
+    "BatchMode=yes",
+    "-o",
+    "ConnectTimeout=10",
+    "root@118.196.123.132",
+    "/bin/sh"
+  ],
+  "startedAt": "2026-10-07 19:52:57 +0800",
+  "note": "fresh execution; not retrospective reconstruction of prior observation"
+}

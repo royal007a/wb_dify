@@ -1,0 +1,4 @@
+controllerSha256=c688e0c534260fb5c43e994dcdae4b44d0068f32398c500da84c7ff20eb18d64
+PID: distinct singleton accepted; same/missing/duplicate rejected
+ticks: later singleton accepted; same/earlier/missing/duplicate rejected
+budget: reserve + staging + old + ceil(database), -1/equal/+1 boundaries passed

@@ -1,0 +1,22 @@
+[
+  {
+    "mode": "green",
+    "exit": 0,
+    "assertionFailure": false
+  },
+  {
+    "mode": "pid-mutant",
+    "exit": 1,
+    "assertionFailure": true
+  },
+  {
+    "mode": "tick-mutant",
+    "exit": 1,
+    "assertionFailure": true
+  },
+  {
+    "mode": "budget-mutant",
+    "exit": 1,
+    "assertionFailure": true
+  }
+]

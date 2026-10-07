@@ -1,0 +1,6 @@
+controllerSha256=c688e0c534260fb5c43e994dcdae4b44d0068f32398c500da84c7ff20eb18d64
+Traceback (most recent call last):
+  File "/tmp/hify-rollout-p3.AqqioW/check_guards.py", line 41, in <module>
+    assert actual == accepted, ('PID guard', before, after, actual, accepted)
+           ^^^^^^^^^^^^^^^^^^
+AssertionError: ('PID guard', ['runningPid=1'], ['runningPid=1'], True, False)

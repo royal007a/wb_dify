@@ -1,0 +1,7 @@
+controllerSha256=c688e0c534260fb5c43e994dcdae4b44d0068f32398c500da84c7ff20eb18d64
+PID: distinct singleton accepted; same/missing/duplicate rejected
+Traceback (most recent call last):
+  File "/tmp/hify-rollout-p3.AqqioW/check_guards.py", line 48, in <module>
+    assert actual == accepted, ('start tick guard', before, after, actual, accepted)
+           ^^^^^^^^^^^^^^^^^^
+AssertionError: ('start tick guard', [10], [10], True, False)
