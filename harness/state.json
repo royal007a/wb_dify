@@ -7,14 +7,16 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "OBS-CORRELATION-001-20261007T094455Z-55fb4156",
-    "path": "harness/evidence/OBS-CORRELATION-001/OBS-CORRELATION-001-20261007T094455Z-55fb4156",
-    "result": "blocked",
-    "exitCode": 143,
-    "baselineCommit": "67cfee761b956caae319c0a216f7b4909c2d705e",
-    "headCommit": "67cfee761b956caae319c0a216f7b4909c2d705e",
-    "recordedAt": "2026-10-07T10:59:25Z"
+    "runId": "OBS-CORRELATION-001-20261007T114929Z-298dada4",
+    "path": "harness/evidence/OBS-CORRELATION-001/OBS-CORRELATION-001-20261007T114929Z-298dada4",
+    "result": "completed",
+    "exitCode": 0,
+    "baselineCommit": "bc4ab0e4afe39939f9bfe5c6bb9a3797d6ebbb50",
+    "headCommit": "bc4ab0e4afe39939f9bfe5c6bb9a3797d6ebbb50",
+    "recordedAt": "2026-10-07T12:10:43Z",
+    "verificationSchemaVersion": 3,
+    "verificationSha256": "45fdd23440f086300194601960c8d5c69054fe852fc4e9d740c4dd8df93e3704"
   },
-  "lastCompletedTaskId": "CHAT-RETRIEVAL-CONTROL-001",
-  "updatedAt": "2026-10-07T10:59:25Z"
+  "lastCompletedTaskId": "OBS-CORRELATION-001",
+  "updatedAt": "2026-10-07T12:10:43Z"
 }

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "OBS-CORRELATION-001-20261007T114929Z-298dada4",
+  "taskId": "OBS-CORRELATION-001",
+  "status": "completed",
+  "baselineCommit": "bc4ab0e4afe39939f9bfe5c6bb9a3797d6ebbb50",
+  "approvalRef": null,
+  "startedAt": "2026-10-07T11:49:29Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "bc4ab0e4afe39939f9bfe5c6bb9a3797d6ebbb50",
+  "finishedAt": "2026-10-07T12:10:43Z"
+}

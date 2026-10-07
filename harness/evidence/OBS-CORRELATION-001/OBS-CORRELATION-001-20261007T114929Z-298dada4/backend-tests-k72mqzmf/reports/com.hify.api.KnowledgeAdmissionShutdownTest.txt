@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.api.KnowledgeAdmissionShutdownTest
+-------------------------------------------------------------------------------
+Tests run: 22, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.820 s -- in com.hify.api.KnowledgeAdmissionShutdownTest

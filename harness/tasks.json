@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-07T10:59:25Z",
+  "updatedAt": "2026-10-07T12:10:43Z",
   "tasks": [
     {
       "id": "CHAT-RETRIEVAL-CONTROL-001",
@@ -101,7 +101,7 @@
       "title": "保留请求关联ID跨异步边界并恢复MDC作用域",
       "description": "源于jikesummary C133第2页和C168/C169测试方法；请求过滤器已有requestId，run/llm/async线程边界尚未传播。使用白名单上下文快照，保持原队列、拒绝和停机语义。",
       "priority": "P1",
-      "status": "blocked",
+      "status": "completed",
       "scopes": [
         "harness",
         "backend",
@@ -127,7 +127,7 @@
       ],
       "planPath": "exec-plans/blocked/OBS-CORRELATION-001.md",
       "checkpoint": null,
-      "blockedReason": "verification failed",
+      "blockedReason": null,
       "evidence": [
         {
           "runId": "OBS-CORRELATION-001-20261007T094455Z-55fb4156",
@@ -137,10 +137,21 @@
           "baselineCommit": "67cfee761b956caae319c0a216f7b4909c2d705e",
           "headCommit": "67cfee761b956caae319c0a216f7b4909c2d705e",
           "recordedAt": "2026-10-07T10:59:25Z"
+        },
+        {
+          "runId": "OBS-CORRELATION-001-20261007T114929Z-298dada4",
+          "path": "harness/evidence/OBS-CORRELATION-001/OBS-CORRELATION-001-20261007T114929Z-298dada4",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "bc4ab0e4afe39939f9bfe5c6bb9a3797d6ebbb50",
+          "headCommit": "bc4ab0e4afe39939f9bfe5c6bb9a3797d6ebbb50",
+          "recordedAt": "2026-10-07T12:10:43Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "45fdd23440f086300194601960c8d5c69054fe852fc4e9d740c4dd8df93e3704"
         }
       ],
       "createdAt": "2026-10-06T15:15:00Z",
-      "updatedAt": "2026-10-07T10:59:25Z"
+      "updatedAt": "2026-10-07T12:10:43Z"
     },
     {
       "id": "COURSE-OPTIMIZATION-001",
