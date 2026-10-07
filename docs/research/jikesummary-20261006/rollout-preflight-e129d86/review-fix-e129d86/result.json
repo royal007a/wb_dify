@@ -1,0 +1,12 @@
+[
+  {
+    "name": "installer-and-smoke",
+    "exit": 0,
+    "elapsedSeconds": 163.29044245905243
+  },
+  {
+    "name": "admission-and-process",
+    "exit": 0,
+    "elapsedSeconds": 1.5919309169985354
+  }
+]

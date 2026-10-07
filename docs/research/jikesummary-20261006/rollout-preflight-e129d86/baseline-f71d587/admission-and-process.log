@@ -1,0 +1,9 @@
+test_optimized_python_rejects_invalid_gate_manifests (test_context_rollout_contract.ContextRolloutContractTest.test_optimized_python_rejects_invalid_gate_manifests) ... ok
+test_optimized_python_still_rejects_incomplete_gate_before_commands (test_context_rollout_contract.ContextRolloutContractTest.test_optimized_python_still_rejects_incomplete_gate_before_commands) ... ok
+test_release_admission_has_no_optimizable_assert_nodes (test_context_rollout_contract.ContextRolloutContractTest.test_release_admission_has_no_optimizable_assert_nodes) ... ok
+test_running_jar_probe_requires_descriptor_and_exact_command_target (test_context_rollout_contract.ContextRolloutContractTest.test_running_jar_probe_requires_descriptor_and_exact_command_target) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.480s
+
+OK

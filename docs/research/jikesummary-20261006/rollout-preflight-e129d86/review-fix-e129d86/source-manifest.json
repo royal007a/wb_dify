@@ -1,0 +1,37 @@
+{
+  "commit": "e129d8626d61af6f1a344b5ebc5ef0b48f33c52f",
+  "files": {
+    "deploy/install-spec-release.sh": "52d4cd392b20bbf24945d7f1d50186d0e74fc59e3757c7c7c9317adeab400d4e",
+    "harness/context-rollout.py": "c688e0c534260fb5c43e994dcdae4b44d0068f32398c500da84c7ff20eb18d64",
+    "harness/tests/fixtures/deploy_command.py": "96fa62680ed29471f3611e55298853250f5765d667fc5b345d246b608417af70",
+    "harness/tests/test_context_rollout_contract.py": "ef72e6b4d47a1bcdec6a4fec57b5cad78d616f4d8a0011f408988783e6cfd0c0",
+    "harness/tests/test_deploy_installer.py": "e2a0e4dc05c906c9cf82849a1b4fcb962a8cc3d1f8ea17d0d762e459c35e718f",
+    "harness/tests/test_deploy_smoke.py": "a27badb4517d1068f1e524e72edaca90658a5e7815978e327af7f73aa9a345c7",
+    "harness/tests/fixture_diagnostics.py": "58f176aa271e3fdf73f08ae141b81391573f13f7afed3578ce0254db89085591"
+  },
+  "commands": [
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "harness/tests",
+      "-p",
+      "test_*deploy*.py",
+      "-v"
+    ],
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "harness/tests",
+      "-p",
+      "test_context_rollout_contract.py",
+      "-v"
+    ]
+  ],
+  "binding": "review-fix tests ran before source commit, with these same source contents; no trusted build attestation"
+}
