@@ -1,8 +1,37 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-07T13:21:33Z",
+  "updatedAt": "2026-10-07T13:31:00Z",
   "tasks": [
+    {
+      "id": "CONTEXT-AUTHORITY-001",
+      "title": "保持canonical兼容并将资料降为模型视图普通内容",
+      "description": "落实已独立评审的jikesummary来源权限契约：固定旧writer金样；按AgentVersion、检索事件段与canonical核实来源，只在模型视图降权；重放事实不授权新的工具调用或成功交付。",
+      "priority": "P1",
+      "status": "pending",
+      "scopes": ["harness", "backend", "runtime", "frontend"],
+      "verifyScopes": ["harness", "migration", "backend", "runtime", "eval", "frontend"],
+      "risk": "reversible_write",
+      "operation": "workspace_write",
+      "approvalRef": null,
+      "dependsOn": ["CHAT-RETRIEVAL-CONTROL-001", "CONTEXT-INTEGRITY-001"],
+      "acceptance": [
+        "设计第4节八项验收全部落实，不能以本文摘要替代；先从05ab7a0旧生产writer生成固定原文和SHA，涵盖消息、checkpoint持久字段、canonical历史与det_回读；不使用新实现即时生成expected",
+        "canonical四字段、system角色、旧digest与model:N/tool:id前缀重放保持兼容；来源只在execute内存作用域，经RunRuntimeIdentity传prepare，策略只能来自已核实位置及服务端常量",
+        "新Run、恢复和显式续接核实固定版本、resumedFromRunId归属、检索事件成功段、引用和K映射；failed配对、citationCount零、缺失/歧义拒绝，读取故障不冒充来源不一致，成功缓存仅在绑定不变的单次execute内复用",
+        "取消/截止优先级保留，来源核实共用剩余预算；模型开始事件之前和响应出口均有门禁，已提交响应不重调模型，但未知来源不执行新工具、不伪造tool结果、不进入COMPLETED或允许失败Run续接",
+        "两类明确来源失败有安全文案和映射；事务锁行后的关停检查只作用于来源失败，保持可恢复RUNNING、持久取消优先，普通已计算结果不回归，提交边界不重新判断到期；受控交错与独立突变覆盖",
+        "三家adapter的同步与流式六条请求构造显式角色白名单，context_data只进入普通内容；RAG/summary/catalog不进策略，未知角色HTTP前拒绝；应用真实user轮次和goal、工具配对、容量拒绝、canonical不变均有反例",
+        "压缩确实触发时资料和可信策略仍保留，资料计token而不计用户轮次；知识Run不索引原始记忆且分层NOOP，禁止新增持久角色或DetailRefKind",
+        "原缺陷红灯、各项非等价突变、完整六范围与固定范围独立review齐备才交付；不关闭旧红灯、不扩大到Workflow模板治理或真实模型安全认证，本任务不部署"
+      ],
+      "planPath": "exec-plans/active/CONTEXT-AUTHORITY-001.md",
+      "checkpoint": null,
+      "blockedReason": null,
+      "evidence": [],
+      "createdAt": "2026-10-07T13:31:00Z",
+      "updatedAt": "2026-10-07T13:31:00Z"
+    },
     {
       "id": "CHAT-RETRIEVAL-CONTROL-001",
       "title": "聊天检索与模型循环共享取消和持久Run截止",

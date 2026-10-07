@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-07T13:21:33Z`
+- Generated from task state updated at: `2026-10-07T13:31:00Z`
 - Current task: `none`
-- Counts: pending 19 · running 0 · blocked 3 · completed 97
+- Counts: pending 20 · running 0 · blocked 3 · completed 97
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -40,6 +40,7 @@
 | `CHAT-RETRIEVAL-CONTROL-001` | P1 | completed | harness, backend, runtime | reversible_write | 聊天检索与模型循环共享取消和持久Run截止 |
 | `CONSOLE-002` | P1 | completed | frontend, runtime | reversible_write | 交付知识库工作流 MCP 管理台 |
 | `CONTEXT-001` | P1 | completed | backend, runtime, eval | reversible_write | 建立上下文预算归档与压缩评测 |
+| `CONTEXT-AUTHORITY-001` | P1 | pending | harness, backend, runtime, frontend | reversible_write | 保持canonical兼容并将资料降为模型视图普通内容 |
 | `CONTEXT-INTEGRITY-001` | P1 | completed | harness, backend, runtime, eval, frontend, migration | reversible_write | 上下文压缩保留系统策略与完整当前交互 |
 | `CONTEXT-ROLLOUT-001` | P1 | completed | harness, frontend | high_risk | 已验收上下文完整性与工作流能力受控部署132 |
 | `COURSE-OPTIMIZATION-001` | P1 | pending | harness | reversible_write | jikesummary 相关章节精读与可验证优化映射 |
