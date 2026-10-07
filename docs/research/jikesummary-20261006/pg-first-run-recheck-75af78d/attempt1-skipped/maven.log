@@ -1,0 +1,265 @@
+Picked up JAVA_TOOL_OPTIONS: -Xmx768m -XX:ReservedCodeCacheSize=128m -Dspring.test.context.cache.maxSize=2 -Dhify.test.startup-diagnostics=true -Xlog:gc*,safepoint:file=/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/hify-first-run-pg-prdran4y/gc-%p.log:time,uptime,level,tags
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] hify-parent                                                        [pom]
+[INFO] hify-common                                                        [jar]
+[INFO] hify-provider                                                      [jar]
+[INFO] hify-tool                                                          [jar]
+[INFO] hify-mcp                                                           [jar]
+[INFO] hify-knowledge                                                     [jar]
+[INFO] hify-workflow                                                      [jar]
+[INFO] hify-agent                                                         [jar]
+[INFO] hify-chat                                                          [jar]
+[INFO] hify-demo                                                          [jar]
+[INFO] hify-app                                                           [jar]
+[INFO] 
+[INFO] ------------------------< com.hify:hify-parent >------------------------
+[INFO] Building hify-parent 0.1.0-SNAPSHOT                               [1/11]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] ------------------------< com.hify:hify-common >------------------------
+[INFO] Building hify-common 0.1.0-SNAPSHOT                               [2/11]
+[INFO]   from hify-common/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-common ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-common ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-common ---
+[INFO] 
+[INFO] -----------------------< com.hify:hify-provider >-----------------------
+[INFO] Building hify-provider 0.1.0-SNAPSHOT                             [3/11]
+[INFO]   from hify-provider/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-provider ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-provider ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-provider ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-provider ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-provider ---
+[INFO] 
+[INFO] -------------------------< com.hify:hify-tool >-------------------------
+[INFO] Building hify-tool 0.1.0-SNAPSHOT                                 [4/11]
+[INFO]   from hify-tool/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-tool ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-tool ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-tool ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-tool ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-tool ---
+[INFO] 
+[INFO] -------------------------< com.hify:hify-mcp >--------------------------
+[INFO] Building hify-mcp 0.1.0-SNAPSHOT                                  [5/11]
+[INFO]   from hify-mcp/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-mcp ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-mcp ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-mcp ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-mcp ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-mcp ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] ----------------------< com.hify:hify-knowledge >-----------------------
+[INFO] Building hify-knowledge 0.1.0-SNAPSHOT                            [6/11]
+[INFO]   from hify-knowledge/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-knowledge ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-knowledge ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-knowledge ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-knowledge ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-knowledge ---
+[INFO] 
+[INFO] -----------------------< com.hify:hify-workflow >-----------------------
+[INFO] Building hify-workflow 0.1.0-SNAPSHOT                             [7/11]
+[INFO]   from hify-workflow/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-workflow ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-workflow/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-workflow/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-workflow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-workflow ---
+[INFO] Copying 2 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-workflow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-workflow ---
+[INFO] 
+[INFO] ------------------------< com.hify:hify-agent >-------------------------
+[INFO] Building hify-agent 0.1.0-SNAPSHOT                                [8/11]
+[INFO]   from hify-agent/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-agent ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-agent ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-agent ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-agent ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-agent ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] -------------------------< com.hify:hify-chat >-------------------------
+[INFO] Building hify-chat 0.1.0-SNAPSHOT                                 [9/11]
+[INFO]   from hify-chat/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-chat ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-chat/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-chat/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-chat ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-chat ---
+[INFO] Copying 3 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-chat ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-chat ---
+[INFO] 
+[INFO] -------------------------< com.hify:hify-demo >-------------------------
+[INFO] Building hify-demo 0.1.0-SNAPSHOT                                [10/11]
+[INFO]   from hify-demo/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-demo ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-demo ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-demo ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-demo ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-demo ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] -------------------------< com.hify:hify-app >--------------------------
+[INFO] Building hify-app 0.1.0-SNAPSHOT                                 [11/11]
+[INFO]   from hify-app/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-app ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 21 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-app ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-app ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-app ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-app ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -Xmx768m -XX:ReservedCodeCacheSize=128m -Dspring.test.context.cache.maxSize=2 -Dhify.test.startup-diagnostics=true -Xlog:gc*,safepoint:file=/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/hify-first-run-pg-prdran4y/gc-%p.log:time,uptime,level,tags
+19:15:19.840 [main] INFO org.testcontainers.DockerClientFactory -- Testcontainers version: 1.20.6
+19:15:20.224 [main] INFO org.testcontainers.dockerclient.DockerMachineClientProviderStrategy -- docker-machine executable was not found on PATH ([/Users/weberzhao/software/jdk-17.0.19.jdk/Contents/Home/bin, /Users/weberzhao/.local/bin, /opt/homebrew/bin, /opt/homebrew/sbin, /usr/local/bin, /System/Cryptexes/App/usr/bin, /usr/bin, /bin, /usr/sbin, /sbin, /var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin, /var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin, /var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin, /pkg/env/global/bin, /opt/homebrew/bin, /opt/homebrew/Caskroom/codex/0.160.1/codex-path, /Users/weberzhao/.codex/tmp/arg0/codex-arg0uADDiG, /Users/weberzhao/software/jdk-17.0.19.jdk/Contents/Home/bin, /Users/weberzhao/.local/bin, /opt/homebrew/sbin, /Users/weberzhao/.botmux/bin, /opt/homebrew/Caskroom/codex/0.157.1/codex-path, /Users/weberzhao/.codex/tmp/arg0/codex-arg0ofkKmz, /usr/libexec, /Applications/iTerm.app/Contents/Resources/utilities, /usr/local/sbin])
+19:15:20.225 [main] ERROR org.testcontainers.dockerclient.DockerClientProviderStrategy -- Could not find a valid Docker environment. Please check configuration. Attempted configurations were:
+	EnvironmentAndSystemPropertyClientProviderStrategy: failed with exception BadRequestException (Status 400: {"message":"client version 1.32 is too old. Minimum supported API version is 1.40, please upgrade your client to a newer version"}
+)
+	UnixSocketClientProviderStrategy: failed with exception InvalidConfigurationException (Could not find unix domain socket). Root cause NoSuchFileException (/var/run/docker.sock)
+	DockerDesktopClientProviderStrategy: failed with exception NullPointerException (Cannot invoke "java.nio.file.Path.toString()" because the return value of "org.testcontainers.dockerclient.DockerDesktopClientProviderStrategy.getSocketPath()" is null)As no valid configuration was found, execution cannot continue.
+See https://java.testcontainers.org/on_failure.html for more details.
+[INFO] Running com.hify.api.KnowledgeMemoryPostgresTest
+[WARNING] Tests run: 18, Failures: 0, Errors: 0, Skipped: 18, Time elapsed: 0.005 s -- in com.hify.api.KnowledgeMemoryPostgresTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[WARNING] Tests run: 18, Failures: 0, Errors: 0, Skipped: 18
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for hify-parent 0.1.0-SNAPSHOT:
+[INFO] 
+[INFO] hify-parent ........................................ SUCCESS [  0.004 s]
+[INFO] hify-common ........................................ SUCCESS [  0.871 s]
+[INFO] hify-provider ...................................... SUCCESS [  0.045 s]
+[INFO] hify-tool .......................................... SUCCESS [  0.038 s]
+[INFO] hify-mcp ........................................... SUCCESS [  0.067 s]
+[INFO] hify-knowledge ..................................... SUCCESS [  0.027 s]
+[INFO] hify-workflow ...................................... SUCCESS [  0.117 s]
+[INFO] hify-agent ......................................... SUCCESS [  0.103 s]
+[INFO] hify-chat .......................................... SUCCESS [  0.114 s]
+[INFO] hify-demo .......................................... SUCCESS [  0.020 s]
+[INFO] hify-app ........................................... SUCCESS [  1.397 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.206 s
+[INFO] Finished at: 2026-10-07T19:15:20+08:00
+[INFO] ------------------------------------------------------------------------

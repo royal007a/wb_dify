@@ -1,0 +1,14 @@
+{
+  "exit": 0,
+  "elapsedSeconds": 58.913930541835725,
+  "end": "2026-10-07T19:19:16+0800",
+  "totals": {
+    "tests": 21,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "headAfter": "75af78dd1f9a6bc7e78f3d8ef1d67f67488d9e2c",
+  "worktreeAfter": "",
+  "diagnosticAccepted": true
+}

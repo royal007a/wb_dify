@@ -1,0 +1,21 @@
+{
+  "head": "75af78dd1f9a6bc7e78f3d8ef1d67f67488d9e2c",
+  "command": [
+    "/opt/homebrew/bin/mvn",
+    "-B",
+    "-o",
+    "-pl",
+    "hify-app",
+    "-am",
+    "-Dtest=KnowledgeMemoryPostgresTest",
+    "-Dsurefire.failIfNoSpecifiedTests=false",
+    "-Dhify.test.reportsDirectory=/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/hify-first-run-pg-prdran4y/reports",
+    "test"
+  ],
+  "start": "2026-10-07T19:15:15+0800",
+  "scope": "one whole PostgreSQL class; unchanged tests, no full-gate claim",
+  "mavenOpts": "-Xmx256m -XX:ReservedCodeCacheSize=96m",
+  "javaToolOptions": "-Xmx768m -XX:ReservedCodeCacheSize=128m -Dspring.test.context.cache.maxSize=2 -Dhify.test.startup-diagnostics=true -Xlog:gc*,safepoint:file=/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/hify-first-run-pg-prdran4y/gc-%p.log:time,uptime,level,tags",
+  "dockerHost": "unix:///Users/weberzhao/.colima/hify-verify-20261004/docker.sock",
+  "testcontainersHost": "127.0.0.1"
+}

@@ -1,0 +1,105 @@
+{
+  "classes": [
+    {
+      "class": "com.hify.api.KnowledgeMemoryPostgresTest",
+      "tests": 21,
+      "failures": 0,
+      "errors": 21,
+      "skipped": 0,
+      "seconds": "11.298",
+      "xmlSha256": "a636749dc0a38cd9cb4c67aae59f0d9e9b4259b0fb0f0e9194f0e0d00481a1a9",
+      "cases": [
+        {
+          "name": "emptyCorpusCanBeFrozenWithPortableTimestampBindings",
+          "seconds": "0.01"
+        },
+        {
+          "name": "clientCannotChooseSnapshotAndLegacyKnowledgeVersionRequiresRepublish",
+          "seconds": "0.001"
+        },
+        {
+          "name": "archivedUnpublishedChunkIsNotAnHistoricalCitation",
+          "seconds": "0.0"
+        },
+        {
+          "name": "publishedWorkflowAndOldConversationKeepArchivedCorpusAndReadableCitations",
+          "seconds": "0.001"
+        },
+        {
+          "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[1]",
+          "seconds": "0.0"
+        },
+        {
+          "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[2]",
+          "seconds": "0.0"
+        },
+        {
+          "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[3]",
+          "seconds": "0.001"
+        },
+        {
+          "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)[4]",
+          "seconds": "0.001"
+        },
+        {
+          "name": "failedPublicationRollsBackAllNewCorporaAndVersionRows",
+          "seconds": "0.0"
+        },
+        {
+          "name": "frozenCorpusRejectsChangedCanonicalContentEvenWhenStoredDigestIsUnchanged",
+          "seconds": "0.001"
+        },
+        {
+          "name": "resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain",
+          "seconds": "0.0"
+        },
+        {
+          "name": "workflowEmptyKnowledgeDoesNotReachEnd",
+          "seconds": "0.0"
+        },
+        {
+          "name": "missingOrInventedFinalReferencesRequireClarification",
+          "seconds": "0.001"
+        },
+        {
+          "name": "unboundOrdinaryChatDoesNotRequireKnowledgeCitations",
+          "seconds": "0.0"
+        },
+        {
+          "name": "emptyBoundCorpusNeverCallsModelOrStoresAssistant",
+          "seconds": "0.001"
+        },
+        {
+          "name": "validReferenceChecksSourcesNotSemanticTruth",
+          "seconds": "0.0"
+        },
+        {
+          "name": "unrelatedVectorTopKDoesNotBecomeEvidence",
+          "seconds": "0.0"
+        },
+        {
+          "name": "partialRetrievalFailureDoesNotSilentlyFallBackToOtherSources",
+          "seconds": "0.001"
+        },
+        {
+          "name": "historyCommittedBeforeVerificationIsNotReadableWhileRunIsRunning",
+          "seconds": "0.001"
+        },
+        {
+          "name": "knowledgeRunDoesNotCreateNewRawMemoryIndex",
+          "seconds": "0.001"
+        },
+        {
+          "name": "withheldFinalTextIsNotPublishedThroughAnyMemorySurface",
+          "seconds": "0.0"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 21,
+    "failures": 0,
+    "errors": 21,
+    "skipped": 0
+  }
+}

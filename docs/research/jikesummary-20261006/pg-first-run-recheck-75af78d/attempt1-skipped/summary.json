@@ -1,0 +1,93 @@
+{
+  "classes": [
+    {
+      "class": "com.hify.api.KnowledgeMemoryPostgresTest",
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 18,
+      "seconds": "0.005",
+      "xmlSha256": "3e2ba4d6092f2d0f21fbef90cbba66ea0838aabe93efa8909d2249396189824c",
+      "cases": [
+        {
+          "name": "emptyCorpusCanBeFrozenWithPortableTimestampBindings",
+          "seconds": "0.0"
+        },
+        {
+          "name": "clientCannotChooseSnapshotAndLegacyKnowledgeVersionRequiresRepublish",
+          "seconds": "0.0"
+        },
+        {
+          "name": "archivedUnpublishedChunkIsNotAnHistoricalCitation",
+          "seconds": "0.0"
+        },
+        {
+          "name": "publishedWorkflowAndOldConversationKeepArchivedCorpusAndReadableCitations",
+          "seconds": "0.0"
+        },
+        {
+          "name": "frozenCorpusRejectsIncompleteOrMismatchedManifest(String)",
+          "seconds": "0.0"
+        },
+        {
+          "name": "failedPublicationRollsBackAllNewCorporaAndVersionRows",
+          "seconds": "0.0"
+        },
+        {
+          "name": "frozenCorpusRejectsChangedCanonicalContentEvenWhenStoredDigestIsUnchanged",
+          "seconds": "0.0"
+        },
+        {
+          "name": "resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain",
+          "seconds": "0.0"
+        },
+        {
+          "name": "workflowEmptyKnowledgeDoesNotReachEnd",
+          "seconds": "0.0"
+        },
+        {
+          "name": "missingOrInventedFinalReferencesRequireClarification",
+          "seconds": "0.0"
+        },
+        {
+          "name": "unboundOrdinaryChatDoesNotRequireKnowledgeCitations",
+          "seconds": "0.0"
+        },
+        {
+          "name": "emptyBoundCorpusNeverCallsModelOrStoresAssistant",
+          "seconds": "0.0"
+        },
+        {
+          "name": "validReferenceChecksSourcesNotSemanticTruth",
+          "seconds": "0.0"
+        },
+        {
+          "name": "unrelatedVectorTopKDoesNotBecomeEvidence",
+          "seconds": "0.0"
+        },
+        {
+          "name": "partialRetrievalFailureDoesNotSilentlyFallBackToOtherSources",
+          "seconds": "0.0"
+        },
+        {
+          "name": "historyCommittedBeforeVerificationIsNotReadableWhileRunIsRunning",
+          "seconds": "0.0"
+        },
+        {
+          "name": "knowledgeRunDoesNotCreateNewRawMemoryIndex",
+          "seconds": "0.0"
+        },
+        {
+          "name": "withheldFinalTextIsNotPublishedThroughAnyMemorySurface",
+          "seconds": "0.0"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 18
+  }
+}
