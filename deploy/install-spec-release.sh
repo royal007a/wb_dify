@@ -21,6 +21,8 @@ test -f /etc/systemd/system/hify.service.d/20-mcp-credentials.conf
 key_identity=$(stat -c '%i:%s:%Y:%a:%U' "$key")
 test ! -e "$release/previous.jar"
 test "$(df -Pk /opt/hify | awk 'NR==2 {print $4}')" -ge 800000
+# Fail before staging, backups or stopping Hify if any host configuration is invalid.
+nginx -t
 assert_no_running() {
   test "$(runuser -u postgres -- psql -d hify -Atqc "SELECT count(*) FROM agent_runs WHERE state='RUNNING'")" = 0 || return 1
   test "$(runuser -u postgres -- psql -d hify -Atqc "SELECT count(*) FROM workflow_runs WHERE status='RUNNING'")" = 0 || return 1
@@ -98,6 +100,8 @@ on_exit() {
   set +e
   trap - EXIT HUP INT TERM
   if [ "$result" -ne 0 ]; then
+    # Only this invocation's incomplete dump is disposable. Keep validated backups.
+    rm -f "$release/database-before.dump.partial"
     if [ "$nginx_changed" -eq 1 ]; then
       if cp -p "$release/previous-nginx.conf" "$snippet" && nginx -t; then
         systemctl reload nginx || true
@@ -124,9 +128,10 @@ test "$(systemctl is-active hify || true)" = inactive
 # Unsettled Chat or direct Workflow work must be recovered by the old service,
 # not migrated here. This can interrupt a late arrival; it is not zero downtime.
 assert_no_running
-runuser -u postgres -- pg_dump --format=custom hify > "$release/database-before.dump"
-test -s "$release/database-before.dump"
-pg_restore --list "$release/database-before.dump" > /dev/null
+runuser -u postgres -- pg_dump --format=custom hify > "$release/database-before.dump.partial"
+test -s "$release/database-before.dump.partial"
+pg_restore --list "$release/database-before.dump.partial" > /dev/null
+mv "$release/database-before.dump.partial" "$release/database-before.dump"
 cutover=1
 install -m 644 "$release/incoming/backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar" "$jar.next"
 mv "$jar.next" "$jar"

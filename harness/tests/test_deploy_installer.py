@@ -135,6 +135,31 @@ class DeployInstallerTest(unittest.TestCase):
                     self.assertEqual((root / 'service').read_text(), 'active')
                     self.assertFalse((release / 'database-before.dump').exists())
 
+    def test_nginx_preflight_failure_never_stops_or_stages(self):
+        for shell in self.shells():
+            with self.subTest(shell=shell), tempfile.TemporaryDirectory() as temp:
+                root, app, release, script, env = self.fixture(temp)
+                env['DEPLOY_FIXTURE_NGINX_EXIT'] = '1'
+                result = subprocess.run([shell, str(script), str(release)], env=env, capture_output=True)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertEqual((root/'service').read_text(), 'active')
+                self.assertFalse((release/'incoming').exists())
+                self.assertFalse((release/'previous.jar').exists())
+                self.assertNotIn(['systemctl', ['stop', 'hify']], self.calls(root))
+
+    def test_incomplete_backup_is_removed_before_old_service_restart(self):
+        for shell in self.shells():
+            for failure in ('DUMP', 'RESTORE'):
+                with self.subTest(shell=shell, failure=failure), tempfile.TemporaryDirectory() as temp:
+                    root, app, release, script, env = self.fixture(temp)
+                    env['DEPLOY_FIXTURE_'+failure+'_EXIT'] = '9'
+                    result = subprocess.run([shell, str(script), str(release)], env=env, capture_output=True)
+                    self.assertEqual(result.returncode, 9)
+                    self.assertEqual((root/'service').read_text(), 'active')
+                    self.assertFalse((release/'database-before.dump.partial').exists())
+                    self.assertFalse((release/'database-before.dump').exists())
+                    self.assertEqual((app/'backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar').read_text(), 'old jar')
+
     def test_broken_stderr_pipe_preserves_cleanup_and_original_exit(self):
         for shell in self.shells():
             for stage in ('late', 'health'):
@@ -273,7 +298,8 @@ class DeployInstallerTest(unittest.TestCase):
             self.assertEqual((root / 'service').read_text(), 'inactive')
             self.assertGreater((release / 'database-before.dump').stat().st_size, 0)
             restores = [args for name, args in self.calls(root) if name == 'pg_restore']
-            self.assertEqual(restores, [['--list', str(release / 'database-before.dump')]])
+            self.assertEqual(restores, [['--list', str(release / 'database-before.dump.partial')]])
+            self.assertFalse((release / 'database-before.dump.partial').exists())
             self.assertEqual(sum(name == 'curl' for name, args in self.calls(root)), 2)
 
     def test_catchable_signals_set_nonzero_exit_and_cleanup_once(self):

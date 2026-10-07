@@ -1,22 +1,43 @@
 // Deployed UI + persisted Mock runs; no paid model, no existing conversations modified.
 const fs = require('node:fs');
 const path = require('node:path');
+const { createHash } = require('node:crypto');
 const { chromium, expect } = require('../frontend/node_modules/@playwright/test');
 const root = path.resolve(__dirname, '..');
 const state = JSON.parse(fs.readFileSync(path.join(root, 'harness/state.json')));
 if (state.currentTaskId !== 'CONTEXT-ROLLOUT-001') throw Error('Atomic rollout task required');
 const evidence = path.join(root, state.evidencePath);
 const base = 'https://118.196.123.132/hify/';
+const artifact = JSON.parse(fs.readFileSync(path.join(evidence, 'local-artifacts.json')));
+const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 (async () => {
   const browser = await chromium.launch({ channel: 'chrome' });
   const context = await browser.newContext({ ignoreHTTPSErrors: true });
   const checks = [];
   const createdRecords = { conversations: [], runs: [] };
+  const loadedAssets = {};
   let passed = false;
   try {
     for (const [name, inputs] of [['calculator', ['计算 17 * 23']], ['clock', ['hi', '现在几点', '现在几点？', '现在几点?']]]) {
       const page = await context.newPage();
-      await page.goto(base + 'chat');
+      const assetChecks = [];
+      page.on('response', response => {
+        const url = response.url();
+        if (!url.startsWith(base + 'assets/')) return;
+        const relative = new URL(url).pathname.slice(new URL(base).pathname.length);
+        // Catch immediately: a mismatched early asset must not become an unhandled rejection.
+        assetChecks.push((async () => {
+          if (response.status() !== 200) throw Error('Non-200 frontend asset: ' + relative);
+          if (!artifact.frontendFiles[relative]) throw Error('Unexpected frontend asset: ' + relative);
+          const digest = sha(await response.body());
+          if (digest !== artifact.frontendFiles[relative]) throw Error('Frontend bytes mismatch: ' + relative);
+          loadedAssets[relative] = digest;
+          return null;
+        })().catch(error => error));
+      });
+      const navigation = await page.goto(base + 'chat');
+      expect(navigation.status()).toBe(200);
+      expect(sha(await navigation.body())).toBe(artifact.frontendFiles['index.html']);
       await expect(page.getByRole('heading', { name: '对话' })).toBeVisible();
       await expect(page.locator('.chat-toolbar .el-select')).toContainText('· v', { timeout: 15000 });
       await page.getByRole('combobox').focus();
@@ -73,13 +94,23 @@ const base = 'https://118.196.123.132/hify/';
         runs.push({ id: run.id, state: persisted.state, output: persisted.outputMessage, streamUrl: run.streamUrl });
       }
       await expect(page.locator('.composer-actions')).toContainText('固定版本');
+      const failures = (await Promise.all(assetChecks)).filter(Boolean);
+      if (failures.length) throw failures[0];
+      const referenced = await page.locator('script[src], link[rel="stylesheet"]').evaluateAll(nodes =>
+        nodes.map(node => node.src || node.href));
+      const ownReferences = referenced.filter(url => url.startsWith(base + 'assets/'));
+      expect(ownReferences.length).toBeGreaterThan(0);
+      for (const url of ownReferences) {
+        const relative = new URL(url).pathname.slice(new URL(base).pathname.length);
+        expect(loadedAssets[relative]).toBe(artifact.frontendFiles[relative]);
+      }
       checks.push({ case: name, conversationId: conversation.id, agentVersionId: conversation.agentVersionId, runs });
       await page.close();
     }
     passed = true;
   } finally {
     fs.writeFileSync(path.join(evidence, 'browser-live.json'), JSON.stringify({
-      base, passed, tlsCertificateValidation: false, checks, createdRecords,
+      base, passed, tlsCertificateValidation: false, checks, createdRecords, loadedAssets,
       scope: 'Explicit Demo selection, not default-first-option assertion. Real deployed UI/backend, Mock model. Own two conversations/five runs retained.'
     }, null, 2) + '\n');
     await browser.close();

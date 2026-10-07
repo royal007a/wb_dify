@@ -8,31 +8,49 @@ import subprocess
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
+def require(condition, message):
+    if not condition:
+        raise RuntimeError(message)
+
 state = json.loads((ROOT / 'harness/state.json').read_text())
 if state.get('currentTaskId') != 'CONTEXT-ROLLOUT-001':
     raise SystemExit('CONTEXT-ROLLOUT-001 must be active through run-task.sh')
 evidence = ROOT / state['evidencePath']
 tasks = json.loads((ROOT / 'harness/tasks.json').read_text())['tasks']
-accepted = next(t for t in tasks if t['id'] == 'CONTEXT-INTEGRITY-001')
-assert accepted['status'] == 'completed'
+accepted = next(t for t in tasks if t['id'] == 'OBS-CORRELATION-001')
+require(accepted['status'] == 'completed', 'Current-source OBS gate must be completed')
 record = accepted['evidence'][-1]
 gate = ROOT / record['path']
 verification = json.loads((gate / 'verification.json').read_text())
-assert verification['result'] == 'passed' and verification['schemaVersion'] == 3
-assert set(verification['scopes']) == {'harness','migration','backend','runtime','eval','frontend'}
-assert hashlib.sha256((gate / 'verification.json').read_bytes()).hexdigest() == record['verificationSha256']
+require(verification['result'] == 'passed' and verification['schemaVersion'] == 3, 'Gate must pass schema 3')
+require(set(verification['scopes']) == {'harness','migration','backend','runtime','eval','frontend'}, 'All six scopes required')
+require(hashlib.sha256((gate / 'verification.json').read_bytes()).hexdigest() == record['verificationSha256'], 'Gate SHA mismatch')
+subprocess.run(['python3', 'harness/harness.py', 'validate'], cwd=ROOT, check=True)
 tested_head = verification['headCommit']
-assert tested_head == record['headCommit']
+require(tested_head == record['headCommit'], 'Gate head mismatch')
 subprocess.run(['git','diff','--quiet',tested_head,'--','backend','frontend','deploy'],cwd=ROOT,check=True)
-assert not subprocess.check_output(['git','ls-files','--others','--exclude-standard','--','backend','frontend','deploy'],cwd=ROOT)
-release = '/opt/hify/releases/spec-verify-20261006-context-' + tested_head[:8]
-unit = 'hify-upgrade-20261006-context-' + tested_head[:8]
+require(not subprocess.check_output(['git','ls-files','--others','--exclude-standard','--','backend','frontend','deploy'],cwd=ROOT), 'Untracked release source')
+release = '/opt/hify/releases/spec-verify-20261007-context-' + tested_head[:8]
+unit = 'hify-upgrade-20261007-context-' + tested_head[:8]
 ssh = ['ssh','-o','BatchMode=yes','-o','ConnectTimeout=10','root@118.196.123.132','/bin/sh']
 
 def command(args, name, *, text=None, cwd=ROOT, env=None, timeout=1200):
-    with (evidence / (name+'.log')).open('w') as log:
-        subprocess.run(args,input=text,text=True,cwd=cwd,env=env,stdout=log,stderr=subprocess.STDOUT,
-                       check=True,timeout=timeout)
+    try:
+        with (evidence / (name+'.log')).open('w') as log:
+            subprocess.run(args,input=text,text=True,cwd=cwd,env=env,stdout=log,stderr=subprocess.STDOUT,
+                           check=True,timeout=timeout)
+    finally:
+        if name in ('remote-preflight', 'remote-install', 'remote-final'):
+            try:
+                observations = {stage:(evidence/(stage+'.log')).read_text()
+                                for stage in ('remote-preflight','remote-install','remote-final')
+                                if (evidence/(stage+'.log')).is_file()}
+                (evidence/'remote-observations.json').write_text(json.dumps({
+                    'source':'publisher command observations, not independent verification',
+                    'backupValidation':'pg_restore --list only; no restore drill',
+                    'observations':observations},indent=2)+'\n')
+            except OSError:
+                print('Could not persist observation JSON; raw command logs retained where writable',flush=True)
     print(name+' passed',flush=True)
 
 command(['mvn','-B','-DskipTests','-f','backend/pom.xml','package'],'package')
@@ -51,9 +69,11 @@ manifest = {name:hashlib.sha256((bundle/name).read_bytes()).hexdigest()
 artifacts = {str(p):hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in [
     Path('backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar'),Path('frontend/dist/index.html'),
     Path('deploy/nginx-path.conf'),Path('deploy/install-spec-release.sh')]}
+frontend_files = {p.relative_to(ROOT/'frontend/dist').as_posix():hashlib.sha256(p.read_bytes()).hexdigest()
+                  for p in (ROOT/'frontend/dist').rglob('*') if p.is_file()}
 (evidence/'local-artifacts.json').write_text(json.dumps({'gate':str(gate.relative_to(ROOT)),
     'testedHead':verification['headCommit'],'release':release,'unit':unit,'localBundle':str(bundle),
-    'artifacts':artifacts,'uploadFiles':manifest,
+    'artifacts':artifacts,'uploadFiles':manifest,'frontendFiles':frontend_files,
     'meaning':'Rebuilt from the tested source trees; /hify frontend build settings. Not identical test-time binaries.'},indent=2)+'\n')
 new_bytes=(ROOT/'backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar').stat().st_size+sum(
     p.stat().st_size for p in (ROOT/'frontend/dist').rglob('*') if p.is_file())
@@ -62,8 +82,10 @@ staging_kib=((bundle/'release.tar.gz').stat().st_size+2*new_bytes+1023)//1024
 preflight=f'''set -eu
 test ! -e {release}
 test "$(systemctl show {unit} -p LoadState --value)" = not-found
-python3 -c 'import sys; assert sys.version_info >= (3,11)'
+python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3,11) else 1)'
+nginx -t
 systemctl is-active --quiet hify
+systemctl show hify -p MainPID --value | sed 's/^/previousPid=/'
 test "$(runuser -u postgres -- psql -d hify -Atqc "SELECT max(version::integer)=24 AND bool_and(success) FROM flyway_schema_history")" = t
 test "$(runuser -u postgres -- psql -d hify -Atqc "SELECT (SELECT count(*) FROM agent_runs WHERE state='RUNNING')+(SELECT count(*) FROM workflow_runs WHERE status='RUNNING')+(SELECT count(*) FROM document_index_tasks WHERE state IN ('PENDING','RUNNING'))")" = 0
 test "$(runuser -u postgres -- psql -d hify -Atqc "SELECT count(*) FROM workflow_versions w WHERE EXISTS (SELECT 1 FROM jsonb_array_elements(w.dsl_json::jsonb->'nodes') n WHERE upper(n->>'type')='START' AND (n->'config') ? 'inputs') AND NOT (COALESCE(w.dsl_json::jsonb->'publication','{{}}'::jsonb) ? 'inputSchemaFormat')")" = 0
@@ -78,8 +100,21 @@ stat -c 'keyMetadata=%i:%s:%Y:%a:%U' /etc/hify/mcp-credentials.env
 command(ssh,'remote-preflight',text=preflight,timeout=60)
 # Only after every read-only check succeeds create the new scoped directory.
 command(ssh,'remote-directory',text=f'set -eu\ntest ! -e {release}\ninstall -d -m 700 {release}\n',timeout=30)
-command(['scp','-q',*[str(bundle/name) for name in [*manifest,'release.sha256']],
-         'root@118.196.123.132:'+release+'/'],'upload',timeout=120)
+try:
+    command(['scp','-q',*[str(bundle/name) for name in [*manifest,'release.sha256']],
+             'root@118.196.123.132:'+release+'/'],'upload',timeout=120)
+except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+    # No installer has been submitted yet. Remove only the four exact upload targets;
+    # unexpected entries keep the directory in place for inspection, never recursive rm.
+    try:
+        command(ssh,'upload-cleanup',text=f'''set -eu
+test ! -e {release}/previous.jar
+rm -f {release}/release.tar.gz {release}/install-spec-release.sh {release}/smoke-upload.py {release}/release.sha256
+rmdir {release}
+''',timeout=30)
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        print('Upload cleanup incomplete; retain release path for inspection', flush=True)
+    raise
 hashchecks='\n'.join(f'test "$(sha256sum {name} | cut -d " " -f1)" = {digest}' for name,digest in manifest.items())
 targets={
     'backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar':'/opt/hify/backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar',
@@ -138,8 +173,31 @@ except (subprocess.CalledProcessError,subprocess.TimeoutExpired) as error:
     failures.append({'check':'browser-live','errorType':type(error).__name__})
 (evidence/'post-install-checks.json').write_text(json.dumps({'failedChecks':failures,
     'automaticRollback':False,'modelRetry':False},indent=2)+'\n')
-command(ssh,'remote-final',text='''set -eu
+command(ssh,'remote-final',text=r'''set -eu
 systemctl is-active hify
+pid=$(systemctl show hify -p MainPID --value)
+test "$pid" -gt 0
+printf 'runningPid=%s\n' "$pid"
+python3 - "$pid" <<'PY'
+import hashlib, json, os, sys
+pid=sys.argv[1]
+target='/opt/hify/backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar'
+args=open('/proc/'+pid+'/cmdline','rb').read().split(b'\0')
+if target.encode() not in args:
+    raise SystemExit('Running JVM command does not use expected jar')
+digests=set()
+for name in os.listdir('/proc/'+pid+'/fd'):
+    fd='/proc/'+pid+'/fd/'+name
+    try:
+        if os.readlink(fd)==target:
+            with open(fd,'rb') as f:
+                digests.add(hashlib.file_digest(f,'sha256').hexdigest())
+    except FileNotFoundError:
+        continue
+if len(digests)!=1:
+    raise SystemExit('Cannot identify exactly one running jar SHA through open descriptors')
+print('runningJarSha256='+next(iter(digests)))
+PY
 df -Pk /opt/hify
 runuser -u postgres -- psql -d hify -Atqc "SELECT json_build_object('runningRuns',(SELECT count(*) FROM agent_runs WHERE state='RUNNING'),'runningWorkflows',(SELECT count(*) FROM workflow_runs WHERE status='RUNNING'),'activeIndexTasks',(SELECT count(*) FROM document_index_tasks WHERE state IN ('PENDING','RUNNING')),'schemaVersion',(SELECT max(version::int) FROM flyway_schema_history),'allMigrationsSucceeded',(SELECT bool_and(success) FROM flyway_schema_history));"
 stat -c 'keyMetadata=%i:%s:%Y:%a:%U' /etc/hify/mcp-credentials.env
@@ -147,8 +205,6 @@ sha256sum /opt/hify/backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar /opt/hif
 ''',timeout=30)
 def metadata(name):
     return [line for line in (evidence/(name+'.log')).read_text().splitlines() if line.startswith('keyMetadata=')]
-assert len(metadata('remote-preflight')) == 1
-assert metadata('remote-preflight') == metadata('remote-install') == metadata('remote-final'), 'key metadata changed'
 remote_final=(evidence/'remote-final.log').read_text()
 # Persist these deliberately narrow, credential-free command observations even
 # if a later smoke assertion fails. Raw application logs are not collected.
@@ -158,10 +214,16 @@ observations = {name: (evidence/(name+'.log')).read_text()
     'source':'publisher command observations, not independent verification',
     'backupValidation':'pg_restore --list only; no restore drill',
     'observations':observations},indent=2)+'\n')
+require(len(metadata('remote-preflight')) == 1, 'Missing key metadata')
+require(metadata('remote-preflight') == metadata('remote-install') == metadata('remote-final'), 'key metadata changed')
+before_pids=[line for line in observations['remote-preflight'].splitlines() if line.startswith('previousPid=')]
+after_pids=[line for line in remote_final.splitlines() if line.startswith('runningPid=')]
+require(len(before_pids)==len(after_pids)==1 and before_pids[0].split('=')[1]!=after_pids[0].split('=')[1], 'Running PID was not replaced')
+require('runningJarSha256='+artifacts['backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar'] in remote_final.splitlines(), 'Running JVM jar SHA mismatch')
 for source,target in targets.items():
-    assert artifacts[source]+'  '+target in remote_final, 'installed artifact SHA differs'
+    require(artifacts[source]+'  '+target in remote_final, 'installed artifact SHA differs')
 stats=next(json.loads(line) for line in remote_final.splitlines() if line.startswith('{'))
-assert stats == {'runningRuns':0,'runningWorkflows':0,'activeIndexTasks':0,'schemaVersion':24,'allMigrationsSucceeded':True}
+require(stats == {'runningRuns':0,'runningWorkflows':0,'activeIndexTasks':0,'schemaVersion':24,'allMigrationsSucceeded':True}, 'Unexpected final runtime/schema state')
 if failures:
     raise RuntimeError('Post-install checks failed; new release remains running. Inspect logs and schema compatibility before manual action: '+json.dumps(failures))
 summary = {'testedHead': tested_head, 'gate':str(gate.relative_to(ROOT)), 'release':release,'unit':unit,

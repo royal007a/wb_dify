@@ -36,6 +36,7 @@ elif name == 'systemctl':
 elif name == 'runuser':
     if 'pg_dump' in args:
         print('synthetic custom backup')
+        sys.exit(int(os.environ.get('DEPLOY_FIXTURE_DUMP_EXIT', '0')))
     elif 'psql' in args:
         sql = args[-1]
         if 'flyway_schema_history' in sql:
@@ -70,7 +71,11 @@ elif name == 'sha256sum' and args[0] != '-c' and os.environ.get('DEPLOY_FIXTURE_
     deadline = time.monotonic()+60
     while not (root / 'release-wait').exists() and time.monotonic() < deadline:
         time.sleep(.01)
-elif name in ('sha256sum', 'pg_restore', 'nginx', 'sleep'):
+elif name == 'nginx':
+    sys.exit(int(os.environ.get('DEPLOY_FIXTURE_NGINX_EXIT', '0')))
+elif name == 'pg_restore':
+    sys.exit(int(os.environ.get('DEPLOY_FIXTURE_RESTORE_EXIT', '0')))
+elif name in ('sha256sum', 'sleep'):
     pass
 else:
     raise AssertionError(name)

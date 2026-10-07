@@ -4,7 +4,7 @@
 
 ## 发布前提
 
-- CONTEXT-INTEGRITY-001 六 scope 完整门禁 passed，测试零 failures/errors/skips/flaky；固定 head 的 backend/frontend/deploy 源码与打包源码一致，无未跟踪源码。
+- 保留 CONTEXT-INTEGRITY-001 准入，新增要求当前 OBS-CORRELATION-001 六 scope 完整门禁 passed，测试零 failures/errors/skips/flaky；固定 head 的 backend/frontend/deploy 源码与打包源码一致，无未跟踪源码。不得拿旧 H1 gate 发布后续变更。
 - 本次会携带同一源码树上此前尚未部署的 Workflow 聚合、结构化输出。不是只替换 compactor 的单类热补丁。旧 STRUCTURED 的失败记录保留；新完整门禁不得冒称消除了旧关停偶发失败的根因。
 - Claude 对 H1 固定范围的独立 review 已收到结论，阻塞问题已处理。
 - 与 CC 错峰，切换前通知。安装器只改自己的 nginx snippet，但会 nginx -t 和 reload nginx；不承诺零停机。
@@ -27,3 +27,18 @@
 - 回退旧二进制前检查新类型 Workflow 数据兼容性；旧二进制可能不认识新节点/字段。不得以同为 V24 推定业务兼容。
 - H1 压缩触发、消息完整性、模型零调用由本地生产路径测试证明；线上 Mock smoke 只证明基础交互，不证明真实模型遵循策略、语义质量或新结构化输出的线上质量。
 - 自签证书的 smoke/browser 显式关闭测试客户端校验；不修改应用出站 TLS 信任策略。
+
+## 2026-10-07 发布前补强（尚未执行部署）
+
+用户再次明确要求部署到 132。旧失败 gate、H2/PG 定向复验都保留，窄测不替代完整准入。
+本轮仅准备发布脚本：移除 Python assert 关键门禁；预检先 nginx -t；上传未提交安装前失败时
+仅清理四个精确上传目标并 rmdir（不递归）；备份写入 .partial，经 pg_restore --list 后改名，
+失败先清理本次 partial 再按原阶段恢复旧服务。完整备份、旧 jar 和旧前端不删。
+
+运行身份补充：要求 PID 切换，通过 /proc/PID/cmdline 与打开的 jar 文件描述符核对 jar SHA；
+无法取得唯一身份就不宣称成功。浏览器核对导航 HTML、观察到的 assets 响应正文 SHA 及页面
+script/stylesheet 引用，不再把 AgentVersion 当作构建版本。这不证明 JVM 内每个已加载类的字节。
+远端观察在每步 finally 保存，即使后续密钥元数据或身份断言失败也保留。
+
+安装后失败仍可能停止新 Hify，不自动恢复数据库或旧应用；此行为未改变，切换通知须明确提示。
+新脚本、两项安装器 fixture 反例和浏览器构建核对尚待运行与独立 review；未因此扩大已有绿灯范围。
