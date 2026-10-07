@@ -17,6 +17,7 @@
     "com.hify.api.KnowledgeMemoryPostgresTest": 21
   },
   "backend-tests": {
+    "com.hify.api.ContextAuthorityGoldenTest": 2,
     "com.hify.api.RetrievalEmbeddingHttpTest": 5,
     "com.hify.common.ExecutionControlTest": 13,
     "com.hify.runtime.QueryLoopParentControlTest": 3,
