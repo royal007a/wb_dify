@@ -83,9 +83,11 @@ context_data。故不能承诺新 checkpoint/新索引写出后能直接回退�
 
 ## 具名反例矩阵（将先在旧实现红，再写修复）
 
-1. **RAG→三家真实 HTTP fixture**：通过 Chat 公共生产入口，资料含伪造策略标记；
-   六条同步/流式请求构造检查策略字段只含真实 instructions/固定规则，资料仍在
-   普通内容，最新问题不变；有纯无资料正对照。fixture 不是真实模型安全评测。
+1. **RAG→三家真实 HTTP fixture**：Chat 公共生产入口实际调用 generateStream，
+   用它覆盖三家流式路径，资料含伪造策略标记；同步 generate 的三条路径通过
+   生产 adapter 入口单独验证，不能称为 Chat 同步链路。六条请求构造都检查
+   策略字段只含真实 instructions/固定规则，资料仍在普通内容，最新问题不变；
+   有纯无资料正对照。fixture 不是真实模型安全评测。
 2. **历史投影**：含旧工具注入文本、摘要 constraints 和目录 preview；超过 recentTurns
    才实际进入投影，检查资料没有出现在 system、recent cutoff/goal 不被伪造。
 3. **压力与配对**：多轮、单轮六批工具、最新并行工具结果、没有 user、多条可信
@@ -100,3 +102,26 @@ context_data。故不能承诺新 checkpoint/新索引写出后能直接回退�
 
 测试设计完成后登记任务与清单，在协调窗口运行；保留原始红灯、具名突变、六范围
 回归和固定提交只读 review。现阶段尚无这些新反例的运行结果。
+
+## 2026-10-07 读写路径清点（d68bf22，仅静态核对）
+
+检索入口是所有 main Java 的 `.role()` / `getRole()`，并向上追到请求构造、
+序列化和恢复写入。它是实现前清点，不是宣称文本搜索证明了调用图完备。
+
+| 路径 | 已核实的行为 | 必须保留的界线 |
+| --- | --- | --- |
+| RunApplicationService.execute / prepareResolvedCheckpoint | 新 Run 组装策略、RAG、对话；显式续接复制旧 checkpoint.messages 后追加真实 user | 不把资料计为新用户，也不靠拷贝后改摘要掩盖格式改变 |
+| QueryLoop.run | `messages` 是 canonical 列表；先用它 replay；未命中才 prepare，再把 prepared.messages 传 generateStream；结果追加到原 messages | 模型视图降权不应修改 replay 使用的旧前缀；公共 Chat 不走同步 generate |
+| ContextManager / LayeredContextMemoryService | 分层摘要和目录加入投影列表；prepare 返回的是模型视图，不直接替换 QueryLoop 的 canonical 列表 | 当前摘要投影里的 system 不等于已经写入 checkpoint 的 system；两种旧数据来源不能混同 |
+| CommittedHistoryWriter.replay | 原 JSON 摘要核验后，逐项比较完整 prefix，要求历史恰好多一条消息 | 仅把旧 system 改成 context_data，也会造成 prefix mismatch；旧恢复必须在 model view 降权，不先改 canonical 再 replay |
+| CanonicalMemoryIndexer / CanonicalDetailReader | indexer 按消息 JSON 生成摘要，reader 按原 revision 回读并重序列化核验 | 未知角色当前会落 MODEL_OUTPUT；新资料分类必须显式，旧 revision/digest 不改 |
+| ContextTokenEstimator / ToolResultArchiver / ContextManager.archiveEarlierResults | estimator 计算角色、正文和工具字段；归档只处理 tool，压力救援保留最新工具批次 | 新资料仍计预算；不得伪造 tool 以借用归档路径，call-id 配对不变 |
+| Compactor / recentTurnCutoff / 两处 goal 选择 | compactor 保留 system 和最新 user 以后；分层 cutoff 与 goal 识别真实 user | context_data 需明确保留策略，不能因降权而被无声裁掉，也不能计作 user |
+| OpenAI / Anthropic / Gemini | 同步与流式分别构造请求；各家两条路径共享自己的 toMessage/toContent | 分别覆盖两个构造入口；不能只测私有映射方法，不能依赖 Gemini 未知角色默认 user |
+| MockModelClient | 读取列表最后一条；tool 分支之外按末条正文识别示例请求 | 降权后不能把资料放到真正用户/工具结果之后，改变 Demo 目标 |
+| HistoryRecallService / MemoryController | 返回来源 role/kind 与原文/预览，不把它们自动变成执行权限 | 新 kind 的 API 和旧 reader 回退风险需明确，不因 DTO 能序列化就宣称旧二进制兼容 |
+
+因此补充一个恢复反例：旧 model:N 已提交、checkpoint 尚落后，旧 canonical
+含 RAG system。恢复应继续验证原前缀并复用已提交响应，后续真正的新模型请求
+才使用降权视图；模型重放/工具重放都不能因变更角色被误判历史冲突。
+这里没有运行该反例，仍须先固定旧原文与 SHA，再实现并验证。
