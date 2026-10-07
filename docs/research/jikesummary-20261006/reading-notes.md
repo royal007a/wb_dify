@@ -1505,12 +1505,15 @@ hify-knowledge/knowledge/application 与 hify-chat/application 对应的 `src/ma
 
 - p1–2 把对话引擎拆成会话、上下文、流式交付、持久化；完整链路是查配置、取历史、
   写用户消息、组装请求、调用模型、存回复，不让浏览器持有供应商凭据。
-- p3–4 用 finish_reason 和 latency_ms 区分停止原因与耗时，课程示例在流结束后存回复。
-  LONGTEXT、MySQL、Redis 最近 N 轮是该课程实现选择，不是原版 hify 的迁移目标。
+- p3–4 用 finish_reason 和 latency_ms 区分停止原因与耗时；p2 链路写到 Redis 最近 N 轮，
+  p8 明确流结束后同步存 MySQL。LONGTEXT、MySQL、Redis 是该课程实现选择，
+  不是原版 hify 的迁移目标。
 - p5–6 用单向响应说明选择 SSE 的理由，并把网络请求线程与模型执行线程分离。
   “20 行”“3–5 倍”、120 秒、默认超时 30 秒均按课程说法记录，不当作跨部署保证；
   本轮没有独立核验默认容器配置，也不把“所有主流产品都选 SSE”作为选型证据。
-- p6–7 提醒处理超时、断连与代理缓冲，避免持有数据库事务等待整条流结束。
+- p6–7 提醒处理超时、断连与代理缓冲；原文说事务提交时机和流结束不同，可能提前提交
+  或连接超时，不应在返回 SseEmitter 的方法上直接加事务。“不要持有数据库事务等待
+  整条流结束”是本笔记的工程推论，不是原文对提交时机的逐字表述。
   关闭缓冲解决交付延迟，不保证模型停止；释放请求线程也不等于发送和模型计算不占线程。
 - p7 的表格含 OpenAI、其兼容适配器、Anthropic、Ollama；原版当前是 OpenAI/
   OpenAI-compatible 共用 client，加 Anthropic、Gemini，不能把课程中的四个 adapter 名搬过来。
