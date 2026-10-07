@@ -40,3 +40,13 @@ reusedWorker 用例中补第二个非空 ID，并断言 Thread 对象相同、�
 MDC 只有第二个 requestId；原无 ID、取消 body 零调用断言保留。当前仅写好，
 尚未执行，不能引用旧 8/8 作为新断言通过；未做这组新断言的专属突变。
 取消和 AbortPolicy 专项仍只在 llm 池测过。CC 持有测试窗口时不启动重测试。
+
+## 2026-10-07 16:45 窄验证补齐（待复核）
+
+前节“尚未执行”是历史阶段状态。隔离副本删除 runExecutor 的 TaskDecorator，
+AsyncConfigTest 在 requestId map 断言处失败（1 failure、0 error），恢复后
+AsyncConfigTest 1/1、含两个非空 ID 同线程断言的 RequestCorrelationTest 8/8 通过。
+原始红绿日志、文本报告及哈希见
+`docs/research/jikesummary-20261006/run-executor-mutation-d68bf22/`。
+这次没有重跑六范围、没有新增产品改动；新线程复用断言没有专属突变。
+窗口已交还 CC，机器任务保持 pending，等待独立复核和合规状态迁移。

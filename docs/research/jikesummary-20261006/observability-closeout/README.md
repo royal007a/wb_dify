@@ -1,5 +1,16 @@
 # 两个观测切片：验收证据逐项映射与独立复核
 
+## 后续增量（2026-10-07 16:45，待复核）
+
+下文矩阵保留 d913f87 阶段的判断。其后 d68bf22 补了同一 worker 连续两个非空
+requestId 的断言；164abe4 基线上完成 runExecutor 删除 TaskDecorator 的独立突变：
+1 项断言红灯，恢复后 AsyncConfigTest 1/1、RequestCorrelationTest 8/8 通过。
+见 [新增原始证据](../run-executor-mutation-d68bf22/README.md)。因此下表所称
+“缺 runExecutor 红灯”和“没有两个非空 ID 场景”已补材料，仍待 reviewer 判断；
+不提前宣称复核关闭。新测试没有完整六范围重跑，原产品代码未改，任务仍 pending。
+
+## 原始提交范围与复核记录
+
 核对源码固定为 `d913f87`（产品/测试树与受测 `05ab7a0` 相同）。本目录只补证据，
 不修改产品、测试和 tasks.json。两个任务仍为 pending，不把其他任务的绿色状态
 自动复制过来。这里申请按各自契约判断：同源码的完整六范围是否已经覆盖其门禁要求，

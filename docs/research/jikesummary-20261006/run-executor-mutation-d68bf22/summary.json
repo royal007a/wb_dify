@@ -1,0 +1,17 @@
+{
+  "sourceHead": "164abe4d955aa964a227b6f1571620c1d7602ec7",
+  "testChangeCommit": "d68bf22",
+  "scope": "offline isolated narrow mutation, not full gate",
+  "mutation": "remove AsyncConfig runExecutor setTaskDecorator",
+  "red": {"exitCode": 1, "tests": 1, "failures": 1, "errors": 0, "skipped": 0, "failureKind": "AssertionError at AsyncConfigTest.java:16; actual MDC null"},
+  "green": {"exitCode": 0, "tests": 9, "failures": 0, "errors": 0, "skipped": 0},
+  "restoredBackendFilesCompared": 488,
+  "allRestoredFilesIdentical": true,
+  "artifacts": {
+    "run-executor-red.log": "bbbca153e4e4cb2b8aa7c71346683134c932a177de7f68b756c7c77b0cca134d",
+    "run-executor-red-report.txt": "f8e1efdd90a3956f40290eaa56ffb5805e4351eed347744d257322f19bbe8688",
+    "restored-green.log": "3f928638a3689069985643c232b111aa0d21c7547f5fbb96d3fd513ae10d4324",
+    "run-executor-green-report.txt": "cc9b9d29a7d92417e77c2273a7dbc524f99189517c95704388b84a0641f5836b",
+    "request-correlation-green-report.txt": "aec67aec9c1440e53745efb5de392619d74e08ddb76c8a48cb7c6e31782e3fd8"
+  }
+}
