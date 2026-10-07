@@ -50,3 +50,12 @@ AsyncConfigTest 1/1、含两个非空 ID 同线程断言的 RequestCorrelationTe
 `docs/research/jikesummary-20261006/run-executor-mutation-d68bf22/`。
 这次没有重跑六范围、没有新增产品改动；新线程复用断言没有专属突变。
 窗口已交还 CC，机器任务保持 pending，等待独立复核和合规状态迁移。
+
+## 2026-10-07 独立复核接受与后续门禁
+
+mymacclaude 对 164abe4..747ccae 的只读复核无 P1/P2，证据层面接受。
+前节“等待独立复核”已完成；当前仍未重跑包含 d68bf22 新断言的完整六范围。
+不采用历史门禁拼接后直接完成，待 CC 明确交还窗口后，用当前固定版本执行本任务的
+合规门禁，再由 runner 迁移状态。机器任务仍 pending，不手动冒造 completed。
+补交材料明确区分事后重建的单行突变 patch、恢复后 488 文件 SHA 清单与运行时原始日志；
+外层墙钟与 Maven Total time 分列。新的同线程双非空 ID 断言仍没有专属突变。

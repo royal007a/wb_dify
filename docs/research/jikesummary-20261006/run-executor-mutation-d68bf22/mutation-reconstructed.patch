@@ -1,0 +1,10 @@
+--- a/backend/hify-app/src/main/java/com/hify/config/AsyncConfig.java
++++ b/backend/hify-app/src/main/java/com/hify/config/AsyncConfig.java
+@@ -19,7 +19,6 @@
+         executor.setCorePoolSize(2);
+         executor.setMaxPoolSize(4);
+         executor.setQueueCapacity(100);
+-        executor.setTaskDecorator(RequestLogContext::wrap);
+         executor.setWaitForTasksToCompleteOnShutdown(false);
+         // Admission is closed by ExecutionLifecycle before this late shutdown. Interrupt and
+         // join while persistence is still alive, instead of waiting in the graceful stop phase.

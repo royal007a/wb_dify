@@ -1,13 +1,15 @@
 # 两个观测切片：验收证据逐项映射与独立复核
 
-## 后续增量（2026-10-07 16:45，待复核）
+## 后续增量（2026-10-07，独立复核已通过，正式门禁待运行）
 
 下文矩阵保留 d913f87 阶段的判断。其后 d68bf22 补了同一 worker 连续两个非空
 requestId 的断言；164abe4 基线上完成 runExecutor 删除 TaskDecorator 的独立突变：
 1 项断言红灯，恢复后 AsyncConfigTest 1/1、RequestCorrelationTest 8/8 通过。
 见 [新增原始证据](../run-executor-mutation-d68bf22/README.md)。因此下表所称
-“缺 runExecutor 红灯”和“没有两个非空 ID 场景”已补材料，仍待 reviewer 判断；
-不提前宣称复核关闭。新测试没有完整六范围重跑，原产品代码未改，任务仍 pending。
+“缺 runExecutor 红灯”和“没有两个非空 ID 场景”已补材料。mymacclaude 对
+164abe4..747ccae 只读复核认可，无 P1/P2。新测试没有完整六范围重跑，原产品代码未改，
+任务仍 pending。选择按当前版本运行正式门禁，不将历史门禁拼接后直接标 done。
+突变补丁和逐文件清单是事后重建/核对，具体证据边界见上述目录，旧记录不改写。
 
 ## 原始提交范围与复核记录
 
