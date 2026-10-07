@@ -23,6 +23,9 @@ application/domain/infra/intent/memory/runtime，Provider/Tool 的 runtime。
 允许的三个拆分包为 `com.hify.domain`（agent/chat）、`com.hify.infra`
 （agent/chat）、`com.hify.runtime`（provider/tool/chat）；不得新增拆分包或 owner，
 也不得在不同模块定义同名顶层类型。清单不是目标架构，后续收敛时应同步缩减。
+当前测试只冻结包根前缀，尚不限制遗留根下新增非拆分子包；不得把它称为
+“全部历史债只能减少”的机器保证。扫描范围为七个业务模块，不包含 common、
+demo、app，后者参与的拆分包/重复类型也尚未纳入此检查。
 
 依赖负例仅覆盖 common 不声明业务依赖、provider/tool 不声明 chat 依赖。
 源码 POM 检查不解析属性和 Maven effective model，不等于全依赖图无环证明。

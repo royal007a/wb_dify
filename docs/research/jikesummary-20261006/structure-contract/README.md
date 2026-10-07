@@ -18,6 +18,14 @@ provider/controller 不存在失败。七模块的49个旧目录中47个没有 G
 - 不覆盖：跨模块 import、完整依赖环/effective model、port 方法签名兼容性、
   生成源码/嵌套类型的二进制冲突；不得据此宣称模块化架构全部验收。
 
+复核补充：这里冻结的是包根**前缀**，不是遗留根下的精确包集合。Agent 新增
+`com.hify.domain.foo`、Chat 新增 `com.hify.memory.bar`，只要没有形成新的跨模块
+同名包，仍会通过；因此不能称为“历史架构债只减不增”的自动保证。解析扫描只含
+七个业务模块，不含 common/demo/app；这些模块中的拆分包或重复类型不在本轮
+检查范围内。有限 POM 禁止项也不覆盖 knowledge/workflow/agent 到 chat 的依赖。
+这些是当前覆盖缺口，不是工程规范允许继续增加技术债；精确遗留包集合/全模块
+依赖审计留待独立切片，本轮不临时扩张结构契约以掩盖关停恢复的红灯。
+
 测试 helper 只存在 src/test，使用 JDK17 JavacTask.parse，不启动应用，不解析
 依赖符号，不运行注解处理器。`ModuleStructureContractTest` 的20项使用隔离合成
 文件；实际仓库由 `MavenStructureTest` 的2项检查。错误反例断言具体原因。
