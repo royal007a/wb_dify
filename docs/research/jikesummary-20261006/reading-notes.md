@@ -649,6 +649,58 @@ Robert，14页正文与全部7条评论/作者回复，渲染核对第1–9页�
 检索行数/字节与延迟，再决定索引或基础设施；不提前建K8s、MQ、Qdrant。本节无远端
 负载测试、数据库迁移或部署，没有在共享服务上注入宕机/满盘。
 
+## 第九批：查询空间、信息缺口与证据边界
+
+### C177：AI Agent系统设计面试现场，第18讲，信息检索机制
+
+邓明，15页正文及全部2条评论/作者回复已读，渲染核对第2–12页的流程图、索引
+说明表、HyDE与变体时序图。源码映射固定2d66dea；累计32章read-and-mapped。
+本节为课程方法与源码的对照，不是实现了HyDE或动态索引路由，也不是召回质量测评。
+
+**课程机制。** 检索不只从知识库取段落，也包括业务实时状态、历史对话、工具结果
+和检查点。先确定要做的判断，再列支持判断的证据、已有事实与缺口，最后选择是否
+检索及数据源。退款政策不能替代某笔退款的实时状态；唯一权威业务入口可由规则
+绑定，不必让模型猜工具。Index Registry记录适用/不适用问题、字段、查询模式、
+时效、权威来源和权限；目录太大时先检索目录再查数据，而非把所有说明塞进prompt。
+
+查询改写须保留硬约束、区分软偏好、消解已知代词与别名，不擅自补出用户/订单/
+时间等事实；查询必须可执行且符合权限。HyDE用假想回答帮助定位真实文档，假想
+回答本身不能当证据。多段假想回答、基于假想回答扩写问题是课程介绍的变体；第11、
+12页画了并行，不代表本项目已有并行。5W1H按需要选维度，并记录子问题对应的
+信息缺口与数据源，不机械生成六次查询；因果链、时间线和实体关系也是候选方法。
+
+**落到Hify时必须保持的约束。**
+
+1. 动态选择来源只能在已授权、已发布的能力集合内发生，不能由模型新增目的地、
+   凭据或知识库权限。AgentKnowledgeBindingSnapshot已有corpusVersionId与
+   manifestDigest，RunApplicationService按priority读取已固定版本；它不是课程中
+   任意ES索引的动态路由器。知识正文即使包含“到这个URL查”，也不构成授权。
+2. Registry的authority/freshness是元数据，不是真值证明。KnowledgeCompletionVerifier
+   只核验候选标签、canonical原文身份与digest；模型语义仍单独标为UNVERIFIED。
+   不因课程“可信中间产物可复用”就把模型摘要或HyDE输出升级为VERIFIED。
+3. HistoryRecallService.search返回NAVIGATION，detail经canonical读取返回CANONICAL，
+   且限制同会话。不要让假想订单号进入真实过滤条件，不要把历史详情与现在的业务
+   状态混为一谈；canonical表示可追溯原文，不自动证明原文的业务结论为真。
+4. 课程建议资源不足时省略查询，只能用于不影响结论的可选信息。当前绑定知识库
+   的来源故障/无命中明确阻止模型常识补答：knowledgeCandidates分别产生
+   KNOWLEDGE_RETRIEVAL_FAILED或KNOWLEDGE_NO_EVIDENCE。不能为了延迟变绿吞掉
+   required evidence缺口。这里completed检索事件可与failed事件并存，表示阶段
+   收集结束，不应单凭事件名称宣称该Run成功。
+5. 再查询不能重置父Run预算。当前searchRevision的受控重载在入口、向量准备后、
+   事务返回后及异常路径检查控制信号；CHAT-RETRIEVAL-CONTROL-001仍待完整验收。
+   后续若增加改写/子查询，生成、嵌入、每次来源访问、重试都须继承同一父控制，
+   并计入总调用/用量；不能每个子问题各领一份完整时限。
+6. “每轮都换索引”不是充分的进度规则。同一索引的新时间范围/已确认实体可能
+   提供新证据；换了索引但重复相同内容也未必有进展。停止规则应同时看来源版本、
+   规范化查询、证据增量和硬预算，不仅看库ID。课程10–15/3–5候选数是示例，
+   不是本项目参数。索引树、ES或另一种向量数据库没有在本轮引入。
+
+**下一步验收而非直接加功能。** 保留原查询基线；用固定语料和相关集合比较直接
+查询、受控改写、可选HyDE的召回/拒答/延迟/用量，并加入歧义实体、恶意来源、
+旧版本、不可访问库与“政策正确但不是实时状态”的负例。任何收益要扣除额外生成
+和嵌入成本。先收尾共用控制预算，之后才考虑带版本的查询计划；不以三条合成命中
+证明通用质量提升，不扩大产品一期范围或自动开放数据源。
+
 ## 候选与验收边界
 
 | 候选 | 代码依据 | 下一步 | 状态来源 |
@@ -661,6 +713,7 @@ Robert，14页正文与全部7条评论/作者回复，渲染核对第1–9页�
 | 计费用量与窗口预算分离 | QueryLoop.RunPolicy、ModelStreamObserver.onUsage及原生适配器 | 先记录尝试身份/未知usage/累计或增量语义，明确估算与报告；恢复去重后再设计金额准入 | 源码缺口，待设计，不宣称已有金额熔断 |
 | 检索与循环共用控制预算 | RunApplicationService.knowledgeCandidates、SemanticEmbeddings | 持久Run时间锚点、明确取消传递、有界子调用；服务级反例先于修复 | tasks.json / CHAT-RETRIEVAL-CONTROL-001；分层证据见retrieval-control，完整验收未完成 |
 | 召回质量基准口径 | KnowledgeRetrievalService、HistoryRecallEvaluationTest | 使用生产检索入口和相关集合，不以合成top1命中及artifact常量冒充完整语义评测 | 尚未形成工程任务，现有结果仍按原边界解释 |
+| 有界查询改写与来源选择 | AgentKnowledgeBindingSnapshot、HistoryRecallService、KnowledgeCompletionVerifier | 先比较原查询基线，冻结来源范围/版本；假想内容不得作证据，全部子查询继承父预算 | C177研究候选，未实现HyDE或动态索引路由 |
 | Replan决策原因与预算一致 | DeterministicReplanPolicy的TOOL_UNAVAILABLE分支 | 有替代/无替代与预算耗尽正反例，校验action和具体reason | C060静态候选，未修改或运行反例 |
 | 有审查边界的失败经验 | QueryLoop恢复记录、HistoryRecallService、ContextSummaryStatus | 先保留事实与unknown根因；确定性缺陷下沉回归，经验不得修改权限 | C096设计候选，不把CURRENT当批准 |
 | 分层工件门禁 | WorkflowStructuredOutput、KnowledgeCompletionVerifier、WorkflowCanvas | 现有结构/来源门禁保留；业务真值须独立规则与数据源，画布提示不重复实现 | C067片段探针，不是产品验收 |
