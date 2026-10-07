@@ -86,7 +86,15 @@ journalctl -u hify-upgrade-20261004 --no-pager
 
 关闭流程：ContextClosedEvent 先标记本实例 stopping，停止新调度/执行资格；runExecutor 在持久层销毁前中断并等待最多5秒。停止信号传入模型/工具/Workflow 控制，不能当成用户取消或 Provider 健康失败。只有被关闭中断的未完成 AgentRun 保留 RUNNING，可写库时留 run.interrupted；已计算结果照常提交，不因 stopping 重复生成。下次启动按 checkpoint 接续未终态 Run。Workflow 中断执行留下 INTERRUPTED，新的执行保留原 workflowVersionId；已完成的 END 不因关闭标志被改写。启动先把本实例启动时间之前遗留的 Workflow RUNNING 行收敛为 INTERRUPTED，再进行 AgentRun 恢复（兼容 kill -9 无法留痕的情况）。Workflow 孤儿整表 UPDATE 失败也可能导致启动失败，并非按行容错。
 
-预算限制尚有差异：Workflow 恢复按 createdAt 扣减，而 Chat 的 QueryLoop 恢复仍重新获得完整 runTimeout，不能将其表述为跨重启总耗时上限。子任务恢复监听与父 Run 扫描尚无显式顺序，后续需要单独验证。时钟回拨及非合作驱动/连接池在中断中的行为不在当前恢复保证内。
+当前开发源码的 Workflow 和普通 Chat 均从持久 Run 的 createdAt 扣减 runTimeout；
+普通 Chat 的预取、QueryLoop 及同一个 Run 的重启恢复共享剩余预算，不再在恢复时
+重新获得完整时限。已过期恢复直接记为 TIMEOUT，不调用检索或模型；显式 resume API
+创建的是新 Run，具有新 Run 时限，但旧 checkpoint 的轮次/工具计数仍保留。
+从墙钟推导的剩余值最多为配置上限，之后使用单调时钟；这是协作式截止，不能保证
+已发外部请求立即中断或撤销副作用。该变更在固定 05ab7a0 的本地六范围门禁中通过，
+不代表已经部署到 132，见 `research/jikesummary-20261006/full-gate-05ab7a0.md`。
+子任务恢复监听与父 Run 扫描尚无显式顺序，后续需要单独验证。墙钟回拨下的真实
+跨进程恢复及非合作驱动/连接池在中断中的行为不在当前恢复保证内。
 
 V22 仅扩展 Workflow Run/Node CHECK 约束，保留已有版本/记录。回滚应用不得删除已写出的 INTERRUPTED 记录或收紧约束；旧应用/UI未验证对此状态的兼容性，回滚前需评估。关闭等待不是不合作驱动的强制终止，也不保证外部副作用恰好一次；模型的未闭合响应可能重新调用，Workflow 从头重跑当前确定性/只读节点。数据库写失败会让中断事件缺失，但不因此伪造取消。跨实例并行恢复、持久 lease，以及 Workflow/AgentRun 最终提交竞争的投影协调仍属独立边界。
 
