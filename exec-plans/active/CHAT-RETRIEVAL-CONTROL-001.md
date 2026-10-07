@@ -193,3 +193,17 @@ Harness Python实际84项，runtime 35项、eval 24项均零失败/错误/跳过
 与构建通过，保留大包体警告。没有浏览器测试。runtime中的3类H2集成不是此前的
 关停重启反例，故不能据此关闭那次红灯；backend和migration没有在本轮执行。
 完整六scope与只读review仍是完成条件，任务状态不变；未合并main、未部署。
+
+### 13:23 真实H2重启正反例复验
+
+固定0087ffc、源码干净，原RunShutdownIntegrationTest两条模型重启方法本次2/2通过，
+Maven exit 0，45秒类级时限及10/5秒断言未改。原始日志和摘要见
+`recovery-recheck-0087ffc/`，日志SHA为
+`5a873498db1fbb7179a902323fa6437593d3c3d663661506b6a5b0ed8aa7369a`。
+这次真实执行了及时恢复一次模型调用和到期拒绝恢复零调用；旧05:15两项ERROR保留，
+不能从一次绿灯倒推旧失败根因。不是全类、PG或完整六scope，仍不完成任务。
+
+同轮收到mymacclaude对固定2d66dea之前代码和四范围证据的只读复核：列出的诊断、
+重启测试设计、elapsed时钟与子预算、四范围计数可以接受；未运行Maven/浏览器/服务。
+阅读文档仅核对未改src/main，未逐章对PDF，不计为内容审查通过。SSE broker独立
+时钟仍是范围外P3。新H2复验与C177笔记另交固定范围，不能借旧review覆盖。
