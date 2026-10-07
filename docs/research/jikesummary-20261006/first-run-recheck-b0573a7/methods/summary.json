@@ -1,0 +1,40 @@
+{
+  "classes": [
+    {
+      "class": "com.hify.api.KnowledgeAdmissionShutdownTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": "5.146",
+      "xmlSha256": "f9fe723f290d9e261470c21caa7c5a182f07805a4ddd532d03d92b37d2b37ad3",
+      "cases": [
+        {
+          "name": "resumeKeepsFrozenKReferencesAfterArchiveAndDoesNotRetrieveAgain",
+          "seconds": "0.763"
+        }
+      ]
+    },
+    {
+      "class": "com.hify.api.WorkflowKnowledgeReviewTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": "28.777",
+      "xmlSha256": "24aba34cbfa5822cfa1bc68c9f6fe860e35c47432b0d4ff0b53194f8763ca8b3",
+      "cases": [
+        {
+          "name": "indexingMetadataFailurePersistsFailureWithoutDeletingExistingChunks",
+          "seconds": "0.729"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

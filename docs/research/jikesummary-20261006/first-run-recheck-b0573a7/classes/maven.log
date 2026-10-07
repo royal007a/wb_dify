@@ -1,0 +1,677 @@
+Picked up JAVA_TOOL_OPTIONS: -Xmx768m -XX:ReservedCodeCacheSize=128m -Dspring.test.context.cache.maxSize=2 -Dhify.test.startup-diagnostics=true -Xlog:gc*,safepoint:file=/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/hify-first-run-classes-laf58f3h/gc-%p.log:time,uptime,level,tags
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] hify-parent                                                        [pom]
+[INFO] hify-common                                                        [jar]
+[INFO] hify-provider                                                      [jar]
+[INFO] hify-tool                                                          [jar]
+[INFO] hify-mcp                                                           [jar]
+[INFO] hify-knowledge                                                     [jar]
+[INFO] hify-workflow                                                      [jar]
+[INFO] hify-agent                                                         [jar]
+[INFO] hify-chat                                                          [jar]
+[INFO] hify-demo                                                          [jar]
+[INFO] hify-app                                                           [jar]
+[INFO] 
+[INFO] ------------------------< com.hify:hify-parent >------------------------
+[INFO] Building hify-parent 0.1.0-SNAPSHOT                               [1/11]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] ------------------------< com.hify:hify-common >------------------------
+[INFO] Building hify-common 0.1.0-SNAPSHOT                               [2/11]
+[INFO]   from hify-common/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-common ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-common ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-common ---
+[INFO] 
+[INFO] -----------------------< com.hify:hify-provider >-----------------------
+[INFO] Building hify-provider 0.1.0-SNAPSHOT                             [3/11]
+[INFO]   from hify-provider/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-provider ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-provider ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-provider ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-provider ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-provider ---
+[INFO] 
+[INFO] -------------------------< com.hify:hify-tool >-------------------------
+[INFO] Building hify-tool 0.1.0-SNAPSHOT                                 [4/11]
+[INFO]   from hify-tool/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-tool ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-tool ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-tool ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-tool ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-tool ---
+[INFO] 
+[INFO] -------------------------< com.hify:hify-mcp >--------------------------
+[INFO] Building hify-mcp 0.1.0-SNAPSHOT                                  [5/11]
+[INFO]   from hify-mcp/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-mcp ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-mcp ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-mcp ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-mcp ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-mcp ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] ----------------------< com.hify:hify-knowledge >-----------------------
+[INFO] Building hify-knowledge 0.1.0-SNAPSHOT                            [6/11]
+[INFO]   from hify-knowledge/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-knowledge ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-knowledge ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-knowledge ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-knowledge ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-knowledge ---
+[INFO] 
+[INFO] -----------------------< com.hify:hify-workflow >-----------------------
+[INFO] Building hify-workflow 0.1.0-SNAPSHOT                             [7/11]
+[INFO]   from hify-workflow/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-workflow ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-workflow/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-workflow/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-workflow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-workflow ---
+[INFO] Copying 2 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-workflow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-workflow ---
+[INFO] 
+[INFO] ------------------------< com.hify:hify-agent >-------------------------
+[INFO] Building hify-agent 0.1.0-SNAPSHOT                                [8/11]
+[INFO]   from hify-agent/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-agent ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-agent ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-agent ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-agent ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-agent ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] -------------------------< com.hify:hify-chat >-------------------------
+[INFO] Building hify-chat 0.1.0-SNAPSHOT                                 [9/11]
+[INFO]   from hify-chat/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-chat ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-chat/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-chat/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-chat ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-chat ---
+[INFO] Copying 3 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-chat ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-chat ---
+[INFO] 
+[INFO] -------------------------< com.hify:hify-demo >-------------------------
+[INFO] Building hify-demo 0.1.0-SNAPSHOT                                [10/11]
+[INFO]   from hify-demo/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-demo ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-demo ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-demo ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-demo ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-demo ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] -------------------------< com.hify:hify-app >--------------------------
+[INFO] Building hify-app 0.1.0-SNAPSHOT                                 [11/11]
+[INFO]   from hify-app/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-app ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 21 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-app ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-app ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-app ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-app ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -Xmx768m -XX:ReservedCodeCacheSize=128m -Dspring.test.context.cache.maxSize=2 -Dhify.test.startup-diagnostics=true -Xlog:gc*,safepoint:file=/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/hify-first-run-classes-laf58f3h/gc-%p.log:time,uptime,level,tags
+[INFO] Running com.hify.api.WorkflowKnowledgeReviewTest
+19:12:16.481 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.hify.api.WorkflowKnowledgeReviewTest]: WorkflowKnowledgeReviewTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+19:12:16.658 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.hify.HifyApplication for test class com.hify.api.WorkflowKnowledgeReviewTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-10-07T19:12:17.203+08:00 INFO  [main] [requestId=] c.h.api.WorkflowKnowledgeReviewTest - Starting WorkflowKnowledgeReviewTest using Java 17.0.19 with PID 37151 (started by weberzhao in /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app)
+2026-10-07T19:12:17.204+08:00 INFO  [main] [requestId=] c.h.api.WorkflowKnowledgeReviewTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-07T19:12:18.288+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-07T19:12:18.289+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-07T19:12:18.528+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 218 ms. Found 34 JPA repository interfaces.
+2026-10-07T19:12:19.340+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-10-07T19:12:19.643+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:workflow-knowledge-review user=SA
+2026-10-07T19:12:19.644+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-10-07T19:12:19.700+08:00 INFO  [main] [requestId=] org.flywaydb.core.FlywayExecutor - Database: jdbc:h2:mem:workflow-knowledge-review (H2 2.3)
+2026-10-07T19:12:19.716+08:00 WARN  [main] [requestId=] o.f.c.i.database.base.Database - Flyway upgrade recommended: H2 2.3.232 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.224.
+2026-10-07T19:12:19.949+08:00 INFO  [main] [requestId=] o.f.c.i.s.JdbcTableSchemaHistory - Schema history table "PUBLIC"."flyway_schema_history" does not exist yet
+2026-10-07T19:12:19.951+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbValidate - Successfully validated 24 migrations (execution time 00:00.216s)
+2026-10-07T19:12:19.958+08:00 INFO  [main] [requestId=] o.f.c.i.s.JdbcTableSchemaHistory - Creating Schema History table "PUBLIC"."flyway_schema_history" ...
+2026-10-07T19:12:19.982+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Current version of schema "PUBLIC": << Empty Schema >>
+2026-10-07T19:12:19.991+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "1 - baseline"
+2026-10-07T19:12:20.012+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "2 - demo item"
+2026-10-07T19:12:20.014+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "3 - run replan control"
+2026-10-07T19:12:20.021+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "4 - run context state"
+2026-10-07T19:12:20.044+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "5 - provider catalog"
+2026-10-07T19:12:20.057+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "6 - agent publishing"
+2026-10-07T19:12:20.090+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "7 - agent archive and tool bindings"
+2026-10-07T19:12:20.094+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "8 - backfill agent tool bindings"
+2026-10-07T19:12:20.098+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "9 - runtime capability and history"
+2026-10-07T19:12:20.114+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "10 - child agent task protocol"
+2026-10-07T19:12:20.120+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "11 - context memory catalog"
+2026-10-07T19:12:20.129+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "12 - history full text index"
+2026-10-07T19:12:20.130+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "13 - history vector index"
+2026-10-07T19:12:20.133+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "14 - knowledge catalog"
+2026-10-07T19:12:20.138+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "15 - knowledge search indexes"
+2026-10-07T19:12:20.142+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "16 - workflow runtime"
+2026-10-07T19:12:20.152+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "17 - mcp server registry"
+2026-10-07T19:12:20.164+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "18 - agent knowledge capability"
+2026-10-07T19:12:20.186+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "19 - agent workflow mcp capabilities"
+2026-10-07T19:12:20.197+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "20 - mcp encrypted credentials"
+2026-10-07T19:12:20.204+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "21 - workflow control terminal states"
+2026-10-07T19:12:20.217+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "22 - workflow interrupted state"
+2026-10-07T19:12:20.222+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "23 - history operation recovery"
+2026-10-07T19:12:20.235+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "24 - semantic embedding profiles"
+2026-10-07T19:12:20.258+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Successfully applied 24 migrations to schema "PUBLIC", now at version v24 (execution time 00:00.160s)
+2026-10-07T19:12:20.357+08:00 INFO  [main] [requestId=] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-07T19:12:20.388+08:00 INFO  [main] [requestId=] org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.13.Final
+2026-10-07T19:12:20.405+08:00 INFO  [main] [requestId=] o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-10-07T19:12:20.551+08:00 INFO  [main] [requestId=] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-07T19:12:20.591+08:00 INFO  [main] [requestId=] o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-07T19:12:21.635+08:00 INFO  [main] [requestId=] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-07T19:12:21.662+08:00 INFO  [main] [requestId=] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-07T19:12:22.083+08:00 INFO  [main] [requestId=] o.s.d.j.r.query.QueryEnhancerFactory - JSqlParser is in classpath; If applicable, JSqlParser will be used.
+2026-10-07T19:12:22.083+08:00 INFO  [main] [requestId=] o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-10-07T19:12:28.543+08:00 INFO  [main] [requestId=] c.b.m.s.MybatisPlusApplicationContextAware - Register ApplicationContext instances org.springframework.web.context.support.GenericWebApplicationContext@4f4c789f
+2026-10-07T19:12:30.214+08:00 INFO  [main] [requestId=] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-10-07T19:12:30.216+08:00 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-10-07T19:12:30.235+08:00 INFO  [main] [requestId=] o.s.b.a.e.web.EndpointLinksResolver - Exposing 2 endpoints beneath base path '/actuator'
+2026-10-07T19:12:30.260+08:00 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 44 ms
+2026-10-07T19:12:30.330+08:00 INFO  [main] [requestId=] c.h.api.WorkflowKnowledgeReviewTest - Started WorkflowKnowledgeReviewTest in 13.44 seconds (process running for 15.032)
+2026-10-07T19:12:30.836+08:00 INFO  [main] [requestId=fe934f1a-e941-41e5-9b95-8e3d4f64d906] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=122
+2026-10-07T19:12:30.950+08:00 INFO  [main] [requestId=eb01b8d7-d0bc-48d0-9bcf-e00fc067142a] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=4
+2026-10-07T19:12:31.079+08:00 INFO  [main] [requestId=ab1f9b81-7340-431b-ab19-5589a6250485] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=126
+2026-10-07T19:12:31.100+08:00 INFO  [main] [requestId=6928e2a6-4c73-41e3-b597-6e7c07ff3fc2] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=400 latencyMs=17
+2026-10-07T19:12:31.115+08:00 INFO  [main] [requestId=cbf9e5a4-151a-41da-8d7d-c7b8dc4cd083] c.hify.common.RequestLoggingFilter - http.request method=PUT path=/api/v1/workflows/2e3b133b-8a9c-42f7-a92a-932eccf37994 status=400 latencyMs=11
+2026-10-07T19:12:31.170+08:00 INFO  [main] [requestId=88b37e28-ea7a-4fc9-88e0-794757feec64] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/17feab22-8766-4341-80f6-08d82aad1018/runs status=409 latencyMs=45
+2026-10-07T19:12:31.214+08:00 INFO  [main] [requestId=2227d6c5-e329-46c7-8b31-7ba98d7e2e42] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=9
+2026-10-07T19:12:31.241+08:00 INFO  [main] [requestId=dd7bbf93-a0ff-4b27-b322-32f36b495fb3] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/d302dcb9-a728-4574-929f-d79e13449fe7/documents status=202 latencyMs=19
+2026-10-07T19:12:31.251+08:00 INFO  [main] [requestId=adebd5ba-5731-41eb-96f1-1528d75656d3] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/30efa130-de0f-4b37-9772-27d3814580f6 status=200 latencyMs=7
+2026-10-07T19:12:31.421+08:00 INFO  [main] [requestId=8613e9e1-2d85-44a7-9555-63c5592eb9f9] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/30efa130-de0f-4b37-9772-27d3814580f6 status=200 latencyMs=2
+2026-10-07T19:12:31.431+08:00 INFO  [main] [requestId=755553e2-f376-4fb5-b8e4-f41b166c1b7d] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/30efa130-de0f-4b37-9772-27d3814580f6/chunks status=200 latencyMs=7
+2026-10-07T19:12:31.444+08:00 INFO  [main] [requestId=fb94b777-3d78-4c3a-8d43-aa4bcd84b883] c.hify.common.RequestLoggingFilter - http.request method=DELETE path=/api/v1/documents/30efa130-de0f-4b37-9772-27d3814580f6 status=200 latencyMs=11
+2026-10-07T19:12:31.478+08:00 INFO  [main] [requestId=b58ae264-2a13-4c46-a0d5-7dd6c767e5c0] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=6
+2026-10-07T19:12:31.485+08:00 INFO  [main] [requestId=5d08d403-b028-431a-afe3-95c3f65c3251] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/32f84837-157c-47bb-bb08-81953f4b4166/documents status=202 latencyMs=5
+2026-10-07T19:12:31.487+08:00 INFO  [main] [requestId=ef19ad2e-f783-4223-adbf-601e3875a24e] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/82f81991-3adf-4c21-84ab-9f16f9df09bc status=200 latencyMs=1
+2026-10-07T19:12:31.544+08:00 INFO  [main] [requestId=438270a2-e447-4819-8629-be698ec9ae8b] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/82f81991-3adf-4c21-84ab-9f16f9df09bc status=200 latencyMs=5
+2026-10-07T19:12:31.550+08:00 INFO  [main] [requestId=12bc5c66-89dc-4f09-a098-81fb59716181] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=5
+2026-10-07T19:12:31.575+08:00 INFO  [main] [requestId=62a261bd-a263-49d5-95b2-3ef6a1b89652] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/10637f85-d790-46e3-b4e9-bd21c15b21b0/versions status=200 latencyMs=24
+2026-10-07T19:12:31.603+08:00 INFO  [main] [requestId=d30ba0db-0597-4177-840b-621391b7ddf4] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents status=201 latencyMs=26
+2026-10-07T19:12:31.616+08:00 INFO  [main] [requestId=b21c8535-9b45-4742-adeb-27f668bacd90] c.hify.common.RequestLoggingFilter - http.request method=PUT path=/api/v1/agents/e3ac6d73-230d-4b62-a9bc-ebcaf0e300d2/workflow-binding status=200 latencyMs=11
+2026-10-07T19:12:31.639+08:00 INFO  [main] [requestId=708759dd-184e-4bb7-a0b1-3d14c63077f1] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents/e3ac6d73-230d-4b62-a9bc-ebcaf0e300d2/publications status=200 latencyMs=21
+2026-10-07T19:12:31.649+08:00 INFO  [main] [requestId=e964fdd2-7e9a-4bda-9ca9-54efd04c7434] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations status=201 latencyMs=9
+2026-10-07T19:12:31.722+08:00 INFO  [main] [requestId=220538ba-253b-4844-8944-96e24ac5462d] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/297a6a27-7c67-4ace-865d-ecc610521b4d/runs status=202 latencyMs=72
+2026-10-07T19:12:31.738+08:00 INFO  [main] [requestId=4d4d1dca-0caf-4773-bb24-2e0b1122242e] c.hify.common.RequestLoggingFilter - http.request method=DELETE path=/api/v1/documents/82f81991-3adf-4c21-84ab-9f16f9df09bc status=200 latencyMs=11
+2026-10-07T19:12:31.759+08:00 INFO  [main] [requestId=6227c257-a52b-4027-a6de-24c3f0efa711] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/32f84837-157c-47bb-bb08-81953f4b4166/documents status=202 latencyMs=18
+2026-10-07T19:12:31.765+08:00 INFO  [main] [requestId=74a40407-6e0a-440a-8a6a-6603db75e364] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/dd52263a-03df-4817-9771-e545709f42bc status=200 latencyMs=4
+2026-10-07T19:12:31.964+08:00 INFO  [main] [requestId=3c055f5c-acc4-4d06-a0fc-ded96b40f2d1] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/dd52263a-03df-4817-9771-e545709f42bc status=200 latencyMs=20
+2026-10-07T19:12:32.085+08:00 INFO  [main] [requestId=c13432aa-d530-4c5d-8174-3241623c25ec] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/297a6a27-7c67-4ace-865d-ecc610521b4d/runs status=202 latencyMs=115
+2026-10-07T19:12:32.135+08:00 INFO  [main] [requestId=ab908a8c-dee8-48bd-b68e-dd1bb5075b04] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/10637f85-d790-46e3-b4e9-bd21c15b21b0/versions status=200 latencyMs=25
+2026-10-07T19:12:32.183+08:00 INFO  [main] [requestId=b71aa554-3294-421e-b4fb-4d9ce35c4550] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/8738f297-6784-46d8-9b5b-b89c41180537/runs status=202 latencyMs=44
+2026-10-07T19:12:32.236+08:00 INFO  [main] [requestId=07263f7a-eb43-493d-8b4e-60d397b3212d] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents/e3ac6d73-230d-4b62-a9bc-ebcaf0e300d2/publications status=200 latencyMs=50
+2026-10-07T19:12:32.365+08:00 INFO  [main] [requestId=67f65392-e109-4ef1-9949-8ad20170474a] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/eeedd4b1-5851-4fa1-a11f-bd7b35133780/runs status=202 latencyMs=126
+2026-10-07T19:12:32.368+08:00 INFO  [main] [requestId=e55dcd8d-d83d-47f8-89c4-c489b876f122] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/3f6e688f-8d13-4bbc-bf52-d641b4dc4e9a status=200 latencyMs=1
+2026-10-07T19:12:32.541+08:00 INFO  [main] [requestId=a22f48ff-4ec9-4b13-9885-bc352a535c7d] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/3f6e688f-8d13-4bbc-bf52-d641b4dc4e9a status=200 latencyMs=2
+2026-10-07T19:12:32.545+08:00 INFO  [main] [requestId=f7817d26-a5c4-4346-a7f1-d750687d1cf2] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations status=201 latencyMs=3
+2026-10-07T19:12:32.558+08:00 INFO  [main] [requestId=59691c34-c273-496f-8016-bf93b5f3b58b] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/33bd2ba8-bbbe-4c77-94f6-4557df5792da/runs status=202 latencyMs=11
+2026-10-07T19:12:32.560+08:00 INFO  [main] [requestId=c22aec1b-79ac-4ae5-b587-128719398bae] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/c337a268-6317-481a-854d-637ae7e76700 status=200 latencyMs=1
+2026-10-07T19:12:32.684+08:00 INFO  [main] [requestId=fbfc3112-336e-48d8-abaf-d19c2608453e] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/c337a268-6317-481a-854d-637ae7e76700 status=200 latencyMs=1
+2026-10-07T19:12:32.689+08:00 INFO  [main] [requestId=115a1deb-13f3-49dc-9ff3-dec092efef64] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/workflows/10637f85-d790-46e3-b4e9-bd21c15b21b0 status=200 latencyMs=3
+2026-10-07T19:12:32.694+08:00 INFO  [main] [requestId=37c7cbd8-f1d3-4465-8d2f-db0b047a801a] c.hify.common.RequestLoggingFilter - http.request method=DELETE path=/api/v1/knowledge-bases/32f84837-157c-47bb-bb08-81953f4b4166 status=200 latencyMs=4
+2026-10-07T19:12:32.707+08:00 INFO  [main] [requestId=6b751632-2816-44b2-b27d-b0bf08f31d86] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/297a6a27-7c67-4ace-865d-ecc610521b4d/runs status=202 latencyMs=12
+2026-10-07T19:12:32.712+08:00 INFO  [main] [requestId=97e780b9-ac6d-4ce2-b426-a2d7522d8f9d] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/10637f85-d790-46e3-b4e9-bd21c15b21b0/versions status=404 latencyMs=3
+2026-10-07T19:12:32.747+08:00 INFO  [main] [requestId=1811a28c-15f1-4995-909e-cf9b37947dde] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=4
+2026-10-07T19:12:32.754+08:00 INFO  [main] [requestId=3c0b00ed-c5f0-450b-9c38-634b18c14545] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/18d4fb4b-7e75-4b52-ad26-4644984169c6/documents status=202 latencyMs=5
+2026-10-07T19:12:32.758+08:00 INFO  [main] [requestId=66946870-1c21-4d36-9960-973ce0076018] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/8e34e045-3636-4590-b0e8-2a1ff6ddbf08 status=200 latencyMs=2
+2026-10-07T19:12:32.935+08:00 INFO  [main] [requestId=b0ae6eef-94cf-46c8-a718-e731d9fee613] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/8e34e045-3636-4590-b0e8-2a1ff6ddbf08 status=200 latencyMs=5
+2026-10-07T19:12:32.943+08:00 INFO  [main] [requestId=5889f305-dd26-4d93-800d-39ac150ecaac] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=7
+2026-10-07T19:12:32.960+08:00 INFO  [main] [requestId=35dc27be-6aa0-41db-8489-01e6d11f4d9a] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/bdd01e93-1fa7-4dbd-b158-6d59a9df6340/versions status=200 latencyMs=16
+2026-10-07T19:12:32.975+08:00 INFO  [main] [requestId=29088bf4-aece-4ff5-bfde-f13092768868] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/1a6d500e-d5d7-4f5d-8c7c-cc195ea197bd/runs status=202 latencyMs=13
+2026-10-07T19:12:33.000+08:00 INFO  [main] [requestId=db0e320b-ee18-4bc7-82dc-2e4ee93ed1a7] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=4
+2026-10-07T19:12:33.005+08:00 INFO  [main] [requestId=8b631025-91bd-408a-aa9c-a8d20fe829fb] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/8161bfa3-626e-46eb-a237-06b091e0a9a9/documents status=202 latencyMs=3
+2026-10-07T19:12:33.009+08:00 INFO  [main] [requestId=9efe26d8-75f7-438a-928b-35f88f599140] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/0cb5b724-4a30-4d75-8733-0bef69f45f29 status=200 latencyMs=3
+2026-10-07T19:12:33.189+08:00 INFO  [main] [requestId=2996d924-6cc0-4e4d-a1c6-9426f338a53b] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/0cb5b724-4a30-4d75-8733-0bef69f45f29 status=200 latencyMs=4
+2026-10-07T19:12:33.198+08:00 INFO  [main] [requestId=a6a6f96a-b413-43ae-985e-2b542887f84d] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=7
+2026-10-07T19:12:33.220+08:00 INFO  [main] [requestId=4628949e-b6d6-4d26-b62b-11a0884cc4fe] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/bf863bbe-e27d-4d13-b667-b43a9d705645/versions status=200 latencyMs=21
+2026-10-07T19:12:33.250+08:00 INFO  [main] [requestId=32e0d5ee-3827-445d-b77e-ccfdaca577fb] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/1434046a-192a-4c40-8cb2-09a2223feb86/runs status=202 latencyMs=23
+2026-10-07T19:12:33.266+08:00 INFO  [main] [requestId=b9f29132-9e18-483f-aa00-9b611e23a63d] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=3
+2026-10-07T19:12:33.273+08:00 INFO  [main] [requestId=cc780c9e-05ab-457a-ad61-0a91ec941549] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/262bbab1-58f1-4c31-bf43-1cf96aae1b8f/documents status=202 latencyMs=5
+2026-10-07T19:12:33.276+08:00 INFO  [main] [requestId=bf97ced7-e79e-4c0a-95e5-320c57dad10f] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/f189ff75-cad9-4670-8e40-d74cc0409ef5 status=200 latencyMs=1
+2026-10-07T19:12:33.474+08:00 INFO  [main] [requestId=7fb4a6a0-0519-492f-a856-c35b602908e2] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/f189ff75-cad9-4670-8e40-d74cc0409ef5 status=200 latencyMs=19
+2026-10-07T19:12:33.505+08:00 INFO  [main] [requestId=392865d7-74c0-42b5-9800-0e230ffede85] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=24
+2026-10-07T19:12:33.541+08:00 INFO  [main] [requestId=05725d77-ad0e-43f0-a30f-d88d2818de7f] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/f8e657ee-8807-40f5-a317-2556b2511bcc/versions status=200 latencyMs=33
+2026-10-07T19:12:33.561+08:00 INFO  [main] [requestId=25f87619-5dee-4daa-9baf-56ac2b2137ae] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/df5776d2-5e16-415e-bce6-b85a4e8a0600/runs status=202 latencyMs=16
+2026-10-07T19:12:33.579+08:00 INFO  [main] [requestId=6b553ac3-42e9-4d78-b7cb-3aecb7a03248] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=5
+2026-10-07T19:12:33.583+08:00 INFO  [main] [requestId=1bdfb388-3c7f-4652-95c3-02e73e5caea1] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/5a84de01-c14b-4aa3-8003-903d13856fd8/documents status=202 latencyMs=2
+2026-10-07T19:12:33.584+08:00 INFO  [main] [requestId=9e1080c3-6edd-4e37-aa48-195d8097529a] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/8094a8ac-945a-4e05-ae40-18909e40f58c status=200 latencyMs=0
+2026-10-07T19:12:33.714+08:00 INFO  [main] [requestId=00f58c1b-c99d-4adf-abc3-630478d27958] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/8094a8ac-945a-4e05-ae40-18909e40f58c status=200 latencyMs=3
+2026-10-07T19:12:33.720+08:00 INFO  [main] [requestId=6d14a90d-8f49-4ffd-9e43-334d7b216de7] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=4
+2026-10-07T19:12:33.730+08:00 INFO  [main] [requestId=6b4b7adc-0bfa-47e4-a629-d6c1fd30b642] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/a15eda94-bdba-4bfd-8cb7-999d3ad6c08c/versions status=200 latencyMs=9
+2026-10-07T19:12:33.733+08:00 INFO  [main] [requestId=16cf863b-01f7-4832-b729-599203eaef95] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=1
+2026-10-07T19:12:33.746+08:00 INFO  [main] [requestId=276848a5-3341-402f-bd81-c4483fe9214c] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/1c66784f-c2db-44ef-9ae7-9fc72e4d6fd2/runs status=202 latencyMs=11
+2026-10-07T19:12:33.765+08:00 INFO  [main] [requestId=03072433-1079-438c-8fe6-0b5386f8b68f] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=5
+2026-10-07T19:12:33.778+08:00 INFO  [main] [requestId=d498466b-a22c-438c-a24a-7a88cec193a4] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/204f179d-383c-45f7-9afe-c5291f40903e/documents status=202 latencyMs=10
+2026-10-07T19:12:33.783+08:00 INFO  [main] [requestId=e9c84cd8-a68e-47ad-be70-012f7b5fb2a2] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/3e179097-f32f-4a28-92dc-32d7ff09102f status=200 latencyMs=3
+2026-10-07T19:12:33.954+08:00 INFO  [main] [requestId=b6bc395e-11ac-44d1-b7fa-314adf7e0665] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/3e179097-f32f-4a28-92dc-32d7ff09102f status=200 latencyMs=11
+2026-10-07T19:12:34.009+08:00 INFO  [main] [requestId=68ce5c20-30bb-4ec8-8165-fbe5373b1793] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=51
+2026-10-07T19:12:34.045+08:00 INFO  [main] [requestId=02391111-f944-4341-b459-9be150b06024] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/5a5c0df2-98be-4e01-8b3b-a3d41f83066b/versions status=404 latencyMs=33
+2026-10-07T19:12:34.218+08:00 INFO  [main] [requestId=584e2e9b-afaa-4fe0-9df6-bfd18c3c56ec] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=19
+2026-10-07T19:12:34.238+08:00 INFO  [main] [requestId=3116d2c6-c9ef-4c7b-b363-f4abe91c5a04] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/ae529491-296d-47a8-9643-effd2c1d93a1/documents status=202 latencyMs=14
+2026-10-07T19:12:34.248+08:00 INFO  [main] [requestId=16baea31-2764-442f-9407-b6acc1082373] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/9394b79e-2833-43e8-bf45-9358776a21c5 status=200 latencyMs=7
+2026-10-07T19:12:34.429+08:00 INFO  [main] [requestId=4f3404e4-a144-4c5e-ad8a-96d0648d714a] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/9394b79e-2833-43e8-bf45-9358776a21c5 status=200 latencyMs=8
+2026-10-07T19:12:34.434+08:00 INFO  [main] [requestId=9bb4df64-68a5-4351-af3c-1f440912cb16] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=4
+2026-10-07T19:12:34.461+08:00 INFO  [main] [requestId=63b401e7-2f61-48dc-b061-156f5f690afb] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/648ca79d-0900-4571-84bb-8c1d858921ed/versions status=200 latencyMs=26
+2026-10-07T19:12:34.484+08:00 INFO  [main] [requestId=a88af5cc-0e5e-4dbf-9c43-d2a99616bff9] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/4676ce3c-1f60-43de-9a91-eb117ca20103/runs status=202 latencyMs=21
+2026-10-07T19:12:34.492+08:00 INFO  [main] [requestId=8ca5bd4e-eeb9-4adf-8fd9-fdf56bfb896a] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/4676ce3c-1f60-43de-9a91-eb117ca20103/runs status=202 latencyMs=7
+2026-10-07T19:12:34.503+08:00 INFO  [main] [requestId=0f93f67d-370c-4077-b31a-4c19cf02a4f4] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=2
+2026-10-07T19:12:34.507+08:00 INFO  [main] [requestId=451b5064-492b-45cb-a3a2-48677226656d] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=2
+2026-10-07T19:12:34.513+08:00 INFO  [main] [requestId=0a56b66e-1695-47bd-a820-ac198e26bb90] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/04ec3287-9199-408c-bbd6-a81533e19e61/versions status=200 latencyMs=5
+2026-10-07T19:12:34.518+08:00 INFO  [main] [requestId=db99e901-b375-4105-941c-9be62953f541] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents status=201 latencyMs=4
+2026-10-07T19:12:34.523+08:00 INFO  [main] [requestId=4654f204-2f3a-44aa-9a1f-bfc474663f17] c.hify.common.RequestLoggingFilter - http.request method=PUT path=/api/v1/agents/f582084c-8198-44b0-8766-a469aaecc099/workflow-binding status=200 latencyMs=4
+2026-10-07T19:12:34.533+08:00 INFO  [main] [requestId=b4a396d6-8314-4376-89ea-cee77cd31627] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents/f582084c-8198-44b0-8766-a469aaecc099/publications status=409 latencyMs=7
+2026-10-07T19:12:34.534+08:00 INFO  [main] [requestId=e0c768be-9071-4e42-ade3-92a200da4004] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/70808cf8-fc84-4d29-8807-19bde5a151b4/runs status=409 latencyMs=1
+2026-10-07T19:12:34.542+08:00 INFO  [main] [requestId=9da9272b-f7ee-4ff8-9e82-7d47b6bfea3f] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/04ec3287-9199-408c-bbd6-a81533e19e61/versions status=200 latencyMs=6
+2026-10-07T19:12:34.552+08:00 INFO  [main] [requestId=b83c594c-4c2a-44de-bf6c-465eba50d34f] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents/f582084c-8198-44b0-8766-a469aaecc099/publications status=200 latencyMs=9
+2026-10-07T19:12:34.566+08:00 INFO  [main] [requestId=68ad2d55-16d9-4b30-9d5e-f8268b122696] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=4
+2026-10-07T19:12:34.571+08:00 INFO  [main] [requestId=2809129c-7411-4f93-a992-8ae02497c988] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=4
+2026-10-07T19:12:34.580+08:00 INFO  [main] [requestId=c2a470c7-5299-456f-a381-88edd88e7a77] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/797c3cc4-74a1-46f4-a81b-3dc25be01e44/versions status=200 latencyMs=7
+2026-10-07T19:12:34.585+08:00 INFO  [main] [requestId=498baf6a-730a-48bb-9711-6502467a4bdd] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents status=201 latencyMs=4
+2026-10-07T19:12:34.591+08:00 INFO  [main] [requestId=632a68e6-a7d1-4aab-be42-251180cc3baf] c.hify.common.RequestLoggingFilter - http.request method=PUT path=/api/v1/agents/082fef9c-8545-4149-a344-a3f0152d9d7f/workflow-binding status=200 latencyMs=5
+2026-10-07T19:12:34.604+08:00 INFO  [main] [requestId=0ebf52bc-ac49-4c96-a5af-188b6146b156] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents/082fef9c-8545-4149-a344-a3f0152d9d7f/publications status=409 latencyMs=9
+2026-10-07T19:12:34.608+08:00 INFO  [main] [requestId=05e313d7-8740-4ee6-aa1c-b79a8100ddae] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/0af49b76-b40e-4ad0-bd63-76098c1d811d/runs status=409 latencyMs=3
+2026-10-07T19:12:34.627+08:00 INFO  [main] [requestId=edf2c8cc-aac4-49d1-bd22-a4e4842ae9a1] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/797c3cc4-74a1-46f4-a81b-3dc25be01e44/versions status=200 latencyMs=14
+2026-10-07T19:12:34.645+08:00 INFO  [main] [requestId=17bfe75a-cda3-4135-8918-f09d53b1a00b] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents/082fef9c-8545-4149-a344-a3f0152d9d7f/publications status=200 latencyMs=16
+2026-10-07T19:12:34.653+08:00 INFO  [main] [requestId=dddcb094-59b0-4e8f-b4b7-a75acf86bf0c] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=2
+2026-10-07T19:12:34.658+08:00 INFO  [main] [requestId=b2c3c3e5-1103-47e6-971d-94da759f4cf6] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=4
+2026-10-07T19:12:34.670+08:00 INFO  [main] [requestId=9547aa82-4529-4dc3-b1c8-67052827414f] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/16c7f80f-6d16-4368-bf8a-53495b5a7106/versions status=200 latencyMs=10
+2026-10-07T19:12:34.680+08:00 INFO  [main] [requestId=0314c9c9-7492-4f87-af6f-6e86a8392ea6] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents status=201 latencyMs=8
+2026-10-07T19:12:34.687+08:00 INFO  [main] [requestId=41fe3f8f-dce2-4ebf-86a3-11a31ff47ca7] c.hify.common.RequestLoggingFilter - http.request method=PUT path=/api/v1/agents/c4480473-3658-4774-9d74-389a90aa9f89/workflow-binding status=200 latencyMs=5
+2026-10-07T19:12:34.703+08:00 INFO  [main] [requestId=0fae9a39-f333-4d8a-8f32-c767041889f7] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents/c4480473-3658-4774-9d74-389a90aa9f89/publications status=409 latencyMs=13
+2026-10-07T19:12:34.705+08:00 INFO  [main] [requestId=6085286b-f937-4fcb-8350-ba7d6fa97694] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/99f5cf4f-a9e6-466b-acc6-a4ad737d2de8/runs status=409 latencyMs=1
+2026-10-07T19:12:34.713+08:00 INFO  [main] [requestId=68b383fc-833f-431a-8ee0-6442a567d438] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=2
+2026-10-07T19:12:34.718+08:00 INFO  [main] [requestId=d7467d9c-d371-483f-9311-baa3cbbca046] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=3
+2026-10-07T19:12:34.722+08:00 INFO  [main] [requestId=a567a85e-1b5e-4b79-aadb-d4cab0afbdb3] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=3
+2026-10-07T19:12:34.731+08:00 INFO  [main] [requestId=79541236-aad3-49f8-b427-6439a988331e] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/3d4067d4-52ae-4075-9f87-632457312175/versions status=200 latencyMs=8
+2026-10-07T19:12:34.735+08:00 INFO  [main] [requestId=b2503862-104e-4cbf-85f8-bc7e49154fd9] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents status=201 latencyMs=2
+2026-10-07T19:12:34.742+08:00 INFO  [main] [requestId=f79a5c96-4645-4ebe-8683-ed0cf5bf48e4] c.hify.common.RequestLoggingFilter - http.request method=PUT path=/api/v1/agents/f4c59920-7bbf-48e3-a1e3-298765da33ea/workflow-binding status=200 latencyMs=5
+2026-10-07T19:12:34.867+08:00 INFO  [main] [requestId=10d47d2a-2d81-42bb-9b0a-43e247e107d7] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=2
+2026-10-07T19:12:34.871+08:00 INFO  [main] [requestId=a22309b7-98f6-429b-8f6a-a3e00c2d3a8e] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/7a936e4b-2226-4360-a670-b348105583fa/documents status=202 latencyMs=3
+2026-10-07T19:12:34.873+08:00 INFO  [main] [requestId=2740db15-a632-4261-85e5-666359fb82a6] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/942a1823-baf5-48e4-b4ed-cb6e9c1caca9 status=200 latencyMs=1
+2026-10-07T19:12:35.041+08:00 INFO  [main] [requestId=38298238-bfde-41b3-a3d9-e291d9ecf944] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/942a1823-baf5-48e4-b4ed-cb6e9c1caca9 status=200 latencyMs=4
+2026-10-07T19:12:35.050+08:00 INFO  [main] [requestId=54fea6a7-1eb4-4ee6-8073-3bc76e92b104] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=7
+2026-10-07T19:12:35.065+08:00 INFO  [main] [requestId=9d0ffd70-f423-4355-b708-9b120a60dfd6] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/c51457c0-d994-40aa-b125-36617dc9bfde/versions status=200 latencyMs=14
+2026-10-07T19:12:35.071+08:00 INFO  [main] [requestId=d26d7f12-10d2-4a55-a824-f988d2988946] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents status=201 latencyMs=4
+2026-10-07T19:12:35.077+08:00 INFO  [main] [requestId=2f2c9a5b-0b42-42ce-bd2c-5af0078607c7] c.hify.common.RequestLoggingFilter - http.request method=PUT path=/api/v1/agents/aa8e953a-9471-496a-913d-f925e3e6c26a/workflow-binding status=200 latencyMs=5
+2026-10-07T19:12:35.085+08:00 INFO  [main] [requestId=a7b6963b-8316-4dc6-b9cb-dbc95cbbdb54] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents/aa8e953a-9471-496a-913d-f925e3e6c26a/publications status=200 latencyMs=7
+2026-10-07T19:12:35.087+08:00 INFO  [main] [requestId=d4b77f73-808d-4b52-9a72-ee07ec4dfd96] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations status=201 latencyMs=1
+2026-10-07T19:12:35.093+08:00 INFO  [main] [requestId=00f265ae-93c8-4be7-9c62-b4a20d11adcf] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/36741371-e71a-4de7-a59d-b74eef5db75c/runs status=202 latencyMs=5
+2026-10-07T19:12:35.095+08:00 INFO  [main] [requestId=f8171e0a-7356-4ad5-909a-e8f99c1471a6] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/05d1d5e5-2ae5-47df-b1ec-2c56a3734cfd status=200 latencyMs=0
+2026-10-07T19:12:35.166+08:00 INFO  [main] [requestId=2cc25824-443b-4e01-ad5a-3a2468f7824b] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/05d1d5e5-2ae5-47df-b1ec-2c56a3734cfd status=200 latencyMs=1
+2026-10-07T19:12:35.177+08:00 INFO  [main] [requestId=fd97eae1-e825-40cb-9aa2-f8a7105e8efe] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/71b9266e-e091-42e4-b8fa-f2af48b11dfe/runs status=202 latencyMs=9
+2026-10-07T19:12:35.195+08:00 INFO  [main] [requestId=d86a4532-6854-4251-a864-ccb08dc27ba4] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/36741371-e71a-4de7-a59d-b74eef5db75c/runs status=202 latencyMs=10
+2026-10-07T19:12:35.196+08:00 INFO  [main] [requestId=5a3f0f71-b288-49ae-94c7-17d6609b59e9] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/2cd5c4e2-a03e-47e2-8646-9efa4432895f status=200 latencyMs=0
+2026-10-07T19:12:35.220+08:00 INFO  [main] [requestId=82c33789-c3fa-4437-8511-ed1c62ef12cb] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/2cd5c4e2-a03e-47e2-8646-9efa4432895f status=200 latencyMs=2
+2026-10-07T19:12:35.242+08:00 INFO  [main] [requestId=b19cc46b-ef6f-46bb-9396-424a09342f3e] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/36741371-e71a-4de7-a59d-b74eef5db75c/runs status=202 latencyMs=18
+2026-10-07T19:12:35.244+08:00 INFO  [main] [requestId=d8ef4f79-8377-43f7-9750-651c8f320059] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/978cf1e8-ad12-45af-ac6f-340eafd97093 status=200 latencyMs=1
+2026-10-07T19:12:35.331+08:00 INFO  [main] [requestId=5bbb5735-4e54-48ae-9b54-1b8043ca8aa6] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/978cf1e8-ad12-45af-ac6f-340eafd97093 status=200 latencyMs=1
+2026-10-07T19:12:35.341+08:00 INFO  [main] [requestId=bed84968-3ae8-4c41-ad2d-465eef8c0ce7] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=1
+2026-10-07T19:12:35.343+08:00 INFO  [main] [requestId=0f118347-683e-4b29-821a-592e1ecdfd70] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/cd3572bf-f570-4408-a8ca-06cafd2c2823/documents status=202 latencyMs=1
+2026-10-07T19:12:35.345+08:00 INFO  [main] [requestId=a61e7a68-faca-4171-8dc7-e8136e4c8f62] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/e3fc4fcb-207a-4924-83bb-fdc4a28045ee status=200 latencyMs=0
+2026-10-07T19:12:35.463+08:00 INFO  [main] [requestId=2e1f48c6-5bdc-440f-a49c-31290813bc89] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/e3fc4fcb-207a-4924-83bb-fdc4a28045ee status=200 latencyMs=2
+2026-10-07T19:12:35.660+08:00 INFO  [main] [requestId=83e3344d-3763-4498-8359-921bfd49ec1d] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=1
+2026-10-07T19:12:35.662+08:00 INFO  [main] [requestId=4c6db253-6ba3-42ff-ad0d-21dffb334063] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/85747ddc-79e6-48fa-a94b-f45e34bd61bc/documents status=202 latencyMs=1
+2026-10-07T19:12:35.664+08:00 INFO  [main] [requestId=90d03300-1149-4ee0-8485-f95ef2d7ea52] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/70e9e68b-eac7-4466-ab41-5a4b48dccdb6 status=200 latencyMs=1
+2026-10-07T19:12:35.835+08:00 INFO  [main] [requestId=7141ed89-e336-493a-aca5-dee677ab517c] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/70e9e68b-eac7-4466-ab41-5a4b48dccdb6 status=200 latencyMs=4
+2026-10-07T19:12:35.861+08:00 INFO  [main] [requestId=8bf392a4-21b7-4bbd-8135-19354879ef34] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=4
+2026-10-07T19:12:35.884+08:00 INFO  [main] [requestId=c30f69c3-84cb-4880-b116-b0374a9cf778] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=3
+2026-10-07T19:12:35.888+08:00 INFO  [main] [requestId=30e2f9a0-28d0-4441-8bd6-fd8d19d74107] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/a8f25470-a8d5-4b3e-a196-d9dd5364cb02/documents status=202 latencyMs=3
+2026-10-07T19:12:35.892+08:00 INFO  [main] [requestId=7a968188-4117-4865-9885-88c6d2ed09d6] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/252457bf-bc0a-44f3-b9ea-35a81c89c74c status=200 latencyMs=2
+2026-10-07T19:12:36.097+08:00 INFO  [main] [requestId=588f3959-fc9b-41ad-847b-0818307f991b] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/252457bf-bc0a-44f3-b9ea-35a81c89c74c status=200 latencyMs=31
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 19.92 s -- in com.hify.api.WorkflowKnowledgeReviewTest
+[INFO] Running com.hify.api.KnowledgeAdmissionShutdownTest
+2026-10-07T19:12:36.243+08:00 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.hify.api.KnowledgeAdmissionShutdownTest]: KnowledgeAdmissionShutdownTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-07T19:12:36.260+08:00 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.hify.HifyApplication for test class com.hify.api.KnowledgeAdmissionShutdownTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-10-07T19:12:36.292+08:00 INFO  [main] [requestId=] c.h.a.KnowledgeAdmissionShutdownTest - Starting KnowledgeAdmissionShutdownTest using Java 17.0.19 with PID 37151 (started by weberzhao in /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app)
+2026-10-07T19:12:36.292+08:00 INFO  [main] [requestId=] c.h.a.KnowledgeAdmissionShutdownTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-07T19:12:36.660+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-07T19:12:36.660+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-07T19:12:36.812+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 133 ms. Found 34 JPA repository interfaces.
+2026-10-07T19:12:37.244+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Starting...
+2026-10-07T19:12:37.246+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Added connection conn10: url=jdbc:h2:mem:knowledge-admission-shutdown user=SA
+2026-10-07T19:12:37.246+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Start completed.
+2026-10-07T19:12:37.248+08:00 INFO  [main] [requestId=] org.flywaydb.core.FlywayExecutor - Database: jdbc:h2:mem:knowledge-admission-shutdown (H2 2.3)
+2026-10-07T19:12:37.248+08:00 WARN  [main] [requestId=] o.f.c.i.database.base.Database - Flyway upgrade recommended: H2 2.3.232 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.224.
+2026-10-07T19:12:37.265+08:00 INFO  [main] [requestId=] o.f.c.i.s.JdbcTableSchemaHistory - Schema history table "PUBLIC"."flyway_schema_history" does not exist yet
+2026-10-07T19:12:37.265+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbValidate - Successfully validated 24 migrations (execution time 00:00.015s)
+2026-10-07T19:12:37.266+08:00 INFO  [main] [requestId=] o.f.c.i.s.JdbcTableSchemaHistory - Creating Schema History table "PUBLIC"."flyway_schema_history" ...
+2026-10-07T19:12:37.271+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Current version of schema "PUBLIC": << Empty Schema >>
+2026-10-07T19:12:37.274+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "1 - baseline"
+2026-10-07T19:12:37.278+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "2 - demo item"
+2026-10-07T19:12:37.280+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "3 - run replan control"
+2026-10-07T19:12:37.282+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "4 - run context state"
+2026-10-07T19:12:37.288+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "5 - provider catalog"
+2026-10-07T19:12:37.291+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "6 - agent publishing"
+2026-10-07T19:12:37.300+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "7 - agent archive and tool bindings"
+2026-10-07T19:12:37.301+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "8 - backfill agent tool bindings"
+2026-10-07T19:12:37.302+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "9 - runtime capability and history"
+2026-10-07T19:12:37.307+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "10 - child agent task protocol"
+2026-10-07T19:12:37.309+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "11 - context memory catalog"
+2026-10-07T19:12:37.312+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "12 - history full text index"
+2026-10-07T19:12:37.312+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "13 - history vector index"
+2026-10-07T19:12:37.314+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "14 - knowledge catalog"
+2026-10-07T19:12:37.315+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "15 - knowledge search indexes"
+2026-10-07T19:12:37.321+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "16 - workflow runtime"
+2026-10-07T19:12:37.324+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "17 - mcp server registry"
+2026-10-07T19:12:37.326+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "18 - agent knowledge capability"
+2026-10-07T19:12:37.329+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "19 - agent workflow mcp capabilities"
+2026-10-07T19:12:37.331+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "20 - mcp encrypted credentials"
+2026-10-07T19:12:37.332+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "21 - workflow control terminal states"
+2026-10-07T19:12:37.333+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "22 - workflow interrupted state"
+2026-10-07T19:12:37.334+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "23 - history operation recovery"
+2026-10-07T19:12:37.336+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "24 - semantic embedding profiles"
+2026-10-07T19:12:37.340+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Successfully applied 24 migrations to schema "PUBLIC", now at version v24 (execution time 00:00.029s)
+2026-10-07T19:12:37.380+08:00 INFO  [main] [requestId=] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-07T19:12:37.382+08:00 INFO  [main] [requestId=] o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-10-07T19:12:37.389+08:00 INFO  [main] [requestId=] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-07T19:12:37.390+08:00 INFO  [main] [requestId=] o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-07T19:12:37.545+08:00 INFO  [main] [requestId=] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-07T19:12:37.547+08:00 INFO  [main] [requestId=] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-07T19:12:38.989+08:00 INFO  [main] [requestId=] c.b.m.s.MybatisPlusApplicationContextAware - Register ApplicationContext instances org.springframework.web.context.support.GenericWebApplicationContext@1a7ccbff
+2026-10-07T19:12:39.930+08:00 INFO  [main] [requestId=] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-10-07T19:12:39.934+08:00 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-10-07T19:12:39.942+08:00 INFO  [main] [requestId=] o.s.b.a.e.web.EndpointLinksResolver - Exposing 2 endpoints beneath base path '/actuator'
+2026-10-07T19:12:39.965+08:00 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 31 ms
+2026-10-07T19:12:40.061+08:00 INFO  [main] [requestId=] c.h.a.KnowledgeAdmissionShutdownTest - Started KnowledgeAdmissionShutdownTest in 3.797 seconds (process running for 24.764)
+2026-10-07T19:12:40.138+08:00 INFO  [main] [requestId=0c043f13-fcb0-45fb-8cf9-02f387bb6133] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=11
+2026-10-07T19:12:40.158+08:00 INFO  [main] [requestId=a65585d3-3d4e-4e78-ba5c-b45867e3c025] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=4
+2026-10-07T19:12:40.188+08:00 INFO  [main] [requestId=6bce898a-c06c-4d18-9874-47028a2aa2fc] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=28
+2026-10-07T19:12:40.193+08:00 INFO  [main] [requestId=1c7d7fe5-f2d3-4949-9ca6-d44b535d70a0] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=400 latencyMs=3
+2026-10-07T19:12:40.197+08:00 INFO  [main] [requestId=053e828c-6334-4699-bc01-2bc10f47b2ef] c.hify.common.RequestLoggingFilter - http.request method=PUT path=/api/v1/workflows/e24c1c33-36ab-4cd4-98b8-85f8cf7ec308 status=400 latencyMs=2
+2026-10-07T19:12:40.205+08:00 INFO  [main] [requestId=34f0dd03-6dc7-44a3-82e3-d3d7135923e1] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/e956f0be-3ce8-4a21-9af1-fe2fc225ee13/runs status=409 latencyMs=4
+2026-10-07T19:12:40.226+08:00 INFO  [main] [requestId=309f4b96-79e8-499f-a8e0-ff325a61f63a] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=6
+2026-10-07T19:12:40.232+08:00 INFO  [main] [requestId=9e71d990-0912-470d-8c4a-d0b3b5eb6593] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/53caf373-687c-44ab-b871-5eca3c3c1537/documents status=202 latencyMs=4
+2026-10-07T19:12:40.234+08:00 INFO  [main] [requestId=6bd4175d-d3c5-468c-ac80-c0747035b746] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/8690dfeb-e2c9-426f-8663-34724cd92093 status=200 latencyMs=1
+2026-10-07T19:12:40.351+08:00 INFO  [main] [requestId=82656673-4dd4-4daf-b43c-3774bcd88394] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/8690dfeb-e2c9-426f-8663-34724cd92093 status=200 latencyMs=4
+2026-10-07T19:12:40.364+08:00 INFO  [main] [requestId=3a38a977-859d-424e-ba37-97cd70c0da16] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/8690dfeb-e2c9-426f-8663-34724cd92093/chunks status=200 latencyMs=10
+2026-10-07T19:12:40.378+08:00 INFO  [main] [requestId=cce18efb-65b7-4a6a-900f-4878e69bc889] c.hify.common.RequestLoggingFilter - http.request method=DELETE path=/api/v1/documents/8690dfeb-e2c9-426f-8663-34724cd92093 status=200 latencyMs=13
+2026-10-07T19:12:40.433+08:00 INFO  [main] [requestId=8d8a6eeb-998f-4b29-af96-7364a4c6a412] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=8
+2026-10-07T19:12:40.450+08:00 INFO  [main] [requestId=2c4c46e7-67fc-46df-acf3-b9344a2aa844] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/76a3e671-4b91-4485-b73b-c3dedd4dbe77/documents status=202 latencyMs=14
+2026-10-07T19:12:40.461+08:00 INFO  [main] [requestId=545578ba-8257-4efc-9009-b2f0f805f3b9] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/c60557d5-a524-4e25-bbb5-ece72f0b6098 status=200 latencyMs=8
+2026-10-07T19:12:40.648+08:00 INFO  [main] [requestId=4ab17339-aad2-4ff2-81bd-a0e9e5522c3d] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/c60557d5-a524-4e25-bbb5-ece72f0b6098 status=200 latencyMs=19
+2026-10-07T19:12:40.661+08:00 INFO  [main] [requestId=cef17a75-6bbc-4240-ba2d-c889b8254f23] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=11
+2026-10-07T19:12:40.696+08:00 INFO  [main] [requestId=d6f86aa6-48ae-4985-8e28-221c3609c131] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/0ae18184-ca68-4390-9629-c8138dfba527/versions status=200 latencyMs=33
+2026-10-07T19:12:40.723+08:00 INFO  [main] [requestId=563f2e4d-014c-42b5-bd51-b1c3b7b749d3] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents status=201 latencyMs=24
+2026-10-07T19:12:40.729+08:00 INFO  [main] [requestId=d2f05572-b375-40e6-9db5-b33b1861eea4] c.hify.common.RequestLoggingFilter - http.request method=PUT path=/api/v1/agents/1d7dd212-3304-4f77-964b-bd0b59a1e513/workflow-binding status=200 latencyMs=5
+2026-10-07T19:12:40.739+08:00 INFO  [main] [requestId=1ba1cfbb-c5e4-4ab9-b9fe-24eb4916bb9f] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents/1d7dd212-3304-4f77-964b-bd0b59a1e513/publications status=200 latencyMs=8
+2026-10-07T19:12:40.753+08:00 INFO  [main] [requestId=2ebf74be-2be6-4eb1-a7d9-09285777fc97] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations status=201 latencyMs=14
+2026-10-07T19:12:40.794+08:00 INFO  [main] [requestId=4dd663d1-01d4-4932-982f-a798af957f8c] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/4781f537-d5e3-40d2-b17c-bc8c3e74bee9/runs status=202 latencyMs=39
+2026-10-07T19:12:40.797+08:00 INFO  [main] [requestId=b04ef88d-a373-4de6-af3e-190407dd16b8] c.hify.common.RequestLoggingFilter - http.request method=DELETE path=/api/v1/documents/c60557d5-a524-4e25-bbb5-ece72f0b6098 status=200 latencyMs=2
+2026-10-07T19:12:40.801+08:00 INFO  [main] [requestId=aa954b89-866d-479b-9572-196867ee9d5b] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/76a3e671-4b91-4485-b73b-c3dedd4dbe77/documents status=202 latencyMs=2
+2026-10-07T19:12:40.802+08:00 INFO  [main] [requestId=f06374b2-2ef6-4d6a-8011-5d7cb37e36a0] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/2b0a4fce-be05-4dd4-9765-9a6093b02e50 status=200 latencyMs=1
+2026-10-07T19:12:40.972+08:00 INFO  [main] [requestId=da98cea4-598b-43b6-8ee7-e1af3cb3af8c] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/2b0a4fce-be05-4dd4-9765-9a6093b02e50 status=200 latencyMs=6
+2026-10-07T19:12:41.013+08:00 INFO  [main] [requestId=bc1022cc-df44-4cee-8ab0-41e0f5f8fda4] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/4781f537-d5e3-40d2-b17c-bc8c3e74bee9/runs status=202 latencyMs=38
+2026-10-07T19:12:41.041+08:00 INFO  [main] [requestId=b163c48a-d934-454b-b225-5f00225eb190] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/0ae18184-ca68-4390-9629-c8138dfba527/versions status=200 latencyMs=18
+2026-10-07T19:12:41.065+08:00 INFO  [main] [requestId=008eee41-253a-4abe-bfa0-f1b6e93c5ab3] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/83a97057-cc94-45fb-9c23-5193d4a89828/runs status=202 latencyMs=20
+2026-10-07T19:12:41.074+08:00 INFO  [main] [requestId=b8da9c43-0506-4f9d-93d5-70fe3ad31fa1] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/agents/1d7dd212-3304-4f77-964b-bd0b59a1e513/publications status=200 latencyMs=8
+2026-10-07T19:12:41.095+08:00 INFO  [main] [requestId=0d9d886a-bf28-42c0-85b7-d73bb8a76e4b] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/bbfc764e-a4eb-4c51-a427-336b876470e3/runs status=202 latencyMs=20
+2026-10-07T19:12:41.098+08:00 INFO  [main] [requestId=3056184a-fdec-41a4-816b-fb3d09dbde00] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/5fc75f60-c6f5-4778-a77b-1e66edd34297 status=200 latencyMs=1
+2026-10-07T19:12:41.271+08:00 INFO  [main] [requestId=eb77b842-8bf9-4957-a615-18a02895d256] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/5fc75f60-c6f5-4778-a77b-1e66edd34297 status=200 latencyMs=1
+2026-10-07T19:12:41.277+08:00 INFO  [main] [requestId=9f559b6c-9395-4e83-bdbf-84c4fd91ee85] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations status=201 latencyMs=4
+2026-10-07T19:12:41.283+08:00 INFO  [main] [requestId=ffb3db39-ca70-4e02-9cbd-87771ebc3973] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/b2620512-bb7f-4e9c-94f6-162df8c12835/runs status=202 latencyMs=5
+2026-10-07T19:12:41.284+08:00 INFO  [main] [requestId=3d8d8edc-283e-40a1-af21-e258cef8f6c3] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/bfaa1c4e-8067-4418-9cb9-3eded0b48dc5 status=200 latencyMs=0
+2026-10-07T19:12:41.456+08:00 INFO  [main] [requestId=7e71f178-6d54-4f9e-a794-ab9e8d65da47] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/bfaa1c4e-8067-4418-9cb9-3eded0b48dc5 status=200 latencyMs=2
+2026-10-07T19:12:41.468+08:00 INFO  [main] [requestId=cc46d424-ce38-4a74-a2c2-60825be58e39] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/workflows/0ae18184-ca68-4390-9629-c8138dfba527 status=200 latencyMs=9
+2026-10-07T19:12:41.482+08:00 INFO  [main] [requestId=cd93a7f8-c97b-4cee-9bcb-4ae603bea665] c.hify.common.RequestLoggingFilter - http.request method=DELETE path=/api/v1/knowledge-bases/76a3e671-4b91-4485-b73b-c3dedd4dbe77 status=200 latencyMs=12
+2026-10-07T19:12:41.521+08:00 INFO  [main] [requestId=a9f8432b-4f23-4ed6-bb29-4b9624373799] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/4781f537-d5e3-40d2-b17c-bc8c3e74bee9/runs status=202 latencyMs=36
+2026-10-07T19:12:41.530+08:00 INFO  [main] [requestId=90625cff-97bc-49d4-9c83-460bc952b27d] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/0ae18184-ca68-4390-9629-c8138dfba527/versions status=404 latencyMs=5
+2026-10-07T19:12:41.549+08:00 INFO  [main] [requestId=3e77ca98-c8aa-4177-a0de-3bdf2458ae21] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=4
+2026-10-07T19:12:41.554+08:00 INFO  [main] [requestId=73532e2a-6e58-4c11-92d1-b772006192a6] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/966e5347-6325-4457-9a5e-5b09654947d7/documents status=202 latencyMs=3
+2026-10-07T19:12:41.557+08:00 INFO  [main] [requestId=a258c06a-fd4a-4c54-bdc4-345b20e6f17a] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/5604df5d-c5d3-41fb-8a4d-7e7e05375aed status=200 latencyMs=1
+2026-10-07T19:12:41.775+08:00 INFO  [main] [requestId=ac0efae8-acf4-4cc4-8410-8f41d16acecb] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/5604df5d-c5d3-41fb-8a4d-7e7e05375aed status=200 latencyMs=21
+2026-10-07T19:12:41.793+08:00 INFO  [main] [requestId=3b9d7e81-fa2f-4eb4-afe0-c8621ec978b9] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=13
+2026-10-07T19:12:41.813+08:00 INFO  [main] [requestId=0597c465-a6d3-451e-8e00-3bebb2740bb5] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/d97ef9c4-fa1b-4828-9921-7941cc40d867/versions status=200 latencyMs=15
+2026-10-07T19:12:41.828+08:00 INFO  [main] [requestId=5f592e8f-c1b9-4c23-82a5-1e489b46cb90] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/f6523bc1-6f86-4e04-b5d0-51e3dc151303/runs status=202 latencyMs=13
+2026-10-07T19:12:41.840+08:00 INFO  [main] [requestId=0f8543d5-5480-4e10-a8d9-02c7cbe14392] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=2
+2026-10-07T19:12:41.844+08:00 INFO  [main] [requestId=25b921a3-a30c-44e3-a3c7-14b693cff923] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/9f9dc8fb-ac52-4d09-8aea-3c9d444b037f/documents status=202 latencyMs=3
+2026-10-07T19:12:41.847+08:00 INFO  [main] [requestId=5083a15b-7c3d-48ce-b814-da047566496a] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/e256d643-7f91-4e2a-b4a3-17d1b73c68cf status=200 latencyMs=1
+2026-10-07T19:12:42.021+08:00 INFO  [main] [requestId=25046cfc-1f3e-45e1-9d99-aed70ed8a235] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/e256d643-7f91-4e2a-b4a3-17d1b73c68cf status=200 latencyMs=1
+2026-10-07T19:12:42.027+08:00 INFO  [main] [requestId=8505778f-56b9-4867-9445-a6c609d07952] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=4
+2026-10-07T19:12:42.031+08:00 INFO  [main] [requestId=1d91b434-4caf-473f-b2b5-374a25c8401f] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/aef19a73-2b8b-4705-8202-2d2950f925c7/versions status=200 latencyMs=3
+2026-10-07T19:12:42.037+08:00 INFO  [main] [requestId=bf0a35d0-15fe-4622-bc56-b7b1e4558bfa] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/6a2cbb00-a2b3-463e-86db-6f5b7d86ed5d/runs status=202 latencyMs=5
+2026-10-07T19:12:42.047+08:00 INFO  [main] [requestId=72236ff6-db80-440e-b0c7-3c913a923be5] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=1
+2026-10-07T19:12:42.051+08:00 INFO  [main] [requestId=d81ca552-6817-4999-9741-8a33ab6d1e07] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/37010d92-d67b-4940-91de-58a9128581b8/documents status=202 latencyMs=3
+2026-10-07T19:12:42.053+08:00 INFO  [main] [requestId=b1741179-da4e-4e4f-aa24-8a15df3ad6d9] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/383964fb-ef20-490d-9afd-fc94e3e24236 status=200 latencyMs=1
+2026-10-07T19:12:42.217+08:00 INFO  [main] [requestId=7bb19686-faec-484a-b298-5f622cd5d6a0] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/383964fb-ef20-490d-9afd-fc94e3e24236 status=200 latencyMs=3
+2026-10-07T19:12:42.226+08:00 INFO  [main] [requestId=bcb80423-d727-4a61-8db0-28b14907c35d] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=7
+2026-10-07T19:12:42.235+08:00 INFO  [main] [requestId=1c5b81dd-62c6-447d-8cc8-00b605624c51] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/9a7e53d7-9d6f-4e31-ad63-4be87e269e14/versions status=200 latencyMs=8
+2026-10-07T19:12:42.242+08:00 INFO  [main] [requestId=f32718b4-6aae-4e7d-bd1d-48d8342e250c] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/03f344dd-b2aa-4484-85ec-c7c31e163d08/runs status=202 latencyMs=6
+2026-10-07T19:12:42.261+08:00 INFO  [main] [requestId=1ec0de53-7b44-438b-a719-0c4ac56e6ced] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=3
+2026-10-07T19:12:42.264+08:00 INFO  [main] [requestId=d9b40676-587b-4aac-b663-26918079cf6b] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/e81634ac-5a38-4a8f-8096-96a049c70ae7/documents status=202 latencyMs=2
+2026-10-07T19:12:42.266+08:00 INFO  [main] [requestId=740aee88-5ee4-486e-8a73-371923e3d164] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/f0d79e43-ff67-4ae3-871e-e3e33180a465 status=200 latencyMs=0
+2026-10-07T19:12:42.433+08:00 INFO  [main] [requestId=6c0b2f53-36b5-436b-bdb4-0ba1feb32975] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/f0d79e43-ff67-4ae3-871e-e3e33180a465 status=200 latencyMs=3
+2026-10-07T19:12:42.440+08:00 INFO  [main] [requestId=da99f733-ea86-4e8e-9237-4419d140e6ed] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=6
+2026-10-07T19:12:42.451+08:00 INFO  [main] [requestId=07b08be8-667e-40ea-a4c2-fa49c8b6cd76] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/07a634dd-fc47-4852-a987-e6b7be4167f2/versions status=200 latencyMs=10
+2026-10-07T19:12:42.455+08:00 INFO  [main] [requestId=7d33d646-25cc-4aba-af1f-be0d80d923f5] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=3
+2026-10-07T19:12:42.482+08:00 INFO  [main] [requestId=a7f45025-1dfa-461d-a2cf-03ae87f32d9c] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/8a8203a7-a626-43bb-a241-c91d9d867496/runs status=202 latencyMs=24
+2026-10-07T19:12:42.497+08:00 INFO  [main] [requestId=3ef91856-1956-47fb-b80c-11ddc9ac04fa] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=2
+2026-10-07T19:12:42.499+08:00 INFO  [main] [requestId=6d536971-f2d4-4918-a39c-6e5f9ad0c2d3] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/2b7797d0-e344-4614-8506-9075398af86b/documents status=202 latencyMs=1
+2026-10-07T19:12:42.500+08:00 INFO  [main] [requestId=113bd254-d67f-4b66-8337-b147c8d8ca39] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/4e3f94e2-3263-4d86-8e2d-029002a32662 status=200 latencyMs=0
+2026-10-07T19:12:42.626+08:00 INFO  [main] [requestId=c7b9803f-4de1-43f9-b0f2-55a3450605f7] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/4e3f94e2-3263-4d86-8e2d-029002a32662 status=200 latencyMs=3
+2026-10-07T19:12:42.632+08:00 INFO  [main] [requestId=0153a165-6e8c-4a73-9149-c4715b66f5d8] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=4
+2026-10-07T19:12:42.638+08:00 INFO  [main] [requestId=df5949ab-a5ea-4440-bbc2-66f0259cc75a] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/0049f097-bec3-4dc6-9ec3-8d6b45f2a5d3/versions status=404 latencyMs=4
+2026-10-07T19:12:42.644+08:00 INFO  [main] [requestId=dafb6623-6cc2-4e8f-b7e3-022366830dd5] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=1
+2026-10-07T19:12:42.647+08:00 INFO  [main] [requestId=bdf00d8d-dd0a-438c-b7cc-ff5e06dcb3de] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/b8414d4f-9315-4925-836f-ca44c9064bc2/documents status=202 latencyMs=1
+2026-10-07T19:12:42.648+08:00 INFO  [main] [requestId=cf9a7042-b8b0-4856-8105-8d87eb376b42] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/cafa9a52-5531-4d3c-b294-834d34f0e5d8 status=200 latencyMs=0
+2026-10-07T19:12:42.814+08:00 INFO  [main] [requestId=4c48a402-d0b2-4354-8f04-735a5f5365a6] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/cafa9a52-5531-4d3c-b294-834d34f0e5d8 status=200 latencyMs=4
+2026-10-07T19:12:42.822+08:00 INFO  [main] [requestId=1b7479cf-50ef-42e6-b605-be0c7ed241ea] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=6
+2026-10-07T19:12:42.837+08:00 INFO  [main] [requestId=6d28ad80-b28d-48df-af8e-a43c07173c6b] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/f731de03-6011-485a-8f13-3566eb39b0dc/versions status=200 latencyMs=13
+2026-10-07T19:12:42.875+08:00 INFO  [main] [requestId=faa095b4-35a2-403c-941e-9c9357b8b8cd] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/02d037c3-8182-4028-9140-277c2b08298f/runs status=202 latencyMs=36
+2026-10-07T19:12:42.890+08:00 INFO  [main] [requestId=e0888669-200b-4c61-ad82-31838c62c012] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/02d037c3-8182-4028-9140-277c2b08298f/runs status=202 latencyMs=13
+2026-10-07T19:12:42.917+08:00 INFO  [main] [requestId=01f93431-11e3-4f16-b60a-78d35a3f2f3c] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=5
+2026-10-07T19:12:42.922+08:00 INFO  [main] [requestId=45160c92-8497-4a67-af1b-74c7d2266b70] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/c143008b-6eb0-4043-b264-8c4e31f70093/documents status=202 latencyMs=4
+2026-10-07T19:12:42.925+08:00 INFO  [main] [requestId=5e2f8183-f519-4ad3-9f59-1fb6e9dc7c58] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/438ff1d9-a691-430c-a124-04c012d73fcc status=200 latencyMs=2
+2026-10-07T19:12:43.112+08:00 INFO  [main] [requestId=88cbb868-4544-47a4-af3b-c34276709b44] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/438ff1d9-a691-430c-a124-04c012d73fcc status=200 latencyMs=10
+2026-10-07T19:12:43.302+08:00 INFO  [main] [requestId=b3c52952-4655-44cb-93ef-7f261aa97473] c.hify.common.RequestLoggingFilter - http.request method=DELETE path=/api/v1/documents/438ff1d9-a691-430c-a124-04c012d73fcc status=200 latencyMs=1
+2026-10-07T19:12:43.304+08:00 INFO  [main] [requestId=18e6f629-4449-4a51-8421-df378de6240c] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/c143008b-6eb0-4043-b264-8c4e31f70093/documents status=202 latencyMs=1
+2026-10-07T19:12:43.305+08:00 INFO  [main] [requestId=54dd4054-d506-4fe7-971a-b6f25c028fb7] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/842a8c39-3178-429c-bef9-9f429bdd2e02 status=200 latencyMs=0
+2026-10-07T19:12:43.454+08:00 INFO  [main] [requestId=2cbf6c3c-58dc-4fe0-bcd6-9312345148be] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/842a8c39-3178-429c-bef9-9f429bdd2e02 status=200 latencyMs=5
+2026-10-07T19:12:43.719+08:00 INFO  [main] [requestId=51eb583c-b623-406f-b4f9-0917fc835589] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=9
+2026-10-07T19:12:43.730+08:00 INFO  [main] [requestId=34b90946-21bc-494d-84c2-02aeb5f4ad9c] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows status=201 latencyMs=8
+2026-10-07T19:12:43.747+08:00 INFO  [main] [requestId=90fac4c1-170c-4daa-a2f2-b059168402df] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflows/b707f872-d4c7-4528-baa7-96d6d62c45c6/versions status=200 latencyMs=16
+2026-10-07T19:12:43.765+08:00 INFO  [main] [requestId=e84e300a-674f-40b1-aac8-9742b78fd897] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/workflow-versions/761684cb-0a6c-4037-b389-fe6508346de1/runs status=202 latencyMs=16
+2026-10-07T19:12:43.791+08:00 INFO  [main] [requestId=b06f0d27-e906-45bf-8179-890e708da504] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=8
+2026-10-07T19:12:43.805+08:00 INFO  [main] [requestId=2d94eac5-714b-4397-82c9-30c0b4d061ab] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/7d6d3954-7e0c-4d36-abd3-fea1bb646f0f/documents status=202 latencyMs=12
+2026-10-07T19:12:43.810+08:00 INFO  [main] [requestId=c3cf5502-db74-4966-a2b5-c0bcb4f3d698] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/ea3fb38a-0090-482b-b9c5-6673235889e7 status=200 latencyMs=4
+2026-10-07T19:12:44.027+08:00 INFO  [main] [requestId=beffdfde-67f0-4324-816c-9e3b24914913] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/ea3fb38a-0090-482b-b9c5-6673235889e7 status=200 latencyMs=21
+2026-10-07T19:12:44.547+08:00 INFO  [main] [requestId=d3b23493-6402-47a4-b430-eb7714ca2b3e] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=5
+2026-10-07T19:12:44.647+08:00 INFO  [main] [requestId=6d07d077-c8e4-4015-a9c2-b21c80f6de7e] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=3
+2026-10-07T19:12:44.652+08:00 INFO  [main] [requestId=87b9515d-51c3-4fe5-8583-64f64364d66b] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/bfc32356-ea30-4f0c-ae67-6fe252b68775/documents status=202 latencyMs=4
+2026-10-07T19:12:44.653+08:00 INFO  [main] [requestId=47c4ef86-be20-4e3d-896d-6d51c36445d9] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/0d05eacc-eef7-43da-85a4-321eecf5de5f status=200 latencyMs=1
+2026-10-07T19:12:44.715+08:00 INFO  [main] [requestId=c54adae2-1fe0-4db8-abf4-8630edad0f46] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/0d05eacc-eef7-43da-85a4-321eecf5de5f status=200 latencyMs=1
+2026-10-07T19:12:44.891+08:00 INFO  [main] [requestId=6bbeba19-5048-4604-82f2-fda4e6da32d1] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=5
+2026-10-07T19:12:44.896+08:00 INFO  [main] [requestId=5caeb2ad-a82e-429a-a8e7-586c3f8464ce] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/c45a49a0-830a-4e88-a9cc-439a402e4db5/documents status=202 latencyMs=4
+2026-10-07T19:12:44.902+08:00 INFO  [main] [requestId=624297cf-9cd2-4d70-ae1e-a0d041593ea0] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/579d4d97-658a-4550-8e07-f4f4f9f068ea status=200 latencyMs=1
+2026-10-07T19:12:45.067+08:00 INFO  [main] [requestId=0b36744c-d08a-4fbd-8c60-47b95a1867cf] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/579d4d97-658a-4550-8e07-f4f4f9f068ea status=200 latencyMs=8
+2026-10-07T19:12:45.218+08:00 INFO  [main] [requestId=fde5cd9c-da04-45dc-b936-ba0d19b38163] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=6
+2026-10-07T19:12:45.222+08:00 INFO  [main] [requestId=d85728be-baad-4c41-9c4f-c3ee0c8c010b] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=3
+2026-10-07T19:12:45.225+08:00 INFO  [main] [requestId=685dee9d-e694-4f75-bace-11742636313f] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/e88deba6-9919-4d5a-a94f-76c7173a9dda/documents status=202 latencyMs=2
+2026-10-07T19:12:45.226+08:00 INFO  [main] [requestId=332b130c-6bd5-4800-84f5-7504beeff3c7] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/41d30085-2b73-4ff3-a23b-f15ac9b09336 status=200 latencyMs=0
+2026-10-07T19:12:45.323+08:00 INFO  [main] [requestId=f2f7c50c-6716-4f31-860e-8c9f9355bdae] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/41d30085-2b73-4ff3-a23b-f15ac9b09336 status=200 latencyMs=2
+2026-10-07T19:12:45.412+08:00 INFO  [main] [requestId=82afbde6-5ba2-4784-aed3-e6a230d57660] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=1
+2026-10-07T19:12:45.413+08:00 INFO  [main] [requestId=eec39adc-cb58-4d57-9c99-0a15027ec8ed] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/25507734-1b62-4aa3-a2e3-37e3f08e0341/documents status=202 latencyMs=0
+2026-10-07T19:12:45.414+08:00 INFO  [main] [requestId=1e3fdfe3-3727-4b3d-8887-70e979baf292] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/71b14c8c-4d0d-453f-80d6-5c7a8a85653d status=200 latencyMs=0
+2026-10-07T19:12:45.534+08:00 INFO  [main] [requestId=dfee67ed-cac0-4af8-9fec-be30a6b47b8e] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/71b14c8c-4d0d-453f-80d6-5c7a8a85653d status=200 latencyMs=1
+2026-10-07T19:12:45.641+08:00 INFO  [main] [requestId=91099063-4b7f-4fc9-b9fb-023b44459b4d] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=2
+2026-10-07T19:12:45.643+08:00 INFO  [main] [requestId=14f0cab7-027a-4f4b-9321-8c386d70632a] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases/d9ecebe3-7d28-4fad-91e1-76ef11acd721/documents status=202 latencyMs=1
+2026-10-07T19:12:45.643+08:00 INFO  [main] [requestId=c047b6a4-f31d-4af1-b5cf-1cd0a934b8ad] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/c24a76ca-c50b-4eff-ab40-80c68b3d317e status=200 latencyMs=0
+2026-10-07T19:12:45.814+08:00 INFO  [main] [requestId=b30fde4c-ac17-4d67-8191-0a1f073c1e49] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/documents/c24a76ca-c50b-4eff-ab40-80c68b3d317e status=200 latencyMs=3
+2026-10-07T19:12:45.947+08:00 INFO  [main] [requestId=6542ef69-2b5c-4dbb-808b-8258c7463d22] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=2
+2026-10-07T19:12:46.066+08:00 INFO  [main] [requestId=ecf6eb54-fd9e-466f-834f-47844c4c131f] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/knowledge-bases status=201 latencyMs=2
+[INFO] Tests run: 22, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.07 s -- in com.hify.api.KnowledgeAdmissionShutdownTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 41, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for hify-parent 0.1.0-SNAPSHOT:
+[INFO] 
+[INFO] hify-parent ........................................ SUCCESS [  0.004 s]
+[INFO] hify-common ........................................ SUCCESS [  1.080 s]
+[INFO] hify-provider ...................................... SUCCESS [  0.086 s]
+[INFO] hify-tool .......................................... SUCCESS [  0.060 s]
+[INFO] hify-mcp ........................................... SUCCESS [  0.282 s]
+[INFO] hify-knowledge ..................................... SUCCESS [  0.055 s]
+[INFO] hify-workflow ...................................... SUCCESS [  0.064 s]
+[INFO] hify-agent ......................................... SUCCESS [  0.089 s]
+[INFO] hify-chat .......................................... SUCCESS [  0.113 s]
+[INFO] hify-demo .......................................... SUCCESS [  0.022 s]
+[INFO] hify-app ........................................... SUCCESS [ 34.339 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  36.631 s
+[INFO] Finished at: 2026-10-07T19:12:49+08:00
+[INFO] ------------------------------------------------------------------------
