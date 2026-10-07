@@ -287,7 +287,7 @@ class RunShutdownIntegrationTest {
                                                         CountDownLatch computed,CountDownLatch release) {
         ModelClientFactory factory = mock(ModelClientFactory.class);
         when(factory.create(any())).thenReturn(client);
-        return new SpringApplicationBuilder(HifyApplication.class).web(WebApplicationType.NONE)
+        var builder=new SpringApplicationBuilder(HifyApplication.class).web(WebApplicationType.NONE)
                 .initializers(context -> {
                     var beans=(GenericApplicationContext)context;
                     beans.registerBean("shutdownTestModelFactory",ModelClientFactory.class,()->factory,definition->definition.setPrimary(true));
@@ -303,9 +303,10 @@ class RunShutdownIntegrationTest {
                                 any(com.hify.runtime.CapabilitySnapshot.class),any(),any(),any(),any(com.hify.common.ExecutionControl.class));
                         return loop;
                     },definition->definition.setPrimary(true));
-                })
-                .run("--spring.datasource.url="+url, "--spring.datasource.username="+username(url), "--spring.datasource.password="+password(url),
-                        "--hify.run-timeout=120s", "--spring.main.banner-mode=off", "--logging.level.root=WARN");
+                });
+        return ShutdownStartupDiagnostics.capture(Boolean.getBoolean("hify.test.startup-diagnostics"),builder,
+                ()->builder.run("--spring.datasource.url="+url, "--spring.datasource.username="+username(url), "--spring.datasource.password="+password(url),
+                        "--hify.run-timeout=120s", "--spring.main.banner-mode=off", "--logging.level.root=WARN"),System.err::println);
     }
     private static String conversation(ConfigurableApplicationContext context) {
         return conversation(context,"demo-agent");

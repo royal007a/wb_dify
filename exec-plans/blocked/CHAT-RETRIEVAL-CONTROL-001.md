@@ -227,3 +227,11 @@ typecheck/build通过，零skip/flaky，预期类齐全。见
 独立JDK17/JUnit离线运行两个结构测试类22/22，无Spring/Maven/Docker/浏览器。
 这不是backend或完整门禁通过；没有改任何关停测试、生产类或45/60秒时限。
 干净archive验证及删除防护的突变另留原始记录，之后交固定范围review。
+
+### 慢启动分阶段诊断准备
+
+结构契约已在16b1959/0ad6070留存干净archive22项与6项突变证据，仍未重跑Maven。
+另在关停测试加默认关闭的startup-diagnostics：有限buffer、stage/bean白名单、
+最慢12项与线程CPU/墙钟；诊断RuntimeException不改原结果/异常。helper6项离线
+通过，没有实际启动Spring。45/60秒和全部业务断言未动，等待协调窗口做真实H2/PG
+受控复验；不把新增诊断当作根因或修复。详见startup-detail/README.md。
