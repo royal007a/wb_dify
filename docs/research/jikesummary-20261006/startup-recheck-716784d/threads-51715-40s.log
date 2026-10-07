@@ -1,0 +1,387 @@
+51715:
+2026-10-07 15:03:46
+Full thread dump Java HotSpot(TM) 64-Bit Server VM (17.0.19+9-LTS-183 mixed mode, sharing):
+
+Threads class SMR info:
+_java_thread_list=0x000060000007a9a0, length=20, elements={
+0x000000012b00e000, 0x000000010b809e00, 0x000000011b00aa00, 0x000000012b01ae00,
+0x000000012d809000, 0x000000012c80f800, 0x000000012d809600, 0x000000011b00b600,
+0x000000012b814a00, 0x000000012b816000, 0x0000000109008200, 0x00000001088c3c00,
+0x00000001088b5200, 0x0000000105065e00, 0x000000012b80b200, 0x0000000105275a00,
+0x000000010a18c000, 0x000000010f080e00, 0x000000010a1d4600, 0x00000001092bf200
+}
+
+"main" #1 prio=5 os_prio=31 cpu=10283.93ms elapsed=49.15s tid=0x000000012b00e000 nid=0xe03 runnable  [0x000000016b966000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.URLStreamHandler.parseURL(java.base@17.0.19/URLStreamHandler.java:326)
+	at sun.net.www.protocol.file.Handler.parseURL(java.base@17.0.19/Handler.java:67)
+	at java.net.URL.<init>(java.base@17.0.19/URL.java:703)
+	at java.net.URL.<init>(java.base@17.0.19/URL.java:569)
+	at jdk.internal.loader.URLClassPath$FileLoader.getResource(java.base@17.0.19/URLClassPath.java:1242)
+	at jdk.internal.loader.URLClassPath$FileLoader.findResource(java.base@17.0.19/URLClassPath.java:1230)
+	at jdk.internal.loader.URLClassPath.findResource(java.base@17.0.19/URLClassPath.java:298)
+	at jdk.internal.loader.BuiltinClassLoader.findResourceOnClassPath(java.base@17.0.19/BuiltinClassLoader.java:537)
+	at jdk.internal.loader.BuiltinClassLoader.findResource(java.base@17.0.19/BuiltinClassLoader.java:355)
+	at java.lang.ClassLoader.getResource(java.base@17.0.19/ClassLoader.java:1408)
+	at org.aspectj.apache.bcel.util.ClassLoaderRepository.toURL(ClassLoaderRepository.java:288)
+	at org.aspectj.apache.bcel.util.ClassLoaderRepository.loadClass(ClassLoaderRepository.java:305)
+	at org.aspectj.apache.bcel.util.ClassLoaderRepository.loadClass(ClassLoaderRepository.java:411)
+	at org.aspectj.weaver.reflect.Java15AnnotationFinder.getAnnotations(Java15AnnotationFinder.java:276)
+	at org.aspectj.weaver.reflect.Java15ReflectionBasedReferenceTypeDelegate.getAnnotationTypes(Java15ReflectionBasedReferenceTypeDelegate.java:93)
+	at org.aspectj.weaver.reflect.Java15ReflectionBasedReferenceTypeDelegate.hasAnnotation(Java15ReflectionBasedReferenceTypeDelegate.java:108)
+	at org.aspectj.weaver.ReferenceType.hasAnnotation(ReferenceType.java:223)
+	at org.aspectj.weaver.patterns.ExactAnnotationTypePattern.fastMatches(ExactAnnotationTypePattern.java:84)
+	at org.aspectj.weaver.patterns.WithinAnnotationPointcut.fastMatch(WithinAnnotationPointcut.java:85)
+	at org.aspectj.weaver.patterns.OrPointcut.fastMatch(OrPointcut.java:48)
+	at org.aspectj.weaver.internal.tools.PointcutExpressionImpl.couldMatchJoinPointsInType(PointcutExpressionImpl.java:91)
+	at org.springframework.aop.aspectj.AspectJExpressionPointcut.matches(AspectJExpressionPointcut.java:287)
+	at org.springframework.aop.support.AopUtils.canApply(AopUtils.java:240)
+	at org.springframework.aop.support.AopUtils.canApply(AopUtils.java:302)
+	at org.springframework.aop.support.AopUtils.findAdvisorsThatCanApply(AopUtils.java:334)
+	at org.springframework.aop.framework.autoproxy.AbstractAdvisorAutoProxyCreator.findAdvisorsThatCanApply(AbstractAdvisorAutoProxyCreator.java:136)
+	at org.springframework.aop.framework.autoproxy.AbstractAdvisorAutoProxyCreator.findEligibleAdvisors(AbstractAdvisorAutoProxyCreator.java:99)
+	at org.springframework.aop.framework.autoproxy.AbstractAdvisorAutoProxyCreator.getAdvicesAndAdvisorsForBean(AbstractAdvisorAutoProxyCreator.java:80)
+	at org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator.wrapIfNecessary(AbstractAutoProxyCreator.java:367)
+	at org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator.postProcessAfterInitialization(AbstractAutoProxyCreator.java:319)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsAfterInitialization(AbstractAutowireCapableBeanFactory.java:445)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1821)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:607)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$$Lambda$1015/0x0000007001515bc0.getObject(Unknown Source)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1739)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1627)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1387)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1224)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$$Lambda$1015/0x0000007001515bc0.getObject(Unknown Source)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1739)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1627)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1387)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1224)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$$Lambda$1015/0x0000007001515bc0.getObject(Unknown Source)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1739)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1627)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1387)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1224)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$$Lambda$1015/0x0000007001515bc0.getObject(Unknown Source)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1221)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1187)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1122)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318)
+	at org.springframework.boot.builder.SpringApplicationBuilder.run(SpringApplicationBuilder.java:149)
+	at com.hify.api.RunShutdownIntegrationTest.lambda$start$20(RunShutdownIntegrationTest.java:308)
+	at com.hify.api.RunShutdownIntegrationTest$$Lambda$667/0x00000070013d8420.get(Unknown Source)
+	at com.hify.api.ShutdownStartupDiagnostics.capture(ShutdownStartupDiagnostics.java:31)
+	at com.hify.api.RunShutdownIntegrationTest.start(RunShutdownIntegrationTest.java:307)
+	at com.hify.api.RunShutdownIntegrationTest.start(RunShutdownIntegrationTest.java:284)
+	at com.hify.api.RunShutdownIntegrationTest.start(RunShutdownIntegrationTest.java:281)
+	at com.hify.api.RunShutdownIntegrationTest.verifyModelShutdownRecovery(RunShutdownIntegrationTest.java:224)
+	at com.hify.api.RunShutdownIntegrationTest.verifyExpiredModelShutdownRecovery(RunShutdownIntegrationTest.java:207)
+	at com.hify.api.RunShutdownIntegrationTest.expiredInterruptedModelDoesNotRestartItsBudgetAfterActualApplicationRestart(RunShutdownIntegrationTest.java:201)
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(java.base@17.0.19/Native Method)
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(java.base@17.0.19/NativeMethodAccessorImpl.java:77)
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(java.base@17.0.19/DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(java.base@17.0.19/Method.java:568)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:767)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.SameThreadTimeoutInvocation.proceed(SameThreadTimeoutInvocation.java:45)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor$$Lambda$181/0x000000700108a9d8.apply(Unknown Source)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall$$Lambda$182/0x000000700108adf8.apply(Unknown Source)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$$Lambda$384/0x00000070010ce498.apply(Unknown Source)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$8(TestMethodTestDescriptor.java:217)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor$$Lambda$405/0x00000070010d0f18.execute(Unknown Source)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:213)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:138)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:68)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask$$Lambda$303/0x00000070010ba9b0.execute(Unknown Source)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask$$Lambda$302/0x00000070010ba788.invoke(Unknown Source)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask$$Lambda$301/0x00000070010ba360.execute(Unknown Source)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService$$Lambda$307/0x00000070010bb4c8.accept(Unknown Source)
+	at java.util.ArrayList.forEach(java.base@17.0.19/ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask$$Lambda$303/0x00000070010ba9b0.execute(Unknown Source)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask$$Lambda$302/0x00000070010ba788.invoke(Unknown Source)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask$$Lambda$301/0x00000070010ba360.execute(Unknown Source)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService$$Lambda$307/0x00000070010bb4c8.accept(Unknown Source)
+	at java.util.ArrayList.forEach(java.base@17.0.19/ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask$$Lambda$303/0x00000070010ba9b0.execute(Unknown Source)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask$$Lambda$302/0x00000070010ba788.invoke(Unknown Source)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask$$Lambda$301/0x00000070010ba360.execute(Unknown Source)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator$$Lambda$254/0x00000070010a64c8.accept(Unknown Source)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:194)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:150)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:124)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+
+"Reference Handler" #2 daemon prio=10 os_prio=31 cpu=4.92ms elapsed=49.02s tid=0x000000010b809e00 nid=0x4c03 waiting on condition  [0x000000016c84e000]
+   java.lang.Thread.State: RUNNABLE
+	at java.lang.ref.Reference.waitForReferencePendingList(java.base@17.0.19/Native Method)
+	at java.lang.ref.Reference.processPendingReferences(java.base@17.0.19/Reference.java:253)
+	at java.lang.ref.Reference$ReferenceHandler.run(java.base@17.0.19/Reference.java:215)
+
+"Finalizer" #3 daemon prio=8 os_prio=31 cpu=1.47ms elapsed=49.02s tid=0x000000011b00aa00 nid=0x4b03 in Object.wait()  [0x000000016ca5a000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(java.base@17.0.19/Native Method)
+	- waiting on <0x00000007d08ac578> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(java.base@17.0.19/ReferenceQueue.java:155)
+	- locked <0x00000007d08ac578> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(java.base@17.0.19/ReferenceQueue.java:176)
+	at java.lang.ref.Finalizer$FinalizerThread.run(java.base@17.0.19/Finalizer.java:172)
+
+"Signal Dispatcher" #4 daemon prio=9 os_prio=31 cpu=0.21ms elapsed=48.97s tid=0x000000012b01ae00 nid=0x7a03 waiting on condition  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Service Thread" #5 daemon prio=9 os_prio=31 cpu=29.84ms elapsed=48.97s tid=0x000000012d809000 nid=0x7903 runnable  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Monitor Deflation Thread" #6 daemon prio=9 os_prio=31 cpu=1.99ms elapsed=48.97s tid=0x000000012c80f800 nid=0x5e03 runnable  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C2 CompilerThread0" #7 daemon prio=9 os_prio=31 cpu=18309.65ms elapsed=48.97s tid=0x000000012d809600 nid=0x7803 runnable  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+   Compiling: 17303       4       org.aspectj.apache.bcel.classfile.Attribute::readAttribute (568 bytes)
+
+"C1 CompilerThread0" #10 daemon prio=9 os_prio=31 cpu=3354.05ms elapsed=48.97s tid=0x000000011b00b600 nid=0x7603 runnable  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+   No compile task
+
+"Sweeper thread" #11 daemon prio=9 os_prio=31 cpu=311.16ms elapsed=48.97s tid=0x000000012b814a00 nid=0x6003 runnable  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Notification Thread" #12 daemon prio=9 os_prio=31 cpu=0.03ms elapsed=48.97s tid=0x000000012b816000 nid=0x6103 runnable  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Common-Cleaner" #13 daemon prio=8 os_prio=31 cpu=21.69ms elapsed=48.95s tid=0x0000000109008200 nid=0x6303 in Object.wait()  [0x000000016dd52000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(java.base@17.0.19/Native Method)
+	- waiting on <0x00000007d08a8f78> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(java.base@17.0.19/ReferenceQueue.java:155)
+	- locked <0x00000007d08a8f78> (a java.lang.ref.ReferenceQueue$Lock)
+	at jdk.internal.ref.CleanerImpl.run(java.base@17.0.19/CleanerImpl.java:140)
+	at java.lang.Thread.run(java.base@17.0.19/Thread.java:842)
+	at jdk.internal.misc.InnocuousThread.run(java.base@17.0.19/InnocuousThread.java:162)
+
+"surefire-forkedjvm-stream-flusher" #14 daemon prio=5 os_prio=31 cpu=52.74ms elapsed=46.86s tid=0x00000001088c3c00 nid=0x7003 waiting on condition  [0x000000016df5e000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@17.0.19/Native Method)
+	- parking to wait for  <0x00000007d08a5af0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.parkNanos(java.base@17.0.19/LockSupport.java:252)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(java.base@17.0.19/AbstractQueuedSynchronizer.java:1672)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(java.base@17.0.19/ScheduledThreadPoolExecutor.java:1182)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(java.base@17.0.19/ScheduledThreadPoolExecutor.java:899)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(java.base@17.0.19/ThreadPoolExecutor.java:1062)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(java.base@17.0.19/ThreadPoolExecutor.java:1122)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(java.base@17.0.19/ThreadPoolExecutor.java:635)
+	at java.lang.Thread.run(java.base@17.0.19/Thread.java:842)
+
+"surefire-forkedjvm-command-thread" #16 daemon prio=5 os_prio=31 cpu=2.15ms elapsed=46.81s tid=0x00000001088b5200 nid=0x6503 runnable  [0x000000016e16a000]
+   java.lang.Thread.State: RUNNABLE
+	at java.io.FileInputStream.readBytes(java.base@17.0.19/Native Method)
+	at java.io.FileInputStream.read(java.base@17.0.19/FileInputStream.java:276)
+	at java.io.BufferedInputStream.read1(java.base@17.0.19/BufferedInputStream.java:282)
+	at java.io.BufferedInputStream.read(java.base@17.0.19/BufferedInputStream.java:343)
+	- locked <0x00000007d08a9178> (a java.io.BufferedInputStream)
+	at java.io.BufferedInputStream.fill(java.base@17.0.19/BufferedInputStream.java:244)
+	at java.io.BufferedInputStream.read1(java.base@17.0.19/BufferedInputStream.java:284)
+	at java.io.BufferedInputStream.read(java.base@17.0.19/BufferedInputStream.java:343)
+	- locked <0x00000007d08a91a0> (a java.io.BufferedInputStream)
+	at org.apache.maven.surefire.api.util.internal.Channels$3.readImpl(Channels.java:169)
+	at org.apache.maven.surefire.api.util.internal.AbstractNoninterruptibleReadableChannel.read(AbstractNoninterruptibleReadableChannel.java:50)
+	at org.apache.maven.surefire.api.stream.AbstractStreamDecoder.read(AbstractStreamDecoder.java:430)
+	at org.apache.maven.surefire.api.stream.AbstractStreamDecoder.read(AbstractStreamDecoder.java:419)
+	at org.apache.maven.surefire.api.stream.AbstractStreamDecoder.readMessageType(AbstractStreamDecoder.java:116)
+	at org.apache.maven.surefire.booter.stream.CommandDecoder.decode(CommandDecoder.java:77)
+	at org.apache.maven.surefire.booter.spi.CommandChannelDecoder.decode(CommandChannelDecoder.java:60)
+	at org.apache.maven.surefire.booter.CommandReader$CommandRunnable.run(CommandReader.java:290)
+	at java.lang.Thread.run(java.base@17.0.19/Thread.java:842)
+
+"junit-jupiter-timeout-watcher" #18 prio=10 os_prio=31 cpu=0.06ms elapsed=39.58s tid=0x0000000105065e00 nid=0x590b waiting on condition  [0x000000016edb2000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@17.0.19/Native Method)
+	- parking to wait for  <0x00000007d09337d0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.parkNanos(java.base@17.0.19/LockSupport.java:252)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(java.base@17.0.19/AbstractQueuedSynchronizer.java:1672)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(java.base@17.0.19/ScheduledThreadPoolExecutor.java:1182)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(java.base@17.0.19/ScheduledThreadPoolExecutor.java:899)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(java.base@17.0.19/ThreadPoolExecutor.java:1062)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(java.base@17.0.19/ThreadPoolExecutor.java:1122)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(java.base@17.0.19/ThreadPoolExecutor.java:635)
+	at java.lang.Thread.run(java.base@17.0.19/Thread.java:842)
+
+"process reaper" #19 daemon prio=10 os_prio=31 cpu=1.13ms elapsed=39.05s tid=0x000000012b80b200 nid=0x8203 waiting on condition  [0x000000016ca9a000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@17.0.19/Native Method)
+	- parking to wait for  <0x00000007d0933a20> (a java.util.concurrent.SynchronousQueue$TransferStack)
+	at java.util.concurrent.locks.LockSupport.parkNanos(java.base@17.0.19/LockSupport.java:252)
+	at java.util.concurrent.SynchronousQueue$TransferStack.transfer(java.base@17.0.19/SynchronousQueue.java:401)
+	at java.util.concurrent.SynchronousQueue.poll(java.base@17.0.19/SynchronousQueue.java:903)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(java.base@17.0.19/ThreadPoolExecutor.java:1061)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(java.base@17.0.19/ThreadPoolExecutor.java:1122)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(java.base@17.0.19/ThreadPoolExecutor.java:635)
+	at java.lang.Thread.run(java.base@17.0.19/Thread.java:842)
+
+"Attach Listener" #20 daemon prio=9 os_prio=31 cpu=5.75ms elapsed=38.80s tid=0x0000000105275a00 nid=0x8303 waiting on condition  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"HikariPool-1 housekeeper" #24 daemon prio=5 os_prio=31 cpu=0.26ms elapsed=25.26s tid=0x000000010a18c000 nid=0xa21b waiting on condition  [0x000000016f9fa000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@17.0.19/Native Method)
+	- parking to wait for  <0x00000007d212e8d0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.parkNanos(java.base@17.0.19/LockSupport.java:252)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(java.base@17.0.19/AbstractQueuedSynchronizer.java:1672)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(java.base@17.0.19/ScheduledThreadPoolExecutor.java:1182)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(java.base@17.0.19/ScheduledThreadPoolExecutor.java:899)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(java.base@17.0.19/ThreadPoolExecutor.java:1062)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(java.base@17.0.19/ThreadPoolExecutor.java:1122)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(java.base@17.0.19/ThreadPoolExecutor.java:635)
+	at java.lang.Thread.run(java.base@17.0.19/Thread.java:842)
+
+"HttpClient-1-SelectorManager" #27 daemon prio=5 os_prio=31 cpu=2.37ms elapsed=11.99s tid=0x000000010f080e00 nid=0xa00f runnable  [0x000000016fc06000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.KQueue.poll(java.base@17.0.19/Native Method)
+	at sun.nio.ch.KQueueSelectorImpl.doSelect(java.base@17.0.19/KQueueSelectorImpl.java:122)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(java.base@17.0.19/SelectorImpl.java:129)
+	- locked <0x00000007d7cc2298> (a sun.nio.ch.Util$2)
+	- locked <0x00000007d7cc2240> (a sun.nio.ch.KQueueSelectorImpl)
+	at sun.nio.ch.SelectorImpl.select(java.base@17.0.19/SelectorImpl.java:141)
+	at jdk.internal.net.http.HttpClientImpl$SelectorManager.run(java.net.http@17.0.19/HttpClientImpl.java:1296)
+
+"HttpClient-2-SelectorManager" #28 daemon prio=5 os_prio=31 cpu=0.11ms elapsed=1.78s tid=0x000000010a1d4600 nid=0x9f0f runnable  [0x000000016fe12000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.KQueue.poll(java.base@17.0.19/Native Method)
+	at sun.nio.ch.KQueueSelectorImpl.doSelect(java.base@17.0.19/KQueueSelectorImpl.java:122)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(java.base@17.0.19/SelectorImpl.java:129)
+	- locked <0x00000007d7c611d8> (a sun.nio.ch.Util$2)
+	- locked <0x00000007d7c61180> (a sun.nio.ch.KQueueSelectorImpl)
+	at sun.nio.ch.SelectorImpl.select(java.base@17.0.19/SelectorImpl.java:141)
+	at jdk.internal.net.http.HttpClientImpl$SelectorManager.run(java.net.http@17.0.19/HttpClientImpl.java:1296)
+
+"C2 CompilerThread1" #8 daemon prio=9 os_prio=31 cpu=402.47ms elapsed=0.62s tid=0x00000001092bf200 nid=0x9e03 runnable  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+   Compiling: 17330       4       org.springframework.asm.Frame::execute (2292 bytes)
+
+"VM Thread" os_prio=31 cpu=62.91ms elapsed=49.02s tid=0x000000010b104560 nid=0x4803 runnable  
+
+"GC Thread#0" os_prio=31 cpu=90.21ms elapsed=49.15s tid=0x000000010b005a20 nid=0x3503 runnable  
+
+"GC Thread#1" os_prio=31 cpu=114.64ms elapsed=45.56s tid=0x000000010af0ed80 nid=0x6e03 runnable  
+
+"GC Thread#2" os_prio=31 cpu=84.60ms elapsed=45.56s tid=0x000000010b306e00 nid=0x6d03 runnable  
+
+"GC Thread#3" os_prio=31 cpu=90.97ms elapsed=45.56s tid=0x000000010af0f030 nid=0x6803 runnable  
+
+"GC Thread#4" os_prio=31 cpu=127.92ms elapsed=45.56s tid=0x000000012ae0c050 nid=0x6b03 runnable  
+
+"GC Thread#5" os_prio=31 cpu=63.89ms elapsed=45.56s tid=0x000000012ae0c4d0 nid=0x6903 runnable  
+
+"GC Thread#6" os_prio=31 cpu=80.49ms elapsed=36.91s tid=0x000000012af0d2c0 nid=0xa703 runnable  
+
+"GC Thread#7" os_prio=31 cpu=84.46ms elapsed=36.91s tid=0x000000010b41fd60 nid=0x8403 runnable  
+
+"GC Thread#8" os_prio=31 cpu=84.03ms elapsed=36.91s tid=0x000000010b11bd50 nid=0xa503 runnable  
+
+"G1 Main Marker" os_prio=31 cpu=2.51ms elapsed=49.15s tid=0x000000010af044b0 nid=0x2f03 runnable  
+
+"G1 Conc#0" os_prio=31 cpu=97.03ms elapsed=49.15s tid=0x000000010b3041a0 nid=0x3103 runnable  
+
+"G1 Conc#1" os_prio=31 cpu=98.35ms elapsed=36.90s tid=0x000000010af25950 nid=0x8603 runnable  
+
+"G1 Refine#0" os_prio=31 cpu=8.61ms elapsed=49.15s tid=0x000000010af06600 nid=0x5303 runnable  
+
+"G1 Service" os_prio=31 cpu=5.72ms elapsed=49.15s tid=0x000000012ae083d0 nid=0x5203 runnable  
+
+"VM Periodic Task Thread" os_prio=31 cpu=15.55ms elapsed=48.97s tid=0x000000010b007770 nid=0x6203 waiting on condition  
+
+JNI global refs: 24, weak refs: 9
+

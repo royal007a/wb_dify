@@ -33,6 +33,10 @@ shutdown-diagnostic整段时间对照，不能单独冒充整个测试方法耗�
 
 ## 已执行与未执行
 
+更新：真实 H2 接线已在 `../startup-recheck-716784d/README.md` 所述窄测中执行，
+30 项有 1 个到期恢复超时 error，且与其他项目 e2e 负载重叠。下面为最初离线阶段记录，
+不能再用其“未执行真实接线”描述最新状态；PG 和完整六 scope 仍未因此收口。
+
 JDK17.0.19，Boot3.4.5/Core6.2.6、JUnit5.11.4。独立helper测试6/6成功（约0.4秒），
 原日志helper-first.log保留：默认禁用无输出/不换recorder、白名单脱敏、输出限行、
 sink失败保留原异常、sink失败保留成功结果、中断位不清除。

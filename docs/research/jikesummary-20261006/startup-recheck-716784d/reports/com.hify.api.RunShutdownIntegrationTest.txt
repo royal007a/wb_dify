@@ -1,0 +1,17 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.api.RunShutdownIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 69.13 s <<< FAILURE! -- in com.hify.api.RunShutdownIntegrationTest
+com.hify.api.RunShutdownIntegrationTest.expiredInterruptedModelDoesNotRestartItsBudgetAfterActualApplicationRestart -- Time elapsed: 45.85 s <<< ERROR!
+java.util.concurrent.TimeoutException: expiredInterruptedModelDoesNotRestartItsBudgetAfterActualApplicationRestart() timed out after 45 seconds
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	Suppressed: java.lang.InterruptedException
+		at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer.tryAcquireSharedNanos(AbstractQueuedSynchronizer.java:1081)
+		at java.base/java.util.concurrent.CountDownLatch.await(CountDownLatch.java:276)
+		at com.hify.api.RunShutdownIntegrationTest.verifyModelShutdownRecovery(RunShutdownIntegrationTest.java:228)
+		at com.hify.api.RunShutdownIntegrationTest.verifyExpiredModelShutdownRecovery(RunShutdownIntegrationTest.java:207)
+		at com.hify.api.RunShutdownIntegrationTest.expiredInterruptedModelDoesNotRestartItsBudgetAfterActualApplicationRestart(RunShutdownIntegrationTest.java:201)
+		at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+		... 2 more
+
