@@ -1,0 +1,15 @@
+diff --git a/backend/hify-chat/src/main/java/com/hify/application/RunApplicationService.java b/backend/hify-chat/src/main/java/com/hify/application/RunApplicationService.java
+index 4a866a4..42cf9bc 100644
+--- a/backend/hify-chat/src/main/java/com/hify/application/RunApplicationService.java
++++ b/backend/hify-chat/src/main/java/com/hify/application/RunApplicationService.java
+@@ -864,7 +864,9 @@ public class RunApplicationService {
+ 
+     private String writeMessages(List<RuntimeMessage> value) {
+         try {
+-            return objectMapper.writeValueAsString(value);
++            return objectMapper.writeValueAsString(value.stream().map(message ->
++                    "system".equals(message.role()) ? new RuntimeMessage("context_data", message.content(),
++                            message.toolCallId(), message.toolCalls()) : message).toList());
+         } catch (Exception exception) {
+             throw new IllegalStateException("Could not serialize Run checkpoint", exception);
+         }
