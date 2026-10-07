@@ -1422,6 +1422,67 @@ SHA-256 `050c7974f0c7c75e7faf08ccb09ca1d34a9f5f18c5e01ef3f972553f4e671520`。
   输出，不是完整故障原文；此前原始 Maven/JUnit/dump 单独留存才可补全证据。不能因
   一次复跑变绿就把 AOP、资源压力或别人的测试写成已证明原因，也不默认把整段异常暴露。
 
+## C078：知识依赖——保持当前说明准确，不把历史快照改成“最新”
+
+来源：`上下文工程/11 - 09｜信息散落：知识来源不唯一且更新不及时.pdf`，5 页，
+评论区 2 条。SHA-256 `b5fd034a4d62d6039f8acb4598c9eab98c574fe35955d6cf30606bd95d79c0a3`。
+全文和评论已读，渲染核对 p2–4 的来源映射示例、自动同步提示词与总结图；源码核对
+基线 `1a82530`。本轮没有运行连接器、自动更新、测试或部署。
+
+### 机制与适用范围
+
+- p1 把坏味道界定为：知识虽进入仓库，外部需求/接口已变化，仓库却还指导 Agent
+  精确执行旧目标。问题不是缺少文档数量，而是来源、更新责任和改变触发链脱节。
+- p2 给出 SOURCE.md 形式的“仓库文件→外部来源→更新时机”，再用 Skill 拉取、
+  对比、更新并提交 PR；按需来源需询问。示例里每周一、CI 更新、PR 合并是不同
+  触发条件，不能全改为定时覆盖。PR 也只是评审入口，不是变化已正确/已部署的证明。
+- p3 对无稳定来源的个人词表建议会话前询问。该方法依赖用户知道并报告变化，
+  “询问过”不能成为信息一定最新的证据；不应为了形式合规每次打断无关任务。
+- p3–4 对 OpenWiki 的归属、连接器与自动维护能力是**课程说法**；本轮未检查其
+  仓库版本、实现、权限和实际同步，不把这些内容纳入已验证竞品事实或安装建议。
+  评论提出还同步 PRD 评论区，属于读者建议；评论/讨论也需确认是否已经形成批准的变更。
+
+本项目的取舍：更新来源应产生可审核的候选差异，不直接改变发布规则、可信指令或
+过去证据。来源新不等于来源真、获授权或适用于当前固定版本。自动读取还需考虑来源
+凭据、出站边界、重定向、删除/重命名、部分读取失败；这不是仅增加一个 cron 就解决。
+本轮不创建 Skill、调度器或新的外部数据流。
+
+### 与 hify 当前代码的对应
+
+| 已有行为 | 源码 | 不是哪种能力 |
+| --- | --- | --- |
+| 发布时冻结语料和 manifest digest，固定到 AgentVersion | `AgentServiceImpl.publish:304–345`、`KnowledgeRetrievalService.freeze:61–79` | 不是自动获取外部文档，也不是“旧会话永远看到最新库”。 |
+| 管理响应计算 hasUnpublishedChanges，知识部分比较当前与发布时 digest | `AgentServiceImpl.response:396–413,currentKnowledge:558–568` | 已有差异提示，不应再列成从零开发；currentKnowledge 异常返回 UNAVAILABLE，不足以诊断具体故障或证明来源变更。 |
+| searchRevision 按 corpusVersionId 查询；固定 AgentVersion / Run 快照 | `KnowledgeRetrievalService:97–109`、`RunApplicationService:260–272` | 可复现性与实时新鲜度是两件事，新发布不能偷偷重绑旧 Run。 |
+| TXT/Markdown 上传、创建索引任务 | `KnowledgeApplicationService.upload:94–113` | 用户上传内容进入本地库，不是已有 Wiki/邮件/网页同步连接器；上传成功也不等于索引和发布都完成。 |
+| 引用按原 digest 回读 | `KnowledgeRetrievalService.requireCanonicalChunk:195–202`、`KnowledgeCompletionVerifier` | 只能检查引用身份/内容完整性，不能证明外部原站现在仍这样说，也不证明回答语义正确。 |
+
+表中前三类 service 路径分别位于 backend 的 hify-agent/agent/application、
+hify-knowledge/knowledge/application 与 hify-chat/application 对应的 `src/main/java/com/hify/`
+目录。这里保留方法名便于定位，不把类存在当作运行验收。
+
+### 把“更新责任”落到已有文档，不另建一份任务状态
+
+以下是本轮可执行的阅读/维护映射；它记录权威来源与检查触发，不是已实现自动同步。
+
+| 目标文档 | 核对来源 | 何时复核、如何保留历史 |
+| --- | --- | --- |
+| reading-notes.md / source-inventory.json | 原始 PDF 字节 SHA、正文与评论、各节固定代码提交 | 本地同名 PDF 字节变化时新建阅读修订，不能沿用“已读”结论；源码变化时重验映射或明确旧基线，不重写旧课程引用为新事实。 |
+| CURRENT_STATE / OPERATIONS / SPEC_RUN_SHUTDOWN | RunApplicationService.runControl、ExecutionControl、shutdown 测试与任务证据 | 控制/恢复语义改变、独立 review 指出矛盾时同步当前说明；historical failure 与原日志不修改。三处必须区分同 Run 恢复和新 Run 的 resume。 |
+| OBS 计划与收口说明 | harness/tasks.json + 各自 run/verification + 固定范围 review | 窄测补交、完整门禁或 review 变化时更新说明；pending/completed 由 runner 与真实门禁决定，不复制其他 task 的 green 身份。 |
+| context-authority-design.md | 固定 canonical writer、恢复入口、来源事件、review 修订 | 契约讨论落入设计后仍标“未实现”；进入产品须独立任务、金样与红绿，不能把讨论批准当成已部署。 |
+
+现成案例是此前 a45c9d2 修正的“Chat 重启重新赠送完整时限”：当前上述三份文档
+已说明从持久 createdAt 扣减，同 Run 恢复与显式新 Run 分开；SPEC-RUN-BUDGET-001
+尚 pending 的剩余验收也保留。这个案例证明需要同步多处现状说明，不证明已经有自动
+检测文档矛盾的工具。若下一步加检查器，应针对稳定契约做断言/链接核对，不能凭关键词
+替换全部历史记录。
+
+知识库后续同步候选应分“发现新来源→导入草稿/新索引→检查差异→显式发布→新会话
+使用”几步，验收要覆盖外部改动、部分拉取失败、删除来源、旧会话继续固定版本与历史
+引用可回读；默认不覆写旧快照、不重建旧 chunkId。仅作为候选，与当前来源权限切片
+分开，不把课程的“自动更新”变成自动授信或自动发布。
+
 ## 候选与验收边界
 
 分块候选的兼容补充（C178/C182复核）：未来修复默认只影响采用新分块版本的新
