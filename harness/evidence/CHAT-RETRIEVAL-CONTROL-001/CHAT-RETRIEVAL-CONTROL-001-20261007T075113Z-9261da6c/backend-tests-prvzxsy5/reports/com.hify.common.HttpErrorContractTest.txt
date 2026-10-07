@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.hify.common.HttpErrorContractTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.466 s -- in com.hify.common.HttpErrorContractTest

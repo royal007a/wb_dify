@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "step": "intent-context-recall-eval",
+  "invocationId": "d632c535-5559-4683-976b-7944ac359a99",
+  "inventorySha256": "7313edc49b8bb382c885f7d8148a706b8c1e8b49fbc0cde709c3ca686dd232fc",
+  "expectedSuites": {
+    "com.hify.memory.HistoryRecallEvaluationTest": 1,
+    "com.hify.runtime.context.ContextManagementEvaluationTest": 1,
+    "com.hify.intent.LayeredIntentRouterTest": 8,
+    "com.hify.intent.DeterministicIntentRouterTest": 6,
+    "com.hify.intent.IntentEvaluationDatasetTest": 1,
+    "com.hify.intent.IntentDecisionTest": 4,
+    "com.hify.intent.StructuredModelIntentClassifierTest": 3
+  },
+  "reportDirectory": "intent-context-recall-eval-ina_wba6/reports",
+  "result": "passed",
+  "tests": {
+    "totals": {
+      "tests": 24,
+      "executed": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "flakyAttempts": 0
+    },
+    "classes": [
+      {
+        "class": "com.hify.intent.DeterministicIntentRouterTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 6,
+        "flakyAttempts": 0,
+        "expectedMinimum": 6,
+        "xmlSha256": "f36308c8e91371f6ea1c9eef54e62f3c875d649a5568ba1de5cda2735f784a43"
+      },
+      {
+        "class": "com.hify.intent.IntentDecisionTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 4,
+        "flakyAttempts": 0,
+        "expectedMinimum": 4,
+        "xmlSha256": "a5baa551759ce361b044f6f8a344c09b09376c7e10bcfaf9c7fc78d1425f7738"
+      },
+      {
+        "class": "com.hify.intent.IntentEvaluationDatasetTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 1,
+        "flakyAttempts": 0,
+        "expectedMinimum": 1,
+        "xmlSha256": "bf4f435b164a505db95e0a1978468e01be49eb0f410b4c39b4c5c389805996e0"
+      },
+      {
+        "class": "com.hify.intent.LayeredIntentRouterTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 8,
+        "flakyAttempts": 0,
+        "expectedMinimum": 8,
+        "xmlSha256": "01453689f7ce0a50f1fbd2298372c62557678218766178f7ce31b4d9ba176abd"
+      },
+      {
+        "class": "com.hify.intent.StructuredModelIntentClassifierTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 3,
+        "flakyAttempts": 0,
+        "expectedMinimum": 3,
+        "xmlSha256": "9aa3e0c85734b01362a5edcfccab5585aa20536f8a981881ddceb0e0c020e803"
+      },
+      {
+        "class": "com.hify.memory.HistoryRecallEvaluationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 1,
+        "flakyAttempts": 0,
+        "expectedMinimum": 1,
+        "xmlSha256": "e3d1f7d9063b294f8cd8e8b330d0f6b2d184efaf8c6c1de61eb9208318392eac"
+      },
+      {
+        "class": "com.hify.runtime.context.ContextManagementEvaluationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 1,
+        "flakyAttempts": 0,
+        "expectedMinimum": 1,
+        "xmlSha256": "f1d10e9198ac34cd3c5632ae509bdf7feec449f55c38ff5e2687aaf94743ff10"
+      }
+    ],
+    "underfilledSuites": [],
+    "countMeaning": "Reported testcase/skip records; disabled containers can hide additional intended methods."
+  },
+  "command": [
+    "mvn",
+    "-B",
+    "-Dapi.version=1.44",
+    "-pl",
+    "hify-chat",
+    "-am",
+    "-Dtest=com.hify.intent.DeterministicIntentRouterTest,com.hify.intent.IntentDecisionTest,com.hify.intent.IntentEvaluationDatasetTest,com.hify.intent.LayeredIntentRouterTest,com.hify.intent.StructuredModelIntentClassifierTest,com.hify.memory.HistoryRecallEvaluationTest,com.hify.runtime.context.ContextManagementEvaluationTest",
+    "-Dsurefire.failIfNoSpecifiedTests=false",
+    "-Dhify.test.reportsDirectory=/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/evidence/CHAT-RETRIEVAL-CONTROL-001/CHAT-RETRIEVAL-CONTROL-001-20261007T075113Z-9261da6c/intent-context-recall-eval-ina_wba6/reports",
+    "test"
+  ],
+  "commandExitCode": 0
+}

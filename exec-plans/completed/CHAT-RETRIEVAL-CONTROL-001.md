@@ -1,5 +1,11 @@
 # 聊天知识预取的取消和截止控制
 
+2026-10-07 16:05:17：固定 05ab7a0 六范围门禁自然退出 0，runner 已将本任务
+记为 completed；本计划随机器状态归档。最终证据仍须独立只读复核，未合并 main、
+未部署，研究总目标未完成。下方均为按时间保留的历史阶段，不是实时任务状态。
+本次计数、源码身份、旧失败保留和未验证边界见
+`docs/research/jikesummary-20261006/full-gate-05ab7a0.md`。
+
 基线c45c19a，映射课程C180端到端检索预算、C129/C131单次与总量区分。当前只读证据：RunApplicationService先knowledgeCandidates、后QueryLoop；SemanticEmbeddings另建45秒控制器，仅检查线程中断/停机。最终状态可被持久cancel纠正，不代表中途没有多发请求。须先用调用计数反例，不以静态阅读代替复现。
 
 ## 契约

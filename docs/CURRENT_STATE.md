@@ -1,5 +1,13 @@
 # Hify 当前实现边界
 
+2026-10-07 16:05:17 CST：本地独立开发分支固定 05ab7a0 的六 scope 通过，
+CHAT-RETRIEVAL-CONTROL-001 的 runner 自然退出 0。backend 796、migration 126、
+runtime 35、eval 24 均零失败/错误/跳过/flaky，Python 84、前端 typecheck/build 通过。
+各范围有重叠，不合并计数；不是浏览器或真实模型验收。H2/PG 关停恢复原时限和
+业务断言未放宽，旧红灯保留，慢启动根因仍未确认。固定证据待独立复核，
+未合并 main、未部署；两个 OBS 任务不能据此自动算完成。见
+`research/jikesummary-20261006/full-gate-05ab7a0.md`。
+
 2026-10-06 15:28 CST：按用户明确选择的方案②，为线上原版Hify配置独立JVM信任库并重启，原146张公共CA保留、仅加入固定指纹工作台自签证书；正确IP握手通过、错误主机名仍拒绝，health和/hify页面200。仅配置变更，jar仍为a510191对应产物，H1/聚合/结构化输出的新产品版本尚未发布；MCP认证发现及工具发布未验收，也未改Token/readOnlyHint。证据见`evidence/MCP_TRUST_001.md`，收尾仅harness scope，不是产品全量复测。
 
 2026-10-06 本地H1完整验收：e576397六scope通过（backend714、migration125、runtime35、eval24均零失败/错误/skip/flaky），证据959799f及措辞修订3c1489a已独立复核。包含聚合/结构化输出当前源码；旧失败记录原样保留，不因此宣称关停偶发根因已完全解决。见`evidence/CONTEXT_INTEGRITY_001.md`。

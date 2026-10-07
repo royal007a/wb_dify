@@ -7,14 +7,16 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "CHAT-RETRIEVAL-CONTROL-001-20261007T052619Z-88abd54f",
-    "path": "harness/evidence/CHAT-RETRIEVAL-CONTROL-001/CHAT-RETRIEVAL-CONTROL-001-20261007T052619Z-88abd54f",
-    "result": "blocked",
-    "exitCode": 1,
-    "baselineCommit": "e7d43b17882dbf164915d73b271411c439a995da",
-    "headCommit": "e7d43b17882dbf164915d73b271411c439a995da",
-    "recordedAt": "2026-10-07T06:20:01Z"
+    "runId": "CHAT-RETRIEVAL-CONTROL-001-20261007T075113Z-9261da6c",
+    "path": "harness/evidence/CHAT-RETRIEVAL-CONTROL-001/CHAT-RETRIEVAL-CONTROL-001-20261007T075113Z-9261da6c",
+    "result": "completed",
+    "exitCode": 0,
+    "baselineCommit": "05ab7a06f485a5d800009dedbbe566508bd9e775",
+    "headCommit": "05ab7a06f485a5d800009dedbbe566508bd9e775",
+    "recordedAt": "2026-10-07T08:05:17Z",
+    "verificationSchemaVersion": 3,
+    "verificationSha256": "2fe9688ae24707637059abc9dff607223fd9e6bf1e13fcddcafb97d9df90266a"
   },
-  "lastCompletedTaskId": "MCP-TRUST-001",
-  "updatedAt": "2026-10-07T06:20:01Z"
+  "lastCompletedTaskId": "CHAT-RETRIEVAL-CONTROL-001",
+  "updatedAt": "2026-10-07T08:05:17Z"
 }

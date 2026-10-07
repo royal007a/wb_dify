@@ -1,0 +1,545 @@
+Picked up JAVA_TOOL_OPTIONS: -Xmx768m -XX:ReservedCodeCacheSize=128m -Dspring.test.context.cache.maxSize=2 -Dhify.test.startup-diagnostics=true -Xlog:gc*,safepoint:file=/tmp/hify-six-scopes-05ab7a0.47QSzQ/gc-%p.log:time,uptime,level,tags -Dhttp.nonProxyHosts=localhost|127.*|[::1] -Dhttps.nonProxyHosts=localhost|127.*|[::1] -DsocksNonProxyHosts=localhost|127.*|[::1] -Dhttp.nonProxyHosts=localhost|127.*|[::1] -Dhttps.nonProxyHosts=localhost|127.*|[::1] -DsocksNonProxyHosts=localhost|127.*|[::1]
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] hify-parent                                                        [pom]
+[INFO] hify-common                                                        [jar]
+[INFO] hify-provider                                                      [jar]
+[INFO] hify-tool                                                          [jar]
+[INFO] hify-mcp                                                           [jar]
+[INFO] hify-knowledge                                                     [jar]
+[INFO] hify-workflow                                                      [jar]
+[INFO] hify-agent                                                         [jar]
+[INFO] hify-chat                                                          [jar]
+[INFO] hify-demo                                                          [jar]
+[INFO] hify-app                                                           [jar]
+[INFO] 
+[INFO] ------------------------< com.hify:hify-parent >------------------------
+[INFO] Building hify-parent 0.1.0-SNAPSHOT                               [1/11]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] ------------------------< com.hify:hify-common >------------------------
+[INFO] Building hify-common 0.1.0-SNAPSHOT                               [2/11]
+[INFO]   from hify-common/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-common ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-common ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-common ---
+[INFO] 
+[INFO] -----------------------< com.hify:hify-provider >-----------------------
+[INFO] Building hify-provider 0.1.0-SNAPSHOT                             [3/11]
+[INFO]   from hify-provider/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-provider ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-provider ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-provider ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-provider ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-provider ---
+[INFO] 
+[INFO] -------------------------< com.hify:hify-tool >-------------------------
+[INFO] Building hify-tool 0.1.0-SNAPSHOT                                 [4/11]
+[INFO]   from hify-tool/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-tool ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-tool ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-tool ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-tool ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-tool ---
+[INFO] 
+[INFO] -------------------------< com.hify:hify-mcp >--------------------------
+[INFO] Building hify-mcp 0.1.0-SNAPSHOT                                  [5/11]
+[INFO]   from hify-mcp/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-mcp ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-mcp ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-mcp ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-mcp ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-mcp ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] ----------------------< com.hify:hify-knowledge >-----------------------
+[INFO] Building hify-knowledge 0.1.0-SNAPSHOT                            [6/11]
+[INFO]   from hify-knowledge/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-knowledge ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-knowledge ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-knowledge ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-knowledge ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-knowledge ---
+[INFO] 
+[INFO] -----------------------< com.hify:hify-workflow >-----------------------
+[INFO] Building hify-workflow 0.1.0-SNAPSHOT                             [7/11]
+[INFO]   from hify-workflow/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-workflow ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-workflow/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-workflow/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-workflow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-workflow ---
+[INFO] Copying 2 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-workflow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-workflow ---
+[INFO] 
+[INFO] ------------------------< com.hify:hify-agent >-------------------------
+[INFO] Building hify-agent 0.1.0-SNAPSHOT                                [8/11]
+[INFO]   from hify-agent/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-agent ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-agent ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-agent ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-agent ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-agent ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] -------------------------< com.hify:hify-chat >-------------------------
+[INFO] Building hify-chat 0.1.0-SNAPSHOT                                 [9/11]
+[INFO]   from hify-chat/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-chat ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-chat/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-chat/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-chat ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-chat ---
+[INFO] Copying 3 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-chat ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-chat ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -Xmx768m -XX:ReservedCodeCacheSize=128m -Dspring.test.context.cache.maxSize=2 -Dhify.test.startup-diagnostics=true -Xlog:gc*,safepoint:file=/tmp/hify-six-scopes-05ab7a0.47QSzQ/gc-%p.log:time,uptime,level,tags -Dhttp.nonProxyHosts=localhost|127.*|[::1] -Dhttps.nonProxyHosts=localhost|127.*|[::1] -DsocksNonProxyHosts=localhost|127.*|[::1] -Dhttp.nonProxyHosts=localhost|127.*|[::1] -Dhttps.nonProxyHosts=localhost|127.*|[::1] -DsocksNonProxyHosts=localhost|127.*|[::1]
+[INFO] Running com.hify.runtime.QueryLoopTest
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[INFO] Tests run: 21, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.970 s -- in com.hify.runtime.QueryLoopTest
+[INFO] Running com.hify.runtime.plan.PlanStateMachineTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.hify.runtime.plan.PlanStateMachineTest
+[INFO] Running com.hify.runtime.state.ExecutionContextStateTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.hify.runtime.state.ExecutionContextStateTest
+[INFO] Running com.hify.domain.ChildAgentTaskTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.hify.domain.ChildAgentTaskTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 29, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] -------------------------< com.hify:hify-demo >-------------------------
+[INFO] Building hify-demo 0.1.0-SNAPSHOT                                [10/11]
+[INFO]   from hify-demo/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-demo ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-demo ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-demo ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-demo ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-demo ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] -------------------------< com.hify:hify-app >--------------------------
+[INFO] Building hify-app 0.1.0-SNAPSHOT                                 [11/11]
+[INFO]   from hify-app/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-app ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 21 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-app ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-app ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-app ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-app ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -Xmx768m -XX:ReservedCodeCacheSize=128m -Dspring.test.context.cache.maxSize=2 -Dhify.test.startup-diagnostics=true -Xlog:gc*,safepoint:file=/tmp/hify-six-scopes-05ab7a0.47QSzQ/gc-%p.log:time,uptime,level,tags -Dhttp.nonProxyHosts=localhost|127.*|[::1] -Dhttps.nonProxyHosts=localhost|127.*|[::1] -DsocksNonProxyHosts=localhost|127.*|[::1] -Dhttp.nonProxyHosts=localhost|127.*|[::1] -Dhttps.nonProxyHosts=localhost|127.*|[::1] -DsocksNonProxyHosts=localhost|127.*|[::1]
+[INFO] Running com.hify.api.RunFlowIntegrationTest
+16:04:37.599 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.hify.api.RunFlowIntegrationTest]: RunFlowIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+16:04:37.776 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.hify.HifyApplication for test class com.hify.api.RunFlowIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-10-07T16:04:38.060+08:00 INFO  [main] [requestId=] com.hify.api.RunFlowIntegrationTest - Starting RunFlowIntegrationTest using Java 17.0.19 with PID 37744 (started by weberzhao in /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app)
+2026-10-07T16:04:38.061+08:00 INFO  [main] [requestId=] com.hify.api.RunFlowIntegrationTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-07T16:04:38.854+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-07T16:04:38.856+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-07T16:04:39.066+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 205 ms. Found 34 JPA repository interfaces.
+2026-10-07T16:04:40.382+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-10-07T16:04:40.910+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:hify-test user=SA
+2026-10-07T16:04:40.912+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-10-07T16:04:41.004+08:00 INFO  [main] [requestId=] org.flywaydb.core.FlywayExecutor - Database: jdbc:h2:mem:hify-test (H2 2.3)
+2026-10-07T16:04:41.025+08:00 WARN  [main] [requestId=] o.f.c.i.database.base.Database - Flyway upgrade recommended: H2 2.3.232 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.224.
+2026-10-07T16:04:41.087+08:00 INFO  [main] [requestId=] o.f.c.i.s.JdbcTableSchemaHistory - Schema history table "PUBLIC"."flyway_schema_history" does not exist yet
+2026-10-07T16:04:41.088+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbValidate - Successfully validated 24 migrations (execution time 00:00.047s)
+2026-10-07T16:04:41.109+08:00 INFO  [main] [requestId=] o.f.c.i.s.JdbcTableSchemaHistory - Creating Schema History table "PUBLIC"."flyway_schema_history" ...
+2026-10-07T16:04:41.153+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Current version of schema "PUBLIC": << Empty Schema >>
+2026-10-07T16:04:41.169+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "1 - baseline"
+2026-10-07T16:04:41.198+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "2 - demo item"
+2026-10-07T16:04:41.203+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "3 - run replan control"
+2026-10-07T16:04:41.211+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "4 - run context state"
+2026-10-07T16:04:41.236+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "5 - provider catalog"
+2026-10-07T16:04:41.250+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "6 - agent publishing"
+2026-10-07T16:04:41.274+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "7 - agent archive and tool bindings"
+2026-10-07T16:04:41.281+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "8 - backfill agent tool bindings"
+2026-10-07T16:04:41.285+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "9 - runtime capability and history"
+2026-10-07T16:04:41.293+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "10 - child agent task protocol"
+2026-10-07T16:04:41.305+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "11 - context memory catalog"
+2026-10-07T16:04:41.315+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "12 - history full text index"
+2026-10-07T16:04:41.317+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "13 - history vector index"
+2026-10-07T16:04:41.321+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "14 - knowledge catalog"
+2026-10-07T16:04:41.327+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "15 - knowledge search indexes"
+2026-10-07T16:04:41.331+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "16 - workflow runtime"
+2026-10-07T16:04:41.344+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "17 - mcp server registry"
+2026-10-07T16:04:41.350+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "18 - agent knowledge capability"
+2026-10-07T16:04:41.364+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "19 - agent workflow mcp capabilities"
+2026-10-07T16:04:41.377+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "20 - mcp encrypted credentials"
+2026-10-07T16:04:41.385+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "21 - workflow control terminal states"
+2026-10-07T16:04:41.389+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "22 - workflow interrupted state"
+2026-10-07T16:04:41.391+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "23 - history operation recovery"
+2026-10-07T16:04:41.402+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "24 - semantic embedding profiles"
+2026-10-07T16:04:41.448+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Successfully applied 24 migrations to schema "PUBLIC", now at version v24 (execution time 00:00.170s)
+2026-10-07T16:04:42.077+08:00 INFO  [main] [requestId=] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-07T16:04:42.349+08:00 INFO  [main] [requestId=] org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.13.Final
+2026-10-07T16:04:42.380+08:00 INFO  [main] [requestId=] o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-10-07T16:04:42.799+08:00 INFO  [main] [requestId=] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-07T16:04:43.009+08:00 INFO  [main] [requestId=] o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-07T16:04:43.903+08:00 INFO  [main] [requestId=] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-07T16:04:43.924+08:00 INFO  [main] [requestId=] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-07T16:04:44.464+08:00 INFO  [main] [requestId=] o.s.d.j.r.query.QueryEnhancerFactory - JSqlParser is in classpath; If applicable, JSqlParser will be used.
+2026-10-07T16:04:44.464+08:00 INFO  [main] [requestId=] o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-07T16:04:48.354+08:00 INFO  [main] [requestId=] c.b.m.s.MybatisPlusApplicationContextAware - Register ApplicationContext instances org.springframework.web.context.support.GenericWebApplicationContext@7e4d2287
+2026-10-07T16:04:49.075+08:00 INFO  [main] [requestId=] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-10-07T16:04:49.076+08:00 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-10-07T16:04:49.082+08:00 INFO  [main] [requestId=] o.s.b.a.e.web.EndpointLinksResolver - Exposing 2 endpoints beneath base path '/actuator'
+2026-10-07T16:04:49.094+08:00 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 18 ms
+2026-10-07T16:04:49.203+08:00 INFO  [main] [requestId=] com.hify.api.RunFlowIntegrationTest - Started RunFlowIntegrationTest in 11.34 seconds (process running for 12.091)
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-10-07T16:04:50.470+08:00 INFO  [main] [requestId=0c2c4b7d-0fb5-4f70-9260-d81701ab1e35] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations status=201 latencyMs=86
+2026-10-07T16:04:50.534+08:00 INFO  [main] [requestId=8ec9df7c-aacf-4706-a41b-191ecc66e31c] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/11b79614-967a-4634-8a14-389571101e28/runs status=202 latencyMs=53
+2026-10-07T16:04:50.539+08:00 INFO  [main] [requestId=4e6e78b5-46d5-41ce-b77f-1d3164a39630] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/ba184ed2-b9ee-41bb-b712-5e336a6873cf status=200 latencyMs=2
+2026-10-07T16:04:50.708+08:00 INFO  [main] [requestId=11b6c4d0-d5c4-4d57-b133-760a32fa84d0] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/ba184ed2-b9ee-41bb-b712-5e336a6873cf status=200 latencyMs=1
+2026-10-07T16:04:50.748+08:00 INFO  [main] [requestId=9c8ddc18-4b00-4c23-9498-b47fe304fabc] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/11b79614-967a-4634-8a14-389571101e28/runs status=202 latencyMs=10
+2026-10-07T16:04:50.750+08:00 INFO  [main] [requestId=54d962aa-15a7-4c4f-8440-f37f41ebdff7] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/774eb6b4-9463-4108-b2a6-57c8f6a15f46 status=200 latencyMs=0
+2026-10-07T16:04:50.923+08:00 INFO  [main] [requestId=faecc1c9-c614-4cef-95ae-20732594c58a] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/774eb6b4-9463-4108-b2a6-57c8f6a15f46 status=200 latencyMs=1
+2026-10-07T16:04:51.091+08:00 INFO  [main] [requestId=f6262cc1-4259-4e50-91db-7ed0b8ac42e7] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/774eb6b4-9463-4108-b2a6-57c8f6a15f46 status=200 latencyMs=2
+2026-10-07T16:04:51.149+08:00 INFO  [main] [requestId=c34b8393-c61a-4fab-9476-821993aed20c] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/774eb6b4-9463-4108-b2a6-57c8f6a15f46/events status=200 latencyMs=56
+2026-10-07T16:04:51.245+08:00 INFO  [main] [requestId=1fc94c95-d2b3-4f62-8d40-c57b1185f896] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/11b79614-967a-4634-8a14-389571101e28/runs status=202 latencyMs=59
+2026-10-07T16:04:51.253+08:00 INFO  [main] [requestId=af330de7-938c-4bd1-8470-ab3a9af3059e] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/b796f822-25fa-41e6-bf48-1d9b7aa82486 status=200 latencyMs=3
+2026-10-07T16:04:51.426+08:00 INFO  [main] [requestId=bd76f9e6-8f9a-4b76-8765-f05990234a08] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/b796f822-25fa-41e6-bf48-1d9b7aa82486 status=200 latencyMs=1
+2026-10-07T16:04:51.604+08:00 INFO  [main] [requestId=77aa67e4-1457-402e-911d-8f876721a6b4] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/b796f822-25fa-41e6-bf48-1d9b7aa82486 status=200 latencyMs=1
+2026-10-07T16:04:51.609+08:00 INFO  [main] [requestId=da9dc51e-8db3-4947-bd46-bcd586797f03] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/b796f822-25fa-41e6-bf48-1d9b7aa82486/events status=200 latencyMs=3
+2026-10-07T16:04:51.621+08:00 INFO  [main] [requestId=f1649af3-af2f-493e-8b07-d2164ce31ae4] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/11b79614-967a-4634-8a14-389571101e28/runs status=202 latencyMs=10
+2026-10-07T16:04:51.623+08:00 INFO  [main] [requestId=aad0e348-e507-42b4-8ccb-ce40bdbefd10] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/1ac82d41-2877-4373-bb78-9077ebd84414 status=200 latencyMs=1
+2026-10-07T16:04:51.753+08:00 INFO  [main] [requestId=4ae7bc64-f04f-4655-859a-5eff22765353] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/1ac82d41-2877-4373-bb78-9077ebd84414 status=200 latencyMs=1
+2026-10-07T16:04:51.921+08:00 INFO  [main] [requestId=057faef4-092d-478b-a64e-6c327b51c892] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/1ac82d41-2877-4373-bb78-9077ebd84414 status=200 latencyMs=6
+2026-10-07T16:04:51.932+08:00 INFO  [main] [requestId=ba5db20a-644f-40cf-8630-eac0e7934aec] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/1ac82d41-2877-4373-bb78-9077ebd84414/events status=200 latencyMs=7
+2026-10-07T16:04:51.967+08:00 INFO  [main] [requestId=bf4729e2-4799-4d63-8207-2b4577ed17f4] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/11b79614-967a-4634-8a14-389571101e28/runs status=202 latencyMs=31
+2026-10-07T16:04:51.971+08:00 INFO  [main] [requestId=9343c3fa-eb0a-4b10-83c6-f0100f9e08e1] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/e985d403-6512-4ded-9ec6-2d490df916a7 status=200 latencyMs=2
+2026-10-07T16:04:52.076+08:00 INFO  [main] [requestId=f3f15e85-e38a-46ee-9196-13ddc4fde697] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/e985d403-6512-4ded-9ec6-2d490df916a7 status=200 latencyMs=7
+2026-10-07T16:04:52.258+08:00 INFO  [main] [requestId=f64cc045-c3f9-4f2d-8b4b-f95840204732] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/e985d403-6512-4ded-9ec6-2d490df916a7 status=200 latencyMs=1
+2026-10-07T16:04:52.262+08:00 INFO  [main] [requestId=794ba010-e914-4b11-8925-47a43c1f213d] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/e985d403-6512-4ded-9ec6-2d490df916a7/events status=200 latencyMs=2
+2026-10-07T16:04:52.294+08:00 INFO  [main] [requestId=d5e6e670-555f-4986-809e-dbe43f647e8a] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/health status=200 latencyMs=4
+2026-10-07T16:04:52.345+08:00 INFO  [main] [requestId=20b7ed12-5b0d-4b6b-acfd-6d0a906f9844] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/chat status=404 latencyMs=50
+2026-10-07T16:04:52.353+08:00 INFO  [main] [requestId=db0c745e-53fe-47f4-bc74-cb824d662550] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations status=201 latencyMs=7
+2026-10-07T16:04:52.366+08:00 INFO  [main] [requestId=e924b8fa-7cae-4069-a087-c5d5a4b457ef] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/d3a946c2-f2e7-4062-bbb4-71430b85c7ef/runs status=202 latencyMs=10
+2026-10-07T16:04:52.371+08:00 INFO  [main] [requestId=65acc15f-4e25-4c6f-bf74-49f9b503478b] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/d3a946c2-f2e7-4062-bbb4-71430b85c7ef/runs status=200 latencyMs=2
+2026-10-07T16:04:52.377+08:00 INFO  [main] [requestId=686ecb7d-d9a8-4278-9161-d5b9dc994d63] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/d3a946c2-f2e7-4062-bbb4-71430b85c7ef/runs status=409 latencyMs=5
+2026-10-07T16:04:52.378+08:00 INFO  [main] [requestId=43e1704d-d4c3-4082-8aed-87fcf81050ec] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/719b8676-0f24-461d-a488-fdc658e0ae70 status=200 latencyMs=0
+2026-10-07T16:04:52.407+08:00 INFO  [main] [requestId=046b1534-c223-422c-8ac8-3fb1a28e020b] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/719b8676-0f24-461d-a488-fdc658e0ae70 status=200 latencyMs=1
+2026-10-07T16:04:52.548+08:00 INFO  [main] [requestId=a420ba44-e5ae-4872-9a24-53e138654339] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/719b8676-0f24-461d-a488-fdc658e0ae70 status=200 latencyMs=4
+2026-10-07T16:04:52.591+08:00 INFO  [main] [requestId=b3943b9d-bd6d-40b5-aec9-3026f06a9ef0] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/719b8676-0f24-461d-a488-fdc658e0ae70/events status=200 latencyMs=2
+2026-10-07T16:04:52.640+08:00 INFO  [main] [requestId=a08fa3ec-0ab2-4cda-bcc0-d12dcd58c269] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/719b8676-0f24-461d-a488-fdc658e0ae70/events/stream status=200 latencyMs=47
+2026-10-07T16:04:52.747+08:00 INFO  [main] [requestId=a2724e79-04c8-43ba-a5e3-d712383ce13f] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/d3a946c2-f2e7-4062-bbb4-71430b85c7ef/runs status=202 latencyMs=24
+2026-10-07T16:04:52.848+08:00 INFO  [main] [requestId=9933b052-4d47-41ce-a6df-f2326df3c6ff] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/cb249be4-01c4-4ef1-8228-a72c5acc3184/events status=200 latencyMs=3
+2026-10-07T16:04:53.009+08:00 INFO  [main] [requestId=e388110d-5c2b-4903-87ea-9e721ec38b43] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/checkpoint-recovery-run/events status=200 latencyMs=1
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.54 s -- in com.hify.api.RunFlowIntegrationTest
+[INFO] Running com.hify.api.ChildAgentTaskIntegrationTest
+2026-10-07T16:04:53.022+08:00 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.hify.api.ChildAgentTaskIntegrationTest]: ChildAgentTaskIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-07T16:04:53.027+08:00 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.hify.HifyApplication for test class com.hify.api.ChildAgentTaskIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-10-07T16:04:53.054+08:00 INFO  [main] [requestId=] c.h.a.ChildAgentTaskIntegrationTest - Starting ChildAgentTaskIntegrationTest using Java 17.0.19 with PID 37744 (started by weberzhao in /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app)
+2026-10-07T16:04:53.054+08:00 INFO  [main] [requestId=] c.h.a.ChildAgentTaskIntegrationTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-07T16:04:53.447+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-07T16:04:53.447+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-07T16:04:53.510+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 59 ms. Found 34 JPA repository interfaces.
+2026-10-07T16:04:53.729+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Starting...
+2026-10-07T16:04:53.736+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Added connection conn10: url=jdbc:h2:mem:hify-child-test user=SA
+2026-10-07T16:04:53.736+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Start completed.
+2026-10-07T16:04:53.737+08:00 INFO  [main] [requestId=] org.flywaydb.core.FlywayExecutor - Database: jdbc:h2:mem:hify-child-test (H2 2.3)
+2026-10-07T16:04:53.738+08:00 WARN  [main] [requestId=] o.f.c.i.database.base.Database - Flyway upgrade recommended: H2 2.3.232 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.224.
+2026-10-07T16:04:53.748+08:00 INFO  [main] [requestId=] o.f.c.i.s.JdbcTableSchemaHistory - Schema history table "PUBLIC"."flyway_schema_history" does not exist yet
+2026-10-07T16:04:53.749+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbValidate - Successfully validated 24 migrations (execution time 00:00.009s)
+2026-10-07T16:04:53.750+08:00 INFO  [main] [requestId=] o.f.c.i.s.JdbcTableSchemaHistory - Creating Schema History table "PUBLIC"."flyway_schema_history" ...
+2026-10-07T16:04:53.757+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Current version of schema "PUBLIC": << Empty Schema >>
+2026-10-07T16:04:53.759+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "1 - baseline"
+2026-10-07T16:04:53.766+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "2 - demo item"
+2026-10-07T16:04:53.773+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "3 - run replan control"
+2026-10-07T16:04:53.778+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "4 - run context state"
+2026-10-07T16:04:53.792+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "5 - provider catalog"
+2026-10-07T16:04:53.801+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "6 - agent publishing"
+2026-10-07T16:04:53.820+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "7 - agent archive and tool bindings"
+2026-10-07T16:04:53.824+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "8 - backfill agent tool bindings"
+2026-10-07T16:04:53.825+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "9 - runtime capability and history"
+2026-10-07T16:04:53.829+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "10 - child agent task protocol"
+2026-10-07T16:04:53.832+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "11 - context memory catalog"
+2026-10-07T16:04:53.833+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "12 - history full text index"
+2026-10-07T16:04:53.834+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "13 - history vector index"
+2026-10-07T16:04:53.835+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "14 - knowledge catalog"
+2026-10-07T16:04:53.836+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "15 - knowledge search indexes"
+2026-10-07T16:04:53.837+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "16 - workflow runtime"
+2026-10-07T16:04:53.840+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "17 - mcp server registry"
+2026-10-07T16:04:53.842+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "18 - agent knowledge capability"
+2026-10-07T16:04:53.846+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "19 - agent workflow mcp capabilities"
+2026-10-07T16:04:53.849+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "20 - mcp encrypted credentials"
+2026-10-07T16:04:53.851+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "21 - workflow control terminal states"
+2026-10-07T16:04:53.852+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "22 - workflow interrupted state"
+2026-10-07T16:04:53.853+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "23 - history operation recovery"
+2026-10-07T16:04:53.855+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "24 - semantic embedding profiles"
+2026-10-07T16:04:53.859+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Successfully applied 24 migrations to schema "PUBLIC", now at version v24 (execution time 00:00.060s)
+2026-10-07T16:04:53.886+08:00 INFO  [main] [requestId=] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-07T16:04:53.888+08:00 INFO  [main] [requestId=] o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-10-07T16:04:53.894+08:00 INFO  [main] [requestId=] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-07T16:04:53.895+08:00 INFO  [main] [requestId=] o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-07T16:04:53.994+08:00 INFO  [main] [requestId=] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-07T16:04:53.999+08:00 INFO  [main] [requestId=] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-07T16:04:56.037+08:00 INFO  [main] [requestId=] c.b.m.s.MybatisPlusApplicationContextAware - Register ApplicationContext instances org.springframework.web.context.support.GenericWebApplicationContext@157b7da6
+2026-10-07T16:04:58.065+08:00 INFO  [main] [requestId=] o.s.b.a.e.web.EndpointLinksResolver - Exposing 2 endpoints beneath base path '/actuator'
+2026-10-07T16:04:58.112+08:00 INFO  [main] [requestId=] c.h.a.ChildAgentTaskIntegrationTest - Started ChildAgentTaskIntegrationTest in 5.081 seconds (process running for 21.0)
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.239 s -- in com.hify.api.ChildAgentTaskIntegrationTest
+[INFO] Running com.hify.api.ContextMemoryIntegrationTest
+2026-10-07T16:04:58.264+08:00 INFO  [main] [requestId=] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.hify.api.ContextMemoryIntegrationTest]: ContextMemoryIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-07T16:04:58.278+08:00 INFO  [main] [requestId=] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.hify.HifyApplication for test class com.hify.api.ContextMemoryIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-10-07T16:04:58.305+08:00 INFO  [main] [requestId=] c.h.api.ContextMemoryIntegrationTest - Starting ContextMemoryIntegrationTest using Java 17.0.19 with PID 37744 (started by weberzhao in /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app)
+2026-10-07T16:04:58.305+08:00 INFO  [main] [requestId=] c.h.api.ContextMemoryIntegrationTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-07T16:04:58.636+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-07T16:04:58.638+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-07T16:04:58.745+08:00 INFO  [main] [requestId=] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 105 ms. Found 34 JPA repository interfaces.
+2026-10-07T16:04:58.861+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Starting...
+2026-10-07T16:04:58.862+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.pool.HikariPool - HikariPool-3 - Added connection conn20: url=jdbc:h2:mem:hify-memory-test user=SA
+2026-10-07T16:04:58.862+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Start completed.
+2026-10-07T16:04:58.863+08:00 INFO  [main] [requestId=] org.flywaydb.core.FlywayExecutor - Database: jdbc:h2:mem:hify-memory-test (H2 2.3)
+2026-10-07T16:04:58.864+08:00 WARN  [main] [requestId=] o.f.c.i.database.base.Database - Flyway upgrade recommended: H2 2.3.232 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.224.
+2026-10-07T16:04:58.867+08:00 INFO  [main] [requestId=] o.f.c.i.s.JdbcTableSchemaHistory - Schema history table "PUBLIC"."flyway_schema_history" does not exist yet
+2026-10-07T16:04:58.867+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbValidate - Successfully validated 24 migrations (execution time 00:00.002s)
+2026-10-07T16:04:58.868+08:00 INFO  [main] [requestId=] o.f.c.i.s.JdbcTableSchemaHistory - Creating Schema History table "PUBLIC"."flyway_schema_history" ...
+2026-10-07T16:04:58.869+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Current version of schema "PUBLIC": << Empty Schema >>
+2026-10-07T16:04:58.870+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "1 - baseline"
+2026-10-07T16:04:58.873+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "2 - demo item"
+2026-10-07T16:04:58.874+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "3 - run replan control"
+2026-10-07T16:04:58.876+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "4 - run context state"
+2026-10-07T16:04:58.879+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "5 - provider catalog"
+2026-10-07T16:04:58.881+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "6 - agent publishing"
+2026-10-07T16:04:58.896+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "7 - agent archive and tool bindings"
+2026-10-07T16:04:58.898+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "8 - backfill agent tool bindings"
+2026-10-07T16:04:58.899+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "9 - runtime capability and history"
+2026-10-07T16:04:58.902+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "10 - child agent task protocol"
+2026-10-07T16:04:58.903+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "11 - context memory catalog"
+2026-10-07T16:04:58.907+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "12 - history full text index"
+2026-10-07T16:04:58.908+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "13 - history vector index"
+2026-10-07T16:04:58.910+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "14 - knowledge catalog"
+2026-10-07T16:04:58.915+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "15 - knowledge search indexes"
+2026-10-07T16:04:58.916+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "16 - workflow runtime"
+2026-10-07T16:04:58.921+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "17 - mcp server registry"
+2026-10-07T16:04:58.924+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "18 - agent knowledge capability"
+2026-10-07T16:04:58.929+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "19 - agent workflow mcp capabilities"
+2026-10-07T16:04:58.933+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "20 - mcp encrypted credentials"
+2026-10-07T16:04:58.934+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "21 - workflow control terminal states"
+2026-10-07T16:04:58.936+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "22 - workflow interrupted state"
+2026-10-07T16:04:58.937+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "23 - history operation recovery"
+2026-10-07T16:04:58.940+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "24 - semantic embedding profiles"
+2026-10-07T16:04:58.945+08:00 INFO  [main] [requestId=] o.f.core.internal.command.DbMigrate - Successfully applied 24 migrations to schema "PUBLIC", now at version v24 (execution time 00:00.035s)
+2026-10-07T16:04:59.008+08:00 INFO  [main] [requestId=] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-07T16:04:59.013+08:00 INFO  [main] [requestId=] o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-10-07T16:04:59.035+08:00 INFO  [main] [requestId=] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-07T16:04:59.036+08:00 INFO  [main] [requestId=] o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-3)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-07T16:04:59.197+08:00 INFO  [main] [requestId=] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-07T16:04:59.201+08:00 INFO  [main] [requestId=] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-07T16:05:00.708+08:00 INFO  [main] [requestId=] c.b.m.s.MybatisPlusApplicationContextAware - Register ApplicationContext instances org.springframework.web.context.support.GenericWebApplicationContext@391d4bb6
+2026-10-07T16:05:00.997+08:00 INFO  [main] [requestId=] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-10-07T16:05:00.997+08:00 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-10-07T16:05:01.000+08:00 INFO  [main] [requestId=] o.s.b.a.e.web.EndpointLinksResolver - Exposing 2 endpoints beneath base path '/actuator'
+2026-10-07T16:05:01.011+08:00 INFO  [main] [requestId=] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 14 ms
+2026-10-07T16:05:01.040+08:00 INFO  [main] [requestId=] c.h.api.ContextMemoryIntegrationTest - Started ContextMemoryIntegrationTest in 2.757 seconds (process running for 23.929)
+2026-10-07T16:05:01.115+08:00 INFO  [main] [requestId=] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-10-07T16:05:01.119+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-10-07T16:05:01.122+08:00 INFO  [main] [requestId=] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-10-07T16:05:01.182+08:00 INFO  [main] [requestId=23e54963-ae19-429e-9f39-3a1621eb48c2] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations status=201 latencyMs=39
+2026-10-07T16:05:01.203+08:00 INFO  [main] [requestId=9ebed3fd-3982-446e-9b7f-a4a1e63f9694] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/4e82d62a-b26f-4c12-8c9c-039dbce9db45/runs status=202 latencyMs=18
+2026-10-07T16:05:01.204+08:00 INFO  [main] [requestId=77e552d2-1bd3-4019-8444-a5791465c955] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/ef0ea3b2-b1e9-4c56-87bc-c6a9f0a45f4f status=200 latencyMs=0
+2026-10-07T16:05:01.378+08:00 INFO  [main] [requestId=0311f860-3738-4a25-a1d4-2bc5a71b0ffc] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/ef0ea3b2-b1e9-4c56-87bc-c6a9f0a45f4f status=200 latencyMs=2
+2026-10-07T16:05:01.474+08:00 INFO  [main] [requestId=c4c3b069-be30-4d71-8990-2f0ce2d9f058] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/runs/ef0ea3b2-b1e9-4c56-87bc-c6a9f0a45f4f/memory/search status=200 latencyMs=88
+2026-10-07T16:05:01.486+08:00 INFO  [main] [requestId=3610f169-ec20-4cb5-8422-7c4a78b0152c] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/ef0ea3b2-b1e9-4c56-87bc-c6a9f0a45f4f/memory/details/det_e30ab0d0658e3c2e722a30a8e5fb3b71 status=200 latencyMs=7
+2026-10-07T16:05:01.595+08:00 INFO  [main] [requestId=2fe645cc-75b6-42fe-b4ee-deea87feb819] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations status=201 latencyMs=8
+2026-10-07T16:05:01.613+08:00 INFO  [main] [requestId=844e21bd-63bf-4eee-94be-f67b8a5963ce] c.hify.common.RequestLoggingFilter - http.request method=POST path=/api/v1/conversations/20639dd8-e995-475e-b213-6f48f06ef77b/runs status=202 latencyMs=14
+2026-10-07T16:05:01.615+08:00 INFO  [main] [requestId=8f501151-761e-4eef-93ee-d3747544563c] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/4de2d353-1596-40f9-9c8d-333e91c526c9 status=200 latencyMs=1
+2026-10-07T16:05:01.677+08:00 INFO  [main] [requestId=28068779-f925-44bd-b5d4-a86c908fc322] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/4de2d353-1596-40f9-9c8d-333e91c526c9 status=200 latencyMs=1
+2026-10-07T16:05:01.828+08:00 INFO  [main] [requestId=90615a95-fa4a-4343-9996-899850465512] c.hify.common.RequestLoggingFilter - http.request method=GET path=/api/v1/runs/4de2d353-1596-40f9-9c8d-333e91c526c9 status=200 latencyMs=2
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.640 s -- in com.hify.api.ContextMemoryIntegrationTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for hify-parent 0.1.0-SNAPSHOT:
+[INFO] 
+[INFO] hify-parent ........................................ SUCCESS [  0.001 s]
+[INFO] hify-common ........................................ SUCCESS [  0.645 s]
+[INFO] hify-provider ...................................... SUCCESS [  0.033 s]
+[INFO] hify-tool .......................................... SUCCESS [  0.025 s]
+[INFO] hify-mcp ........................................... SUCCESS [  0.074 s]
+[INFO] hify-knowledge ..................................... SUCCESS [  0.048 s]
+[INFO] hify-workflow ...................................... SUCCESS [  0.044 s]
+[INFO] hify-agent ......................................... SUCCESS [  0.030 s]
+[INFO] hify-chat .......................................... SUCCESS [  1.710 s]
+[INFO] hify-demo .......................................... SUCCESS [  0.015 s]
+[INFO] hify-app ........................................... SUCCESS [ 27.196 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  30.047 s
+[INFO] Finished at: 2026-10-07T16:05:04+08:00
+[INFO] ------------------------------------------------------------------------
+Maven evidence: passed

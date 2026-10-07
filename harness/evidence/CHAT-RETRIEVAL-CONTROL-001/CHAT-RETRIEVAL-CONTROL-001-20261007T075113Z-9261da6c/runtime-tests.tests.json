@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "step": "runtime-tests",
+  "invocationId": "d632c535-5559-4683-976b-7944ac359a99",
+  "inventorySha256": "7313edc49b8bb382c885f7d8148a706b8c1e8b49fbc0cde709c3ca686dd232fc",
+  "expectedSuites": {
+    "com.hify.runtime.QueryLoopTest": 21,
+    "com.hify.runtime.plan.PlanStateMachineTest": 3,
+    "com.hify.runtime.state.ExecutionContextStateTest": 3,
+    "com.hify.domain.ChildAgentTaskTest": 2,
+    "com.hify.api.RunFlowIntegrationTest": 2,
+    "com.hify.api.ChildAgentTaskIntegrationTest": 2,
+    "com.hify.api.ContextMemoryIntegrationTest": 2
+  },
+  "reportDirectory": "runtime-tests-r821_kp3/reports",
+  "result": "passed",
+  "tests": {
+    "totals": {
+      "tests": 35,
+      "executed": 35,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "flakyAttempts": 0
+    },
+    "classes": [
+      {
+        "class": "com.hify.api.ChildAgentTaskIntegrationTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 2,
+        "flakyAttempts": 0,
+        "expectedMinimum": 2,
+        "xmlSha256": "3b5c3064ca29b581cfa1c28650910bdc1126d97d60d7f2025ece9999998afca7"
+      },
+      {
+        "class": "com.hify.api.ContextMemoryIntegrationTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 2,
+        "flakyAttempts": 0,
+        "expectedMinimum": 2,
+        "xmlSha256": "e440d7f223e938a9b92386b7ace377d62ea5dee02c18c124631f36695414376a"
+      },
+      {
+        "class": "com.hify.api.RunFlowIntegrationTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 2,
+        "flakyAttempts": 0,
+        "expectedMinimum": 2,
+        "xmlSha256": "21c19424227451a67f62226a16f01f10010668bc6fd04ce6ebe1027a5d570167"
+      },
+      {
+        "class": "com.hify.domain.ChildAgentTaskTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 2,
+        "flakyAttempts": 0,
+        "expectedMinimum": 2,
+        "xmlSha256": "af7dd628ed2ae2bfa264b9470935918ac8f5f0d1ea20c3753884bc59174d9619"
+      },
+      {
+        "class": "com.hify.runtime.QueryLoopTest",
+        "tests": 21,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 21,
+        "flakyAttempts": 0,
+        "expectedMinimum": 21,
+        "xmlSha256": "37705af603087bb60d6d39b592b44081e9e7001f5e491a61f464651ca25a4497"
+      },
+      {
+        "class": "com.hify.runtime.plan.PlanStateMachineTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 3,
+        "flakyAttempts": 0,
+        "expectedMinimum": 3,
+        "xmlSha256": "ed801069019981dcceb6d8c1d1a5b0373c70638efe28f27ca15a51efa41132b4"
+      },
+      {
+        "class": "com.hify.runtime.state.ExecutionContextStateTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "executed": 3,
+        "flakyAttempts": 0,
+        "expectedMinimum": 3,
+        "xmlSha256": "1771dd72955283dd5de735865171a76b35084ba6d3568fb9c5dcd3ccace032d3"
+      }
+    ],
+    "underfilledSuites": [],
+    "countMeaning": "Reported testcase/skip records; disabled containers can hide additional intended methods."
+  },
+  "command": [
+    "mvn",
+    "-B",
+    "-Dapi.version=1.44",
+    "-pl",
+    "hify-app",
+    "-am",
+    "-Dtest=com.hify.api.ChildAgentTaskIntegrationTest,com.hify.api.ContextMemoryIntegrationTest,com.hify.api.RunFlowIntegrationTest,com.hify.domain.ChildAgentTaskTest,com.hify.runtime.QueryLoopTest,com.hify.runtime.plan.PlanStateMachineTest,com.hify.runtime.state.ExecutionContextStateTest",
+    "-Dsurefire.failIfNoSpecifiedTests=false",
+    "-Dhify.test.reportsDirectory=/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/evidence/CHAT-RETRIEVAL-CONTROL-001/CHAT-RETRIEVAL-CONTROL-001-20261007T075113Z-9261da6c/runtime-tests-r821_kp3/reports",
+    "test"
+  ],
+  "commandExitCode": 0
+}

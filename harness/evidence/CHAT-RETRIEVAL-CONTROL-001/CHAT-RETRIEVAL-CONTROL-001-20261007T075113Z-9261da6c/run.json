@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "CHAT-RETRIEVAL-CONTROL-001-20261007T075113Z-9261da6c",
+  "taskId": "CHAT-RETRIEVAL-CONTROL-001",
+  "status": "completed",
+  "baselineCommit": "05ab7a06f485a5d800009dedbbe566508bd9e775",
+  "approvalRef": null,
+  "startedAt": "2026-10-07T07:51:13Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "05ab7a06f485a5d800009dedbbe566508bd9e775",
+  "finishedAt": "2026-10-07T08:05:17Z"
+}

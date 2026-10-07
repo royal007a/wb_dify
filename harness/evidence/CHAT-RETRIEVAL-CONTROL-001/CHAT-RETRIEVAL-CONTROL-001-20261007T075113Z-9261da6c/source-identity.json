@@ -1,0 +1,12 @@
+{
+  "headCommit": "05ab7a06f485a5d800009dedbbe566508bd9e775",
+  "sourceTrees": {
+    "backend": "2301fa50a7b251ce32137440fa27a38293f1f1c0",
+    "frontend": "931a8823bf0513777fc88f0d3447daef94e0e71d",
+    "deploy": "d3b11e660e479c745177f9696e30e5b134802f89"
+  },
+  "trackedSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "untrackedSourceFiles": [],
+  "observedAfterRunnerExit": true,
+  "scope": "Git source identity only; not reproducible binary identity or deployment evidence"
+}
