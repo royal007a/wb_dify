@@ -9,7 +9,8 @@
 
 - baseline `05ab7a06f485a5d800009dedbbe566508bd9e775`，git archive 只导出 backend。
 - archive SHA256 `794bd5c2d9446391b4ad6621e56faece0850a40920b06b9c6866a03a687b69c8`。
-- source-sha256.json 记录 488 个 archive 原文件的 SHA；采集后逐个重算未变化。
+- source-sha256.json 记录 488 个 archive 原文件采集前的 SHA；采集后由驱动逐个重算，
+  只记录 baselineFilesUnchanged 布尔结果，没有保存采集后完整清单；该检查不检测新增文件。
 - Maven 日志 SHA256 `c24950869cc501467435a2cf995e0cf506be5b2084dfc28fef4aa431bf6e5c75`；
   日志及 JUnit 文本报告随本目录保存。原始 XML 留在 scratch，仅记录 SHA，不提交 JVM 环境属性。
 - 19 份原文固定在 `backend/hify-app/src/test/resources/context-authority-05ab7a0/`，
@@ -35,4 +36,5 @@
 - 无 PG、完整六范围或部署。SHA 绑定文件，不是独立可信执行证明；新 writer/reader 必须另读这些
   固定 expected 验证，不得在测试中调用生成器后把输出当 expected。
 
-没有后台服务/VM；Maven 已退出。独立只读复核待进行。
+没有后台服务/VM；Maven 已退出。mymacclaude 对提交 blob 独立只读复核无 P1/P2：
+19 份文件、488 条来源 SHA、archive 和采集器摘要一致；未复跑采集。复核不替代新实现验收。

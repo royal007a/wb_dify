@@ -24,6 +24,8 @@ mymacclaude 独立只读复算通过，无 P1/P2，没有独立重跑远端部�
 命令为 f67a791 的 `harness/context-rollout.py` 经 runner 执行：
 `MAVEN_OPTS='-Xmx768m' ./harness/run-task.sh --approval-ref lark:om_x100b63505002e8a0c367a18a505de0e CONTEXT-ROLLOUT-001 -- python3 -E harness/context-rollout.py`。
 run.json 记录身份/时间/结果，没有 command 字段。开始 13:04:20Z，结束 13:21:33Z。
+上述完整命令（包括 MAVEN_OPTS）是发布方的执行记录转述，原始封存证据没有对应的
+完整命令行，不能仅凭 run.json 独立重建或确认该环境变量。
 仅原版 `/opt/hify` 及其 nginx snippet；
 执行 nginx -t/reload，没有修改 hify-cc、工作台、Dify，没有清理共享缓存。
 
