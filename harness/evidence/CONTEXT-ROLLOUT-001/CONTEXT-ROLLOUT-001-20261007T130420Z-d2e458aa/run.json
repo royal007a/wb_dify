@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "runId": "CONTEXT-ROLLOUT-001-20261007T130420Z-d2e458aa",
+  "taskId": "CONTEXT-ROLLOUT-001",
+  "status": "completed",
+  "baselineCommit": "f67a79171323b6a131a777bb7f8b42fbe98751cb",
+  "approvalRef": "lark:om_x100b63505002e8a0c367a18a505de0e",
+  "startedAt": "2026-10-07T13:04:20Z",
+  "exitCode": 0,
+  "reason": null,
+  "headCommit": "f67a79171323b6a131a777bb7f8b42fbe98751cb",
+  "finishedAt": "2026-10-07T13:21:33Z"
+}

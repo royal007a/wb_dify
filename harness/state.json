@@ -7,16 +7,16 @@
   "evidencePath": null,
   "lastCheckpoint": null,
   "lastVerification": {
-    "runId": "OBS-CORRELATION-001-20261007T114929Z-298dada4",
-    "path": "harness/evidence/OBS-CORRELATION-001/OBS-CORRELATION-001-20261007T114929Z-298dada4",
+    "runId": "CONTEXT-ROLLOUT-001-20261007T130420Z-d2e458aa",
+    "path": "harness/evidence/CONTEXT-ROLLOUT-001/CONTEXT-ROLLOUT-001-20261007T130420Z-d2e458aa",
     "result": "completed",
     "exitCode": 0,
-    "baselineCommit": "bc4ab0e4afe39939f9bfe5c6bb9a3797d6ebbb50",
-    "headCommit": "bc4ab0e4afe39939f9bfe5c6bb9a3797d6ebbb50",
-    "recordedAt": "2026-10-07T12:10:43Z",
+    "baselineCommit": "f67a79171323b6a131a777bb7f8b42fbe98751cb",
+    "headCommit": "f67a79171323b6a131a777bb7f8b42fbe98751cb",
+    "recordedAt": "2026-10-07T13:21:33Z",
     "verificationSchemaVersion": 3,
-    "verificationSha256": "45fdd23440f086300194601960c8d5c69054fe852fc4e9d740c4dd8df93e3704"
+    "verificationSha256": "2cdf63294843fd91d5c0b47a33bb7750b529bbd35ace4d08a9be5b101ea6d279"
   },
-  "lastCompletedTaskId": "OBS-CORRELATION-001",
-  "updatedAt": "2026-10-07T12:10:43Z"
+  "lastCompletedTaskId": "CONTEXT-ROLLOUT-001",
+  "updatedAt": "2026-10-07T13:21:33Z"
 }

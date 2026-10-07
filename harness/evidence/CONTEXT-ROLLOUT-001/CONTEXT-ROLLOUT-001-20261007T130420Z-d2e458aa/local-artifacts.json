@@ -1,0 +1,24 @@
+{
+  "gate": "harness/evidence/OBS-CORRELATION-001/OBS-CORRELATION-001-20261007T114929Z-298dada4",
+  "testedHead": "bc4ab0e4afe39939f9bfe5c6bb9a3797d6ebbb50",
+  "release": "/opt/hify/releases/spec-verify-20261007-context-bc4ab0e4",
+  "unit": "hify-upgrade-20261007-context-bc4ab0e4",
+  "localBundle": "/var/folders/1w/qvtt2cgd6tx32b8_wkxt08hr0000gn/T/hify-context-rollout-fkbwsgw7",
+  "artifacts": {
+    "backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar": "bc84981a02f776374a140d08b78fd6e0290a38095d816cde4256c88cdbc03ee2",
+    "frontend/dist/index.html": "c273202c61beed5c8dd8de639f660f51feb8b61e5fab6a80d06212d1aa7f6238",
+    "deploy/nginx-path.conf": "6c43b0a0f431ac4fa27ff0f2d48e71c02e4ce15a5aa607dbbc2714d0cf132281",
+    "deploy/install-spec-release.sh": "52d4cd392b20bbf24945d7f1d50186d0e74fc59e3757c7c7c9317adeab400d4e"
+  },
+  "uploadFiles": {
+    "release.tar.gz": "32b8d243ce74d945b4f346fb0afb8f3053d4c792a7521faab470a081f68f69ae",
+    "install-spec-release.sh": "52d4cd392b20bbf24945d7f1d50186d0e74fc59e3757c7c7c9317adeab400d4e",
+    "smoke-upload.py": "203dea681b6a95072dbad987c886dfab1aace2f7d671023165bdb6fd9bfe0557"
+  },
+  "frontendFiles": {
+    "index.html": "c273202c61beed5c8dd8de639f660f51feb8b61e5fab6a80d06212d1aa7f6238",
+    "assets/index-CMGdBn8A.js": "6331a589ba5cfce90d2602ae37c152b818443d3213633bce8d8f663f3b1e6de2",
+    "assets/index-B4kECHFS.css": "34ff9f292adb1fbbbae51fc7e14a86ffcbe7a7614faabc38eb6ca2ffa084e0ba"
+  },
+  "meaning": "Rebuilt from the tested source trees; /hify frontend build settings. Not identical test-time binaries."
+}

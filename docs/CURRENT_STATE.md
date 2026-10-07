@@ -1,5 +1,13 @@
 # Hify 当前实现边界
 
+2026-10-07 21:21:33 CST：原版已重新部署 132，入口 https://118.196.123.132/hify/ 。
+发布 f67a791，产品三棵源码树与已通过六范围的 bc4ab0e 一致；线上 jar 重新构建为
+bc84981a…03ee2，运行 PID/FD 身份、前端产物 SHA、API 与浏览器 Mock 冒烟通过。
+数据库仍 V24，收尾 harness 93 项及 frontend 通过；不是线上真实模型质量验收。
+已获 nginx reload/失败停服风险授权，未动 CC 或工作台，备份保留但未做恢复演练。
+证据见 `evidence/CONTEXT_ROLLOUT_001.md`，独立复核待进行。以下“未部署”“最新”等
+保留各历史时间点的记录，不覆盖本段当前发布事实；来源降权研究设计尚未实现。
+
 2026-10-07 16:05:17 CST：本地独立开发分支固定 05ab7a0 的六 scope 通过，
 CHAT-RETRIEVAL-CONTROL-001 的 runner 自然退出 0。backend 796、migration 126、
 runtime 35、eval 24 均零失败/错误/跳过/flaky，Python 84、前端 typecheck/build 通过。

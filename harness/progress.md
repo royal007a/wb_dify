@@ -2,9 +2,9 @@
 # Hify Harness Progress
 
 - State source: `harness/tasks.json`
-- Generated from task state updated at: `2026-10-07T12:10:43Z`
+- Generated from task state updated at: `2026-10-07T13:21:33Z`
 - Current task: `none`
-- Counts: pending 20 · running 0 · blocked 3 · completed 96
+- Counts: pending 19 · running 0 · blocked 3 · completed 97
 
 | ID | Priority | Status | Scope | Risk | Title |
 |---|---|---|---|---|---|
@@ -41,7 +41,7 @@
 | `CONSOLE-002` | P1 | completed | frontend, runtime | reversible_write | 交付知识库工作流 MCP 管理台 |
 | `CONTEXT-001` | P1 | completed | backend, runtime, eval | reversible_write | 建立上下文预算归档与压缩评测 |
 | `CONTEXT-INTEGRITY-001` | P1 | completed | harness, backend, runtime, eval, frontend, migration | reversible_write | 上下文压缩保留系统策略与完整当前交互 |
-| `CONTEXT-ROLLOUT-001` | P1 | pending | harness, frontend | high_risk | 已验收上下文完整性与工作流能力受控部署132 |
+| `CONTEXT-ROLLOUT-001` | P1 | completed | harness, frontend | high_risk | 已验收上下文完整性与工作流能力受控部署132 |
 | `COURSE-OPTIMIZATION-001` | P1 | pending | harness | reversible_write | jikesummary 相关章节精读与可验证优化映射 |
 | `DEPLOY-001` | P1 | completed | backend, frontend, migration, runtime, eval | high_risk | 部署摘要与细节召回纵向切片 |
 | `DEPLOY-002` | P1 | completed | backend, frontend, migration, runtime, eval | high_risk | 推送并部署高级能力纵向切片 |

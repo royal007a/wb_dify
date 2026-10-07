@@ -1,0 +1,321 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] hify-parent                                                        [pom]
+[INFO] hify-common                                                        [jar]
+[INFO] hify-provider                                                      [jar]
+[INFO] hify-tool                                                          [jar]
+[INFO] hify-mcp                                                           [jar]
+[INFO] hify-knowledge                                                     [jar]
+[INFO] hify-workflow                                                      [jar]
+[INFO] hify-agent                                                         [jar]
+[INFO] hify-chat                                                          [jar]
+[INFO] hify-demo                                                          [jar]
+[INFO] hify-app                                                           [jar]
+[INFO] 
+[INFO] ------------------------< com.hify:hify-parent >------------------------
+[INFO] Building hify-parent 0.1.0-SNAPSHOT                               [1/11]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] ------------------------< com.hify:hify-common >------------------------
+[INFO] Building hify-common 0.1.0-SNAPSHOT                               [2/11]
+[INFO]   from hify-common/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-common ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-common ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-common ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ hify-common ---
+[INFO] Building jar: /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/target/hify-common-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] -----------------------< com.hify:hify-provider >-----------------------
+[INFO] Building hify-provider 0.1.0-SNAPSHOT                             [3/11]
+[INFO]   from hify-provider/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-provider ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-provider ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 49 source files with javac [debug parameters release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-provider ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-provider ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 4 source files with javac [debug parameters release 17] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-provider ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ hify-provider ---
+[INFO] Building jar: /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/target/hify-provider-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] -------------------------< com.hify:hify-tool >-------------------------
+[INFO] Building hify-tool 0.1.0-SNAPSHOT                                 [4/11]
+[INFO]   from hify-tool/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-tool ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-tool ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 10 source files with javac [debug parameters release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-tool ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-tool ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug parameters release 17] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-tool ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ hify-tool ---
+[INFO] Building jar: /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/target/hify-tool-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] -------------------------< com.hify:hify-mcp >--------------------------
+[INFO] Building hify-mcp 0.1.0-SNAPSHOT                                  [5/11]
+[INFO]   from hify-mcp/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-mcp ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-mcp ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 26 source files with javac [debug parameters release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-mcp ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-mcp ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-mcp ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ hify-mcp ---
+[INFO] Building jar: /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/target/hify-mcp-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] ----------------------< com.hify:hify-knowledge >-----------------------
+[INFO] Building hify-knowledge 0.1.0-SNAPSHOT                            [6/11]
+[INFO]   from hify-knowledge/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-knowledge ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-knowledge ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 26 source files with javac [debug parameters release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-knowledge ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-knowledge ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 3 source files with javac [debug parameters release 17] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-knowledge ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ hify-knowledge ---
+[INFO] Building jar: /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/target/hify-knowledge-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] -----------------------< com.hify:hify-workflow >-----------------------
+[INFO] Building hify-workflow 0.1.0-SNAPSHOT                             [7/11]
+[INFO]   from hify-workflow/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-workflow ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-workflow/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-workflow/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-workflow ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 44 source files with javac [debug parameters release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-workflow ---
+[INFO] Copying 2 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-workflow ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 12 source files with javac [debug parameters release 17] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-workflow ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ hify-workflow ---
+[INFO] Building jar: /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-workflow/target/hify-workflow-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] ------------------------< com.hify:hify-agent >-------------------------
+[INFO] Building hify-agent 0.1.0-SNAPSHOT                                [8/11]
+[INFO]   from hify-agent/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-agent ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-agent ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 38 source files with javac [debug parameters release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-agent ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-agent ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-agent ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ hify-agent ---
+[INFO] Building jar: /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/target/hify-agent-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] -------------------------< com.hify:hify-chat >-------------------------
+[INFO] Building hify-chat 0.1.0-SNAPSHOT                                 [9/11]
+[INFO]   from hify-chat/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-chat ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-chat/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-chat/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-chat ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 89 source files with javac [debug parameters release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-chat ---
+[INFO] Copying 3 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-chat ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 18 source files with javac [debug parameters release 17] to target/test-classes
+[INFO] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-chat/src/test/java/com/hify/application/RunEventBrokerBackpressureTest.java: Some input files use unchecked or unsafe operations.
+[INFO] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-chat/src/test/java/com/hify/application/RunEventBrokerBackpressureTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-chat ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ hify-chat ---
+[INFO] Building jar: /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-chat/target/hify-chat-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] -------------------------< com.hify:hify-demo >-------------------------
+[INFO] Building hify-demo 0.1.0-SNAPSHOT                                [10/11]
+[INFO]   from hify-demo/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-demo ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-demo ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 7 source files with javac [debug parameters release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-demo ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-demo ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-demo ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ hify-demo ---
+[INFO] Building jar: /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/target/hify-demo-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] -------------------------< com.hify:hify-app >--------------------------
+[INFO] Building hify-app 0.1.0-SNAPSHOT                                 [11/11]
+[INFO]   from hify-app/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-app ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 21 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-app ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 17 source files with javac [debug parameters release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-app ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-app ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 65 source files with javac [debug parameters release 17] to target/test-classes
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/KnowledgeFinishIntegrationTest.java:[29,6] org.springframework.boot.test.mock.mockito.MockBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/KnowledgeFinishIntegrationTest.java:[30,6] org.springframework.boot.test.mock.mockito.SpyBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/KnowledgeAdmissionShutdownTest.java:[19,6] org.springframework.boot.test.mock.mockito.SpyBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/PostgresConcurrencyIntegrationTest.java:[82,48] org.springframework.boot.test.mock.mockito.SpyBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/ReadInputHygieneIntegrationTest.java:[44,6] org.springframework.boot.test.mock.mockito.SpyBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/ReadinessIntegrationTest.java:[34,6] org.springframework.boot.test.mock.mockito.SpyBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/RunAdmissionIntegrationTest.java:[41,6] org.springframework.boot.test.mock.mockito.MockBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/RunDispatchIntegrationTest.java:[37,6] org.springframework.boot.test.mock.mockito.MockBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/RunDispatchIntegrationTest.java:[38,6] org.springframework.boot.test.mock.mockito.SpyBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/RunSubmissionIdentityTest.java:[40,48] org.springframework.boot.test.mock.mockito.SpyBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/RunSubmissionIdentityTest.java:[41,48] org.springframework.boot.test.mock.mockito.SpyBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/RunSubmissionIdentityTest.java:[47,6] org.springframework.boot.test.mock.mockito.MockBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/UploadBoundaryNetworkTest.java:[39,6] org.springframework.boot.test.mock.mockito.MockBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/WorkflowKnowledgeReviewTest.java:[35,6] org.springframework.boot.test.mock.mockito.SpyBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/WorkflowKnowledgeReviewTest.java:[36,6] org.springframework.boot.test.mock.mockito.SpyBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/WorkflowRunControlIntegrationTest.java:[27,6] org.springframework.boot.test.mock.mockito.SpyBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/WorkflowSettlementIntegrationTest.java:[43,6] org.springframework.boot.test.mock.mockito.SpyBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/WorkflowSettlementIntegrationTest.java:[44,6] org.springframework.boot.test.mock.mockito.SpyBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[INFO] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/WorkflowKnowledgeReviewTest.java: /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/WorkflowKnowledgeReviewTest.java uses unchecked or unsafe operations.
+[INFO] /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/java/com/hify/api/WorkflowKnowledgeReviewTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-app ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ hify-app ---
+[INFO] Building jar: /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- spring-boot:3.4.5:repackage (repackage) @ hify-app ---
+[INFO] Replacing main artifact /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar.original
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for hify-parent 0.1.0-SNAPSHOT:
+[INFO] 
+[INFO] hify-parent ........................................ SUCCESS [  0.002 s]
+[INFO] hify-common ........................................ SUCCESS [  7.566 s]
+[INFO] hify-provider ...................................... SUCCESS [  6.588 s]
+[INFO] hify-tool .......................................... SUCCESS [  1.171 s]
+[INFO] hify-mcp ........................................... SUCCESS [  1.609 s]
+[INFO] hify-knowledge ..................................... SUCCESS [  1.722 s]
+[INFO] hify-workflow ...................................... SUCCESS [  2.869 s]
+[INFO] hify-agent ......................................... SUCCESS [  4.215 s]
+[INFO] hify-chat .......................................... SUCCESS [02:41 min]
+[INFO] hify-demo .......................................... SUCCESS [ 30.034 s]
+[INFO] hify-app ........................................... SUCCESS [02:53 min]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  06:35 min
+[INFO] Finished at: 2026-10-07T21:11:03+08:00
+[INFO] ------------------------------------------------------------------------

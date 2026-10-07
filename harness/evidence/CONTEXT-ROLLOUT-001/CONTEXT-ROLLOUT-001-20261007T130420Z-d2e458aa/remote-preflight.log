@@ -1,0 +1,8 @@
+2026/10/07 21:12:10 [warn] 3695434#3695434: duplicate MIME type "text/html" in /etc/nginx/sites-enabled/workbench:136
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+runningPid=1650016
+runningStartTicks=326254019
+runningJarSha256=5ee59af0c9b13bb6cfe62f700813a117f4492268641cb153486ff121c4b1f230
+freeKiB=2997648 requiredKiB=2419847 stagingKiB=221439 oldKiB=86304 dbBytes=15309847
+keyMetadata=390186:65:1791034419:600:root

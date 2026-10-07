@@ -1,0 +1,42 @@
+{
+  "testedHead": "bc4ab0e4afe39939f9bfe5c6bb9a3797d6ebbb50",
+  "gate": "harness/evidence/OBS-CORRELATION-001/OBS-CORRELATION-001-20261007T114929Z-298dada4",
+  "release": "/opt/hify/releases/spec-verify-20261007-context-bc4ab0e4",
+  "unit": "hify-upgrade-20261007-context-bc4ab0e4",
+  "sourceTrees": {
+    "backend": "c6bdcd259607ba5fed44ff68a7346e26883fb87f",
+    "frontend": "931a8823bf0513777fc88f0d3447daef94e0e71d",
+    "deploy": "646016ba3f4383b0474cd8dec1d6c966f34b305c"
+  },
+  "artifacts": {
+    "backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar": "bc84981a02f776374a140d08b78fd6e0290a38095d816cde4256c88cdbc03ee2",
+    "frontend/dist/index.html": "c273202c61beed5c8dd8de639f660f51feb8b61e5fab6a80d06212d1aa7f6238",
+    "deploy/nginx-path.conf": "6c43b0a0f431ac4fa27ff0f2d48e71c02e4ce15a5aa607dbbc2714d0cf132281",
+    "deploy/install-spec-release.sh": "52d4cd392b20bbf24945d7f1d50186d0e74fc59e3757c7c7c9317adeab400d4e"
+  },
+  "final": {
+    "runningRuns": 0,
+    "runningWorkflows": 0,
+    "activeIndexTasks": 0,
+    "schemaVersion": 24,
+    "allMigrationsSucceeded": true
+  },
+  "keyMetadataUnchanged": true,
+  "automaticRollback": false,
+  "limits": [
+    "Rebuilt from accepted source; not gate-time binaries",
+    "Backup list checked, no restore drill",
+    "H1 messages/zero-call behavior proven locally; remote smoke uses Mock only",
+    "No live embedding or new Workflow structured-output quality benchmark",
+    "TLS validation disabled in self-signed smoke/browser only"
+  ],
+  "evidenceSha256": {
+    "smoke-prefix.json": "03c853111bc7826d0ed142e922f31a4f88934a7a98c042190038b164cfb627fe",
+    "smoke-direct.json": "c840bdc33af06ccf41fff5469255b42a89ddd9ae10ad0b2e9a72b865b16adb81",
+    "smoke-current.json": "f76c4b0a99383c912af1cb544bc6ff1244637516254a8be202fa4faa6c6aeaaa"
+  },
+  "observations": {
+    "remote-observations.json": "c5564e8cea059f0d246c23cab5cdac74c8630c7df8a5c0f726b652716524d4cf",
+    "browser-live.json": "203d8ea806753ed6231e2f83dbff5b83671b57c4af939ee8d8bb52110fa2e612"
+  }
+}

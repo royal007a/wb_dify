@@ -1,0 +1,14 @@
+Harness state is valid (portable metadata check; absent raw logs are not reverified)
+package passed
+build-prefix passed
+bundle passed
+remote-preflight passed
+remote-directory passed
+upload passed
+remote-install passed
+smoke-current passed
+smoke-prefix passed
+smoke-direct passed
+browser-live passed
+remote-final passed
+Remote source-bound rollout and scoped Mock smoke passed; closing gates follow.

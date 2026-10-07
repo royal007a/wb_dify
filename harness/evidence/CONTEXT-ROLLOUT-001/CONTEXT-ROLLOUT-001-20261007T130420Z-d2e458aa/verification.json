@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 3,
+  "strictEvidence": true,
+  "invocationId": "01cd61f9-8f8a-43e9-a8f7-e1faf73a7368",
+  "runId": "CONTEXT-ROLLOUT-001-20261007T130420Z-d2e458aa",
+  "kind": "verification",
+  "scopes": [
+    "harness",
+    "frontend"
+  ],
+  "base": "working-tree",
+  "headCommit": "f67a79171323b6a131a777bb7f8b42fbe98751cb",
+  "result": "passed",
+  "steps": [
+    {
+      "name": "harness-state",
+      "exitCode": 0,
+      "log": "harness/evidence/CONTEXT-ROLLOUT-001/CONTEXT-ROLLOUT-001-20261007T130420Z-d2e458aa/harness-state.log",
+      "command": [
+        "python3",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/harness.py",
+        "validate"
+      ],
+      "logSha256": "6b88b9a6057606024a1bf285377c7371051f61b28a1e81d6b68a3fd12bf6cb7b"
+    },
+    {
+      "name": "harness-progress",
+      "exitCode": 0,
+      "log": "harness/evidence/CONTEXT-ROLLOUT-001/CONTEXT-ROLLOUT-001-20261007T130420Z-d2e458aa/harness-progress.log",
+      "command": [
+        "python3",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/harness.py",
+        "check-progress"
+      ],
+      "logSha256": "53a4a1b7863bea67045d82fe8a1bc53c8c30dd3740b7708ff332a9300796dc18"
+    },
+    {
+      "name": "harness-api-spec",
+      "exitCode": 0,
+      "log": "harness/evidence/CONTEXT-ROLLOUT-001/CONTEXT-ROLLOUT-001-20261007T130420Z-d2e458aa/harness-api-spec.log",
+      "command": [
+        "python3",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/render-api-spec.py",
+        "--check"
+      ],
+      "logSha256": "0456d6551eef206c05217007f775b3b7e8fe918df66de019312f60508977f0f0"
+    },
+    {
+      "name": "harness-python-tests",
+      "exitCode": 0,
+      "log": "harness/evidence/CONTEXT-ROLLOUT-001/CONTEXT-ROLLOUT-001-20261007T130420Z-d2e458aa/harness-python-tests.log",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "logSha256": "d0eb54125d167ba58593285290204fd9e3c91ca654ebdfc011332cb9bc6130f7"
+    },
+    {
+      "name": "harness-shell-syntax",
+      "exitCode": 0,
+      "log": "harness/evidence/CONTEXT-ROLLOUT-001/CONTEXT-ROLLOUT-001-20261007T130420Z-d2e458aa/harness-shell-syntax.log",
+      "command": [
+        "sh",
+        "-n",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/init.sh",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/verify.sh",
+        "/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/harness/run-task.sh"
+      ],
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "frontend-typecheck",
+      "exitCode": 0,
+      "log": "harness/evidence/CONTEXT-ROLLOUT-001/CONTEXT-ROLLOUT-001-20261007T130420Z-d2e458aa/frontend-typecheck.log",
+      "command": [
+        "sh",
+        "-c",
+        "cd '/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/frontend' && npm run typecheck"
+      ],
+      "logSha256": "150b8f5e6954ae1ebc67a61220fd3b475d89a262b5f342b98838e3dc84fed489"
+    },
+    {
+      "name": "frontend-build",
+      "exitCode": 0,
+      "log": "harness/evidence/CONTEXT-ROLLOUT-001/CONTEXT-ROLLOUT-001-20261007T130420Z-d2e458aa/frontend-build.log",
+      "command": [
+        "sh",
+        "-c",
+        "cd '/private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/frontend' && npm run build"
+      ],
+      "logSha256": "2afb4ae3536d170190817999c142dfc5e79b8f5f9656beeb7458e71eb0981c35"
+    }
+  ],
+  "finishedAt": "2026-10-07T13:21:33Z",
+  "commandResult": "passed",
+  "testCoverage": "not-assessed",
+  "resultMeaning": "Selected commands and observed test counts only; not full product or deployment acceptance. Repeated steps are not independent tests."
+}

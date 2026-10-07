@@ -1,0 +1,69 @@
+{
+  "base": "https://118.196.123.132/hify/",
+  "passed": true,
+  "tlsCertificateValidation": false,
+  "checks": [
+    {
+      "case": "calculator",
+      "conversationId": "8d2b5bc6-779e-451c-a661-b25d27a9a67a",
+      "agentVersionId": "d1322f26-0f72-4d69-87ee-c70fcb4d7980",
+      "runs": [
+        {
+          "id": "d5cfdef6-8188-454a-a814-6babf5a38200",
+          "state": "COMPLETED",
+          "output": "工具执行完成，结果是：{\"ok\":true,\"result\":\"391\"}",
+          "streamUrl": "/api/v1/runs/d5cfdef6-8188-454a-a814-6babf5a38200/events/stream"
+        }
+      ]
+    },
+    {
+      "case": "clock",
+      "conversationId": "03257aa5-9fa2-4c0c-a314-0f1f1ecb4569",
+      "agentVersionId": "d1322f26-0f72-4d69-87ee-c70fcb4d7980",
+      "runs": [
+        {
+          "id": "394f37d2-380c-4014-9af5-810d3ec94c19",
+          "state": "COMPLETED",
+          "output": "当前是 Hify Demo Agent（本地规则模拟，未调用真实大模型）。\n\n可以试试 “现在几点？” 或 “计算 12.5 * 4”，验证工具调用。通用问答请配置真实模型并发布 Agent，再新建会话。",
+          "streamUrl": "/api/v1/runs/394f37d2-380c-4014-9af5-810d3ec94c19/events/stream"
+        },
+        {
+          "id": "ad4f3d25-abae-433a-9a5a-03d7929c627f",
+          "state": "COMPLETED",
+          "output": "工具执行完成，结果是：{\"ok\":true,\"result\":\"2026-10-07T21:16:58.965412998+08:00\"}",
+          "streamUrl": "/api/v1/runs/ad4f3d25-abae-433a-9a5a-03d7929c627f/events/stream"
+        },
+        {
+          "id": "3d1c4d69-75b1-416e-886d-dc3df3a05833",
+          "state": "COMPLETED",
+          "output": "工具执行完成，结果是：{\"ok\":true,\"result\":\"2026-10-07T21:17:01.827573090+08:00\"}",
+          "streamUrl": "/api/v1/runs/3d1c4d69-75b1-416e-886d-dc3df3a05833/events/stream"
+        },
+        {
+          "id": "ab69aa9d-26a1-473e-b645-cac1d1622b80",
+          "state": "COMPLETED",
+          "output": "工具执行完成，结果是：{\"ok\":true,\"result\":\"2026-10-07T21:17:06.062298651+08:00\"}",
+          "streamUrl": "/api/v1/runs/ab69aa9d-26a1-473e-b645-cac1d1622b80/events/stream"
+        }
+      ]
+    }
+  ],
+  "createdRecords": {
+    "conversations": [
+      "8d2b5bc6-779e-451c-a661-b25d27a9a67a",
+      "03257aa5-9fa2-4c0c-a314-0f1f1ecb4569"
+    ],
+    "runs": [
+      "d5cfdef6-8188-454a-a814-6babf5a38200",
+      "394f37d2-380c-4014-9af5-810d3ec94c19",
+      "ad4f3d25-abae-433a-9a5a-03d7929c627f",
+      "3d1c4d69-75b1-416e-886d-dc3df3a05833",
+      "ab69aa9d-26a1-473e-b645-cac1d1622b80"
+    ]
+  },
+  "loadedAssets": {
+    "assets/index-B4kECHFS.css": "34ff9f292adb1fbbbae51fc7e14a86ffcbe7a7614faabc38eb6ca2ffa084e0ba",
+    "assets/index-CMGdBn8A.js": "6331a589ba5cfce90d2602ae37c152b818443d3213633bce8d8f663f3b1e6de2"
+  },
+  "scope": "Explicit Demo selection, not default-first-option assertion. Real deployed UI/backend, Mock model. Own two conversations/five runs retained."
+}

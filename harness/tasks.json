@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "hify",
-  "updatedAt": "2026-10-07T12:10:43Z",
+  "updatedAt": "2026-10-07T13:21:33Z",
   "tasks": [
     {
       "id": "CHAT-RETRIEVAL-CONTROL-001",
@@ -228,7 +228,7 @@
       "title": "已验收上下文完整性与工作流能力受控部署132",
       "description": "保留H1准入，并绑定当前OBS-CORRELATION-001六scope门禁及一致源码树重新构建原版Hify；包含此前未部署能力。只动原版Hify，不夹带MCP配置，不清共享缓存。",
       "priority": "P1",
-      "status": "pending",
+      "status": "completed",
       "scopes": [
         "harness",
         "frontend"
@@ -239,7 +239,7 @@
       ],
       "risk": "high_risk",
       "operation": "deployment",
-      "approvalRef": "lark:om_x100b6372c9d534b0b177a6da50a9acc",
+      "approvalRef": "lark:om_x100b63505002e8a0c367a18a505de0e",
       "dependsOn": [
         "CONTEXT-INTEGRITY-001",
         "OBS-CORRELATION-001"
@@ -250,12 +250,24 @@
         "部署态Mock对话和持久Run/会话版本/streamUrl/每轮答案通过，核对新PID持有jar与浏览器实际响应资源SHA，prefix/direct上传边界通过，仅操作自己的合成数据",
         "提交去敏远端观察和失败边界；收尾harness/frontend通过，后端准入仍引用六scope，未验证的真实模型/新节点线上质量如实保留"
       ],
-      "planPath": "exec-plans/active/CONTEXT-ROLLOUT-001.md",
+      "planPath": "exec-plans/completed/CONTEXT-ROLLOUT-001.md",
       "checkpoint": null,
       "blockedReason": null,
-      "evidence": [],
+      "evidence": [
+        {
+          "runId": "CONTEXT-ROLLOUT-001-20261007T130420Z-d2e458aa",
+          "path": "harness/evidence/CONTEXT-ROLLOUT-001/CONTEXT-ROLLOUT-001-20261007T130420Z-d2e458aa",
+          "result": "completed",
+          "exitCode": 0,
+          "baselineCommit": "f67a79171323b6a131a777bb7f8b42fbe98751cb",
+          "headCommit": "f67a79171323b6a131a777bb7f8b42fbe98751cb",
+          "recordedAt": "2026-10-07T13:21:33Z",
+          "verificationSchemaVersion": 3,
+          "verificationSha256": "2cdf63294843fd91d5c0b47a33bb7750b529bbd35ace4d08a9be5b101ea6d279"
+        }
+      ],
       "createdAt": "2026-10-06T07:30:00Z",
-      "updatedAt": "2026-10-06T07:30:00Z"
+      "updatedAt": "2026-10-07T13:21:33Z"
     },
     {
       "id": "CONTEXT-INTEGRITY-001",
