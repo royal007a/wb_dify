@@ -1,6 +1,6 @@
 # 下一候选：外部资料与策略权限分离（设计草案，未实现）
 
-> 2026-10-07 三轮修订：以下「修订契约」替代后面的旧方案；旧方案保留为审查轨迹，
+> 2026-10-07 四轮修订：以下「修订契约」替代后面的旧方案；旧方案保留为审查轨迹，
 > 不再作为实现依据。特别撤回 canonical 新角色、新 DetailRefKind 以及恢复入口直接拒绝。
 > 此版仍待 review，未注册实施任务、未改产品、未运行新测试。
 
@@ -34,7 +34,7 @@
   旧知识串里的固定英文规则不从原文“升级”为策略，新视图只用服务端固定规则。
 - 恢复入口只构造待核实的描述，**不抛来源异常阻止 canonical replay**。
   QueryLoop 先用原字节前缀读取 model:N。没有已提交响应、确实要调用模型时，
-  在 `onModelStarted` 之前执行来源门禁；未知来源以明确兼容失败终止，模型零调用。
+   在 `onModelStarted` 之前执行来源门禁；未知来源以明确兼容失败终止，模型零调用。
 - 有已提交响应时仍复用它，不重调模型、不删除/改写已提交历史。复用不等于允许继续执行：
   未执行的 tool call 在工具调度前还必须通过同一来源门禁；来源未核实则工具零调用，
   保留已提交响应并记兼容失败。纯 final 响应同样不绕过交付门禁，不因已提交就自动发布。
@@ -47,7 +47,7 @@
 以 05ab7a0 的 QueryLoop 为定位基线（实施后行号会变化）：
 
 1. 保留 133–142 行的 suspended、cancelled、expired 检查，再读取 `model:N` replay。
-   没有 replay 时：来源核实 → 再检查父控制 → `onModelStarted`（原 150 行）→ prepare
+   没有 replay 时：来源核实 → 再检查父控制 → `onModelStarted`（原 152 行）→ prepare
    → generateStream。不能让来源拒绝产生一个“模型已经开始”的事件。
 2. 有 replay 时先按原规则验证、复用已提交 assistant，不调模型、不改写历史事实。
    在原有响应后控制检查之后、CompletionVerifier / FinishGate 和整个 tool loop 之前，
@@ -66,8 +66,8 @@
 
 | 情况 | 终态 / TerminalReason（拟新增的明确标出） | 用户提示与重试规则 |
 | --- | --- | --- |
-| 确定性来源不一致、缺失或歧义 | FAILED / **CONTEXT_AUTHORITY_MISMATCH（新增）** | “上下文来源无法核实，本次运行已停止；请重新发起运行。”不自动重试、不续接该 Run。 |
-| 来源存储读取失败，无法完成核实 | FAILED / **CONTEXT_SOURCE_UNAVAILABLE（新增）** | “上下文来源暂时不可用，本次运行已停止；请稍后重新发起运行。”不自动重试；新 Run 可以再尝试核实，不能跳过门禁。 |
+| 确定性来源不一致、缺失或歧义 | FAILED / **CONTEXT_AUTHORITY_MISMATCH（新增）** | “上下文来源无法核实，本次运行已停止；请提交一个新请求。”不自动重试、不续接该失败 Run；若它由显式续接创建，源 Run 仍可能是 NEEDS_INPUT，但再次续接相同来源会再次拒绝，不能提示用户反复点原续接。 |
+| 来源存储读取失败，无法完成核实 | FAILED / **CONTEXT_SOURCE_UNAVAILABLE（新增）** | “上下文来源暂时不可用，本次运行已停止；请稍后重试。”不自动重试、不续接该失败 Run；可新开请求，或在源 Run 仍符合 NEEDS_INPUT 准入时重新显式续接，由新 Run 重新核实，不跳过门禁。 |
 | 取消 / 到期 / suspended | 保持既有控制异常及处理路径 | 不转换成来源异常；取消与到期同时出现仍按取消，关停恢复语义不变。 |
 
 两类新异常必须在 QueryLoop 的通用 RuntimeException→MODEL_ERROR 分支之前单独映射，
@@ -75,10 +75,23 @@ RunApplicationService.finishFailure 也做同样的兜底映射；客户端文�
 不拼接原始异常、资料、路径或连接信息。实现时同步更新终态展示/统计契约，不新增 RunState。
 
 核实使用原 Run 的 ExecutionControl，不新开完整时限：每次事件/来源读取前后、每块
-重建之后、最终判定前检查控制；catch 中先原样传播三类控制异常，再检查父控制，最后才
-分类数据不一致与存储故障。数据库故障绝不转成“无引用”，不依赖异常消息文本分类。
+重建之后、最终判定前检查控制；catch 中先原样传播三类控制异常，再检查父控制，随后
+在分类前检查 `shutdownInterruption(failure) || lifecycle.isStopping()`，成立则抛
+ExecutionSuspendedException，最后才分类数据不一致与存储故障。数据库故障绝不转成
+“无引用”，不依赖异常消息文本分类。
 只读操作也计入剩余预算，迟到核实结果不能继续调用模型/工具；底层数据库读取的即时
 中断能力不是本切片新增保证，仍是协作式截止，不能宣传严格墙钟硬上限。
+
+关停检查由应用层提供的来源核实 port 封装（可经 ContextAuthority/RunRuntimeIdentity
+传递），QueryLoop 不直接依赖应用生命周期实现。来源分类不能仅靠父 control 的
+isSuspended：生命周期已 stopping、但该 control 尚未收到暂停信号时也必须可恢复。
+QueryLoop 将来源拒绝映射为 terminal 之前再次调用同一控制/关停检查；不能用直接
+`terminal(UNAVAILABLE)` 绕过它。RunApplicationService 对这两类异常及返回 reason
+均兜底，并在终态写入事务内、锁住 Run 后提交新的来源失败之前再检查控制/关停。
+此检查仅针对本次来源门禁的新失败分类，不把已经算好的正常成功统一改为暂停。
+未终结且关停中的工作沿既有 APPLICATION_SHUTDOWN 路径写 run.interrupted，保留
+RUNNING 供恢复；持久取消仍优先。门禁先算出拒绝但尚未提交的窗口不能视为已永久失败。
+这里规定检查点语义，不宣称生命周期标志与所有并发操作之间具有额外全局原子性。
 
 #### 2.3 多事件、checkpoint 和重建的唯一规则
 
@@ -88,6 +101,11 @@ RunApplicationService.finishFailure 也做同样的兜底映射；客户端文�
   该 Run 内最小持久事件序号选取，仅用于确定性诊断；不同来源映射出现歧义则拒绝。
   零匹配且读取完整成功才属于 MISMATCH；核实所需读取有故障时属于 UNAVAILABLE，
   不能把被吞掉的异常计成一个不匹配。不得用重新检索/重新排名替代已固定的 K 编号。
+- completed 必须属于可辨识的成功检索段：同一 Run 按持久序号找到其前一条尚未配对的
+  started，区间内有 failed 就排除该 completed，不能用部分成功的引用授予完整来源。
+  缺 started、同一段多条 completed 或其他无法唯一配对的形态按不一致处理；遇到新
+  started 时先前未完成的段不与新 completed 拼接。当前代码会先发布 failed 再发布
+  completed（RunApplicationService:919–927），因此有 completed 本身不是成功证明。
 - canonical/checkpoint 的已提交字节是要保持的历史事实；通过逐字匹配的事件提供来源
   证明；contextState 的 `knowledge:Kn:chunkId` 加 valueDigest 不是另一套可覆盖事实。
   对知识候选要求它与证明中的 K→chunkId/digest 一一对应，缺失、重复或冲突均拒绝，
@@ -97,6 +115,24 @@ RunApplicationService.finishFailure 也做同样的兜底映射；客户端文�
 - 固定语料重新发布不授权换成新 chunk。若旧 chunk 仍可按原版本和 digest 回读，可核实；
   若已被清理或不可再回读，合法旧 Run 也会确定性降级为 MISMATCH，需新开 Run。
   这是可用性取舍，不自动把“曾经可信”当成现在可验证，也不批量改写历史。
+
+#### 2.4 核实结果的生命周期与失败提交窗口
+
+- 每次 `RunApplicationService.execute` 调用建立独立的内存核实作用域，不跨执行、
+  恢复、显式续接或不同 Run 共享，也不以全局 runId 缓存替代来源重建。
+- 首次实际门禁必须完整核实，包括新 Run：手中的本次检索候选只是重建输入，不能
+  因“刚检索过”跳过事件配对、固定版本、引用摘要、正文与 contextState 对照。
+  新 Run 没有 checkpoint 时以其即将进入模型的 canonical 前缀作为对应历史事实。
+- 只缓存已通过的来源结论，绑定固定 AgentVersion 身份及其摘要、策略/资料位置、
+  被核实 canonical 前缀字节、K 编号映射与来源证明身份。普通后续 assistant/tool
+  追加不改变已核实的前缀；若这些绑定值改变，拒绝复用，不靠位置碰巧相同命中。
+  局部成功、读取失败或歧义不缓存。逐轮仍检查控制、执行租约和出口准入，缓存不是
+  继续运行权限，也不能替代既有 KnowledgeCompletionVerifier 的语义/来源检查。
+- 同一执行作用域中通过后不因每轮重新读取同一来源而随机翻转为 UNAVAILABLE；恢复
+  后必须重新读，所以旧 chunk 随后清理可能导致下一次恢复拒绝。这是明确的快照取舍，
+  不是永久保鲜保证；使用中的不可变内存证明不得被后续检索覆盖。
+- “不自动重试”仅指来源失败终态成功提交之后。若拒绝已经算出但事务提交前崩溃，
+  Run 仍是 RUNNING，既有恢复会重新执行核实；不伪造已提交终态阻止这类恢复。
 
 ### 3. 协议与投影不变式
 
@@ -138,6 +174,13 @@ RunApplicationService.finishFailure 也做同样的兜底映射；客户端文�
 6. 分别注入确定性不一致、数据库临时故障、取消、到期、suspended，验证新终态映射与
    原控制优先级；移除专用映射会红在 reason，移后入口门禁会红在 model.started/调用次数。
    多事件相同/不同/零匹配、state 冲突、旧 chunk 清理、新 Run 崩溃恢复逐项覆盖。
+7. 单列关停交错：读取中抛存储异常且 lifecycle 已 stopping、父 control 尚未暂停；
+   门禁拒绝返回前关停；返回来源 reason 后、终态提交前关停。要求工具/模型零新调用，
+   写可恢复 interruption 而非 CONTEXT_SOURCE_UNAVAILABLE/永久 FAILED；再加非关停
+   的存储故障对照。撤掉任一兜底后须在对应 reason/持久状态断言变红，不能只断言抛错。
+8. 覆盖 failed+completed 配对排除、无 started/重复 completed、崩溃后新 started，
+   以及同作用域成功复用/来源绑定改变拒绝复用/新作用域强制重读。新 Run 的候选不能
+   绕过首次核实；失败提交前崩溃可重新核实，提交后不得自动恢复。
 
 ### 5. 发布与回退边界
 
