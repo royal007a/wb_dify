@@ -1,0 +1,16 @@
+{
+  "head": "dd442253c7cdc7fcb939f2eb4628258caaaef1df",
+  "command": [
+    "/opt/homebrew/bin/mvn",
+    "-B",
+    "-o",
+    "-pl",
+    "hify-app",
+    "-am",
+    "-Dtest=RunShutdownIntegrationTest#interruptedModelIsRecoverableAfterActualApplicationRestart+expiredInterruptedModelDoesNotRestartItsBudgetAfterActualApplicationRestart,ShutdownStartupDiagnosticsTest,MavenStructureTest,ModuleStructureContractTest",
+    "-Dsurefire.failIfNoSpecifiedTests=false",
+    "-Dhify.test.reportsDirectory=/tmp/hify-startup-recheck-dd44225.y2nXxj/reports",
+    "test"
+  ],
+  "sourceClean": true
+}

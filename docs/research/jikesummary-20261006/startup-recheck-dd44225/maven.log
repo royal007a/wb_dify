@@ -1,0 +1,340 @@
+Picked up JAVA_TOOL_OPTIONS: -Xmx768m -XX:ReservedCodeCacheSize=128m -Dspring.test.context.cache.maxSize=2 -Dhify.test.startup-diagnostics=true -Xlog:gc*,safepoint:file=/tmp/hify-startup-recheck-dd44225.y2nXxj/gc-%p.log:time,uptime,level,tags
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] hify-parent                                                        [pom]
+[INFO] hify-common                                                        [jar]
+[INFO] hify-provider                                                      [jar]
+[INFO] hify-tool                                                          [jar]
+[INFO] hify-mcp                                                           [jar]
+[INFO] hify-knowledge                                                     [jar]
+[INFO] hify-workflow                                                      [jar]
+[INFO] hify-agent                                                         [jar]
+[INFO] hify-chat                                                          [jar]
+[INFO] hify-demo                                                          [jar]
+[INFO] hify-app                                                           [jar]
+[INFO] 
+[INFO] ------------------------< com.hify:hify-parent >------------------------
+[INFO] Building hify-parent 0.1.0-SNAPSHOT                               [1/11]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] ------------------------< com.hify:hify-common >------------------------
+[INFO] Building hify-common 0.1.0-SNAPSHOT                               [2/11]
+[INFO]   from hify-common/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-common ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-common ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-common/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-common ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-common ---
+[INFO] 
+[INFO] -----------------------< com.hify:hify-provider >-----------------------
+[INFO] Building hify-provider 0.1.0-SNAPSHOT                             [3/11]
+[INFO]   from hify-provider/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-provider ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-provider ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-provider ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-provider/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-provider ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-provider ---
+[INFO] 
+[INFO] -------------------------< com.hify:hify-tool >-------------------------
+[INFO] Building hify-tool 0.1.0-SNAPSHOT                                 [4/11]
+[INFO]   from hify-tool/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-tool ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-tool ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-tool ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-tool/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-tool ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-tool ---
+[INFO] 
+[INFO] -------------------------< com.hify:hify-mcp >--------------------------
+[INFO] Building hify-mcp 0.1.0-SNAPSHOT                                  [5/11]
+[INFO]   from hify-mcp/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-mcp ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-mcp ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-mcp ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-mcp/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-mcp ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-mcp ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] ----------------------< com.hify:hify-knowledge >-----------------------
+[INFO] Building hify-knowledge 0.1.0-SNAPSHOT                            [6/11]
+[INFO]   from hify-knowledge/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-knowledge ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-knowledge ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-knowledge ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-knowledge/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-knowledge ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-knowledge ---
+[INFO] 
+[INFO] -----------------------< com.hify:hify-workflow >-----------------------
+[INFO] Building hify-workflow 0.1.0-SNAPSHOT                             [7/11]
+[INFO]   from hify-workflow/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-workflow ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-workflow/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-workflow/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-workflow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-workflow ---
+[INFO] Copying 2 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-workflow ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-workflow ---
+[INFO] 
+[INFO] ------------------------< com.hify:hify-agent >-------------------------
+[INFO] Building hify-agent 0.1.0-SNAPSHOT                                [8/11]
+[INFO]   from hify-agent/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-agent ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-agent ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-agent ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-agent/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-agent ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-agent ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] -------------------------< com.hify:hify-chat >-------------------------
+[INFO] Building hify-chat 0.1.0-SNAPSHOT                                 [9/11]
+[INFO]   from hify-chat/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-chat ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-chat/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-chat/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-chat ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-chat ---
+[INFO] Copying 3 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-chat ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-chat ---
+[INFO] 
+[INFO] -------------------------< com.hify:hify-demo >-------------------------
+[INFO] Building hify-demo 0.1.0-SNAPSHOT                                [10/11]
+[INFO]   from hify-demo/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-demo ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/src/main/resources
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-demo ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-demo ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-demo/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-demo ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-demo ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] -------------------------< com.hify:hify-app >--------------------------
+[INFO] Building hify-app 0.1.0-SNAPSHOT                                 [11/11]
+[INFO]   from hify-app/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ hify-app ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 21 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ hify-app ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ hify-app ---
+[INFO] skip non existing resourceDirectory /private/tmp/hify-course-20261006.hhEhwt/retrieval-worktree/backend/hify-app/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ hify-app ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ hify-app ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -Xmx768m -XX:ReservedCodeCacheSize=128m -Dspring.test.context.cache.maxSize=2 -Dhify.test.startup-diagnostics=true -Xlog:gc*,safepoint:file=/tmp/hify-startup-recheck-dd44225.y2nXxj/gc-%p.log:time,uptime,level,tags
+[INFO] Running com.hify.api.MavenStructureTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.700 s -- in com.hify.api.MavenStructureTest
+[INFO] Running com.hify.api.RunShutdownIntegrationTest
+[shutdown-diagnostic] seconds=0.000 phase=model-begin interrupted=false
+[shutdown-diagnostic] seconds=0.005 phase=model-first-context-starting interrupted=false
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-10-07T15:18:57.333+08:00 WARN  [main] [requestId=] o.f.c.i.database.base.Database - Flyway upgrade recommended: H2 2.3.232 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.224.
+[startup-detail] wallMs=9718.784 currentThreadCpuMs=6731.997 completedEvents=977 interrupted=false
+[startup-detail] id=4 stage=spring.context.refresh bean=other durationMs=8616.293
+[startup-detail] id=88 stage=spring.beans.instantiate bean=other durationMs=3150.279
+[startup-detail] id=89 stage=spring.beans.instantiate bean=other durationMs=3134.524
+[startup-detail] id=5 stage=spring.context.beans.post-process bean=other durationMs=2039.492
+[startup-detail] id=58 stage=spring.beans.instantiate bean=other durationMs=1990.848
+[startup-detail] id=8 stage=other bean=other durationMs=1444.155
+[startup-detail] id=9 stage=other bean=other durationMs=1355.363
+[startup-detail] id=236 stage=spring.beans.instantiate bean=other durationMs=914.593
+[startup-detail] id=124 stage=spring.beans.instantiate bean=other durationMs=638.616
+[startup-detail] id=127 stage=spring.data.repository.init bean=other durationMs=614.362
+[startup-detail] id=131 stage=other bean=other durationMs=612.301
+[startup-detail] id=296 stage=spring.beans.instantiate bean=other durationMs=546.653
+[shutdown-diagnostic] seconds=10.703 phase=model-first-context-started interrupted=false
+[shutdown-diagnostic] seconds=10.839 phase=model-entered-before-close interrupted=false
+[shutdown-diagnostic] seconds=10.864 phase=model-first-context-close-returned interrupted=false
+[shutdown-diagnostic] seconds=10.879 phase=model-persistence-assertions-passed interrupted=false
+[shutdown-diagnostic] seconds=10.879 phase=model-second-context-starting interrupted=false
+2026-10-07T15:19:05.279+08:00 WARN  [main] [requestId=] o.f.c.i.database.base.Database - Flyway upgrade recommended: H2 2.3.232 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.224.
+[startup-detail] wallMs=2516.426 currentThreadCpuMs=1804.072 completedEvents=977 interrupted=false
+[startup-detail] id=4 stage=spring.context.refresh bean=other durationMs=2454.300
+[startup-detail] id=5 stage=spring.context.beans.post-process bean=other durationMs=877.565
+[startup-detail] id=88 stage=spring.beans.instantiate bean=other durationMs=818.181
+[startup-detail] id=89 stage=spring.beans.instantiate bean=other durationMs=813.250
+[startup-detail] id=8 stage=other bean=other durationMs=796.703
+[startup-detail] id=9 stage=other bean=other durationMs=776.418
+[startup-detail] id=58 stage=spring.beans.instantiate bean=other durationMs=314.553
+[startup-detail] id=236 stage=spring.beans.instantiate bean=other durationMs=257.981
+[startup-detail] id=296 stage=spring.beans.instantiate bean=other durationMs=229.776
+[startup-detail] id=297 stage=spring.beans.instantiate bean=other durationMs=196.220
+[startup-detail] id=298 stage=spring.beans.instantiate bean=other durationMs=194.114
+[startup-detail] id=265 stage=spring.beans.instantiate bean=other durationMs=174.747
+[shutdown-diagnostic] seconds=13.398 phase=model-second-context-started interrupted=false
+[shutdown-diagnostic] seconds=13.414 phase=model-recovery-assertions-passed interrupted=false
+[shutdown-diagnostic] seconds=13.421 phase=model-second-context-close-returned interrupted=false
+[shutdown-diagnostic] seconds=0.000 phase=model-begin interrupted=false
+[shutdown-diagnostic] seconds=0.000 phase=model-first-context-starting interrupted=false
+2026-10-07T15:19:07.323+08:00 WARN  [main] [requestId=] o.f.c.i.database.base.Database - Flyway upgrade recommended: H2 2.3.232 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.224.
+[startup-detail] wallMs=2429.824 currentThreadCpuMs=1842.337 completedEvents=977 interrupted=false
+[startup-detail] id=4 stage=spring.context.refresh bean=other durationMs=2363.101
+[startup-detail] id=88 stage=spring.beans.instantiate bean=other durationMs=770.947
+[startup-detail] id=89 stage=spring.beans.instantiate bean=other durationMs=766.023
+[startup-detail] id=5 stage=spring.context.beans.post-process bean=other durationMs=435.747
+[startup-detail] id=8 stage=other bean=other durationMs=396.227
+[startup-detail] id=9 stage=other bean=other durationMs=394.762
+[startup-detail] id=236 stage=spring.beans.instantiate bean=other durationMs=335.910
+[startup-detail] id=58 stage=spring.beans.instantiate bean=other durationMs=317.418
+[startup-detail] id=296 stage=spring.beans.instantiate bean=other durationMs=170.096
+[startup-detail] id=73 stage=spring.beans.instantiate bean=flywayInitializer durationMs=142.185
+[startup-detail] id=297 stage=spring.beans.instantiate bean=other durationMs=112.602
+[startup-detail] id=298 stage=spring.beans.instantiate bean=other durationMs=109.152
+[shutdown-diagnostic] seconds=2.432 phase=model-first-context-started interrupted=false
+[shutdown-diagnostic] seconds=2.498 phase=model-entered-before-close interrupted=false
+[shutdown-diagnostic] seconds=2.512 phase=model-first-context-close-returned interrupted=false
+[shutdown-diagnostic] seconds=2.515 phase=model-persistence-assertions-passed interrupted=false
+[shutdown-diagnostic] seconds=2.515 phase=model-second-context-starting interrupted=false
+2026-10-07T15:19:09.770+08:00 WARN  [main] [requestId=] o.f.c.i.database.base.Database - Flyway upgrade recommended: H2 2.3.232 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.224.
+[startup-detail] wallMs=2081.458 currentThreadCpuMs=1681.884 completedEvents=977 interrupted=false
+[startup-detail] id=4 stage=spring.context.refresh bean=other durationMs=2006.815
+[startup-detail] id=88 stage=spring.beans.instantiate bean=other durationMs=532.962
+[startup-detail] id=89 stage=spring.beans.instantiate bean=other durationMs=528.289
+[startup-detail] id=58 stage=spring.beans.instantiate bean=other durationMs=432.491
+[startup-detail] id=5 stage=spring.context.beans.post-process bean=other durationMs=327.484
+[startup-detail] id=8 stage=other bean=other durationMs=279.101
+[startup-detail] id=9 stage=other bean=other durationMs=277.937
+[startup-detail] id=236 stage=spring.beans.instantiate bean=other durationMs=147.303
+[startup-detail] id=296 stage=spring.beans.instantiate bean=other durationMs=133.592
+[startup-detail] id=59 stage=spring.beans.instantiate bean=flyway durationMs=89.416
+[startup-detail] id=297 stage=spring.beans.instantiate bean=other durationMs=78.200
+[startup-detail] id=298 stage=spring.beans.instantiate bean=other durationMs=77.196
+[shutdown-diagnostic] seconds=4.604 phase=model-second-context-started interrupted=false
+[shutdown-diagnostic] seconds=4.719 phase=model-recovery-assertions-passed interrupted=false
+[shutdown-diagnostic] seconds=4.726 phase=model-second-context-close-returned interrupted=false
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 18.18 s -- in com.hify.api.RunShutdownIntegrationTest
+[INFO] Running com.hify.api.ShutdownStartupDiagnosticsTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 s -- in com.hify.api.ShutdownStartupDiagnosticsTest
+[INFO] Running com.hify.api.ModuleStructureContractTest
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.460 s -- in com.hify.api.ModuleStructureContractTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 30, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for hify-parent 0.1.0-SNAPSHOT:
+[INFO] 
+[INFO] hify-parent ........................................ SUCCESS [  0.001 s]
+[INFO] hify-common ........................................ SUCCESS [  0.539 s]
+[INFO] hify-provider ...................................... SUCCESS [  0.038 s]
+[INFO] hify-tool .......................................... SUCCESS [  0.033 s]
+[INFO] hify-mcp ........................................... SUCCESS [  0.047 s]
+[INFO] hify-knowledge ..................................... SUCCESS [  0.028 s]
+[INFO] hify-workflow ...................................... SUCCESS [  0.028 s]
+[INFO] hify-agent ......................................... SUCCESS [  0.021 s]
+[INFO] hify-chat .......................................... SUCCESS [  0.044 s]
+[INFO] hify-demo .......................................... SUCCESS [  0.017 s]
+[INFO] hify-app ........................................... SUCCESS [ 24.472 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  25.471 s
+[INFO] Finished at: 2026-10-07T15:19:16+08:00
+[INFO] ------------------------------------------------------------------------
