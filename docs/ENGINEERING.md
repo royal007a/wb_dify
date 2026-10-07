@@ -11,6 +11,25 @@
 - Entity 不直接作为 API 响应；跨模块 DTO 不暴露 JPA/MyBatis 类型。
 - `common` 禁止放业务 Entity、万能 Utils 或跨域 Service。
 
+### 1.1 结构回归的当前边界
+
+Git 不保存空目录；结构测试不再要求七个业务模块各建七个旧式空目录。
+`MavenStructureTest` 保留 reactor 模块/目录及既有必需依赖断言，并检查真实 Java
+声明：七个根包 marker、六个已有 api port，以及 Chat 的历史入口
+`com.hify.application.RunApplicationService`。不为 Chat 新建空 api 壳。
+
+测试中的历史包根清单显式容纳当前技术债：Agent 的 domain/infra，Chat 的
+application/domain/infra/intent/memory/runtime，Provider/Tool 的 runtime。
+允许的三个拆分包为 `com.hify.domain`（agent/chat）、`com.hify.infra`
+（agent/chat）、`com.hify.runtime`（provider/tool/chat）；不得新增拆分包或 owner，
+也不得在不同模块定义同名顶层类型。清单不是目标架构，后续收敛时应同步缩减。
+
+依赖负例仅覆盖 common 不声明业务依赖、provider/tool 不声明 chat 依赖。
+源码 POM 检查不解析属性和 Maven effective model，不等于全依赖图无环证明。
+Java 检查只解析 main 源文件的语法/顶层声明，不执行注解处理器，不检查跨模块
+import 或方法签名兼容性；“跨模块只能调用 port”的完整自动约束仍未覆盖。
+真实声明在干净 Git archive 上验证，不能借本机未跟踪文件满足契约。
+
 ## 2. 接口与兼容
 
 - REST `/api/v1`；资源复数；动作有明确语义，不用一个 `/execute` 承载所有行为。

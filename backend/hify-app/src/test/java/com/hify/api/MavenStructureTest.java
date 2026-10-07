@@ -10,8 +10,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,23 +48,28 @@ class MavenStructureTest {
                 "hify-agent", "hify-provider", "hify-tool");
         assertInternalDependencies(backend.resolve("hify-agent/pom.xml"), "hify-mcp");
         assertInternalDependencies(backend.resolve("hify-app/pom.xml"), "hify-demo");
+
+        Map<String,Set<String>> dependencies = new LinkedHashMap<>();
+        for (String module : MODULES) {
+            dependencies.put(module, new LinkedHashSet<>(internalDependencies(backend.resolve(module + "/pom.xml"))));
+        }
+        ModuleStructureContract.verifyDependencyDirection(dependencies);
     }
 
     @Test
-    void businessModulePackageSkeletonsAreConsistent() {
-        Path backend = Path.of("..").toAbsolutePath().normalize();
-        for (String name : List.of("provider", "tool", "mcp", "agent", "chat", "knowledge", "workflow")) {
-            Path root = backend.resolve("hify-" + name + "/src/main/java/com/hify/" + name);
-            for (String packagePath : List.of("controller", "service", "service/impl",
-                    "mapper", "entity", "dto", "config")) {
-                assertThat(root.resolve(packagePath))
-                        .as("%s must contain %s", name, packagePath)
-                        .isDirectory();
-            }
-        }
+    void businessModuleSourcesMatchDeclaredContract() throws Exception {
+        // Git does not preserve empty directories. Check actual Java declarations,
+        // retaining explicitly grandfathered package roots/split-package owners.
+        ModuleStructureContract.verify(Path.of("..").toAbsolutePath().normalize());
     }
 
     private void assertInternalDependencies(Path pom, String... expected) throws Exception {
+        assertThat(internalDependencies(pom)).contains(expected);
+    }
+
+    private List<String> internalDependencies(Path pom) throws Exception {
+        // Preserve the existing source-POM extraction semantics, including nested
+        // dependency declarations. This is not Maven effective-model resolution.
         Document document = parse(pom);
         List<String> artifacts = new ArrayList<>();
         NodeList dependencies = document.getElementsByTagName("dependency");
@@ -72,7 +79,7 @@ class MavenStructureTest {
                 artifacts.add(text(dependency, "artifactId"));
             }
         }
-        assertThat(artifacts).contains(expected);
+        return artifacts;
     }
 
     private Document parse(Path path) throws Exception {

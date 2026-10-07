@@ -91,6 +91,7 @@
     "com.hify.api.WorkflowTerminalPostgresTest": 1,
     "com.hify.api.RunFlowIntegrationTest": 2,
     "com.hify.api.MavenStructureTest": 2,
+    "com.hify.api.ModuleStructureContractTest": 20,
     "com.hify.api.RunDispatchIntegrationTest": 4,
     "com.hify.api.KnowledgeFinishIntegrationTest": 18,
     "com.hify.api.McpCredentialIntegrationTest": 8,
