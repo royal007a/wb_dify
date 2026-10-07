@@ -34,3 +34,14 @@ green exit 0；pid-mutant、tick-mutant、budget-mutant 各 exit 1 且 Assertion
 - 安装器只发布 assets/ 和 index.html；当前构建布局符合，但未来增加其他顶层静态文件时
   必须同步修改安装契约，否则全清单校验会在安装后拒绝。本轮未实现通用静态目录发布。
 - 没有风险确认不切换；本目录不授权 reload nginx、清理共享环境或自动回滚数据库。
+
+## 独立复核后的证据限定（2026-10-07）
+
+mymacclaude 只读核对 `6ae5b3d..55b6591`，报告 SHA256SUMS 的 11 项一致，
+command.sh 除末尾 df 外与生产共用探针逐字一致，三个突变按断言退出 1。
+该结论不等于对方执行了 SSH 或突变。
+
+- argv 原文在 invocation.json，由 SHA256SUMS 间接覆盖，没有另存 argv 专属摘要。
+- “下发前保存”是执行方过程记录；仓库里的 startedAt 和文件本身不能独立证明时间先后。
+- 突变实际执行使用临时目录中的脚本副本，没有保留该副本与提交版逐字一致的独立证据。
+  日志中的 controllerSha256 只证明记录所指向的控制器内容，不能升级为完整构建链证明。
