@@ -42,3 +42,8 @@ script/stylesheet 引用，不再把 AgentVersion 当作构建版本。这不证
 
 安装后失败仍可能停止新 Hify，不自动恢复数据库或旧应用；此行为未改变，切换通知须明确提示。
 新脚本、两项安装器 fixture 反例和浏览器构建核对尚待运行与独立 review；未因此扩大已有绿灯范围。
+
+离线准入反例另覆盖 python -O 下的未完成 gate、失败/旧 schema/缺 scope/哈希不符 gate，
+以及从生产脚本抽出的 /proc 探针（无 jar 描述符、正确描述符、错误 cmdline）。这些使用合成目录，
+不连接远端，不代表实际进程探针已验证。历史 smoke 文件保留原样，调用时使用 python3 -E，
+使 PYTHONOPTIMIZE 环境变量不能关闭其中的断言。上述新增反例尚待错峰窗口交还后执行。

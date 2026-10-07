@@ -25,7 +25,7 @@ verification = json.loads((gate / 'verification.json').read_text())
 require(verification['result'] == 'passed' and verification['schemaVersion'] == 3, 'Gate must pass schema 3')
 require(set(verification['scopes']) == {'harness','migration','backend','runtime','eval','frontend'}, 'All six scopes required')
 require(hashlib.sha256((gate / 'verification.json').read_bytes()).hexdigest() == record['verificationSha256'], 'Gate SHA mismatch')
-subprocess.run(['python3', 'harness/harness.py', 'validate'], cwd=ROOT, check=True)
+subprocess.run(['python3', '-E', 'harness/harness.py', 'validate'], cwd=ROOT, check=True)
 tested_head = verification['headCommit']
 require(tested_head == record['headCommit'], 'Gate head mismatch')
 subprocess.run(['git','diff','--quiet',tested_head,'--','backend','frontend','deploy'],cwd=ROOT,check=True)
@@ -155,13 +155,14 @@ sha256sum /opt/hify/backend/hify-app/target/hify-app-0.1.0-SNAPSHOT.jar /opt/hif
 ''',timeout=480)
 # No output/body from a real credential is ever retrieved. Smoke results contain
 # only own synthetic IDs, Mock outputs, counters, and status codes.
-checks=[('current',['python3','harness/evidence/SPEC-DEPLOY-007/SPEC-DEPLOY-007-20261004T082939Z-1f8dfa88/smoke-current.py']),
-        ('prefix',['python3','deploy/smoke-upload.py','--api','https://118.196.123.132/hify/api/v1','--self-signed-test']),
+# Historical smoke uses assert. Ignore PYTHONOPTIMIZE rather than editing old evidence.
+checks=[('current',['python3','-E','harness/evidence/SPEC-DEPLOY-007/SPEC-DEPLOY-007-20261004T082939Z-1f8dfa88/smoke-current.py']),
+        ('prefix',['python3','-E','deploy/smoke-upload.py','--api','https://118.196.123.132/hify/api/v1','--self-signed-test']),
         ('direct',ssh)]
 failures=[]
 for name,args in checks:
     try:
-        command(args,'smoke-'+name,text=(f'python3 {release}/smoke-upload.py --api http://127.0.0.1:28080/api/v1\n' if name=='direct' else None))
+        command(args,'smoke-'+name,text=(f'python3 -E {release}/smoke-upload.py --api http://127.0.0.1:28080/api/v1\n' if name=='direct' else None))
         value=json.loads((evidence/('smoke-'+name+'.log')).read_text())
         (evidence/('smoke-'+name+'.json')).write_text(json.dumps(value,ensure_ascii=False,indent=2)+'\n')
     except (subprocess.CalledProcessError,subprocess.TimeoutExpired,json.JSONDecodeError) as error:
